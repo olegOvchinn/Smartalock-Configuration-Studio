@@ -1,0 +1,13 @@
+{
+  "project": {
+    "name": "",
+    "customer": "",
+    "siteAddress": "",
+    "created": "",
+    "version": "1.0"
+  },
+  "globalPolicy": {},
+  "additionalPolicies": [],
+  "lockerBanks": [],
+  "reports": {}
+}
