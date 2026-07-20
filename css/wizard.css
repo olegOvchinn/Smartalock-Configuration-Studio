@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smartalock Configuration Studio</title>
+
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/landing.css">
+
+</head>
+
+
+<body>
+
+
+<header class="hero">
+
+
+<nav class="top-nav">
+
+<div class="logo">
+Smartalock
+<span>Configuration Studio</span>
+</div>
+
+
+<div class="nav-links">
+
+<a href="../index.html">Home</a>
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
+<a href="reports.html">
+Reports
+</a>
+
+</div>
+
+</nav>
+
+
+
+<div class="hero-content">
+
+
+<h1>
+How many lockers can each user reserve?
+</h1>
+
+
+<p>
+
+This setting defines the maximum number of active locker reservations
+each user may hold at the same time.
+
+</p>
+
+
+</div>
+
+
+</header>
+
+
+
+<main style="max-width:1100px;margin:-140px auto 80px;padding:0 40px;position:relative;z-index:10;">
+
+
+<section class="feature-card">
+
+
+<h2>
+Reservation Limit
+</h2>
+
+
+<p>
+Select the default reservation limit for all users.
+</p>
+
+
+
+<label class="option">
+
+<input 
+type="radio"
+name="lockerLimit"
+value="1"
+checked>
+
+<div>
+
+<strong>
+1 locker
+</strong>
+
+<br>
+
+<small>
+Recommended default.
+</small>
+
+</div>
+
+</label>
+
+
+
+<label class="option">
+
+<input 
+type="radio"
+name="lockerLimit"
+value="2">
+
+
+<div>
+
+<strong>
+2 lockers
+</strong>
+
+<br>
+
+<small>
+For users requiring multiple reservations.
+</small>
+
+</div>
+
+</label>
+
+
+
+<label class="option">
+
+<input 
+type="radio"
+name="lockerLimit"
+value="3">
+
+
+<div>
+
+<strong>
+3 or more lockers
+</strong>
+
+<br>
+
+<small>
+For specialised requirements.
+</small>
+
+</div>
+
+</label>
+
+
+
+<div class="wizard-navigation">
+
+
+<div class="step-counter">
+
+Step 2 of 12
+
+</div>
+
+
+<button class="primary-button">
+
+Next →
+
+</button>
+
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+<script src="../js/storage.js"></script>
+<script src="../js/project.js"></script>
+<script src="../js/wizard.js"></script>
+
+
+</body>
+
+</html>

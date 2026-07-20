@@ -1,0 +1,478 @@
+/* Smartalock Configuration Studio - Landing Page */
+
+
+.hero {
+
+    min-height: 760px;
+
+    background:
+        linear-gradient(
+            120deg,
+            #ffffff 0%,
+            #f3f9ff 100%
+        );
+
+    padding: 35px 90px;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+/* Navigation */
+
+.top-nav {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+
+.logo {
+
+    font-size:26px;
+
+    font-weight:600;
+
+    letter-spacing:-0.3px;
+
+    color:#102a43;
+
+}
+
+
+.logo span {
+
+    display:block;
+
+    margin-top:3px;
+
+    font-size:12px;
+
+    font-weight:400;
+
+    letter-spacing:0.3px;
+
+    color:#607d8b;
+
+}
+
+
+.logo span {
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:400;
+
+    letter-spacing:0;
+
+    color:#627d98;
+
+    margin-top:4px;
+
+}
+
+
+
+.nav-links {
+
+    display:flex;
+
+    gap:40px;
+
+}
+
+
+.nav-links {
+
+    display:flex;
+    align-items:center;
+    gap:42px;
+
+}
+
+
+.nav-links a {
+
+    color:#243746;
+
+    text-decoration:none;
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+    font-size:14px;
+
+    font-weight:400;
+
+    letter-spacing:0.2px;
+
+    transition:color 0.25s ease;
+
+}
+
+
+.nav-links a:hover {
+
+    color:#0077b6;
+
+}
+
+
+.nav-links a:hover {
+
+    color:#0077b6;
+
+}
+
+
+
+/* Hero section */
+
+
+.hero-content {
+
+    max-width:700px;
+
+    margin-top:150px;
+
+}
+
+
+.hero-content h1 {
+
+    font-size:68px;
+
+    line-height:1.05;
+
+    letter-spacing:-2px;
+
+    color:#102a43;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.hero-content p {
+
+    font-size:21px;
+
+    line-height:1.7;
+
+    color:#486581;
+
+    max-width:620px;
+
+}
+
+
+
+/* Button */
+
+
+.primary-button {
+
+    display:inline-block;
+
+    margin-top:40px;
+
+    padding:16px 34px;
+
+    background:#0077b6;
+
+    color:white;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:.2s;
+
+}
+
+
+.primary-button:hover {
+
+    background:#005f8f;
+
+}
+
+
+
+/*
+Decorative product shape
+(simulates product/workplace image area)
+*/
+
+
+.hero:after {
+
+    content:"";
+
+    position:absolute;
+
+    right:-120px;
+
+    bottom:40px;
+
+    width:520px;
+
+    height:520px;
+
+    background:
+
+    radial-gradient(
+        circle,
+        #d9f0ff,
+        transparent 70%
+    );
+
+    border-radius:50%;
+
+}
+
+
+
+/* Feature cards */
+
+
+.features {
+
+    display:flex;
+
+    gap:35px;
+
+    padding:90px;
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+
+.feature-card {
+
+    flex:1;
+
+    padding:40px;
+
+    background:#ffffff;
+
+    border-radius:24px;
+
+    box-shadow:
+
+    0 15px 45px
+    rgba(16,42,67,.08);
+
+}
+
+
+
+.feature-card h2 {
+
+    color:#102a43;
+
+    font-size:26px;
+
+}
+
+
+.feature-card p {
+
+    color:#52606d;
+
+    line-height:1.6;
+
+}
+
+
+
+/* About section */
+
+
+.about {
+
+    background:#f5f9fc;
+
+    padding:90px;
+
+    text-align:center;
+
+}
+
+
+.about h2 {
+
+    font-size:42px;
+
+    color:#102a43;
+
+}
+
+
+.about p {
+
+    max-width:850px;
+
+    margin:auto;
+
+    color:#52606d;
+
+    font-size:19px;
+
+    line-height:1.7;
+
+}
+
+
+/* Mobile */
+
+@media(max-width:900px){
+
+.hero {
+
+padding:30px;
+
+}
+
+
+.hero-content h1 {
+
+font-size:45px;
+
+}
+
+
+.features {
+
+display:block;
+
+padding:30px;
+
+}
+
+
+.feature-card {
+
+margin-bottom:25px;
+
+}
+
+}
+.option{
+
+    display:flex;
+    
+    align-items:flex-start;
+    
+    gap:18px;
+    
+    padding:22px;
+    
+    margin-bottom:18px;
+    
+    border:1px solid #d9e2ec;
+    
+    border-radius:18px;
+    
+    cursor:pointer;
+    
+    transition:.2s;
+    
+    background:white;
+    
+    }
+    
+    .option:hover{
+    
+    border-color:#0077b6;
+    
+    box-shadow:0 10px 25px rgba(16,42,67,.08);
+    
+    }
+    
+    .option input{
+    
+    margin-top:5px;
+    
+    transform:scale(1.2);
+    
+    }
+    
+    .option strong{
+    
+    font-size:20px;
+    
+    color:#102a43;
+    
+    }
+    
+    .option small{
+    
+    display:block;
+    
+    margin-top:6px;
+    
+    font-size:15px;
+    
+    color:#607d8b;
+    
+    }
+    
+    .recommendation{
+    
+    margin-top:40px;
+    
+    padding:25px 30px;
+    
+    border-left:5px solid #0077b6;
+    
+    background:#f4f9fd;
+    
+    border-radius:12px;
+    
+    }
+    
+    .recommendation h3{
+    
+    margin-top:0;
+    
+    color:#102a43;
+    
+    }
+    .step-number {
+
+        display:block;
+    
+        font-size:18px;
+    
+        font-weight:500;
+    
+        letter-spacing:0;
+    
+        color:#0077b6;
+    
+        margin-bottom:18px;
+    
+    }
+    
