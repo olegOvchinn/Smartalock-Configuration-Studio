@@ -198,3 +198,49 @@ Next →
 </body>
 
 </html>
+.question {
+
+    background:white;
+
+    border:1px solid #E6EDF3;
+
+    border-radius:14px;
+
+    padding:25px 30px;
+
+    margin-bottom:20px;
+
+    transition:
+        background .2s ease,
+        border .2s ease;
+
+}
+
+
+.question.answered {
+
+    background:#F0F9F1;
+
+    border-color:#B7E1BD;
+
+}
+
+
+.question.answered h3 {
+
+    color:#1E6B3A;
+
+}
+
+
+.question-status {
+
+    float:right;
+
+    color:#2E8B57;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}

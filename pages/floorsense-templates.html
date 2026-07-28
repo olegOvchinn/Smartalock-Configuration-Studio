@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Floorsense Configuration Engine | Smartalock Configuration Studio</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/templates.css">
+
+</head>
+
+<body>
+
+<header class="hero">
+
+    <nav class="top-nav">
+
+        <div class="logo">
+
+            Smartalock
+            <span>Configuration Studio</span>
+
+        </div>
+
+        <div class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a class="active"
+               href="floorsense-templates.html">
+
+                Configuration Engine
+
+            </a>
+
+            <a href="reports.html">
+                Reports
+            </a>
+
+        </div>
+
+    </nav>
+
+    <div class="hero-content">
+
+        <h1>
+
+            Floorsense Configuration Engine
+
+        </h1>
+
+        <p>
+
+            Select one or more desk deployment templates.
+            Your selections will become the starting point for
+            the Floorsense Configuration Wizard.
+
+        </p>
+
+    </div>
+
+</header>
+
+<main class="templates-wrapper">
+
+<section class="page-intro">
+
+    <h2>
+
+        Select Desk Templates
+
+    </h2>
+
+    <p>
+
+        Choose one or both desk deployment models.
+
+        If Adhoc Desks are selected you'll be able to
+        assign desk neighbourhoods before continuing.
+
+    </p>
+
+</section>
+
+
+<div class="template-grid">
+
+<!-- ======================================================
+     FIXED DESKS
+====================================================== -->
+
+<article class="template-card"
+         data-template="fixed">
+
+    <div class="card-content">
+
+        <h3>
+
+            Fixed Desks
+
+        </h3>
+
+        <p class="card-description">
+
+            Permanently assign desks to individual users.
+
+            Ideal for organisations where employees
+            have dedicated workstations.
+
+        </p>
+
+    </div>
+
+</article>
+
+
+
+<!-- ======================================================
+     ADHOC DESKS
+====================================================== -->
+
+<article class="template-card"
+         data-template="adhoc">
+
+    <div class="card-content">
+
+        <h3>
+
+            Adhoc Desks
+
+        </h3>
+
+        <p class="card-description">
+
+            Users reserve any available desk within
+            configured desk neighbourhoods.
+
+            Ideal for hybrid and flexible workplaces.
+
+        </p>
+
+    </div>
+
+    <div class="assignment-panel">
+
+        <h4>
+
+            Assignment
+
+        </h4>
+
+        <div class="assignment-list">
+
+            <div class="assignment-row">
+
+                <div class="field">
+
+                    <label>
+
+                        Desk Neighbourhood
+
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="Example: Level 2 West">
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+
+                        Desk Numbers
+
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="Example: 1-48">
+
+                </div>
+
+                <button
+                    type="button"
+                    class="remove-bank">
+
+                    ×
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="add-bank">
+
+            + Add another neighbourhood
+
+        </button>
+
+    </div>
+
+</article>
+
+</div>
+
+
+<section class="selection-summary">
+
+    <div class="summary-card">
+
+        <div class="summary-left">
+
+            <h3>
+
+                Selected Templates
+
+            </h3>
+
+            <p>
+
+                Choose one or both templates before
+                continuing to the Floorsense
+                Configuration Wizard.
+
+            </p>
+
+        </div>
+
+        <div class="summary-right">
+
+            <div class="selection-count">
+
+                <span id="selectedCount">
+
+                    0
+
+                </span>
+
+                <small>
+
+                    templates selected
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="continue-section">
+
+    <button
+        id="continueBtn"
+        class="continue-btn"
+        disabled>
+
+        Continue to Floorsense Configuration Wizard →
+
+    </button>
+
+</section>
+
+</main>
+<footer class="page-footer">
+
+    <p>
+
+        Smartalock Configuration Studio
+
+    </p>
+
+</footer>
+
+<script src="../js/floorsense-templates.js"></script>
+
+</body>
+
+</html>

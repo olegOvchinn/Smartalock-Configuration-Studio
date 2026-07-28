@@ -4,11 +4,15 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smartalock Configuration Studio</title>
+<title>
+Smartalock Configuration Studio
+</title>
 
 <link rel="stylesheet" href="css/styles.css">
+
 <link rel="stylesheet" href="css/landing.css">
 
 </head>
@@ -17,36 +21,60 @@
 <body>
 
 
+<!-- =========================================
+     HERO / HEADER
+========================================= -->
+
 <header class="hero">
 
 
 <nav class="top-nav">
 
+
 <div class="logo">
+
 Smartalock
-<span>Configuration Studio</span>
+
+<span>
+Configuration Studio
+</span>
+
 </div>
 
 
 <div class="nav-links">
 
+
 <a href="pages/dashboard.html">
 Dashboard
 </a>
 
-<a href="pages/wizard.html">
-Policy Workshop
+
+<a href="pages/smartalock-wizard.html">
+Configuration Engine
 </a>
+
+
+<a href="pages/smartalock-templates.html">
+Implementation Ready
+</a>
+
 
 <a href="pages/reports.html">
 Reports
 </a>
 
+
 </div>
+
 
 </nav>
 
 
+
+<!-- =========================================
+     HERO CONTENT
+========================================= -->
 
 <div class="hero-content">
 
@@ -60,14 +88,17 @@ with confidence
 <p>
 
 Smartalock Configuration Studio helps you capture customer requirements,
-define locker policies, and generate implementation-ready configurations.
+define locker policies, and create implementation-ready configurations.
 
 </p>
 
 
-<a class="primary-button" href="pages/wizard.html">
+<a
+id="registerButton"
+class="primary-button"
+href="pages/register.html">
 
-Start New Configuration
+Register New Project
 
 </a>
 
@@ -77,48 +108,82 @@ Start New Configuration
 
 </header>
 
+<div id="projectHome"></div>
 
+<!-- =========================================
+     FEATURES
+========================================= -->
 
 <section class="features">
 
 
-<div class="feature-card">
+
+<!-- =========================================
+     FLOORSENSE CONFIGURATION ENGINE
+========================================= -->
+
+<div
+    id="floorsenseCard"
+    class="feature-card"
+    onclick="startFloorsense()">
 
 <h2>
-Policy Workshop
+FLOORSENSE
 </h2>
 
 <p>
-Capture customer requirements through guided configuration questions.
+
+Choose a ready-to-go configuration template and start implementation immediately.
+
 </p>
 
 </div>
 
 
 
-<div class="feature-card">
+<!-- =========================================
+     SMARTALOCK CONFIGURATION ENGINE
+========================================= -->
+
+<div
+    id="smartalockCard"
+    class="feature-card"
+    onclick="startSmartalock()">
 
 <h2>
-Configuration Engine
+SMARTALOCK
 </h2>
 
 <p>
-Automatically translate business rules into Smartalock parameters.
+
+Choose a ready-to-go configuration template and start implementation immediately.
+
 </p>
 
 </div>
 
 
 
-<div class="feature-card">
+<!-- =========================================
+     AI POLICY WORKSHOP
+========================================= -->
+
+<div
+class="feature-card"
+onclick="window.location.href='pages/ai-policy-workshop.html';">
+
 
 <h2>
-Implementation Ready
+AI Policy Workshop
 </h2>
 
+
 <p>
-Generate customer summaries and technical configuration lists.
+
+Describe your locker requirements in plain English. AI will help identify the right configuration template, ask clarifying questions, and build a customised configuration for your project.
+
 </p>
+
 
 </div>
 
@@ -126,6 +191,10 @@ Generate customer summaries and technical configuration lists.
 </section>
 
 
+
+<!-- =========================================
+     ABOUT
+========================================= -->
 
 <section class="about">
 
@@ -148,6 +217,549 @@ approach for every project.
 
 
 
+<!-- =========================================
+     PAGE STYLES
+========================================= -->
+
+<style>
+
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+body {
+
+    margin:0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:#102A43;
+
+    background:#f5f7fb;
+
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.hero {
+
+    min-height:760px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.98) 0%,
+            rgba(255,255,255,0.90) 25%,
+            rgba(255,255,255,0.35) 55%,
+            rgba(255,255,255,0.05) 100%
+        ),
+
+        url("https://images.squarespace-cdn.com/content/v1/5c2c8ec3297114a6e7b4685a/e9a44326-19d9-4025-ba77-f1c3c30e2925/LockerBankWeb.jpg");
+
+    background-size:cover;
+
+    background-position:center right;
+
+    background-repeat:no-repeat;
+
+    padding:35px 90px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.top-nav {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+
+.logo {
+
+    font-size:26px;
+
+    font-weight:600;
+
+    letter-spacing:-0.3px;
+
+    color:#102A43;
+
+}
+
+
+.logo span {
+
+    display:block;
+
+    margin-top:4px;
+
+    font-size:13px;
+
+    font-weight:400;
+
+    letter-spacing:0;
+
+    color:#627D98;
+
+}
+
+
+.nav-links {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:42px;
+
+}
+
+
+.nav-links a {
+
+    color:#243746;
+
+    text-decoration:none;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:14px;
+
+    font-weight:400;
+
+    letter-spacing:0.2px;
+
+    transition:
+        color 0.25s ease;
+
+}
+
+
+.nav-links a:hover {
+
+    color:#0077B6;
+
+}
+
+
+/* =========================================
+   HERO CONTENT
+========================================= */
+
+.hero-content {
+
+    max-width:700px;
+
+    margin-top:150px;
+
+}
+
+
+.hero-content h1 {
+
+    font-size:68px;
+
+    line-height:1.05;
+
+    letter-spacing:-2px;
+
+    color:#102A43;
+
+    margin:0 0 30px;
+
+}
+
+
+.hero-content p {
+
+    font-size:21px;
+
+    line-height:1.7;
+
+    color:#486581;
+
+    max-width:620px;
+
+    margin:0;
+
+}
+
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.primary-button {
+
+    display:inline-block;
+
+    margin-top:40px;
+
+    padding:16px 34px;
+
+    background:#0077B6;
+
+    color:white;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.primary-button:hover {
+
+    background:#005F8F;
+
+    transform:translateY(-2px);
+
+}
+
+
+/* =========================================
+   FEATURES
+========================================= */
+
+.features {
+
+    display:flex;
+
+    gap:35px;
+
+    padding:90px;
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+
+.feature-card {
+
+    flex:1;
+
+    padding:40px;
+
+    background:#ffffff;
+
+    border-radius:24px;
+
+    box-shadow:
+
+        0 15px 45px
+        rgba(16,42,67,.08);
+
+    cursor:pointer;
+
+    transition:
+
+        transform 0.2s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.feature-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+
+        0 12px 30px
+        rgba(16,42,67,.12);
+
+}
+
+
+.feature-card h2 {
+
+    color:#102A43;
+
+    font-size:26px;
+
+    margin-top:0;
+
+}
+
+
+.feature-card p {
+
+    color:#52606D;
+
+    line-height:1.6;
+
+    margin-bottom:0;
+
+}
+
+
+/* =========================================
+   ABOUT
+========================================= */
+
+.about {
+
+    background:#f5f9fc;
+
+    padding:90px;
+
+    text-align:center;
+
+}
+
+
+.about h2 {
+
+    font-size:42px;
+
+    color:#102A43;
+
+    margin-top:0;
+
+}
+
+
+.about p {
+
+    max-width:850px;
+
+    margin:auto;
+
+    color:#52606D;
+
+    font-size:19px;
+
+    line-height:1.7;
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:900px) {
+
+
+    .hero {
+
+        min-height:700px;
+
+        padding:30px;
+
+        background-position:
+            65% center;
+
+    }
+
+
+    .hero-content {
+
+        margin-top:120px;
+
+        max-width:600px;
+
+    }
+
+
+    .hero-content h1 {
+
+        font-size:45px;
+
+        letter-spacing:-1px;
+
+    }
+
+
+    .hero-content p {
+
+        font-size:18px;
+
+    }
+
+
+    .features {
+
+        display:block;
+
+        padding:30px;
+
+    }
+
+
+    .feature-card {
+
+        margin-bottom:25px;
+
+    }
+
+
+}
+
+
+@media(max-width:600px) {
+
+
+    .hero {
+
+        min-height:650px;
+
+        padding:25px;
+
+        background:
+
+            linear-gradient(
+                180deg,
+                rgba(255,255,255,0.98) 0%,
+                rgba(255,255,255,0.90) 45%,
+                rgba(255,255,255,0.35) 100%
+            ),
+
+            url("https://images.squarespace-cdn.com/content/v1/5c2c8ec3297114a6e7b4685a/e9a44326-19d9-4025-ba77-f1c3c30e2925/LockerBankWeb.jpg");
+
+        background-size:cover;
+
+        background-position:center;
+
+    }
+
+
+    .top-nav {
+
+        align-items:flex-start;
+
+    }
+
+
+    .nav-links {
+
+        gap:15px;
+
+    }
+
+
+    .nav-links a {
+
+        font-size:12px;
+
+    }
+
+
+    .logo {
+
+        font-size:21px;
+
+    }
+
+
+    .logo span {
+
+        font-size:11px;
+
+    }
+
+
+    .hero-content {
+
+        margin-top:100px;
+
+    }
+
+
+    .hero-content h1 {
+
+        font-size:40px;
+
+    }
+
+
+    .hero-content p {
+
+        font-size:17px;
+
+        line-height:1.6;
+
+    }
+
+
+    .features {
+
+        padding:25px;
+
+    }
+
+
+    .feature-card {
+
+        padding:30px;
+
+    }
+
+
+    .about {
+
+        padding:60px 25px;
+
+    }
+
+
+    .about h2 {
+
+        font-size:32px;
+
+    }
+
+
+}
+
+
+</style>
+
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script src="js/project.js"></script>
+<script src="js/landing.js"></script>
 <script src="js/app.js"></script>
 
 

@@ -19,7 +19,69 @@
     overflow: hidden;
 
 }
+/* =====================================================
+   Internal Application Header
+===================================================== */
 
+.app-header{
+
+    background:white;
+
+    border-bottom:1px solid #eef2f6;
+
+    padding:18px 90px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+}
+
+
+.app-header .top-nav{
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+
+.dashboard{
+
+    max-width:1100px;
+
+    margin:50px auto 100px;
+
+    padding:0 40px;
+
+}
+
+
+.page-title{
+
+    font-size:46px;
+
+    font-weight:600;
+
+    color:#102A43;
+
+    margin-bottom:8px;
+
+}
+
+
+.page-subtitle{
+
+    color:#607D8B;
+
+    font-size:20px;
+
+    margin-bottom:45px;
+
+}
 
 /* Navigation */
 
@@ -475,4 +537,298 @@ margin-bottom:25px;
         margin-bottom:18px;
     
     }
-    
+    /* ==========================================
+   Dashboard
+========================================== */
+
+.dashboard{
+
+    max-width:1100px;
+
+    margin:0 auto 100px;
+
+    padding:0 40px;
+
+}
+
+
+.progress-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+
+.overall-progress{
+
+    height:16px;
+
+    background:#eef3f7;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+}
+
+
+.overall-progress-fill{
+
+    width:68%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        #F4D03F,
+        #7ED957,
+        #2E8B57
+    );
+
+}
+
+
+.milestone{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:28px;
+
+    margin-bottom:8px;
+
+    font-weight:500;
+
+    color:#102A43;
+
+}
+
+
+.progress{
+
+    height:10px;
+
+    background:#edf2f7;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+}
+
+
+.fill{
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        #F4D03F,
+        #7ED957,
+        #2E8B57
+    );
+
+}
+
+
+.p100{width:100%;}
+.p70{width:70%;}
+.p50{width:50%;}
+.p20{width:20%;}
+.p0{width:0%;}
+
+.feature-card .primary-button{
+
+    margin-top:45px;
+
+}
+/* ==========================================
+   Registration Page
+========================================== */
+
+
+.register-page{
+
+    max-width:800px;
+
+    margin:50px auto 100px;
+
+    padding:0 40px;
+
+}
+
+
+
+.register-header{
+
+    margin-bottom:40px;
+
+}
+
+
+.register-header h1{
+
+    font-size:48px;
+
+    color:#102A43;
+
+}
+
+
+.register-header p{
+
+    font-size:20px;
+
+    color:#607D8B;
+
+}
+
+
+
+.register-card{
+
+    background:white;
+
+    padding:45px;
+
+    border-radius:24px;
+
+    box-shadow:
+
+    0 12px 35px rgba(16,42,67,.08);
+
+}
+
+
+
+.register-card h2{
+
+    margin-top:35px;
+
+    margin-bottom:20px;
+
+    color:#102A43;
+
+}
+
+
+
+.register-card label{
+
+    display:block;
+
+    margin-top:18px;
+
+    margin-bottom:8px;
+
+    color:#52606D;
+
+}
+
+
+
+.register-card input{
+
+    width:100%;
+
+    padding:15px 18px;
+
+    border-radius:12px;
+
+    border:1px solid #D9E2EC;
+
+    font-size:16px;
+
+    box-sizing:border-box;
+
+}
+
+
+
+.register-card input:focus{
+
+    outline:none;
+
+    border-color:#0077B6;
+
+}
+
+
+
+.register-card .primary-button{
+
+    margin-top:40px;
+
+}
+.secondary-button{
+
+    display:inline-block;
+
+    margin-top:24px;
+
+    padding:14px 28px;
+
+    border:2px solid #102A43;
+
+    border-radius:999px;
+
+    color:#102A43;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:.2s;
+
+}
+
+.secondary-button:hover{
+
+    background:#102A43;
+
+    color:white;
+
+}
+/* ==================================
+   CLICKABLE FEATURE CARDS
+================================== */
+
+.feature-card {
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(16, 42, 67, 0.12);
+}
+.current-project-card{
+
+    max-width:900px;
+
+    margin:40px auto;
+
+    padding:30px;
+
+    background:white;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+
+}

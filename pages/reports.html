@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Project Report | Smartalock Configuration Studio</title>
+
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/landing.css">
+<link rel="stylesheet" href="../css/reports.css">
+
+</head>
+
+
+<body class="app-page">
+
+
+<header class="app-header">
+
+<nav class="top-nav">
+
+<div class="logo">
+Smartalock
+<span>Configuration Studio</span>
+</div>
+
+
+<div class="nav-links">
+
+<a href="../index.html">
+Home
+</a>
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
+<a href="wizard.html">
+Configuration
+</a>
+
+<a href="reports.html">
+Reports
+</a>
+
+</div>
+
+</nav>
+
+</header>
+
+
+
+
+
+<main class="dashboard">
+
+
+<section class="hero-content">
+
+<h1>
+Project Report
+</h1>
+
+
+<p>
+APRA Melbourne
+</p>
+
+
+<div class="report-actions">
+
+<button class="primary-button" onclick="downloadPDF()">
+Download PDF
+</button>
+
+
+<button class="secondary-button" onclick="downloadJSON()">
+Download JSON
+</button>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Project Summary
+</h2>
+
+
+<div class="report-grid">
+
+
+<div class="report-box">
+
+<label>
+Company
+</label>
+
+<strong>
+APRA
+</strong>
+
+</div>
+
+
+
+<div class="report-box">
+
+<label>
+Site
+</label>
+
+<strong>
+Melbourne
+</strong>
+
+</div>
+
+
+
+<div class="report-box">
+
+<label>
+Installation Date
+</label>
+
+<strong>
+15 Sep 2026
+</strong>
+
+</div>
+
+
+
+<div class="report-box">
+
+<label>
+Completion Date
+</label>
+
+<strong>
+30 Sep 2026
+</strong>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Implementation Progress
+</h2>
+
+
+
+<div class="progress-container">
+
+<div class="progress-fill"></div>
+
+</div>
+
+
+
+
+<div class="report-line">
+
+<span>
+Policy Workshop
+</span>
+
+<strong>
+100%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Customer Requirements
+</span>
+
+<strong>
+100%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Locker Design
+</span>
+
+<strong>
+70%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Policy Configuration
+</span>
+
+<strong>
+50%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Validation
+</span>
+
+<strong>
+20%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Commissioning
+</span>
+
+<strong>
+0%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Setup Test
+</span>
+
+<strong>
+0%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Support Training
+</span>
+
+<strong>
+0%
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Admin Training
+</span>
+
+<strong>
+0%
+</strong>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Locker Policy Summary
+</h2>
+
+
+<div class="report-line">
+
+<span>
+Locker Model
+</span>
+
+<strong>
+Fixed + Adhoc
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Locker Limit
+</span>
+
+<strong>
+1 per user
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Booking Window
+</span>
+
+<strong>
+14 days
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Automatic Release
+</span>
+
+<strong>
+Enabled
+</strong>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Access Configuration
+</h2>
+
+
+
+<div class="report-line">
+
+<span>
+Authentication
+</span>
+
+<strong>
+Azure AD SSO
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+User Provisioning
+</span>
+
+<strong>
+SCIM
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+RFID Support
+</span>
+
+<strong>
+HID iCLASS
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Mobile Access
+</span>
+
+<strong>
+Enabled
+</strong>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Technical Configuration
+</h2>
+
+
+
+<div class="config-box">
+
+res_user_limit = 1<br>
+
+res_advance_days = 14<br>
+
+RES_RELEASE_ON_EXPIRE = TRUE<br>
+
+RES_UNLOCK_ON_RELEASE = TRUE<br>
+
+RES_EXPIRE_ON_OPEN = FALSE
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="feature-card">
+
+
+<h2>
+Validation Status
+</h2>
+
+
+
+<div class="report-line">
+
+<span>
+Locker banks configured
+</span>
+
+<strong class="status-good">
+✓ Complete
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+Policy conflicts checked
+</span>
+
+<strong class="status-good">
+✓ Complete
+</strong>
+
+</div>
+
+
+
+<div class="report-line">
+
+<span>
+User groups review
+</span>
+
+<strong class="status-warning">
+⚠ Required
+</strong>
+
+</div>
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+<script>
+
+function downloadPDF(){
+
+alert("PDF export will be available in the application version.");
+
+}
+
+
+
+function downloadJSON(){
+
+const report = {
+
+project:"APRA Melbourne",
+
+progress:"68%",
+
+status:"In Progress"
+
+};
+
+
+const blob = new Blob(
+[
+JSON.stringify(report,null,2)
+],
+{
+type:"application/json"
+}
+);
+
+
+const link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+
+link.download="Smartalock_Project_Report.json";
+
+link.click();
+
+}
+
+</script>
+
+
+</body>
+
+</html>

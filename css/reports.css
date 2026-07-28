@@ -1,0 +1,209 @@
+/* ==================================
+   Project Report Styling
+   Uses Dashboard theme
+================================== */
+
+
+.report-grid {
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4, 1fr);
+
+    gap:20px;
+
+}
+
+
+
+.report-box {
+
+    background:#f8fafc;
+
+    border-radius:16px;
+
+    padding:22px;
+
+}
+
+
+
+.report-box label {
+
+    display:block;
+
+    color:#627D98;
+
+    font-size:14px;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.report-box strong {
+
+    font-size:22px;
+
+    color:#102A43;
+
+}
+
+
+
+
+
+.progress-container {
+
+    height:14px;
+
+    background:#e5edf5;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin:25px 0;
+
+}
+
+
+
+.progress-fill {
+
+    height:100%;
+
+    width:68%;
+
+    background:linear-gradient(
+        90deg,
+        #f4d03f,
+        #7ed957
+    );
+
+}
+
+
+
+
+
+.report-line {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:16px 0;
+
+    border-bottom:1px solid #e5edf5;
+
+    color:#243B53;
+
+}
+
+
+
+.report-line:last-child {
+
+    border-bottom:none;
+
+}
+
+
+
+
+
+.config-box {
+
+    background:#102A43;
+
+    color:white;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    font-family:monospace;
+
+    line-height:1.8;
+
+}
+
+
+
+
+
+.status-good {
+
+    color:#2e8b57;
+
+    font-weight:600;
+
+}
+
+
+
+.status-warning {
+
+    color:#d9822b;
+
+    font-weight:600;
+
+}
+
+
+
+
+
+@media(max-width:900px){
+
+.report-grid {
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:600px){
+
+.report-grid {
+
+grid-template-columns:1fr;
+
+}
+
+}
+.report-actions {
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:25px;
+
+}
+
+
+.secondary-button {
+
+    padding:14px 28px;
+
+    border-radius:30px;
+
+    border:1px solid #102A43;
+
+    background:white;
+
+    color:#102A43;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}

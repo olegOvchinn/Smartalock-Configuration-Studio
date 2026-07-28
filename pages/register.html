@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register | Smartalock Configuration Studio</title>
+
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/landing.css">
+
+</head>
+
+
+<body>
+
+
+<header class="app-header">
+
+<nav class="top-nav">
+
+<div class="logo">
+Smartalock
+<span>Configuration Studio</span>
+</div>
+
+
+<div class="nav-links">
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
+<a href="smartalock-wizard.html">
+Configuration
+</a>
+
+<a href="reports.html">
+Reports
+</a>
+
+</div>
+
+</nav>
+
+</header>
+
+
+
+
+<main class="register-page">
+
+
+<section class="register-header">
+
+<h1>
+Register
+</h1>
+
+<p>
+Create a new Smartalock project
+</p>
+
+</section>
+
+
+
+
+<section class="register-card">
+
+
+<h2>
+Company Details
+</h2>
+
+
+<label>
+Company Name
+</label>
+
+<input value="APRA">
+
+
+<label>
+Site Address
+</label>
+
+<input value="Melbourne Office">
+
+
+<label>
+Your Email
+</label>
+
+<input value="project.manager@apra.com.au">
+
+
+
+<h2>
+Contacts
+</h2>
+
+
+<label>
+Policy Contact (if different)
+</label>
+
+<input value="Policy Manager">
+
+
+
+<label>
+IT Contact (if different)
+</label>
+
+<input value="IT Support Team">
+
+
+
+<label>
+Training Contact
+</label>
+
+<input value="Training Coordinator">
+
+
+
+<label>
+Support / Helpdesk Contact
+</label>
+
+<input value="Service Desk">
+
+
+
+<label>
+Facilities Contact
+</label>
+
+<input value="Facilities Manager">
+
+
+
+<h2>
+Project Dates
+</h2>
+
+
+<label>
+Target Installation Date
+</label>
+
+<input type="date" value="2026-09-15">
+
+
+
+<label>
+Target Completion Date
+</label>
+
+<input type="date" value="2026-09-30">
+
+
+
+<button 
+class="primary-button"
+onclick="registerProject()">
+
+Register
+
+</button>
+
+
+</section>
+
+
+</main>
+
+
+
+
+
+<script src="../js/project.js"></script>
+
+<script>
+
+function registerProject() {
+
+    // Create a new project
+    const project = createNewProject();
+
+    // Read values from the form
+    const inputs = document.querySelectorAll("input");
+
+    project.registration.customer = inputs[0].value;
+    project.registration.site = inputs[1].value;
+    project.registration.email = inputs[2].value;
+
+    project.registration.contact = inputs[3].value;
+
+    // Save project
+    saveProject(project);
+
+    // Go to next page
+    window.location.href = "../index.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
