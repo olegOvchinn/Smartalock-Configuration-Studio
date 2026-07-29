@@ -207,8 +207,13 @@ CARD GRID
 }
 
 .template-card.selected{
+
+    background:#EEF7FF;
+
     border-color:#0077B6;
-    box-shadow:0 12px 36px rgba(0,119,182,.22);
+
+    box-shadow:0 12px 36px rgba(0,119,182,.18);
+
 }
 
 .card-content{

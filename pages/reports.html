@@ -38,7 +38,7 @@ Home
 Dashboard
 </a>
 
-<a href="wizard.html">
+<a href="smartalock-wizard.html">
 Configuration
 </a>
 
@@ -66,8 +66,8 @@ Project Report
 </h1>
 
 
-<p>
-APRA Melbourne
+<p id="projectTitle">
+    Loading...
 </p>
 
 
@@ -104,16 +104,55 @@ Project Summary
 
 <div class="report-grid">
 
+    <div class="report-box">
+        <label>Company</label>
+        <strong id="reportCompany">-</strong>
+    </div>
 
-<div class="report-box">
+    <div class="report-box">
+        <label>Site</label>
+        <strong id="reportSite">-</strong>
+    </div>
 
-<label>
-Company
-</label>
+    <div class="report-box">
+        <label>Email</label>
+        <strong id="reportEmail">-</strong>
+    </div>
 
-<strong>
-APRA
-</strong>
+    <div class="report-box">
+        <label>Policy Contact</label>
+        <strong id="reportPolicy">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>IT Contact</label>
+        <strong id="reportIT">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>Training Contact</label>
+        <strong id="reportTraining">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>Support Contact</label>
+        <strong id="reportSupport">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>Facilities Contact</label>
+        <strong id="reportFacilities">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>Installation Date</label>
+        <strong id="reportInstallation">-</strong>
+    </div>
+
+    <div class="report-box">
+        <label>Completion Date</label>
+        <strong id="reportCompletion">-</strong>
+    </div>
 
 </div>
 
@@ -568,7 +607,7 @@ User groups review
 
 
 
-
+<script src="../js/project.js"></script>
 
 
 <script>
@@ -583,32 +622,20 @@ alert("PDF export will be available in the application version.");
 
 function downloadJSON(){
 
-const report = {
-
-project:"APRA Melbourne",
-
-progress:"68%",
-
-status:"In Progress"
-
-};
-
+const project = loadProject();
 
 const blob = new Blob(
-[
-JSON.stringify(report,null,2)
-],
-{
-type:"application/json"
-}
+    [JSON.stringify(project, null, 2)],
+    {
+        type: "application/json"
+    }
 );
 
+const link = document.createElement("a");
 
-const link=document.createElement("a");
+link.href = URL.createObjectURL(blob);
 
-link.href=URL.createObjectURL(blob);
-
-link.download="Smartalock_Project_Report.json";
+link.download = "Smartalock_Project_Report.json";
 
 link.click();
 

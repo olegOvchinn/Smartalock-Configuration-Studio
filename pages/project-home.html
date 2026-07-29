@@ -11,9 +11,9 @@
 Smartalock Configuration Studio
 </title>
 
-<link rel="stylesheet" href="css/styles.css">
-
+<link rel="stylesheet" href="../css/styles.css">
 <link rel="stylesheet" href="../css/landing.css">
+<link rel="stylesheet" href="../css/project-home.css">
 
 </head>
 
@@ -80,32 +80,55 @@ Reports
 
 
 <h1>
-Configure workplace technology
-with confidence
+Project Home
 </h1>
-
-
 <p>
 
-Smartalock Configuration Studio helps you capture customer requirements,
-define locker policies, and create implementation-ready configurations.
+Select the configuration module you would like to work on for this project.
 
 </p>
 
+<div class="project-info">
 
-<a
-id="registerButton"
-class="primary-button"
-href="pages/register.html">
+    <h3>Project Registratration Information</h3>
 
-Register New Project
+    <div class="project-info-grid">
 
-</a>
+        <div><strong>Company</strong><br><span id="companyName">Loading...</span></div>
 
+        <div><strong>Site</strong><br><span id="siteName">Loading...</span></div>
+
+        <div><strong>Email</strong><br><span id="projectEmail">Loading...</span></div>
+
+        <div><strong>Policy Contact</strong><br><span id="policyContact">Loading...</span></div>
+
+        <div><strong>IT Contact</strong><br><span id="itContact">Loading...</span></div>
+
+        <div><strong>Training Contact</strong><br><span id="trainingContact">Loading...</span></div>
+
+        <div><strong>Support Contact</strong><br><span id="supportContact">Loading...</span></div>
+
+        <div><strong>Facilities Contact</strong><br><span id="facilitiesContact">Loading...</span></div>
+
+        <div><strong>Installation</strong><br><span id="installationDate">Loading...</span></div>
+
+        <div><strong>Completion</strong><br><span id="completionDate">Loading...</span></div>
+
+    </div>
 
 </div>
 
+<div class="project-actions">
 
+    <a
+        class="secondary-button"
+        href="register.html">
+
+        Edit Project Information
+
+    </a>
+
+</div>
 </header>
 
 
@@ -124,7 +147,7 @@ Register New Project
 <div
     id="floorsenseCard"
     class="feature-card"
-    onclick="startFloorsense()">
+    onclick="window.location.href='floorsense-templates.html';">
 
 <h2>
 FLOORSENSE
@@ -147,7 +170,7 @@ Choose a ready-to-go configuration template and start implementation immediately
 <div
     id="smartalockCard"
     class="feature-card"
-    onclick="startSmartalock()">
+    onclick="window.location.href='smartalock-templates.html';">
 
 <h2>
 SMARTALOCK
@@ -169,7 +192,7 @@ Choose a ready-to-go configuration template and start implementation immediately
 
 <div
 class="feature-card"
-onclick="window.location.href='pages/ai-policy-workshop.html';">
+onclick="window.location.href='ai-policy-workshop.html';">
 
 
 <h2>
@@ -440,13 +463,6 @@ body {
 }
 
 
-.primary-button:hover {
-
-    background:#005F8F;
-
-    transform:translateY(-2px);
-
-}
 
 
 /* =========================================
@@ -757,9 +773,8 @@ body {
      JAVASCRIPT
 ========================================= -->
 
-<script src="js/project.js"></script>
-<script src="js/landing.js"></script>
-<script src="js/app.js"></script>
+<script src="../js/project.js"></script>
+<script src="../js/project-home.js"></script>
 
 
 </body>

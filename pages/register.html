@@ -80,21 +80,21 @@ Company Details
 Company Name
 </label>
 
-<input value="APRA">
+<input value="">
 
 
 <label>
 Site Address
 </label>
 
-<input value="Melbourne Office">
+<input value="">
 
 
 <label>
 Your Email
 </label>
 
-<input value="project.manager@apra.com.au">
+<input value="">
 
 
 
@@ -107,7 +107,7 @@ Contacts
 Policy Contact (if different)
 </label>
 
-<input value="Policy Manager">
+<input value="">
 
 
 
@@ -115,15 +115,15 @@ Policy Contact (if different)
 IT Contact (if different)
 </label>
 
-<input value="IT Support Team">
+<input value="">
 
 
 
 <label>
-Training Contact
+Training Contact (if any)
 </label>
 
-<input value="Training Coordinator">
+<input value="">
 
 
 
@@ -131,7 +131,7 @@ Training Contact
 Support / Helpdesk Contact
 </label>
 
-<input value="Service Desk">
+<input value="">
 
 
 
@@ -139,7 +139,7 @@ Support / Helpdesk Contact
 Facilities Contact
 </label>
 
-<input value="Facilities Manager">
+<input value="">
 
 
 
@@ -152,7 +152,7 @@ Project Dates
 Target Installation Date
 </label>
 
-<input type="date" value="2026-09-15">
+<input type="date" value="">
 
 
 
@@ -160,7 +160,7 @@ Target Installation Date
 Target Completion Date
 </label>
 
-<input type="date" value="2026-09-30">
+<input type="date" value="">
 
 
 
@@ -188,23 +188,26 @@ Register
 
 function registerProject() {
 
-    // Create a new project
-    const project = createNewProject();
+const project = loadProject();
 
-    // Read values from the form
-    const inputs = document.querySelectorAll("input");
+const inputs = document.querySelectorAll("input");
 
-    project.registration.customer = inputs[0].value;
-    project.registration.site = inputs[1].value;
-    project.registration.email = inputs[2].value;
+project.registration.customer = inputs[0].value;
+project.registration.site = inputs[1].value;
+project.registration.email = inputs[2].value;
 
-    project.registration.contact = inputs[3].value;
+project.registration.policy = inputs[3].value;
+project.registration.it = inputs[4].value;
+project.registration.training = inputs[5].value;
+project.registration.support = inputs[6].value;
+project.registration.facilities = inputs[7].value;
 
-    // Save project
-    saveProject(project);
+project.registration.installationDate = inputs[8].value;
+project.registration.completionDate = inputs[9].value;
 
-    // Go to next page
-    window.location.href = "../index.html";
+saveProject(project);
+
+window.location.href = "project-home.html";
 
 }
 

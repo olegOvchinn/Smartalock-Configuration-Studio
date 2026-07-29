@@ -61,6 +61,15 @@ function createNewProject() {
  */
 function saveProject(project) {
 
+    // Never save projects while in Guest Mode
+    if (isGuestMode()) {
+
+        console.log("Guest Mode: project not saved.");
+
+        return;
+
+    }
+
     project.updated = new Date().toISOString();
 
     localStorage.setItem(
@@ -76,10 +85,18 @@ function saveProject(project) {
  */
 function loadProject() {
 
+    if (isGuestMode()) {
+
+        return createNewProject();
+
+    }
+
     const data = localStorage.getItem(PROJECT_KEY);
 
     if (!data) {
+
         return createNewProject();
+
     }
 
     return JSON.parse(data);
@@ -207,5 +224,37 @@ function completeFloorsense() {
     project.floorsense.configured = true;
 
     saveProject(project);
+
+}
+
+/* =========================================
+   GUEST MODE
+========================================= */
+
+function startGuestMode(module) {
+
+    sessionStorage.setItem("guestMode", "true");
+
+    sessionStorage.setItem("guestModule", module);
+
+}
+
+function isGuestMode() {
+
+    return sessionStorage.getItem("guestMode") === "true";
+
+}
+
+function getGuestModule() {
+
+    return sessionStorage.getItem("guestModule");
+
+}
+
+function clearGuestMode() {
+
+    sessionStorage.removeItem("guestMode");
+
+    sessionStorage.removeItem("guestModule");
 
 }

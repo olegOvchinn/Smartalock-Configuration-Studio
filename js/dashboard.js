@@ -4,7 +4,6 @@
 
 
 deleteProject();
-saveProject(createNewProject());
 
 document.addEventListener("DOMContentLoaded", () => {
 

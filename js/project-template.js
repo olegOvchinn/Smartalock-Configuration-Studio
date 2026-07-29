@@ -78,3 +78,4 @@ const PROJECT_TEMPLATE = {
     }
 
 };
+

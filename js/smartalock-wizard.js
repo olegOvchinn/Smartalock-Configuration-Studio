@@ -34,7 +34,7 @@ let project = loadProject();
 
 if (!project) {
 
-    project = createNewProject();
+    project = loadProject();
 
 }
 
