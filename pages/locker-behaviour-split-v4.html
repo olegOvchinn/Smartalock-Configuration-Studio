@@ -44,7 +44,7 @@
 
   /* ---------- right: image + header + nav (v3: nav pane moved to the right) ---------- */
   .split-hero {
-    flex: 0 0 42%;
+    flex: 0 0 36%;
     position: sticky; top: 0; height: 100vh; overflow-y: auto;
     background: url('../assets/images/hero-locker-behaviour.svg') center center / cover no-repeat;
     display: flex; flex-direction: column;
@@ -254,7 +254,6 @@
       <a class="module-nav-item" data-module="it" href="it-configuration-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">IT Configuration &amp; Integrations</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item current" data-module="behaviour" href="locker-behaviour-split-v4.html">
         <span class="module-nav-dot"></span>
@@ -263,7 +262,6 @@
       <a class="module-nav-item" data-module="locker-type" href="locker-type-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Locker Types</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="reservation" href="reservation-type-v4.html">
         <span class="module-nav-dot"></span>
@@ -280,7 +278,6 @@
       <a class="module-nav-item" data-module="kiosk" href="kiosk-customisation-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Kiosk Customisation</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="summary" href="configuration-summary.html">
         <span class="module-nav-dot"></span>
@@ -473,7 +470,7 @@
   }
 
   mountCardLottie('SL_PopOpen.json', 'lottiePop', 'fallbackPop');
-  mountCardLottie('SL_PushToOpen.json', 'lottiePush', 'fallbackPush');
+  mountCardLottie('SL_GracePeriod.json', 'lottiePush', 'fallbackPush');
 
   /* ---------------- decision cards ---------------- */
   const cardPop = document.getElementById('card-pop');

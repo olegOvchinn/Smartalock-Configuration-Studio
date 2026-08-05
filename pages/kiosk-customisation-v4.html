@@ -48,7 +48,7 @@
 
   /* ---------- right: image + header + nav ---------- */
   .split-hero {
-    flex: 0 0 42%;
+    flex: 0 0 36%;
     position: sticky; top: 0; height: 100vh; overflow-y: auto;
     background: url('../assets/images/hero-kiosk-customisation.svg') center center / cover no-repeat;
     display: flex; flex-direction: column;
@@ -263,6 +263,19 @@
     font-family: var(--font-text); font-size: 13px; background: var(--paper-soft); text-align: right;
   }
   .kiosk-field-row input:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .kiosk-field-actions { display: flex; gap: 8px; align-items: center; }
+  .kiosk-colour-input-wrap { position: relative; display: flex; align-items: center; }
+  .kiosk-colour-hash {
+    position: absolute; left: 11px; font-family: var(--font-text); font-size: 13px; color: var(--ink-soft); pointer-events: none;
+  }
+  #bgColourInput { text-align: left; padding-left: 22px; }
+  .kiosk-set-btn {
+    font-family: var(--font-text); font-weight: 500; font-size: 12.5px; color: #fff;
+    background: var(--accent); border: none; border-radius: 8px; padding: 9px 14px; cursor: pointer;
+    transition: background .15s;
+  }
+  .kiosk-set-btn:hover { background: var(--accent-deep); }
+  .kiosk-set-btn:active { transform: scale(0.98); }
 
   .switch {
     position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
@@ -328,7 +341,6 @@
       <a class="module-nav-item" data-module="it" href="it-configuration-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">IT Configuration &amp; Integrations</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="behaviour" href="locker-behaviour-split-v4.html">
         <span class="module-nav-dot"></span>
@@ -337,7 +349,6 @@
       <a class="module-nav-item" data-module="locker-type" href="locker-type-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Locker Types</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="reservation" href="reservation-type-v4.html">
         <span class="module-nav-dot"></span>
@@ -354,7 +365,6 @@
       <a class="module-nav-item current" data-module="kiosk" href="kiosk-customisation-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Kiosk Customisation</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="summary" href="configuration-summary.html">
         <span class="module-nav-dot"></span>
@@ -486,7 +496,13 @@
 
         <div class="kiosk-field-row">
           <label for="bgColourInput">Background Colour</label>
-          <input type="text" id="bgColourInput" placeholder="#5B8FD7">
+          <div class="kiosk-field-actions">
+            <div class="kiosk-colour-input-wrap">
+              <span class="kiosk-colour-hash">#</span>
+              <input type="text" id="bgColourInput" placeholder="5B8FD7">
+            </div>
+            <button type="button" id="bgColourSetBtn" class="kiosk-set-btn">Set</button>
+          </div>
         </div>
 
       </div>
@@ -761,13 +777,19 @@
     });
     updateBannerText();
     applyBgColour();
-    bgColourInput.value = state.bgColour;
+    bgColourInput.value = (state.bgColour || '').replace(/^#/, '');
   }
 
-  bgColourInput.addEventListener('input', e => {
-    state.bgColour = e.target.value;
+  function commitBgColour(){
+    const hex = bgColourInput.value.trim().replace(/^#/, '');
+    bgColourInput.value = hex;
+    state.bgColour = hex ? ('#' + hex) : '';
     applyBgColour();
     queueSave();
+  }
+  document.getElementById('bgColourSetBtn').addEventListener('click', commitBgColour);
+  bgColourInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); commitBgColour(); }
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {

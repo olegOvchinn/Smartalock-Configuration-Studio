@@ -25,7 +25,7 @@
     --radius-md: 14px;
     --radius-sm: 10px;
     --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
-    --panel-maxw: 680px;
+    --panel-maxw: 940px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -43,7 +43,7 @@
 
   /* ---------- right: image + header + nav ---------- */
   .split-hero {
-    flex: 0 0 42%;
+    flex: 0 0 36%;
     position: sticky; top: 0; height: 100vh; overflow-y: auto;
     background: url('../assets/images/hero-locker-type.svg') center center / cover no-repeat;
     display: flex; flex-direction: column;
@@ -150,6 +150,17 @@
 
   .empty-hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 16px; }
 
+  /* ---------- assign-locker-types + video ---------- */
+  .assign-with-video { display: grid; grid-template-columns: 220px 1fr; gap: 36px; align-items: stretch; }
+  @media (max-width: 860px) { .assign-with-video { grid-template-columns: 1fr; } }
+  .assign-video { display: flex; justify-content: center; height: 100%; }
+  .assign-video-frame {
+    width: 100%; max-width: 220px; height: 100%; border-radius: 24px; overflow: hidden;
+    border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--paper-soft);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .assign-video-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -203,7 +214,6 @@
       <a class="module-nav-item" data-module="it" href="it-configuration-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">IT Configuration &amp; Integrations</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="behaviour" href="locker-behaviour-split-v4.html">
         <span class="module-nav-dot"></span>
@@ -212,7 +222,6 @@
       <a class="module-nav-item current" data-module="locker-type" href="locker-type-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Locker Types</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="reservation" href="reservation-type-v4.html">
         <span class="module-nav-dot"></span>
@@ -229,7 +238,6 @@
       <a class="module-nav-item" data-module="kiosk" href="kiosk-customisation-v4.html">
         <span class="module-nav-dot"></span>
         <span class="module-nav-label">Kiosk Customisation</span>
-        <span class="module-nav-tag">Optional</span>
       </a>
       <a class="module-nav-item" data-module="summary" href="configuration-summary.html">
         <span class="module-nav-dot"></span>
@@ -258,24 +266,36 @@
     <div class="panel-scroll">
       <div class="panel-inner">
 
-        <div class="section-head">
-          <span class="eyebrow">Configure <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;margin-left:4px;">Optional</span></span>
-          <h2 class="section-title">Assign locker types</h2>
-          <p>Specify which locker types should be available or assigned through the kiosk.</p>
-        </div>
+        <div class="assign-with-video">
+          <div class="assign-video">
+            <div class="assign-video-frame">
+              <img src="../assets/images/locker-type-demo-v2.gif" alt="Locker type demo">
+            </div>
+          </div>
 
-        <div class="type-check-grid" id="typeCheckGrid">
-          <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span>Large</span></label>
-          <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span>Side</span></label>
-          <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span>Top</span></label>
-          <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span>Middle</span></label>
-          <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span>Bottom</span></label>
-          <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span>Small</span></label>
-          <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span>Custom Type</span></label>
-        </div>
+          <div class="assign-main">
 
-        <div class="selected-types" id="selectedTypes"></div>
-        <p class="empty-hint" id="emptyHint">No locker types selected yet — check any that apply above.</p>
+            <div class="section-head">
+              <span class="eyebrow">Configure <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;margin-left:4px;">Optional</span></span>
+              <h2 class="section-title">Assign locker types</h2>
+              <p>Specify which locker types should be available or assigned through the kiosk.</p>
+            </div>
+
+            <div class="type-check-grid" id="typeCheckGrid">
+              <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span>Large</span></label>
+              <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span>Side</span></label>
+              <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span>Top</span></label>
+              <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span>Middle</span></label>
+              <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span>Bottom</span></label>
+              <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span>Small</span></label>
+              <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span>Custom Type</span></label>
+            </div>
+
+            <div class="selected-types" id="selectedTypes"></div>
+            <p class="empty-hint" id="emptyHint">No locker types selected yet — check any that apply above.</p>
+
+          </div>
+        </div>
 
       </div>
     </div>
@@ -385,6 +405,9 @@
     const ordered = TYPE_ORDER.filter(t => state.selected.includes(t));
     emptyHint.style.display = ordered.length ? 'none' : 'block';
     ordered.forEach(type => {
+      const isCustom = type === 'custom';
+      const fieldLabel = isCustom ? 'Enter your custom locker type name' : 'Example Locker Number';
+      const fieldPlaceholder = isCustom ? 'e.g. "Middle Top"' : 'e.g. 101';
       const row = document.createElement('div');
       row.className = 'selected-type-row';
       row.innerHTML = `
@@ -393,8 +416,8 @@
           <span class="stt-name">${TYPE_LABELS[type]}</span>
         </div>
         <div>
-          <span class="stt-label">Example Locker Number</span>
-          <input type="text" placeholder="e.g. 101" data-type="${type}" value="${state.exampleNumbers[type] || ''}">
+          <span class="stt-label">${fieldLabel}</span>
+          <input type="text" placeholder="${fieldPlaceholder}" data-type="${type}" value="${state.exampleNumbers[type] || ''}">
         </div>
       `;
       row.querySelector('input').addEventListener('input', (e) => {
