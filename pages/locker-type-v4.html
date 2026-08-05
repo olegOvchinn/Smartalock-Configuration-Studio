@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locker Types — Smartalock Configuration Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 680px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- split layout ---------- */
+  .split { display: flex; min-height: 100vh; align-items: stretch; }
+  @media (max-width: 900px) { .split { flex-direction: column; } }
+
+  /* ---------- right: image + header + nav ---------- */
+  .split-hero {
+    flex: 0 0 42%;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: url('../assets/images/hero-locker-type.svg') center center / cover no-repeat;
+    display: flex; flex-direction: column;
+    order: 2;
+  }
+  @media (max-width: 900px) {
+    .split-hero { position: relative; height: auto; max-height: none; min-height: 340px; flex: none; order: -1; }
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--paper-soft); border: 1px solid var(--line); position: relative; flex-shrink: 0; }
+  .brand-mark::after {
+    content: ''; position: absolute; top: 6.5px; left: 6.5px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
+  }
+  .brand-text { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; color: var(--ink); }
+  .brand-text span { color: var(--ink-soft); font-family: var(--font-text); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin-bottom: 28px; }
+  .panel-intro .brand { margin-bottom: 20px; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: var(--font-display); font-weight: 700; color: var(--ink);
+    font-size: clamp(28px, 3.6vw, 46px); line-height: 1.06; letter-spacing: -0.03em; margin: 0 0 14px;
+  }
+  .panel-intro p.sub { font-size: 15px; line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 42ch; }
+
+  /* ---------- module navigation ---------- */
+  .module-nav { margin: 48px 0 40px; padding: 0 30px; display: flex; flex-direction: column; gap: 1px; }
+  .module-nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 10px; border-radius: 10px;
+    transition: background .15s; text-decoration: none; color: inherit;
+  }
+  a.module-nav-item { cursor: pointer; }
+  a.module-nav-item:hover { background: rgba(255,255,255,0.08); }
+  .module-nav-item.current { background: rgba(255,255,255,0.1); }
+  .module-nav-dot {
+    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.9);
+    transition: background .15s, border-color .15s, box-shadow .15s;
+  }
+  .module-nav-item.saved .module-nav-dot {
+    background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.3);
+  }
+  .module-nav-label {
+    font-family: var(--font-text); font-size: 13.5px; font-weight: 500; color: #98989D;
+  }
+  .module-nav-item.current .module-nav-label { color: #98989D; font-weight: 700; }
+  .module-nav-tag {
+    margin-left: auto; font-family: var(--font-text); font-size: 9.5px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: rgba(255,255,255,0.42);
+  }
+
+  /* ---------- left: options panel ---------- */
+  .split-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; order: 1; }
+  @media (max-width: 900px) { .split-panel { order: 0; } }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .panel-topbar { padding: 36px 0 0; }
+  .module-heading {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(32px, 4.2vw, 50px); line-height: 1.05; letter-spacing: -0.03em; margin: 0; color: var(--header-grey-light);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 700; font-size: 27px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; margin: 0; }
+
+  /* ---------- locker type checkbox grid ---------- */
+  .type-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 480px) { .type-check-grid { grid-template-columns: 1fr; } }
+  .type-check-card {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .type-check-card:hover { border-color: var(--accent); }
+  .type-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .type-check-card input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+  .type-check-card span { font-family: var(--font-text); font-weight: 600; font-size: 14px; color: var(--ink); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .selected-types { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .selected-type-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-md);
+    background: var(--paper-soft); animation: fadeIn .22s ease;
+  }
+  @media (max-width: 480px) { .selected-type-row { grid-template-columns: 1fr; } }
+  .selected-type-row .stt-label { display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--ink-soft); }
+  .selected-type-row .stt-name { font-family: var(--font-display); font-weight: 700; font-size: 14.5px; color: var(--header-grey); }
+  .selected-type-row input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 13px; background: var(--paper);
+  }
+  .selected-type-row input:focus { outline: none; border-color: var(--ink); }
+
+  .empty-hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 16px; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 12px; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 500; font-size: 14.5px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 500; font-size: 14.5px; color: var(--accent);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.5px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="split">
+
+  <aside class="split-hero">
+    <nav class="module-nav" id="moduleNav">
+      <a class="module-nav-item" data-module="it" href="it-configuration-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">IT Configuration &amp; Integrations</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item" data-module="behaviour" href="locker-behaviour-split-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Door Behaviour</span>
+      </a>
+      <a class="module-nav-item current" data-module="locker-type" href="locker-type-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Types</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item" data-module="reservation" href="reservation-type-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Reservation Type</span>
+      </a>
+      <a class="module-nav-item" data-module="locker" href="locker-policy-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Policy</span>
+      </a>
+      <a class="module-nav-item" data-module="user" href="user-policy-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">User Policy</span>
+      </a>
+      <a class="module-nav-item" data-module="kiosk" href="kiosk-customisation-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Kiosk Customisation</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item" data-module="summary" href="configuration-summary.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Configuration Summary</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="split-panel">
+
+    <div class="panel-topbar">
+      <div class="panel-inner">
+        <div class="panel-intro">
+          <div class="brand">
+            <div class="brand-mark"></div>
+            <div class="brand-text">Smartalock<span>Configuration Studio · Module Preview</span></div>
+          </div>
+          <span class="eyebrow">Locker Types</span>
+          <h1 class="hero-title">Every size,<br>accounted for.</h1>
+          <p class="sub">Choose which locker types are available on this site, then note an example locker number for each so we can confirm sizing on the walkthrough.</p>
+        </div>
+        <h1 class="module-heading">Locker Types</h1>
+      </div>
+    </div>
+
+    <div class="panel-scroll">
+      <div class="panel-inner">
+
+        <div class="section-head">
+          <span class="eyebrow">Configure <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;margin-left:4px;">Optional</span></span>
+          <h2 class="section-title">Assign locker types</h2>
+          <p>Specify which locker types should be available or assigned through the kiosk.</p>
+        </div>
+
+        <div class="type-check-grid" id="typeCheckGrid">
+          <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span>Large</span></label>
+          <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span>Side</span></label>
+          <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span>Top</span></label>
+          <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span>Middle</span></label>
+          <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span>Bottom</span></label>
+          <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span>Small</span></label>
+          <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span>Custom Type</span></label>
+        </div>
+
+        <div class="selected-types" id="selectedTypes"></div>
+        <p class="empty-hint" id="emptyHint">No locker types selected yet — check any that apply above.</p>
+
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="page-nav">
+        <a class="page-nav-btn" href="locker-behaviour-split-v4.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="reservation-type-v4.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <div class="panel-inner">
+        <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+        <div style="display:flex; gap:10px;">
+          <button class="ghost" id="resetBtn" type="button">Reset</button>
+          <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+  </main>
+
+</div>
+
+<!--
+  NOTE for Oleg: rebuilt from the "Assign Locker Types" question that lived inside the Kiosk section of
+  smartalock-wizard.html — in the original file "Locker Types" was only a sidebar label; the actual
+  content div (#section-locker-type) never existed and the sidebar item was hidden by JS on every load.
+  This gives Locker Types a real page of its own. A few fixes over the original: each checkbox card is
+  now genuinely clickable (not just the tiny checkbox square), the injected "Example Locker Number" rows
+  persist their values instead of being purely decorative, and selecting "Custom Type" now correctly
+  labels its row "Custom Locker Type" (the original had a function that did this rename but it was dead
+  code, never wired to anything). Locker Types now sits right after Locker Door Behaviour in the module
+  order, so its Back arrow leads there and its Next arrow / "Save & continue" lead on to Reservation Type.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
+  project.smartalock.wizard = project.smartalock.wizard || {};
+  project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
+
+  const TYPE_LABELS = {
+    large: 'Large', side: 'Side', top: 'Top', middle: 'Middle',
+    bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type'
+  };
+  const TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+
+  const saved = project.smartalock.wizard.lockerType || {};
+  const state = {
+    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    exampleNumbers: saved.exampleNumbers || {}
+  };
+
+  /* ---------------- module navigation ---------------- */
+  function renderModuleNav() {
+    document.querySelectorAll('.module-nav-item[data-module]').forEach(item => {
+      const key = item.getAttribute('data-module');
+      item.classList.toggle('saved', !!project.smartalock.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.smartalock.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderModuleNav();
+  }
+  renderModuleNav();
+
+  /* ---------------- type grid ---------------- */
+  const grid = document.getElementById('typeCheckGrid');
+  const selectedTypes = document.getElementById('selectedTypes');
+  const emptyHint = document.getElementById('emptyHint');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function renderSelectedRows() {
+    selectedTypes.innerHTML = '';
+    const ordered = TYPE_ORDER.filter(t => state.selected.includes(t));
+    emptyHint.style.display = ordered.length ? 'none' : 'block';
+    ordered.forEach(type => {
+      const row = document.createElement('div');
+      row.className = 'selected-type-row';
+      row.innerHTML = `
+        <div>
+          <span class="stt-label">Locker Type</span>
+          <span class="stt-name">${TYPE_LABELS[type]}</span>
+        </div>
+        <div>
+          <span class="stt-label">Example Locker Number</span>
+          <input type="text" placeholder="e.g. 101" data-type="${type}" value="${state.exampleNumbers[type] || ''}">
+        </div>
+      `;
+      row.querySelector('input').addEventListener('input', (e) => {
+        state.exampleNumbers[type] = e.target.value;
+        queueSave();
+      });
+      selectedTypes.appendChild(row);
+    });
+  }
+
+  grid.querySelectorAll('.type-check-card').forEach(card => {
+    const type = card.getAttribute('data-type');
+    const checkbox = card.querySelector('input');
+    checkbox.checked = state.selected.includes(type);
+    card.classList.toggle('checked', checkbox.checked);
+
+    checkbox.addEventListener('change', () => {
+      card.classList.toggle('checked', checkbox.checked);
+      if (checkbox.checked) {
+        if (!state.selected.includes(type)) state.selected.push(type);
+      } else {
+        state.selected = state.selected.filter(t => t !== type);
+        delete state.exampleNumbers[type];
+      }
+      renderSelectedRows();
+      queueSave();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.selected = [];
+    state.exampleNumbers = {};
+    grid.querySelectorAll('.type-check-card').forEach(card => {
+      card.classList.remove('checked');
+      card.querySelector('input').checked = false;
+    });
+    renderSelectedRows();
+    save();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('locker-type');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'reservation-type-v4.html'; }, 500);
+  });
+
+  let saveTimer = null;
+  function queueSave() {
+    saveText.textContent = 'Saving…';
+    saveDot.classList.remove('show');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 450);
+  }
+
+  function save() {
+    project.smartalock.wizard.lockerType = state;
+    saveProject(project);
+    saveText.textContent = 'Selection saved automatically';
+    saveDot.classList.add('show');
+  }
+
+  renderSelectedRows();
+})();
+</script>
+
+</body>
+</html>

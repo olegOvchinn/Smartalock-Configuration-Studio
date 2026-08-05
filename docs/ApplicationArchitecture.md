@@ -39,7 +39,7 @@ Template Selection
 ↓
 Configuration Wizard
 ↓
-Dashboard
+Reports
 
 All project information and configuration settings are saved automatically.
 

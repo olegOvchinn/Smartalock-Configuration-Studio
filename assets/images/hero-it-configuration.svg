@@ -1,0 +1,68 @@
+<svg width="1200" height="1600" viewBox="0 0 1200 1600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#001B3D"/>
+      <stop offset="55%" stop-color="#00408C"/>
+      <stop offset="100%" stop-color="#0071E3"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4DA3FF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#4DA3FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8FC7FF" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#8FC7FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="60"/></filter>
+    <filter id="blur2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="90"/></filter>
+  </defs>
+
+  <rect width="1200" height="1600" fill="url(#bg)"/>
+  <circle cx="220" cy="320" r="380" fill="url(#glow1)" filter="url(#blur1)"/>
+  <circle cx="980" cy="1280" r="440" fill="url(#glow2)" filter="url(#blur2)"/>
+
+  <!-- network / integration mesh -->
+  <g stroke="#FFFFFF" stroke-width="1.6" opacity="0.28" fill="none">
+    <line x1="180" y1="260" x2="430" y2="410"/>
+    <line x1="430" y1="410" x2="720" y2="330"/>
+    <line x1="430" y1="410" x2="360" y2="640"/>
+    <line x1="720" y1="330" x2="980" y2="470"/>
+    <line x1="720" y1="330" x2="880" y2="180"/>
+    <line x1="360" y1="640" x2="590" y2="760"/>
+    <line x1="360" y1="640" x2="150" y2="820"/>
+    <line x1="590" y1="760" x2="820" y2="700"/>
+    <line x1="590" y1="760" x2="640" y2="1010"/>
+    <line x1="820" y1="700" x2="980" y2="470"/>
+    <line x1="820" y1="700" x2="1040" y2="880"/>
+    <line x1="640" y1="1010" x2="420" y2="1120"/>
+    <line x1="640" y1="1010" x2="880" y2="1160"/>
+    <line x1="1040" y1="880" x2="880" y2="1160"/>
+    <line x1="420" y1="1120" x2="230" y2="1280"/>
+    <line x1="880" y1="1160" x2="1010" y2="1360"/>
+  </g>
+
+  <g fill="#FFFFFF">
+    <circle cx="180" cy="260" r="6" opacity="0.5"/>
+    <circle cx="430" cy="410" r="9" opacity="0.65"/>
+    <circle cx="720" cy="330" r="13" opacity="0.8"/>
+    <circle cx="880" cy="180" r="6" opacity="0.45"/>
+    <circle cx="980" cy="470" r="9" opacity="0.6"/>
+    <circle cx="360" cy="640" r="7" opacity="0.5"/>
+    <circle cx="150" cy="820" r="6" opacity="0.4"/>
+    <circle cx="590" cy="760" r="14" opacity="0.85"/>
+    <circle cx="820" cy="700" r="9" opacity="0.6"/>
+    <circle cx="1040" cy="880" r="7" opacity="0.5"/>
+    <circle cx="640" cy="1010" r="10" opacity="0.65"/>
+    <circle cx="420" cy="1120" r="6" opacity="0.4"/>
+    <circle cx="880" cy="1160" r="12" opacity="0.75"/>
+    <circle cx="230" cy="1280" r="6" opacity="0.4"/>
+    <circle cx="1010" cy="1360" r="7" opacity="0.45"/>
+  </g>
+
+  <!-- hub rings for larger nodes -->
+  <g stroke="#FFFFFF" stroke-width="1.4" fill="none" opacity="0.5">
+    <circle cx="720" cy="330" r="24"/>
+    <circle cx="590" cy="760" r="26"/>
+    <circle cx="880" cy="1160" r="22"/>
+  </g>
+</svg>

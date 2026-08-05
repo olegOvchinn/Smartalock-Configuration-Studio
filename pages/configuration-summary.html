@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration Summary — Smartalock Configuration Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 680px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- split layout ---------- */
+  .split { display: flex; min-height: 100vh; align-items: stretch; }
+  @media (max-width: 900px) { .split { flex-direction: column; } }
+
+  /* ---------- right: image + header + nav ---------- */
+  .split-hero {
+    flex: 0 0 42%;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: url('../assets/images/hero-configuration-summary.svg') center center / cover no-repeat;
+    display: flex; flex-direction: column;
+    order: 2;
+  }
+  @media (max-width: 900px) {
+    .split-hero { position: relative; height: auto; max-height: none; min-height: 340px; flex: none; order: -1; }
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--paper-soft); border: 1px solid var(--line); position: relative; flex-shrink: 0; }
+  .brand-mark::after {
+    content: ''; position: absolute; top: 6.5px; left: 6.5px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
+  }
+  .brand-text { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; color: var(--ink); }
+  .brand-text span { color: var(--ink-soft); font-family: var(--font-text); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin-bottom: 28px; }
+  .panel-intro .brand { margin-bottom: 20px; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: var(--font-display); font-weight: 700; color: var(--ink);
+    font-size: clamp(28px, 3.6vw, 46px); line-height: 1.06; letter-spacing: -0.03em; margin: 0 0 14px;
+  }
+  .panel-intro p.sub { font-size: 15px; line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 42ch; }
+
+  /* ---------- module navigation ---------- */
+  .module-nav { margin: 48px 0 40px; padding: 0 30px; display: flex; flex-direction: column; gap: 1px; }
+  .module-nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 10px; border-radius: 10px;
+    transition: background .15s; text-decoration: none; color: inherit;
+  }
+  a.module-nav-item { cursor: pointer; }
+  a.module-nav-item:hover { background: rgba(255,255,255,0.08); }
+  .module-nav-item.current { background: rgba(255,255,255,0.1); }
+  .module-nav-dot {
+    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.9);
+    transition: background .15s, border-color .15s, box-shadow .15s;
+  }
+  .module-nav-item.saved .module-nav-dot {
+    background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.3);
+  }
+  .module-nav-label {
+    font-family: var(--font-text); font-size: 13.5px; font-weight: 500; color: #98989D;
+  }
+  .module-nav-item.current .module-nav-label { color: #98989D; font-weight: 700; }
+  .module-nav-tag {
+    margin-left: auto; font-family: var(--font-text); font-size: 9.5px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: rgba(255,255,255,0.42);
+  }
+
+  /* ---------- left: options panel ---------- */
+  .split-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; order: 1; }
+  @media (max-width: 900px) { .split-panel { order: 0; } }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .panel-topbar { padding: 36px 0 0; }
+  .module-heading {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(32px, 4.2vw, 50px); line-height: 1.05; letter-spacing: -0.03em; margin: 0; color: var(--header-grey-light);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 700; font-size: 27px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; margin: 0; }
+
+  /* ---------- overall progress ---------- */
+  .progress-card {
+    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 20px 22px; margin-bottom: 24px;
+  }
+  .progress-card-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .progress-card-top span.ttl { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--header-grey); }
+  .progress-card-top span.pct { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--accent-deep); }
+  .progress-track { height: 8px; background: var(--line); border-radius: 100px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width .3s ease; }
+
+  /* ---------- summary groups ---------- */
+  .summary-group {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 20px 22px; margin-bottom: 18px;
+  }
+  .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .summary-group-head h3 { font-family: var(--font-display); font-weight: 700; font-size: 16.5px; margin: 0; color: var(--header-grey); }
+  .status-pill {
+    font-family: var(--font-text); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 100px; flex-shrink: 0; white-space: nowrap;
+  }
+  .status-pill.saved { background: var(--accent-wash); color: var(--accent-deep); }
+  .status-pill.pending { background: #FFF4E5; color: #B25E09; }
+
+  .summary-row { padding: 12px 0; border-top: 1px solid var(--line); }
+  .summary-row:first-of-type { border-top: none; padding-top: 10px; }
+  .summary-row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+  .summary-row-top .label { font-family: var(--font-text); font-size: 13px; font-weight: 600; color: var(--ink); }
+  .summary-row-top .value { font-family: var(--font-text); font-size: 13px; font-weight: 600; color: var(--accent-deep); text-align: right; }
+  .summary-desc { font-size: 11.5px; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.5; }
+  .summary-note { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin: 8px 0 0; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 12px; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 500; font-size: 14.5px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 500; font-size: 14.5px; color: var(--accent);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.5px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="split">
+
+  <aside class="split-hero">
+    <nav class="module-nav" id="moduleNav">
+      <a class="module-nav-item" data-module="it" href="it-configuration-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">IT Configuration &amp; Integrations</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item" data-module="behaviour" href="locker-behaviour-split-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Door Behaviour</span>
+      </a>
+      <a class="module-nav-item" data-module="locker-type" href="locker-type-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Types</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item" data-module="reservation" href="reservation-type-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Reservation Type</span>
+      </a>
+      <a class="module-nav-item" data-module="locker" href="locker-policy-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Locker Policy</span>
+      </a>
+      <a class="module-nav-item" data-module="user" href="user-policy-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">User Policy</span>
+      </a>
+      <a class="module-nav-item" data-module="kiosk" href="kiosk-customisation-v4.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Kiosk Customisation</span>
+        <span class="module-nav-tag">Optional</span>
+      </a>
+      <a class="module-nav-item current" data-module="summary" href="configuration-summary.html">
+        <span class="module-nav-dot"></span>
+        <span class="module-nav-label">Configuration Summary</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="split-panel">
+
+    <div class="panel-topbar">
+      <div class="panel-inner">
+        <div class="panel-intro">
+          <div class="brand">
+            <div class="brand-mark"></div>
+            <div class="brand-text">Smartalock<span>Configuration Studio · Module Preview</span></div>
+          </div>
+          <span class="eyebrow">Configuration Summary</span>
+          <h1 class="hero-title">Every setting,<br>in one place.</h1>
+          <p class="sub">A complete read-out of every answer captured across the wizard — including the defaults left untouched — so you can confirm everything before handover.</p>
+        </div>
+        <h1 class="module-heading">Configuration Summary</h1>
+      </div>
+    </div>
+
+    <div class="panel-scroll">
+      <div class="panel-inner">
+
+        <div class="section-head">
+          <span class="eyebrow">Review</span>
+          <h2 class="section-title">Everything you've configured</h2>
+          <p>Every question from every module, with the answer on file — defaults included where nothing was changed.</p>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-card-top">
+            <span class="ttl">Modules saved</span>
+            <span class="pct" id="progressPct">0%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        </div>
+
+        <!-- IT Configuration & Integrations -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>IT Configuration &amp; Integrations</h3>
+            <span class="status-pill" id="pill-it">—</span>
+          </div>
+          <div id="group-it"></div>
+        </div>
+
+        <!-- Locker Door Behaviour -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>Locker Door Behaviour</h3>
+            <span class="status-pill" id="pill-behaviour">—</span>
+          </div>
+          <div id="group-behaviour"></div>
+        </div>
+
+        <!-- Reservation Type -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>Reservation Type</h3>
+            <span class="status-pill" id="pill-reservation">—</span>
+          </div>
+          <div id="group-reservation"></div>
+        </div>
+
+        <!-- Locker Policy -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>Locker Policy</h3>
+            <span class="status-pill" id="pill-locker">—</span>
+          </div>
+          <div id="group-locker"></div>
+        </div>
+
+        <!-- User Policy -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>User Policy</h3>
+            <span class="status-pill" id="pill-user">—</span>
+          </div>
+          <div id="group-user"></div>
+        </div>
+
+        <!-- Kiosk Customisation -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>Kiosk Customisation</h3>
+            <span class="status-pill" id="pill-kiosk">—</span>
+          </div>
+          <div id="group-kiosk"></div>
+        </div>
+
+        <!-- Locker Types -->
+        <div class="summary-group">
+          <div class="summary-group-head">
+            <h3>Locker Types</h3>
+            <span class="status-pill" id="pill-locker-type">—</span>
+          </div>
+          <div id="group-locker-type"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="page-nav">
+        <a class="page-nav-btn" href="kiosk-customisation-v4.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <span class="page-nav-btn next disabled">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <div class="panel-inner">
+        <div class="save-note"><span id="saveText">Read-only — nothing to save on this page</span></div>
+        <div style="display:flex; gap:10px;">
+          <button class="ghost" id="printBtn" type="button">Print</button>
+          <button class="primary" id="downloadBtn" type="button">Download JSON</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+  </main>
+
+</div>
+
+<!--
+  NOTE for Oleg: this module reads directly from the same configurationProject localStorage record every
+  other module writes to, so it's always a live read-out — nothing is duplicated or re-entered here. Per
+  your instruction, every question is treated as answered: untouched selects/radios show their default
+  option as the actual answer (e.g. "Pop Open (default)", "Anyone", "2 per user") instead of a blank or
+  "Not configured" state, and rows that are only meaningful once a parent choice is made (SSO detail
+  fields, Push to Open scope, User Group fields) are hidden entirely until that
+  parent choice is actually made, rather than showing an empty placeholder. Freeform fields with no
+  natural default (API requirements, custom idle duration, etc.) read "None specified" rather than "Not
+  configured" if left blank. This is the 8th and final module in the flow — Kiosk Customisation's Next
+  arrow and Save & continue now lead here, and its own Next arrow is disabled as the last step.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  const project = loadProject();
+  project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
+  const wizard = project.smartalock.wizard || {};
+  const status = wizard.moduleStatus || {};
+
+  const MODULES = [
+    { key: "it", label: "IT Configuration & Integrations" },
+    { key: "behaviour", label: "Locker Door Behaviour" },
+    { key: "reservation", label: "Reservation Type" },
+    { key: "locker", label: "Locker Policy" },
+    { key: "user", label: "User Policy" },
+    { key: "kiosk", label: "Kiosk Customisation" },
+    { key: "locker-type", label: "Locker Types" }
+  ];
+
+  function renderModuleNav() {
+    document.querySelectorAll('.module-nav-item[data-module]').forEach(item => {
+      const key = item.getAttribute('data-module');
+      item.classList.toggle('saved', !!status[key]);
+    });
+  }
+  renderModuleNav();
+
+  function setPill(key) {
+    const el = document.getElementById('pill-' + key);
+    if (!el) return;
+    const saved = !!status[key];
+    el.textContent = saved ? 'Saved' : 'Not saved yet';
+    el.classList.add(saved ? 'saved' : 'pending');
+  }
+  MODULES.forEach(m => setPill(m.key));
+
+  (function renderProgress() {
+    const savedCount = MODULES.filter(m => status[m.key]).length;
+    const pct = Math.round((savedCount / MODULES.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '% (' + savedCount + ' of ' + MODULES.length + ')';
+  })();
+
+  function row(label, value, desc) {
+    const div = document.createElement('div');
+    div.className = 'summary-row';
+    div.innerHTML = '<div class="summary-row-top"><span class="label">' + label + '</span><span class="value">' + value + '</span></div>' +
+      (desc ? '<p class="summary-desc">' + desc + '</p>' : '');
+    return div;
+  }
+
+  function note(text) {
+    const p = document.createElement('p');
+    p.className = 'summary-note';
+    p.textContent = text;
+    return p;
+  }
+
+  /* ---------------- IT Configuration & Integrations ---------------- */
+  (function () {
+    const it = wizard.it || {};
+    const ssoLabels = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
+    const scimLabels = { "": "Not required", enabled: "Enabled" };
+    const gallagherLabels = { "": "Not required", required: "Required" };
+    const wrap = document.getElementById('group-it');
+
+    wrap.appendChild(row('Single Sign-On (SSO)', ssoLabels[it.ssoMethod] ?? (it.ssoMethod || 'No SSO'),
+      'Identity provider used for staff and administrator login to the kiosk and admin console.'));
+
+    if (it.ssoMethod) {
+      wrap.appendChild(row('SSO Application Name(s)', it.ssoAppNames || 'None specified',
+        "Name(s) of the application(s) registered with the identity provider."));
+      wrap.appendChild(row('Tenant / Directory ID', it.ssoTenantId || 'None specified',
+        "Unique identifier for your organisation's directory in the identity provider."));
+      wrap.appendChild(row('Client ID', it.ssoClientId || 'None specified',
+        'Application (client) ID issued by the identity provider for this integration.'));
+      wrap.appendChild(row('Client Secret', it.ssoSecret ? 'Configured (hidden)' : 'Not set',
+        'Secret credential used to authenticate the SSO integration.'));
+      wrap.appendChild(row('Allowed Email Domains', it.ssoEmailDomains || 'None specified',
+        'Email domains permitted to sign in to Smartalock via SSO.'));
+    }
+
+    wrap.appendChild(row('SCIM User Provisioning', scimLabels[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'),
+      'Automatic creation, update and removal of user accounts from your identity provider.'));
+    wrap.appendChild(row('API / Integration Requirements', it.apiRequirements || 'None specified',
+      'Additional systems or APIs this site needs Smartalock to integrate with.'));
+    wrap.appendChild(row('Gallagher Integration', gallagherLabels[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required'),
+      'Whether this site requires integration with a Gallagher access control system.'));
+  })();
+
+  /* ---------------- Locker Door Behaviour ---------------- */
+  (function () {
+    const b = wizard.lockerBehaviour || {};
+    const behaviourLabels = { "": "Pop Open (default)", "push-open": "Push to Open" };
+    const scopeLabels = { "": "All lockers", unknown: "Don't know yet", specific: "Specific locker bank or lockers" };
+    const wrap = document.getElementById('group-behaviour');
+
+    wrap.appendChild(row('Open Behaviour', behaviourLabels[b.lockerBehaviour] ?? (b.lockerBehaviour || 'Pop Open (default)'),
+      'How a locker opens for the user once access has been granted.'));
+
+    if (b.lockerBehaviour === 'push-open') {
+      wrap.appendChild(row('Push to Open Scope', scopeLabels[b.pushOpenScope] ?? (b.pushOpenScope || 'All lockers'),
+        'Which lockers use the 15 second grace-period Push to Open behaviour.'));
+
+      if (b.pushOpenScope === 'specific') {
+        wrap.appendChild(row('Locker Bank', b.behaviourLockerBank || 'None specified',
+          'Named locker bank the Push to Open scope applies to.'));
+        wrap.appendChild(row('Locker Numbers', b.behaviourLockerNumbers || 'None specified',
+          'Locker number range the Push to Open scope applies to.'));
+      }
+    }
+  })();
+
+  /* ---------------- Reservation Type ---------------- */
+  (function () {
+    const r = wizard.reservationType || {};
+    const typeLabels = { admin: 'Admin Allocated', user: 'User Self-Allocated', parcel: 'Parcel Delivery' };
+    const types = Array.isArray(r.reservationTypes) ? r.reservationTypes : [];
+    const wrap = document.getElementById('group-reservation');
+
+    wrap.appendChild(row('Reservation Types', types.length ? types.map(t => typeLabels[t] || t).join(', ') : 'None selected',
+      'Models used to allocate lockers to users. Up to three models can be combined on one site.'));
+
+    if (types.includes('user')) {
+      const durationLabels = { '24h': '24 hours', never: 'Never expires' };
+      let durationValue;
+      if (r.userDuration === 'custom') {
+        durationValue = (r.userDurationValue || 'Not specified') + ' ' + (r.userDurationUnit || 'days');
+      } else {
+        durationValue = durationLabels[r.userDuration] || r.userDuration || '24 hours';
+      }
+      wrap.appendChild(row('Self-Allocation Duration', durationValue,
+        'How long a self-allocated locker stays reserved before it is automatically released.'));
+    }
+  })();
+
+  /* ---------------- Locker Policy ---------------- */
+  (function () {
+    const l = wizard.locker || {};
+    const idleLabels = { "": "Off", "48h": "48 hours" };
+    const limitLabels = { "1": "1 per user", "2": "2 per user", "3": "3 per user", unlimited: "No limit" };
+    const releaseLabels = { grace: "Allow one final locker access after expiry", immediate: "Release when reservation expires" };
+    const wrap = document.getElementById('group-locker');
+
+    let idleValue;
+    if (l.idleDuration === 'custom') {
+      idleValue = l.customIdleDuration || 'Not specified';
+    } else {
+      idleValue = idleLabels[l.idleDuration] ?? (l.idleDuration || 'Off');
+    }
+    wrap.appendChild(row('Open When Idle', idleValue,
+      "Automatically releases a locker that hasn't been opened for a set period of time."));
+    wrap.appendChild(row('Locker Limit', limitLabels[l.lockerLimit] ?? (l.lockerLimit || '2 per user'),
+      'Maximum number of lockers a single user can hold reserved at once.'));
+    wrap.appendChild(row('Release Behaviour', releaseLabels[l.releaseBehaviour] ?? (l.releaseBehaviour || 'Allow one final locker access after expiry'),
+      "What happens to a user's locker access once their reservation expires."));
+  })();
+
+  /* ---------------- User Policy ---------------- */
+  (function () {
+    const u = wizard.user || {};
+    const accessLabels = { "": "Anyone", all: "All registered users", groups: "Selected user groups" };
+    const wrap = document.getElementById('group-user');
+
+    wrap.appendChild(row('Who Can Use Lockers', accessLabels[u.userAccessPolicy] ?? (u.userAccessPolicy || 'Anyone'),
+      'Which users are permitted to reserve or be allocated a locker on this site.'));
+
+    if (u.userAccessPolicy === 'groups') {
+      wrap.appendChild(row('Locker Group', u.lockerGroupName || 'None specified',
+        'Named locker group these access permissions apply to.'));
+      wrap.appendChild(row('User Group', u.userGroupName || 'None specified',
+        'Named user or security group being granted access.'));
+      wrap.appendChild(row('Allocation Details', u.allocationDetails || 'None specified',
+        'Additional notes on how lockers are allocated to this group.'));
+    }
+  })();
+
+  /* ---------------- Kiosk Customisation ---------------- */
+  (function () {
+    const k = wizard.kioskCustomisation || {};
+    const wrap = document.getElementById('group-kiosk');
+    const flag = (key) => k.hasOwnProperty(key) ? !!k[key] : true;
+
+    const TOGGLES = [
+      { key: 'logoEnabled', label: 'Smartalock Logo', desc: 'Shows the Smartalock wordmark on the kiosk home screen.' },
+      { key: 'openEnabled', label: 'Open Existing', desc: 'Look up and reopen a locker the user already has assigned.' },
+      { key: 'lockerEnabled', label: 'Get A Locker', desc: 'Primary flow — assigns and opens an available locker to the user.' },
+      { key: 'qrEnabled', label: 'Scan QR Code', desc: 'Authenticates the user by scanning a QR code instead of a badge or PIN.' },
+      { key: 'cardEnabled', label: 'Place Card Here', desc: 'Prompts the user to tap or place their access card on the reader.' }
+    ];
+
+    TOGGLES.forEach(t => {
+      wrap.appendChild(row(t.label, flag(t.key) ? 'Enabled' : 'Removed', t.desc));
+    });
+
+    const bannerOn = flag('bannerEnabled');
+    const line1 = k.bannerLine1 || 'Scan your access card or';
+    const line2 = k.bannerLine2 || 'select an option to get started';
+    const bannerDesc = 'Short instructional message shown beneath the logo.' +
+      (bannerOn ? ' Text: "' + line1 + (line2 ? ' / ' + line2 : '') + '"' : '');
+    wrap.appendChild(row('Information Banner', bannerOn ? 'Enabled' : 'Removed', bannerDesc));
+
+    wrap.appendChild(row('Background Colour', k.bgColour || 'Default (#5B8FD7)',
+      'Colour of the kiosk home screen background.'));
+  })();
+
+  /* ---------------- Locker Types ---------------- */
+  (function () {
+    const lt = wizard.lockerType || {};
+    const TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type' };
+    const TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+    const selected = Array.isArray(lt.selected) ? lt.selected : [];
+    const exampleNumbers = lt.exampleNumbers || {};
+    const wrap = document.getElementById('group-locker-type');
+
+    if (!selected.length) {
+      wrap.appendChild(note('No locker types selected yet.'));
+      return;
+    }
+    TYPE_ORDER.filter(t => selected.includes(t)).forEach(t => {
+      wrap.appendChild(row(TYPE_LABELS[t], exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet'));
+    });
+  })();
+
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Smartalock_Configuration_Summary.json';
+    link.click();
+  });
+})();
+</script>
+
+</body>
+</html>
