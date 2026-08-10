@@ -392,9 +392,9 @@
 
         <div class="page-visual">
           <div class="page-visual-frame show-image">
-            <img src="../assets/images/hero-it-configuration-architecture.png" alt="IT integration architecture diagram">
+            <img id="archVisual" src="../assets/images/it-configuration-architecture-vpn.png" alt="IT integration architecture diagram">
           </div>
-          <p class="page-visual-caption">Reference architecture for SSO, SCIM and access-control integrations.</p>
+          <p class="page-visual-caption" id="archVisualCaption">Reference architecture — VPN tunnel to your site (default connection method).</p>
         </div>
       </div>
 
@@ -510,6 +510,8 @@
   const gallagherIntegration = document.getElementById('gallagherIntegration');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
+  const archVisual = document.getElementById('archVisual');
+  const archVisualCaption = document.getElementById('archVisualCaption');
 
   function applySSOVisibility() {
     const show = state.ssoMethod !== "";
@@ -518,6 +520,24 @@
   }
   function applySCIMVisibility() {
     scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
+  }
+
+  /* ---------------- architecture diagram: VPN / SSO / SCIM modes ---------------- */
+  const ARCH_VISUAL = {
+    vpn: { src: '../assets/images/it-configuration-architecture-vpn.png', caption: 'Reference architecture — VPN tunnel to your site (default connection method).' },
+    sso: { src: '../assets/images/it-configuration-architecture-sso.png', caption: 'Reference architecture — SSO authentication path highlighted.' },
+    scim: { src: '../assets/images/it-configuration-architecture-scim.png', caption: 'Reference architecture — SCIM provisioning path highlighted.' }
+  };
+  function computeArchMode() {
+    if (state.scimProvisioning === 'enabled') return 'scim';
+    if (state.ssoMethod !== '') return 'sso';
+    return 'vpn';
+  }
+  function applyArchVisual() {
+    const mode = computeArchMode();
+    const visual = ARCH_VISUAL[mode];
+    archVisual.src = visual.src;
+    archVisualCaption.textContent = visual.caption;
   }
 
   ssoMethod.value = state.ssoMethod;
@@ -531,14 +551,15 @@
   gallagherIntegration.value = state.gallagherIntegration;
   applySSOVisibility();
   applySCIMVisibility();
+  applyArchVisual();
 
-  ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); queueSave(); });
+  ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); applyArchVisual(); queueSave(); });
   ssoAppNames.addEventListener('input', () => { state.ssoAppNames = ssoAppNames.value; queueSave(); });
   ssoTenantId.addEventListener('input', () => { state.ssoTenantId = ssoTenantId.value; queueSave(); });
   ssoClientId.addEventListener('input', () => { state.ssoClientId = ssoClientId.value; queueSave(); });
   ssoSecret.addEventListener('input', () => { state.ssoSecret = ssoSecret.value; queueSave(); });
   ssoEmailDomains.addEventListener('input', () => { state.ssoEmailDomains = ssoEmailDomains.value; queueSave(); });
-  scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); queueSave(); });
+  scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); applyArchVisual(); queueSave(); });
   apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; queueSave(); });
   gallagherIntegration.addEventListener('change', () => { state.gallagherIntegration = gallagherIntegration.value; queueSave(); });
 
@@ -549,6 +570,7 @@
     apiRequirements.value = ""; gallagherIntegration.value = "";
     applySSOVisibility();
     applySCIMVisibility();
+    applyArchVisual();
     save();
   });
 
