@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiosk Customisation — Smartalock Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+    --kiosk-blue: #5B8FD7;
+    --kiosk-orange: #F3AE34;
+    --kiosk-black: #232323;
+    --kiosk-divider: rgba(255,255,255,.42);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--paper-soft); border: 1px solid var(--line); position: relative; flex-shrink: 0; }
+  .brand-mark::after {
+    content: ''; position: absolute; top: 6.5px; left: 6.5px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
+  }
+  .brand-text { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.3px; letter-spacing: -0.01em; color: var(--ink); }
+  .brand-text span { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+
+  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+  }
+  .panel-intro p.sub { font-size: 12.3px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+  .module-heading { display: none; }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 32px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 600; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
+
+  /* ---------- large preview stage (Lottie) ---------- */
+  .preview-block { margin-bottom: 44px; }
+  .preview-block .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  .preview-block h2.section-title { margin-bottom: 6px; }
+  .preview-block > p { color: var(--ink-soft); font-size: 14.76px; font-weight: 400; line-height: 1.6; margin: 0 0 22px; }
+
+  .preview-frame { width: 100%; height: 480px; }
+  .preview-screen {
+    width: 100%; height: 100%; border-radius: var(--radius-lg); background: linear-gradient(160deg,#F6F6F7,#ECECEE);
+    overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .preview-lottie { width: 100%; height: 100%; }
+  .preview-lottie svg { display: block; margin: 0 auto; }
+  .preview-fallback {
+    display: none; flex-direction: column; align-items: center; gap: 10px; color: var(--ink-soft);
+    font-family: var(--font-text); font-size: 9.02px; text-align: center; padding: 0 24px;
+  }
+  .preview-fallback.show { display: flex; }
+  .preview-fallback .glyph {
+    width: 46px; height: 46px; border-radius: 12px; background: var(--paper); border: 1.5px solid var(--line);
+  }
+
+  /* ==================================================
+  LIVE KIOSK MOCKUP (tablet)
+  ================================================== */
+
+  .kiosk-tablet-frame {
+    width: 100%; max-width: 460px; margin: 0 auto 36px; overflow: hidden; font-family: 'Inter', sans-serif;
+  }
+
+  .tablet {
+    position: relative;
+    width: 1300px;
+    height: 820px;
+    background: var(--kiosk-black);
+    border-radius: 26px;
+    padding: 58px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.35);
+    transform-origin: top left;
+  }
+
+  .camera {
+    position: absolute; top: 26px; right: 64px; width: 18px; height: 18px;
+    border-radius: 50%; background: #666;
+  }
+
+  .side-buttons { position: absolute; right: 28px; top: 120px; }
+  .side-buttons span {
+    display: block; width: 10px; height: 10px; border-radius: 50%; background: #666; margin: 12px 0;
+  }
+
+  .screen { display: flex; width: 100%; height: 100%; overflow: hidden; border-radius: 8px; }
+
+  .left-panel {
+    width: 350px; background: var(--kiosk-blue); border-right: 2px solid var(--kiosk-divider);
+    display: flex; flex-direction: column;
+  }
+  .right-panel { flex: 1; background: var(--kiosk-blue); position: relative; }
+
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center; padding: 22px 24px;
+    color: #fff; font-size: 13.12px; font-weight: 600;
+  }
+  .bank-name { margin-left: 28px; font-size: 13.12px; font-weight: 600; }
+  .status-right { display: flex; gap: 28px; }
+
+  .sidebar-icons { display: flex; justify-content: space-around; align-items: center; height: 70px; }
+  .sidebar-icons img { width: 26px; height: 26px; opacity: .96; }
+
+  .menu-area { margin-top: auto; display: flex; flex-direction: column; width: 100%; }
+
+  .home-button {
+    display: flex; justify-content: center; align-items: center; height: 72px;
+    background: var(--kiosk-orange); border-top: 1px solid var(--kiosk-divider); border-bottom: 1px solid var(--kiosk-divider);
+  }
+  .home-button img { width: 36px; height: 36px; }
+
+  .menu-button {
+    display: flex; justify-content: center; align-items: center; height: 132px;
+    color: #fff; font-size: 22.96px; font-weight: 600; letter-spacing: -0.5px;
+    border-top: 1px solid var(--kiosk-divider); flex-shrink: 0;
+    transition: opacity .2s ease, transform .2s ease;
+    cursor: pointer;
+  }
+  .menu-button:hover { background: rgba(255,255,255,.08); }
+
+  .logo {
+    position: absolute; left: 50%; top: 135px; transform: translateX(-50%); white-space: nowrap;
+    color: #fff; font-size: 59.04px; font-weight: 700; letter-spacing: -2px; cursor: pointer;
+  }
+  .logo:hover { opacity: .85; }
+
+  .welcome {
+    position: absolute; left: 50%; top: 270px; transform: translateX(-50%); width: 90%;
+    text-align: center; color: #fff; font-size: 25.42px; font-weight: 300; line-height: 1.45; cursor: pointer;
+  }
+  .welcome:hover { opacity: .85; }
+
+  .card-reader {
+    position: absolute; right: 45px; bottom: 42px; display: flex; align-items: center; gap: 18px;
+    color: #fff; font-size: 19.68px; font-weight: 700; letter-spacing: .5px; cursor: pointer;
+  }
+  .card-reader:hover { opacity: .85; }
+  .card-reader img { width: 95px; }
+
+  /* ---------- kiosk options list ---------- */
+  .kiosk-toggle-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  @media (max-width: 640px) { .kiosk-toggle-list { grid-template-columns: 1fr; } }
+  .kiosk-toggle-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md); padding: 14px 16px; transition: border-color .15s, background .15s;
+  }
+  .kiosk-toggle-row.on { border-color: var(--accent); background: var(--accent-wash); }
+  .kiosk-toggle-row .ttl { font-family: var(--font-display); font-weight: 600; font-size: 21.32px; margin: 0 0 3px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
+  .kiosk-toggle-row .ttl-icon { width: 32px; height: 32px; flex-shrink: 0; }
+  .kiosk-toggle-row .dsc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; margin: 0; max-width: 34ch; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .kiosk-toggle-subfields {
+    margin-top: 10px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
+    background: var(--paper-soft); display: none; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .kiosk-toggle-subfields.show { display: grid; animation: fadeIn .22s ease; }
+  @media (max-width: 480px) { .kiosk-toggle-subfields { grid-template-columns: 1fr; } }
+  .kiosk-toggle-subfields .field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; color: var(--ink-soft); }
+  .kiosk-toggle-subfields .field input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper);
+  }
+  .kiosk-toggle-subfields .field input:focus { outline: none; border-color: var(--ink); }
+
+  .kiosk-field-row {
+    margin-top: 14px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
+    background: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .kiosk-field-row label { font-family: var(--font-display); font-weight: 500; font-size: 12.3px; color: var(--header-grey); }
+  .kiosk-field-row input {
+    width: 160px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft); text-align: right;
+  }
+  .kiosk-field-row input:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .kiosk-field-actions { display: flex; gap: 8px; align-items: center; }
+  .kiosk-colour-input-wrap { position: relative; display: flex; align-items: center; }
+  .kiosk-colour-hash {
+    position: absolute; left: 11px; font-family: var(--font-text); font-size: 10.66px; color: var(--ink-soft); pointer-events: none;
+  }
+  #bgColourInput { text-align: left; padding-left: 22px; }
+  .kiosk-set-btn {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 8px; padding: 9px 14px; cursor: pointer;
+    transition: background .15s;
+  }
+  .kiosk-set-btn:hover { background: var(--accent-deep); }
+  .kiosk-set-btn:active { transform: scale(0.98); }
+
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; margin-top: 2px; transition: background .18s;
+  }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div class="brand-text">Smartalock<span>Configuration Studio · Module Preview</span></div>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Project Registration</span>
+        </a>
+          <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
+          </a>
+          <a class="progress-seg" data-module="access" href="smartalock-templates-09.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Initial Locker Access Methods</span>
+          </a>
+          <a class="progress-seg" data-module="behaviour" href="smartalock-templates-03.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Locker Door Behaviour</span>
+          </a>
+          <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Locker Types</span>
+          </a>
+          <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Reservation Type</span>
+          </a>
+          <a class="progress-seg" data-module="locker" href="smartalock-templates-05.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Locker Policy</span>
+          </a>
+          <a class="progress-seg" data-module="user" href="smartalock-templates-06.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">User Policy</span>
+          </a>
+          <a class="progress-seg current" data-module="kiosk" href="smartalock-templates-07.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Kiosk Customisation</span>
+          </a>
+          <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
+            <span class="progress-seg-fill"></span>
+            <span class="progress-seg-tip">Configuration Summary</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Kiosk Customisation</span>
+        <h1 class="hero-title">Only show what<br>your site needs.</h1>
+        <p class="sub">The kiosk screen is built from individual pieces. Turn any option off — on the list below or by tapping it directly on the preview — and the rest tidies itself up automatically.</p>
+      </div>
+      <h1 class="module-heading">Kiosk Customisation</h1>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="preview-block">
+        <span class="eyebrow">Preview</span>
+        <h2 class="section-title">The Get a Locker flow</h2>
+        <p>This is what users see on the kiosk touchscreen today — the animation plays live below.</p>
+        <div class="preview-frame">
+          <div class="preview-screen">
+            <div class="preview-lottie" id="kioskLottie"></div>
+            <div class="preview-fallback" id="kioskFallback">
+              <div class="glyph"></div>
+              <span>Get a Locker — kiosk preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="eyebrow">Configure</span>
+        <h2 class="section-title">Kiosk interface customisation <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;position:relative;top:-2px;margin-left:6px;">Optional</span></h2>
+        <p>A live mock of the kiosk home screen — tap any element below to remove it, or use the switches underneath to return them back.</p>
+      </div>
+
+      <div class="kiosk-tablet-frame">
+        <div class="tablet">
+
+          <div class="camera"></div>
+
+          <div class="side-buttons">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="screen">
+
+            <div class="left-panel">
+
+              <div class="sidebar-icons">
+                <img src="../images/icons/refresh.svg">
+                <img src="../images/icons/person.svg">
+                <img src="../images/icons/map.svg">
+              </div>
+
+              <div class="menu-area">
+
+                <div class="home-button">
+                  <img src="../images/icons/home.svg">
+                </div>
+
+                <div id="openExistingButton" class="menu-button">
+                  Open Existing
+                </div>
+
+                <div id="getLockerButton" class="menu-button">
+                  Get A Locker
+                </div>
+
+                <div id="scanQRButton" class="menu-button">
+                  Scan QR Code
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="right-panel">
+
+              <div class="status-bar">
+                <div class="bank-name">L4 Bank 2</div>
+                <div class="status-right">
+                  <span>0/30 Free</span>
+                  <span>14:10</span>
+                </div>
+              </div>
+
+              <div id="smartalockLogo" class="logo">
+                Smartalock
+              </div>
+
+              <div id="welcomeMessage" class="welcome">
+                Scan your access card or<br>
+                select an option to get started
+              </div>
+
+              <div id="placeCardHere" class="card-reader">
+                <img src="../images/icons/nfc.svg">
+                <div>
+                  PLACE<br>
+                  CARD<br>
+                  HERE
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="kiosk-toggle-list" id="kioskToggleList"></div>
+
+      <div class="kiosk-field-row">
+        <label for="bgColourInput">Background Colour</label>
+        <div class="kiosk-field-actions">
+          <div class="kiosk-colour-input-wrap">
+            <span class="kiosk-colour-hash">#</span>
+            <input type="text" id="bgColourInput" placeholder="5B8FD7">
+          </div>
+          <button type="button" id="bgColourSetBtn" class="kiosk-set-btn">Set</button>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="smartalock-templates-06.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="smartalock-templates-08.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: template variant of kiosk-customisation-v4.html — nav pane removed, horizontal
+  progress bar under the branding instead. No image lived in this page's nav pane (just decorative
+  gradient art), so the tablet mockup and everything else is unchanged.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+  const LOTTIE_BASE = "https://raw.githubusercontent.com/josh-smartalock/lottie-fs/main/animations/Smartalock/";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
+  project.smartalock.wizard = project.smartalock.wizard || {};
+  project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
+
+  const state = Object.assign({
+    logoEnabled: true,
+    bannerEnabled: true,
+    bannerLine1: "Scan your access card or",
+    bannerLine2: "select an option to get started",
+    openEnabled: true,
+    lockerEnabled: true,
+    qrEnabled: true,
+    cardEnabled: true,
+    changePinEnabled: true,
+    addCardEnabled: true,
+    bgColour: ""
+  }, project.smartalock.wizard.kioskCustomisation || {});
+
+  const TOGGLES = [
+    { key: "logoEnabled",   elementId: "smartalockLogo",     label: "Smartalock Logo",   desc: "Shows the Smartalock wordmark on the kiosk home screen.", icon: "icon-kiosk-logo.png" },
+    { key: "bannerEnabled", elementId: "welcomeMessage",      label: "Information Banner", desc: "Short instructional message shown beneath the logo.", hasFields: true, icon: "icon-kiosk-banner.png" },
+    { key: "openEnabled",   elementId: "openExistingButton",  label: "Open Existing",     desc: "Look up and reopen a locker the user already has assigned.", icon: "icon-kiosk-open-existing.png" },
+    { key: "lockerEnabled", elementId: "getLockerButton",     label: "Get A Locker",      desc: "Primary flow — assigns and opens an available locker to the user.", icon: "icon-kiosk-get-locker.png" },
+    { key: "qrEnabled",     elementId: "scanQRButton",        label: "Scan QR Code",      desc: "Authenticates the user by scanning a QR code instead of a badge or PIN.", icon: "icon-kiosk-scan-qr.png" },
+    { key: "cardEnabled",   elementId: "placeCardHere",       label: "Place Card Here",   desc: "Prompts the user to tap or place their access card on the reader.", icon: "icon-kiosk-place-card.png" },
+    { key: "changePinEnabled", label: "Allow User to Change PIN", desc: "Lets users update their own PIN from the kiosk without administrator involvement.", icon: "icon-kiosk-change-pin.png" },
+    { key: "addCardEnabled",   label: "Allow User to Add New Card", desc: "Lets users register an additional access card to their profile from the kiosk.", icon: "icon-kiosk-add-card.png" }
+  ];
+
+  /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.smartalock.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.smartalock.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- preview animation (unchanged) ---------------- */
+  (function mountPreview() {
+    const container = document.getElementById('kioskLottie');
+    const fallback = document.getElementById('kioskFallback');
+    if (!window.lottie) { fallback.classList.add('show'); return; }
+    fetch(LOTTIE_BASE + 'SL_GetLocker.json')
+      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(animationData => {
+        lottie.loadAnimation({ container, renderer: 'svg', loop: true, autoplay: true, animationData });
+      })
+      .catch(() => fallback.classList.add('show'));
+  })();
+
+  /* ---------------- live kiosk mockup ---------------- */
+  const toggleList = document.getElementById('kioskToggleList');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+  const bgColourInput = document.getElementById('bgColourInput');
+  const DEFAULT_BG = '#5B8FD7';
+
+  const CENTERED_ELEMENT_IDS = ['smartalockLogo', 'welcomeMessage'];
+  function baseTransform(elementId){
+    return CENTERED_ELEMENT_IDS.indexOf(elementId) !== -1 ? 'translateX(-50%) ' : '';
+  }
+  const FLEX_ELEMENT_IDS = ['openExistingButton', 'getLockerButton', 'scanQRButton', 'placeCardHere'];
+  function displayFor(elementId){
+    return FLEX_ELEMENT_IDS.indexOf(elementId) !== -1 ? 'flex' : 'block';
+  }
+
+  function toggleMenuItem(element, show, elementId){
+    const base = baseTransform(elementId);
+    if (show) {
+      element.style.display = displayFor(elementId);
+      requestAnimationFrame(() => {
+        element.style.opacity = '1';
+        element.style.transform = base + 'translateY(0)';
+      });
+    } else {
+      element.style.opacity = '0';
+      element.style.transform = base + 'translateY(10px)';
+      setTimeout(() => { element.style.display = 'none'; }, 200);
+    }
+  }
+
+  function updateBannerText(){
+    const el = document.getElementById('welcomeMessage');
+    el.textContent = '';
+    el.appendChild(document.createTextNode(state.bannerLine1));
+    if (state.bannerLine2) {
+      el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(state.bannerLine2));
+    }
+  }
+
+  function applyBgColour(){
+    const colour = state.bgColour || DEFAULT_BG;
+    document.querySelector('.left-panel').style.background = colour;
+    document.querySelector('.right-panel').style.background = colour;
+  }
+
+  const tabletFrame = document.querySelector('.kiosk-tablet-frame');
+  const tabletEl = document.querySelector('.tablet');
+  function fitTablet(){
+    const scale = tabletFrame.clientWidth / 1300;
+    tabletEl.style.transform = 'scale(' + scale + ')';
+    tabletFrame.style.height = (820 * scale) + 'px';
+  }
+  window.addEventListener('resize', fitTablet);
+
+  function buildToggleList(){
+    toggleList.innerHTML = '';
+    TOGGLES.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'kiosk-toggle-item';
+
+      const row = document.createElement('div');
+      row.className = 'kiosk-toggle-row' + (state[t.key] ? ' on' : '');
+      row.innerHTML = `
+        <div><p class="ttl"><img class="ttl-icon" src="../assets/images/${t.icon}" alt="">${t.label}</p><p class="dsc">${t.desc}</p></div>
+        <button type="button" class="switch${state[t.key] ? ' on' : ''}" data-key="${t.key}" aria-label="Toggle ${t.label}"></button>
+      `;
+      item.appendChild(row);
+
+      if (t.hasFields) {
+        const fields = document.createElement('div');
+        fields.className = 'kiosk-toggle-subfields' + (state.bannerEnabled ? ' show' : '');
+        fields.id = 'fields-' + t.key;
+        fields.innerHTML = `
+          <div class="field">
+            <label>Banner Line 1</label>
+            <input type="text" id="bannerLine1Input" maxlength="40" value="${state.bannerLine1}">
+          </div>
+          <div class="field">
+            <label>Banner Line 2</label>
+            <input type="text" id="bannerLine2Input" maxlength="40" value="${state.bannerLine2}">
+          </div>
+        `;
+        item.appendChild(fields);
+
+        fields.querySelector('#bannerLine1Input').addEventListener('input', e => {
+          state.bannerLine1 = e.target.value;
+          updateBannerText();
+          queueSave();
+        });
+        fields.querySelector('#bannerLine2Input').addEventListener('input', e => {
+          state.bannerLine2 = e.target.value;
+          updateBannerText();
+          queueSave();
+        });
+      }
+
+      toggleList.appendChild(item);
+    });
+
+    toggleList.querySelectorAll('.switch').forEach(btn => {
+      btn.addEventListener('click', () => toggleOption(btn.getAttribute('data-key')));
+    });
+  }
+
+  function toggleOption(key){
+    state[key] = !state[key];
+
+    const t = TOGGLES.find(x => x.key === key);
+    if (t.elementId) toggleMenuItem(document.getElementById(t.elementId), state[key], t.elementId);
+
+    const switchEl = toggleList.querySelector('.switch[data-key="' + key + '"]');
+    const rowEl = switchEl ? switchEl.closest('.kiosk-toggle-row') : null;
+    if (switchEl) switchEl.classList.toggle('on', state[key]);
+    if (rowEl) rowEl.classList.toggle('on', state[key]);
+
+    if (t.hasFields) {
+      const fieldsEl = document.getElementById('fields-' + key);
+      if (fieldsEl) fieldsEl.classList.toggle('show', state[key]);
+    }
+
+    queueSave();
+  }
+
+  /* tap-to-remove directly on the mockup */
+  TOGGLES.forEach(t => {
+    if (!t.elementId) return;
+    document.getElementById(t.elementId).addEventListener('click', () => {
+      if (state[t.key]) toggleOption(t.key);
+    });
+  });
+
+  function applyInitialState(){
+    TOGGLES.forEach(t => {
+      if (!t.elementId) return;
+      const element = document.getElementById(t.elementId);
+      const base = baseTransform(t.elementId);
+      if (state[t.key]) {
+        element.style.display = displayFor(t.elementId);
+        element.style.opacity = '1';
+        element.style.transform = base + 'translateY(0)';
+      } else {
+        element.style.display = 'none';
+        element.style.opacity = '0';
+        element.style.transform = base + 'translateY(10px)';
+      }
+    });
+    updateBannerText();
+    applyBgColour();
+    bgColourInput.value = (state.bgColour || '').replace(/^#/, '');
+  }
+
+  function commitBgColour(){
+    const hex = bgColourInput.value.trim().replace(/^#/, '');
+    bgColourInput.value = hex;
+    state.bgColour = hex ? ('#' + hex) : '';
+    applyBgColour();
+    queueSave();
+  }
+  document.getElementById('bgColourSetBtn').addEventListener('click', commitBgColour);
+  bgColourInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); commitBgColour(); }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.logoEnabled = true;
+    state.bannerEnabled = true;
+    state.bannerLine1 = 'Scan your access card or';
+    state.bannerLine2 = 'select an option to get started';
+    state.openEnabled = true;
+    state.lockerEnabled = true;
+    state.qrEnabled = true;
+    state.cardEnabled = true;
+    state.changePinEnabled = true;
+    state.addCardEnabled = true;
+    state.bgColour = '';
+    buildToggleList();
+    applyInitialState();
+    save();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('kiosk');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'smartalock-templates-08.html'; }, 500);
+  });
+
+  let saveTimer = null;
+  function queueSave() {
+    saveText.textContent = 'Saving…';
+    saveDot.classList.remove('show');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 450);
+  }
+
+  function save() {
+    project.smartalock.wizard.kioskCustomisation = state;
+    saveProject(project);
+    saveText.textContent = 'Selection saved automatically';
+    saveDot.classList.add('show');
+  }
+
+  buildToggleList();
+  applyInitialState();
+  fitTablet();
+})();
+</script>
+
+</body>
+</html>

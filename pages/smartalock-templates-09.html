@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Initial Locker Access Methods — Smartalock Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--paper-soft); border: 1px solid var(--line); position: relative; flex-shrink: 0; }
+  .brand-mark::after {
+    content: ''; position: absolute; top: 6.5px; left: 6.5px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
+  }
+  .brand-text { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.3px; letter-spacing: -0.01em; color: var(--ink); }
+  .brand-text span { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+
+  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+  }
+  .panel-intro p.sub { font-size: 12.3px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+  .module-heading { display: none; }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 600; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
+
+  /* ---------- access method checkbox grid ---------- */
+  .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 900px; }
+  @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
+  .access-check-card {
+    display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .access-check-card:hover { border-color: var(--accent); }
+  .access-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .access-check-card input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+  .access-icon-img { width: 67.2px; height: 67.2px; flex-shrink: 0; }
+  .access-card-body { min-width: 0; }
+  .access-title { display: block; font-family: var(--font-text); font-weight: 600; font-size: 17.48px; color: var(--ink); margin-bottom: 3px; }
+  .access-desc { display: block; font-size: 12.1px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; }
+
+  .empty-hint { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin-top: 16px; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div class="brand-text">Smartalock<span>Configuration Studio · Module Preview</span></div>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Project Registration</span>
+        </a>
+        <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
+        </a>
+        <a class="progress-seg current" data-module="access" href="smartalock-templates-09.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Initial Locker Access Methods</span>
+        </a>
+        <a class="progress-seg" data-module="behaviour" href="smartalock-templates-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Door Behaviour</span>
+        </a>
+        <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Types</span>
+        </a>
+        <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Type</span>
+        </a>
+        <a class="progress-seg" data-module="locker" href="smartalock-templates-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Policy</span>
+        </a>
+        <a class="progress-seg" data-module="user" href="smartalock-templates-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">User Policy</span>
+        </a>
+        <a class="progress-seg" data-module="kiosk" href="smartalock-templates-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Kiosk Customisation</span>
+        </a>
+        <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Configuration Summary</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Initial Locker Access Methods</span>
+        <h1 class="hero-title">How will people<br>get in?</h1>
+        <p class="sub">Choose every method this site should support for opening a locker at go-live — combine as many as you need.</p>
+      </div>
+      <h1 class="module-heading">Initial Locker Access Methods</h1>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="section-head">
+        <span class="eyebrow">Configure</span>
+        <h2 class="section-title">Select as many as you need</h2>
+        <p>Choose every access method this site should support when it goes live. These can be changed later.</p>
+      </div>
+
+      <div class="access-check-grid" id="accessCheckGrid">
+        <label class="access-check-card" data-method="card">
+          <input type="checkbox" value="card">
+          <img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt="">
+          <div class="access-card-body">
+            <span class="access-title">Building access cards</span>
+            <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
+          </div>
+        </label>
+
+        <label class="access-check-card" data-method="pin">
+          <input type="checkbox" value="pin">
+          <img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt="">
+          <div class="access-card-body">
+            <span class="access-title">PIN number at touchscreen</span>
+            <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
+          </div>
+        </label>
+
+        <label class="access-check-card" data-method="app">
+          <input type="checkbox" value="app">
+          <img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt="">
+          <div class="access-card-body">
+            <span class="access-title">Floorsense app</span>
+            <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
+          </div>
+        </label>
+
+        <label class="access-check-card" data-method="qr">
+          <input type="checkbox" value="qr">
+          <img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt="">
+          <div class="access-card-body">
+            <span class="access-title">QR code</span>
+            <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
+          </div>
+        </label>
+
+        <label class="access-check-card" data-method="wallet">
+          <input type="checkbox" value="wallet">
+          <img class="access-icon-img" src="../assets/images/icon-access-wallet-illus.png" alt="">
+          <div class="access-card-body">
+            <span class="access-title">Digital Pass</span>
+            <span class="access-desc">Apple or Google Wallet Pass held on the user's phone opens their locker.</span>
+          </div>
+        </label>
+      </div>
+
+      <p class="empty-hint" id="emptyHint">No access methods selected yet — check any that apply above.</p>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="smartalock-templates-02.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="smartalock-templates-03.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: new module — "Initial Locker Access Methods" — restyled from access-methods-v6.html to
+  match this template set's shell (progress bar only, no split-hero pane). Inserted right after IT
+  Configuration & Integrations (template-02) and before Locker Door Behaviour (template-03); those two
+  pages' own Back/Next links have been repointed accordingly. State is saved under
+  project.smartalock.wizard.accessMethods as a simple array of selected method keys
+  (card / pin / app / qr / wallet), same schema as the v6 version.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
+  project.smartalock.wizard = project.smartalock.wizard || {};
+  project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
+
+  const saved = project.smartalock.wizard.accessMethods || {};
+  const state = {
+    selected: Array.isArray(saved.selected) ? saved.selected : []
+  };
+
+  /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.smartalock.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.smartalock.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- access method grid ---------------- */
+  const grid = document.getElementById('accessCheckGrid');
+  const emptyHint = document.getElementById('emptyHint');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function renderEmptyHint() {
+    emptyHint.style.display = state.selected.length ? 'none' : 'block';
+  }
+
+  grid.querySelectorAll('.access-check-card').forEach(card => {
+    const method = card.getAttribute('data-method');
+    const checkbox = card.querySelector('input');
+    checkbox.checked = state.selected.includes(method);
+    card.classList.toggle('checked', checkbox.checked);
+
+    checkbox.addEventListener('change', () => {
+      card.classList.toggle('checked', checkbox.checked);
+      if (checkbox.checked) {
+        if (!state.selected.includes(method)) state.selected.push(method);
+      } else {
+        state.selected = state.selected.filter(m => m !== method);
+      }
+      renderEmptyHint();
+      queueSave();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.selected = [];
+    grid.querySelectorAll('.access-check-card').forEach(card => {
+      card.classList.remove('checked');
+      card.querySelector('input').checked = false;
+    });
+    renderEmptyHint();
+    save();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('access');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'smartalock-templates-03.html'; }, 500);
+  });
+
+  let saveTimer = null;
+  function queueSave() {
+    saveText.textContent = 'Saving…';
+    saveDot.classList.remove('show');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 450);
+  }
+
+  function save() {
+    project.smartalock.wizard.accessMethods = state;
+    saveProject(project);
+    saveText.textContent = 'Selection saved automatically';
+    saveDot.classList.add('show');
+  }
+
+  renderEmptyHint();
+})();
+</script>
+
+</body>
+</html>
