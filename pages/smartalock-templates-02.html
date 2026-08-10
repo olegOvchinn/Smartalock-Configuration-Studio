@@ -171,22 +171,6 @@
   }
   .guide-button:hover { background: var(--accent-deep); }
 
-  .assignment-box {
-    margin-top: 16px; padding: 20px 22px; background: var(--paper-soft); border: 1px solid var(--line);
-    border-radius: var(--radius-md); display: none;
-  }
-  .assignment-box.show { display: block; animation: fadeIn .22s ease; }
-  .assignment-box h4 { font-family: var(--font-display); font-size: 11.48px; margin: 0 0 4px; color: var(--header-grey); }
-  .assignment-box > p { font-size: 9.84px; color: var(--ink-soft); margin: 0 0 16px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
-  .form-field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
-  .form-field input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 10.66px; background: var(--paper);
-  }
-  .form-field input:focus { outline: none; border-color: var(--ink); }
-
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -327,33 +311,6 @@
               <p>Need help configuring SSO?</p>
               <a class="guide-button" href="https://app.notion.com/p/floorsense/SSO-OIDC-Setup-Guide-ba861f0a040d48c48a90c4047055cf59" target="_blank" rel="noopener">Get an SSO configuration guide</a>
             </div>
-
-            <div class="assignment-box" id="ssoRegistration">
-              <h4>Provide registration details</h4>
-              <p>Please provide the following details for each configured application.</p>
-              <div class="form-grid">
-                <div class="form-field">
-                  <label>End User App and, if configured, Admin User App</label>
-                  <input type="text" id="ssoAppNames" placeholder="Enter application name(s)...">
-                </div>
-                <div class="form-field">
-                  <label>Tenant ID</label>
-                  <input type="text" id="ssoTenantId" placeholder="Enter Tenant ID...">
-                </div>
-                <div class="form-field">
-                  <label>Client ID</label>
-                  <input type="text" id="ssoClientId" placeholder="Enter Client ID...">
-                </div>
-                <div class="form-field">
-                  <label>Secret and expiry date</label>
-                  <input type="text" id="ssoSecret" placeholder="Enter secret and expiry date...">
-                </div>
-                <div class="form-field">
-                  <label>Email domains</label>
-                  <input type="text" id="ssoEmailDomains" placeholder="List email domains if more than one...">
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="qcard">
@@ -463,11 +420,6 @@
 
   const state = Object.assign({
     ssoMethod: "",
-    ssoAppNames: "",
-    ssoTenantId: "",
-    ssoClientId: "",
-    ssoSecret: "",
-    ssoEmailDomains: "",
     scimProvisioning: "",
     apiRequirements: "",
     gallagherIntegration: ""
@@ -498,12 +450,6 @@
   /* ---------------- fields ---------------- */
   const ssoMethod = document.getElementById('ssoMethod');
   const ssoGuide = document.getElementById('ssoGuide');
-  const ssoRegistration = document.getElementById('ssoRegistration');
-  const ssoAppNames = document.getElementById('ssoAppNames');
-  const ssoTenantId = document.getElementById('ssoTenantId');
-  const ssoClientId = document.getElementById('ssoClientId');
-  const ssoSecret = document.getElementById('ssoSecret');
-  const ssoEmailDomains = document.getElementById('ssoEmailDomains');
   const scimProvisioning = document.getElementById('scimProvisioning');
   const scimGuide = document.getElementById('scimGuide');
   const apiRequirements = document.getElementById('apiRequirements');
@@ -516,7 +462,6 @@
   function applySSOVisibility() {
     const show = state.ssoMethod !== "";
     ssoGuide.classList.toggle('show', show);
-    ssoRegistration.classList.toggle('show', show);
   }
   function applySCIMVisibility() {
     scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
@@ -541,11 +486,6 @@
   }
 
   ssoMethod.value = state.ssoMethod;
-  ssoAppNames.value = state.ssoAppNames;
-  ssoTenantId.value = state.ssoTenantId;
-  ssoClientId.value = state.ssoClientId;
-  ssoSecret.value = state.ssoSecret;
-  ssoEmailDomains.value = state.ssoEmailDomains;
   scimProvisioning.value = state.scimProvisioning;
   apiRequirements.value = state.apiRequirements;
   gallagherIntegration.value = state.gallagherIntegration;
@@ -554,19 +494,13 @@
   applyArchVisual();
 
   ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); applyArchVisual(); queueSave(); });
-  ssoAppNames.addEventListener('input', () => { state.ssoAppNames = ssoAppNames.value; queueSave(); });
-  ssoTenantId.addEventListener('input', () => { state.ssoTenantId = ssoTenantId.value; queueSave(); });
-  ssoClientId.addEventListener('input', () => { state.ssoClientId = ssoClientId.value; queueSave(); });
-  ssoSecret.addEventListener('input', () => { state.ssoSecret = ssoSecret.value; queueSave(); });
-  ssoEmailDomains.addEventListener('input', () => { state.ssoEmailDomains = ssoEmailDomains.value; queueSave(); });
   scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); applyArchVisual(); queueSave(); });
   apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; queueSave(); });
   gallagherIntegration.addEventListener('change', () => { state.gallagherIntegration = gallagherIntegration.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     Object.keys(state).forEach(k => { state[k] = ""; });
-    ssoMethod.value = ""; ssoAppNames.value = ""; ssoTenantId.value = ""; ssoClientId.value = "";
-    ssoSecret.value = ""; ssoEmailDomains.value = ""; scimProvisioning.value = "";
+    ssoMethod.value = ""; scimProvisioning.value = "";
     apiRequirements.value = ""; gallagherIntegration.value = "";
     applySSOVisibility();
     applySCIMVisibility();
