@@ -42,13 +42,8 @@
   .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
 
   .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--paper-soft); border: 1px solid var(--line); position: relative; flex-shrink: 0; }
-  .brand-mark::after {
-    content: ''; position: absolute; top: 6.5px; left: 6.5px; width: 7px; height: 7px; border-radius: 50%;
-    background: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
-  }
-  .brand-text { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12.3px; letter-spacing: -0.01em; color: var(--ink); }
-  .brand-text span { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
   /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
   .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
@@ -206,8 +201,8 @@
     <div class="top-frame">
       <div class="panel-inner">
         <div class="brand">
-          <div class="brand-mark"></div>
-          <div class="brand-text">Smartalock<span>Configuration Studio · Module Preview</span></div>
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
