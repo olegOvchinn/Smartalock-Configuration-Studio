@@ -349,9 +349,9 @@
 
         <div class="page-visual">
           <div class="page-visual-frame show-image">
-            <img id="archVisual" src="../assets/images/it-configuration-architecture-vpn.png" alt="IT integration architecture diagram">
+            <img id="archVisual" src="../assets/images/it-configuration-architecture-sso.png" alt="IT integration architecture diagram">
           </div>
-          <p class="page-visual-caption" id="archVisualCaption">Reference architecture — VPN tunnel to your site (default connection method).</p>
+          <p class="page-visual-caption" id="archVisualCaption">Reference architecture — SSO authentication path highlighted.</p>
         </div>
       </div>
 
@@ -475,8 +475,7 @@
   };
   function computeArchMode() {
     if (state.scimProvisioning === 'enabled') return 'scim';
-    if (state.ssoMethod !== '') return 'sso';
-    return 'vpn';
+    return 'sso';
   }
   function applyArchVisual() {
     const mode = computeArchMode();
