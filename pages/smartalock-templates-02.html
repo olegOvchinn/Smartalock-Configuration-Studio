@@ -136,18 +136,41 @@
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; height: auto; }
 
-  /* ---------- visual mode switcher (segmented, echoes the top progress bar) ---------- */
+  /* ---------- visual mode switcher (thin segments, same style as the top progress bar) ---------- */
   .visual-tabs {
     display: flex; gap: 5px; margin: 0 0 10px; list-style: none; padding: 0; max-width: 480px;
   }
   .visual-tab {
-    position: relative; flex: 1; height: 26px; border-radius: 7px; background: var(--paper-soft);
-    border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 0;
-    font-family: var(--font-text); font-size: 9.43px; font-weight: 600; letter-spacing: 0.02em;
-    color: var(--ink-soft); transition: background .18s, color .18s;
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    border: none; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-  .visual-tab:hover { background: var(--accent-wash); color: var(--accent-deep); }
-  .visual-tab.active { background: var(--accent-deep); color: #fff; }
+  .visual-tab-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .visual-tab.active .visual-tab-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .visual-tab:hover .visual-tab-fill { background: var(--accent-deep); }
+
+  .visual-tab-tip {
+    position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .visual-tab-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .visual-tab:hover .visual-tab-tip,
+  .visual-tab:focus-visible .visual-tab-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .visual-tab:first-child .visual-tab-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .visual-tab:first-child .visual-tab-tip::after { left: 14px; }
+  .visual-tab:first-child:hover .visual-tab-tip { transform: translateX(0) translateY(0); }
+  .visual-tab:last-child .visual-tab-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .visual-tab:last-child .visual-tab-tip::after { left: auto; right: 14px; transform: none; }
+  .visual-tab:last-child:hover .visual-tab-tip { transform: translateX(0) translateY(0); }
 
   /* ---------- question cards ---------- */
   .qcard {
@@ -361,9 +384,18 @@
 
         <div class="page-visual">
           <nav class="visual-tabs" id="visualTabs" aria-label="Architecture diagram view">
-            <button class="visual-tab" type="button" data-mode="sso">SSO</button>
-            <button class="visual-tab" type="button" data-mode="scim">SCIM</button>
-            <button class="visual-tab" type="button" data-mode="api">API</button>
+            <button class="visual-tab" type="button" data-mode="sso">
+              <span class="visual-tab-fill"></span>
+              <span class="visual-tab-tip">SSO Authentication</span>
+            </button>
+            <button class="visual-tab" type="button" data-mode="scim">
+              <span class="visual-tab-fill"></span>
+              <span class="visual-tab-tip">SCIM Provisioning</span>
+            </button>
+            <button class="visual-tab" type="button" data-mode="api">
+              <span class="visual-tab-fill"></span>
+              <span class="visual-tab-tip">API / Integrations</span>
+            </button>
           </nav>
           <div class="page-visual-frame show-image">
             <img id="archVisual" src="../assets/images/it-configuration-architecture-sso.png" alt="IT integration architecture diagram">
