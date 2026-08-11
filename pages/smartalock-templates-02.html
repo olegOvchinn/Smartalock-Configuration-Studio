@@ -137,6 +137,19 @@
   .page-visual-frame.show-image img { display: block; height: auto; }
   .page-visual-caption { font-size: 9.43px; color: var(--ink-soft); text-align: center; margin: 10px 4px 0; line-height: 1.5; }
 
+  /* ---------- visual mode switcher (segmented, echoes the top progress bar) ---------- */
+  .visual-tabs {
+    display: flex; gap: 5px; margin: 0 0 10px; list-style: none; padding: 0; max-width: 480px;
+  }
+  .visual-tab {
+    position: relative; flex: 1; height: 26px; border-radius: 7px; background: var(--paper-soft);
+    border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 0;
+    font-family: var(--font-text); font-size: 9.43px; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--ink-soft); transition: background .18s, color .18s;
+  }
+  .visual-tab:hover { background: var(--accent-wash); color: var(--accent-deep); }
+  .visual-tab.active { background: var(--accent-deep); color: #fff; }
+
   /* ---------- question cards ---------- */
   .qcard {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
@@ -348,6 +361,12 @@
         </div>
 
         <div class="page-visual">
+          <nav class="visual-tabs" id="visualTabs" aria-label="Architecture diagram view">
+            <button class="visual-tab" type="button" data-mode="sso">SSO</button>
+            <button class="visual-tab" type="button" data-mode="scim">SCIM</button>
+            <button class="visual-tab" type="button" data-mode="api">API</button>
+            <button class="visual-tab" type="button" data-mode="vpn">VPN</button>
+          </nav>
           <div class="page-visual-frame show-image">
             <img id="archVisual" src="../assets/images/it-configuration-architecture-sso.png" alt="IT integration architecture diagram">
           </div>
@@ -458,6 +477,7 @@
   const saveDot = document.getElementById('saveDot');
   const archVisual = document.getElementById('archVisual');
   const archVisualCaption = document.getElementById('archVisualCaption');
+  const visualTabs = document.querySelectorAll('.visual-tab');
 
   function applySSOVisibility() {
     const show = state.ssoMethod !== "";
@@ -479,12 +499,17 @@
     if (state.apiRequirements.trim() !== '') return 'api';
     return 'sso';
   }
-  function applyArchVisual() {
-    const mode = computeArchMode();
+  function applyArchVisual(modeOverride) {
+    const mode = modeOverride || computeArchMode();
     const visual = ARCH_VISUAL[mode];
     archVisual.src = visual.src;
     archVisualCaption.textContent = visual.caption;
+    visualTabs.forEach(tab => tab.classList.toggle('active', tab.getAttribute('data-mode') === mode));
   }
+
+  visualTabs.forEach(tab => {
+    tab.addEventListener('click', () => applyArchVisual(tab.getAttribute('data-mode')));
+  });
 
   ssoMethod.value = state.ssoMethod;
   scimProvisioning.value = state.scimProvisioning;
