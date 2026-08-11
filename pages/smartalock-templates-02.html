@@ -135,7 +135,6 @@
   }
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; height: auto; }
-  .page-visual-caption { font-size: 9.43px; color: var(--ink-soft); text-align: center; margin: 10px 4px 0; line-height: 1.5; }
 
   /* ---------- visual mode switcher (segmented, echoes the top progress bar) ---------- */
   .visual-tabs {
@@ -365,12 +364,10 @@
             <button class="visual-tab" type="button" data-mode="sso">SSO</button>
             <button class="visual-tab" type="button" data-mode="scim">SCIM</button>
             <button class="visual-tab" type="button" data-mode="api">API</button>
-            <button class="visual-tab" type="button" data-mode="vpn">VPN</button>
           </nav>
           <div class="page-visual-frame show-image">
             <img id="archVisual" src="../assets/images/it-configuration-architecture-sso.png" alt="IT integration architecture diagram">
           </div>
-          <p class="page-visual-caption" id="archVisualCaption">Reference architecture — SSO authentication path highlighted.</p>
         </div>
       </div>
 
@@ -476,7 +473,6 @@
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
   const archVisual = document.getElementById('archVisual');
-  const archVisualCaption = document.getElementById('archVisualCaption');
   const visualTabs = document.querySelectorAll('.visual-tab');
 
   function applySSOVisibility() {
@@ -489,10 +485,9 @@
 
   /* ---------------- architecture diagram: SSO / SCIM / API modes ---------------- */
   const ARCH_VISUAL = {
-    vpn: { src: '../assets/images/it-configuration-architecture-vpn.png', caption: 'Reference architecture — VPN tunnel to your site (default connection method).' },
-    sso: { src: '../assets/images/it-configuration-architecture-sso.png', caption: 'Reference architecture — SSO authentication path highlighted.' },
-    scim: { src: '../assets/images/it-configuration-architecture-scim.png', caption: 'Reference architecture — SCIM provisioning path highlighted.' },
-    api: { src: '../assets/images/it-configuration-architecture-api.png', caption: 'Reference architecture — third-party API / integration path highlighted.' }
+    sso: { src: '../assets/images/it-configuration-architecture-sso.png' },
+    scim: { src: '../assets/images/it-configuration-architecture-scim.png' },
+    api: { src: '../assets/images/it-configuration-architecture-api.png' }
   };
   function computeArchMode() {
     if (state.scimProvisioning === 'enabled') return 'scim';
@@ -503,7 +498,6 @@
     const mode = modeOverride || computeArchMode();
     const visual = ARCH_VISUAL[mode];
     archVisual.src = visual.src;
-    archVisualCaption.textContent = visual.caption;
     visualTabs.forEach(tab => tab.classList.toggle('active', tab.getAttribute('data-mode') === mode));
   }
 
