@@ -467,14 +467,16 @@
     scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
   }
 
-  /* ---------------- architecture diagram: VPN / SSO / SCIM modes ---------------- */
+  /* ---------------- architecture diagram: SSO / SCIM / API modes ---------------- */
   const ARCH_VISUAL = {
     vpn: { src: '../assets/images/it-configuration-architecture-vpn.png', caption: 'Reference architecture — VPN tunnel to your site (default connection method).' },
     sso: { src: '../assets/images/it-configuration-architecture-sso.png', caption: 'Reference architecture — SSO authentication path highlighted.' },
-    scim: { src: '../assets/images/it-configuration-architecture-scim.png', caption: 'Reference architecture — SCIM provisioning path highlighted.' }
+    scim: { src: '../assets/images/it-configuration-architecture-scim.png', caption: 'Reference architecture — SCIM provisioning path highlighted.' },
+    api: { src: '../assets/images/it-configuration-architecture-api.png', caption: 'Reference architecture — third-party API / integration path highlighted.' }
   };
   function computeArchMode() {
     if (state.scimProvisioning === 'enabled') return 'scim';
+    if (state.apiRequirements.trim() !== '') return 'api';
     return 'sso';
   }
   function applyArchVisual() {
@@ -494,7 +496,7 @@
 
   ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); applyArchVisual(); queueSave(); });
   scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); applyArchVisual(); queueSave(); });
-  apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; queueSave(); });
+  apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; applyArchVisual(); queueSave(); });
   gallagherIntegration.addEventListener('change', () => { state.gallagherIntegration = gallagherIntegration.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
