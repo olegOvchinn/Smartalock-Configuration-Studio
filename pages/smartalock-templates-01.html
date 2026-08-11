@@ -158,10 +158,11 @@
   .tcard-radio {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
   }
   .tcard.chosen .tcard-radio { border-color: var(--tc); background: var(--tc); }
   .tcard-radio::after {
-    content: ''; position: absolute; top: 4px; left: 7px; width: 6px; height: 10px;
+    content: ''; width: 6px; height: 10px; margin-top: -1px;
     border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
     opacity: 0; transition: opacity .15s;
   }
