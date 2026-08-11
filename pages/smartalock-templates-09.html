@@ -117,17 +117,30 @@
   .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 900px; }
   @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
   .access-check-card {
-    display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+    padding: 16px 18px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md);
     transition: border-color .15s, background .15s;
   }
   .access-check-card:hover { border-color: var(--accent); }
   .access-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .access-check-card input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+  .access-row { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+  .access-check-card input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; margin-top: 3px; }
   .access-icon-img { width: 67.2px; height: 67.2px; flex-shrink: 0; }
   .access-card-body { min-width: 0; }
   .access-title { display: block; font-family: var(--font-text); font-weight: 500; font-size: 17.48px; color: var(--ink); margin-bottom: 3px; }
   .access-desc { display: block; font-size: 12.1px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ---------- access-card sub-fields (e.g. card allocation method) ---------- */
+  .access-subfields { display: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .access-subfields.show { display: flex; }
+  .access-subfields-label { display: flex; align-items: center; gap: 8px; font-size: 12.1px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .access-subfields-tag {
+    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
+  }
+  .access-subfield-row { display: flex; align-items: flex-start; gap: 10px; }
+  .access-subfield-row input[type="radio"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+  .access-subfield-row label { font-size: 12.1px; font-weight: 400; color: var(--ink); line-height: 1.5; cursor: pointer; }
 
   .empty-hint { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin-top: 16px; }
 
@@ -234,9 +247,8 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Initial Locker Access Methods</span>
-        <h1 class="hero-title">How will people<br>get in?</h1>
-        <p class="sub">Choose every method this site should support for opening a locker at go-live — combine as many as you need.</p>
+        <h1 class="hero-title">Initial Locker<br>Access Methods</h1>
+        <p class="sub">Choose every access method this site should support.</p>
       </div>
       <h1 class="module-heading">Initial Locker Access Methods</h1>
     </div>
@@ -252,50 +264,74 @@
       </div>
 
       <div class="access-check-grid" id="accessCheckGrid">
-        <label class="access-check-card" data-method="card">
-          <input type="checkbox" value="card">
-          <img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt="">
-          <div class="access-card-body">
-            <span class="access-title">Building access cards</span>
-            <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
+        <div class="access-check-card" data-method="card">
+          <label class="access-row">
+            <input type="checkbox" value="card">
+            <img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">Building access cards</span>
+              <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
+            </div>
+          </label>
+          <div class="access-subfields" id="cardSubfields">
+            <div class="access-subfield-row">
+              <input type="radio" name="cardAssignMethod" value="import" id="cardAssignImport" checked>
+              <label for="cardAssignImport">We will supply a spreadsheet with usernames and their swipe card Chip Serial Numbers (CSN) for Smartalock to import (default)</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="cardAssignMethod" value="self" id="cardAssignSelf">
+              <label for="cardAssignSelf">We will allow users to allocate cards themselves</label>
+            </div>
           </div>
-        </label>
+        </div>
 
-        <label class="access-check-card" data-method="pin">
-          <input type="checkbox" value="pin">
-          <img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt="">
-          <div class="access-card-body">
-            <span class="access-title">PIN number at touchscreen</span>
-            <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
+        <div class="access-check-card" data-method="pin">
+          <label class="access-row">
+            <input type="checkbox" value="pin">
+            <img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">PIN number at touchscreen</span>
+              <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
+            </div>
+          </label>
+          <div class="access-subfields" id="pinSubfields">
+            <div class="access-subfields-label">How should PINs be assigned? <span class="access-subfields-tag">Optional</span></div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="random" id="pinAssignRandom">
+              <label for="pinAssignRandom">Random — Smartalock generates a random PIN for each user</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="list" id="pinAssignList">
+              <label for="pinAssignList">We will provide a list of PINs to assign</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="shared" id="pinAssignShared">
+              <label for="pinAssignShared">Same PIN for everyone at first — each user sets their own the first time they use it</label>
+            </div>
           </div>
-        </label>
+        </div>
 
-        <label class="access-check-card" data-method="app">
-          <input type="checkbox" value="app">
-          <img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt="">
-          <div class="access-card-body">
-            <span class="access-title">Floorsense app</span>
-            <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
-          </div>
-        </label>
+        <div class="access-check-card" data-method="app">
+          <label class="access-row">
+            <input type="checkbox" value="app">
+            <img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">Floorsense app</span>
+              <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
+            </div>
+          </label>
+        </div>
 
-        <label class="access-check-card" data-method="qr">
-          <input type="checkbox" value="qr">
-          <img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt="">
-          <div class="access-card-body">
-            <span class="access-title">QR code</span>
-            <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
-          </div>
-        </label>
-
-        <label class="access-check-card" data-method="wallet">
-          <input type="checkbox" value="wallet">
-          <img class="access-icon-img" src="../assets/images/icon-access-wallet-illus.png" alt="">
-          <div class="access-card-body">
-            <span class="access-title">Digital Pass</span>
-            <span class="access-desc">Apple or Google Wallet Pass held on the user's phone opens their locker.</span>
-          </div>
-        </label>
+        <div class="access-check-card" data-method="qr">
+          <label class="access-row">
+            <input type="checkbox" value="qr">
+            <img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">QR code</span>
+              <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
+            </div>
+          </label>
+        </div>
       </div>
 
       <p class="empty-hint" id="emptyHint">No access methods selected yet — check any that apply above.</p>
@@ -329,9 +365,13 @@
   NOTE for Oleg: new module — "Initial Locker Access Methods" — restyled from access-methods-v6.html to
   match this template set's shell (progress bar only, no split-hero pane). Inserted right after IT
   Configuration & Integrations (template-02) and before Locker Door Behaviour (template-03); those two
-  pages' own Back/Next links have been repointed accordingly. State is saved under
-  project.smartalock.wizard.accessMethods as a simple array of selected method keys
-  (card / pin / app / qr / wallet), same schema as the v6 version.
+  pages' own Back/Next links have been repointed accordingly. Digital Pass has been removed, leaving
+  card / pin / app / qr. When "Building access cards" is selected, an extra field appears asking how
+  cards will be assigned (spreadsheet import by Smartalock, default, vs. users self-allocating). When
+  "PIN number at touchscreen" is selected, an optional field appears asking how PINs should be
+  assigned (random / client-provided list / same-for-everyone-until-first-use) - left unset unless
+  the client has a preference. State is saved under project.smartalock.wizard.accessMethods as
+  { selected: [...], cardAssignMethod, pinAssignMethod }.
 -->
 
 <script>
@@ -364,7 +404,9 @@
 
   const saved = project.smartalock.wizard.accessMethods || {};
   const state = {
-    selected: Array.isArray(saved.selected) ? saved.selected : []
+    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    cardAssignMethod: saved.cardAssignMethod === 'self' ? 'self' : 'import',
+    pinAssignMethod: ['random','list','shared'].includes(saved.pinAssignMethod) ? saved.pinAssignMethod : ''
   };
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
@@ -399,11 +441,47 @@
     emptyHint.style.display = state.selected.length ? 'none' : 'block';
   }
 
+  const cardSubfields = document.getElementById('cardSubfields');
+  const cardAssignRadios = document.querySelectorAll('input[name="cardAssignMethod"]');
+
+  function applyCardSubfields(checked) {
+    cardSubfields.classList.toggle('show', checked);
+  }
+
+  cardAssignRadios.forEach(radio => {
+    radio.checked = radio.value === state.cardAssignMethod;
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        state.cardAssignMethod = radio.value;
+        queueSave();
+      }
+    });
+  });
+
+  const pinSubfields = document.getElementById('pinSubfields');
+  const pinAssignRadios = document.querySelectorAll('input[name="pinAssignMethod"]');
+
+  function applyPinSubfields(checked) {
+    pinSubfields.classList.toggle('show', checked);
+  }
+
+  pinAssignRadios.forEach(radio => {
+    radio.checked = radio.value === state.pinAssignMethod;
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        state.pinAssignMethod = radio.value;
+        queueSave();
+      }
+    });
+  });
+
   grid.querySelectorAll('.access-check-card').forEach(card => {
     const method = card.getAttribute('data-method');
-    const checkbox = card.querySelector('input');
+    const checkbox = card.querySelector('input[type="checkbox"]');
     checkbox.checked = state.selected.includes(method);
     card.classList.toggle('checked', checkbox.checked);
+    if (method === 'card') applyCardSubfields(checkbox.checked);
+    if (method === 'pin') applyPinSubfields(checkbox.checked);
 
     checkbox.addEventListener('change', () => {
       card.classList.toggle('checked', checkbox.checked);
@@ -412,6 +490,8 @@
       } else {
         state.selected = state.selected.filter(m => m !== method);
       }
+      if (method === 'card') applyCardSubfields(checkbox.checked);
+      if (method === 'pin') applyPinSubfields(checkbox.checked);
       renderEmptyHint();
       queueSave();
     });
@@ -419,10 +499,16 @@
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.selected = [];
+    state.cardAssignMethod = 'import';
+    state.pinAssignMethod = '';
     grid.querySelectorAll('.access-check-card').forEach(card => {
       card.classList.remove('checked');
-      card.querySelector('input').checked = false;
+      card.querySelector('input[type="checkbox"]').checked = false;
     });
+    cardAssignRadios.forEach(radio => { radio.checked = radio.value === 'import'; });
+    pinAssignRadios.forEach(radio => { radio.checked = false; });
+    applyCardSubfields(false);
+    applyPinSubfields(false);
     renderEmptyHint();
     save();
   });
