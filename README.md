@@ -4,7 +4,7 @@ A static HTML/CSS/JS prototype for designing, configuring and documenting Smarta
 
 ## Start here
 
-Open `pages/configuration-start.html` — this is the entry point. It lets the client choose which product line they're configuring (**Smartalock** or **Floorsense**), each with a description, icon and a live-switching preview panel, before routing into that product's configuration flow.
+Open `index.html` at the project root — this is the entry point. It lets the client choose which product line they're configuring (**Smartalock** or **Floorsense**), each with a description, icon and a live-switching preview panel, before routing into that product's configuration flow.
 
 Choosing **Smartalock** routes into the **10-step configuration wizard** under `pages/`, named `smartalock-<module>-0X.html`:
 
@@ -21,9 +21,9 @@ Choosing **Smartalock** routes into the **10-step configuration wizard** under `
 | 08 | `smartalock-configuration-summary-08.html` | Configuration Summary |
 | 09 | `smartalock-access-methods-09.html` | Initial Locker Access Methods |
 
-Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `configuration-start.html`. Choosing **Floorsense** on the entry page instead routes to `pages/floorsense-templates.html`, that product line's own configuration engine.
+Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `index.html`. Choosing **Floorsense** on the entry page instead routes to `pages/floorsense-templates.html`, that product line's own configuration engine.
 
-`index.html`, `pages/dashboard.html` and `pages/reports.html` all link to `configuration-start.html` via a **"Configuration Wizard"** nav item, and their **"Summary"** nav item links to `smartalock-configuration-summary-08.html`.
+`pages/dashboard.html` and `pages/reports.html` both link back to `index.html` via a **"Configuration Wizard"** nav item, and their **"Summary"** nav item links to `smartalock-configuration-summary-08.html`.
 
 ### Conventions used across the 10 wizard pages
 
@@ -50,7 +50,7 @@ Every wizard page's top progress bar links to all the others, and module 00's ba
 
 ## The rest of the site
 
-- `index.html` — landing page, links to Dashboard, Configuration Engine, Implementation Ready, the Configuration Wizard, and Reports.
+- `index.html` — the site's home page (see "Start here" above). It no longer links to Dashboard, Configuration Engine, Implementation Ready, or Reports — those pages predate the product-picker flow and are currently only reachable by opening their file directly (`pages/dashboard.html`, `pages/reports.html`, `pages/smartalock-wizard.html`, `pages/smartalock-templates.html`) or via each other's own top nav.
 - `pages/dashboard.html`, `pages/reports.html` — surrounding app shell (predates the wizard work above).
 - `pages/smartalock-wizard.html` — a separate reference/spec document (not part of the numbered wizard family) that the wizard's field definitions were originally researched from.
 - `pages/register.html`, `pages/project-home.html`, `pages/floorsense-templates.html`, `pages/ai-policy-workshop.html`, `pages/smartalock-templates.html` — other standalone app pages, unrelated to the wizard.
@@ -60,6 +60,7 @@ Every wizard page's top progress bar links to all the others, and module 00's ba
 ## Housekeeping notes
 
 - Three earlier generations of this same wizard (`-v3`, `-v4`, `-v6` suffixed pages, plus an older unversioned `configuration-summary.html`) were removed as of this handover — the numbered `smartalock-<module>-0X.html` family above is the only one still live and linked from the main nav.
+- The old marketing-style `index.html` (Dashboard / Configuration Engine / Implementation Ready / AI Policy Workshop cards) has been replaced by the Smartalock/Floorsense product picker described in "Start here". `pages/configuration-start.html` was moved to the root as the new `index.html` rather than living alongside the wizard pages.
 - A few files could not be permanently deleted due to a filesystem restriction in the environment this cleanup was done in; they were moved to a git-ignored `_removed-for-handover/` folder instead. That folder is safe to delete outright from Finder/Terminal — it isn't referenced by anything and isn't tracked in git.
 - If you're picking this up on a machine with GitHub access already configured, remember to `git push origin main` — recent work was committed locally but may not be pushed yet.
 
