@@ -6,201 +6,7 @@
 <title>Configuration Summary — Smartalock Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    --ink: #1D1D1F;
-    --ink-soft: #6E6E73;
-    --header-grey: #48484A;
-    --header-grey-light: #AEAEB2;
-    --paper: #FFFFFF;
-    --paper-soft: #F5F5F7;
-    --line: #D2D2D7;
-    --accent: #0071E3;
-    --accent-wash: #E8F1FC;
-    --accent-deep: #0058B0;
-    --danger: #FF3B30;
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --radius-sm: 10px;
-    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
-    --panel-maxw: 860px;
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--font-text);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ---------- page shell (no hero/nav pane) ---------- */
-  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
-  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
-
-  .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
-  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
-
-  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
-  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
-  .progress-seg {
-    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
-    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  }
-  .progress-seg-fill {
-    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
-    transition: background .18s, box-shadow .18s;
-  }
-  .progress-seg.saved .progress-seg-fill { background: #102A43; }
-  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
-  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
-
-  .progress-seg-tip {
-    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
-    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
-    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
-    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
-  }
-  .progress-seg-tip::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--ink);
-  }
-  .progress-seg:hover .progress-seg-tip,
-  .progress-seg:focus-visible .progress-seg-tip,
-  .progress-seg.tapped .progress-seg-tip {
-    opacity: 1; transform: translateX(-50%) translateY(0);
-  }
-  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
-  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
-  .progress-seg:first-child:hover .progress-seg-tip,
-  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
-  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
-  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
-  .progress-seg:last-child:hover .progress-seg-tip,
-  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
-
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
-  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
-  h1.hero-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 76px;
-    font-weight: 200; /* Extra Light */
-    letter-spacing: -2px;
-    line-height: 1.05;
-    color: #102A43;
-    margin: 0 0 24px;
-    white-space: nowrap;
-    text-align: center;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
-
-  .panel-topbar { padding: 0; }
-  .top-frame {
-    position: sticky; top: 0; z-index: 50; background: var(--paper);
-    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
-  }
-  .module-heading { display: none; }
-
-  .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
-  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
-
-  /* ---------- overall progress ---------- */
-  .progress-card {
-    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-lg);
-    padding: 20px 22px; margin-bottom: 24px;
-  }
-  .progress-card-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-  .progress-card-top span.ttl { font-family: var(--font-display); font-weight: 700; font-size: 12.3px; color: var(--header-grey); }
-  .progress-card-top span.pct { font-family: var(--font-display); font-weight: 700; font-size: 12.3px; color: var(--accent-deep); }
-  .progress-track { height: 8px; background: var(--line); border-radius: 100px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width .3s ease; }
-
-  /* ---------- summary groups ---------- */
-  .summary-group {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 20px 22px; margin-bottom: 18px;
-  }
-  .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
-  .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
-  .summary-group-head h3 .summary-icon { width: 40px; height: 40px; flex-shrink: 0; }
-  .status-pill {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 100px; flex-shrink: 0; white-space: nowrap;
-  }
-  .status-pill.saved { background: var(--accent-wash); color: var(--accent-deep); }
-  .status-pill.pending { background: #FFF4E5; color: #B25E09; }
-  .edit-link {
-    font-family: var(--font-text); font-size: 10.25px; font-weight: 600; color: var(--accent);
-    text-decoration: none; border: 1px solid var(--line); border-radius: 100px; padding: 5px 13px;
-    flex-shrink: 0; white-space: nowrap; transition: border-color .15s, background .15s, color .15s;
-  }
-  .edit-link:hover { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-deep); }
-  .summary-group-head-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-
-  .summary-row { padding: 12px 0; border-top: 1px solid var(--line); }
-  .summary-row:first-of-type { border-top: none; padding-top: 10px; }
-  .summary-row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
-  .summary-row-top .label { font-family: var(--font-text); font-size: 10.66px; font-weight: 600; color: var(--ink); }
-  .summary-row-top .value { font-family: var(--font-text); font-size: 10.66px; font-weight: 600; color: var(--accent-deep); text-align: right; }
-  .summary-desc { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.5; }
-  .summary-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); font-style: italic; margin: 8px 0 0; }
-
-  /* ---------- prev / next page nav ---------- */
-  .page-nav {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
-  }
-  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
-  .page-nav-arrow {
-    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    transition: border-color .18s, background .18s, transform .15s;
-  }
-  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
-  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
-  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
-  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
-  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
-  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
-
-  /* ---------- action bar ---------- */
-  .action-bar {
-    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
-    border-top: 1px solid var(--line); padding: 14px 0;
-  }
-  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
-  button.primary {
-    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
-    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
-    transition: background .15s, transform .1s;
-  }
-  button.primary:hover { background: var(--accent-deep); }
-  button.primary:active { transform: scale(0.98); }
-  button.ghost {
-    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent);
-    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
-    transition: border-color .15s, background .15s;
-  }
-  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
-
-  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
-</style>
+<link rel="stylesheet" href="../css/configuration-studio.css">
 </head>
 <body>
 
@@ -208,7 +14,7 @@
 
   <div class="panel-topbar">
     <div class="top-frame">
-      <div class="panel-inner">
+      <div class="panel-inner panel-inner--narrow">
         <div class="brand">
           <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
           <span class="brand-tagline">Configuration Studio · Module Preview</span>
@@ -259,7 +65,7 @@
       </div>
     </div>
 
-    <div class="panel-inner">
+    <div class="panel-inner panel-inner--narrow">
       <div class="panel-intro">
         <h1 class="hero-title">Configuration Summary</h1>
         <p class="sub">Review every answer captured across the wizard.</p>
@@ -269,7 +75,7 @@
   </div>
 
   <div class="panel-scroll">
-    <div class="panel-inner">
+    <div class="panel-inner panel-inner--narrow">
 
       <div class="section-head">
         <span class="eyebrow">Review</span>
@@ -280,7 +86,7 @@
           <span class="ttl">Modules saved</span>
           <span class="pct" id="progressPct">0%</span>
         </div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       </div>
 
       <!-- IT Configuration & Integrations -->
@@ -288,7 +94,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-it-configuration.png" alt="">IT Configuration &amp; Integrations</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-it">—</span>
+            <span class="pill status-pill" id="pill-it">—</span>
             <a class="edit-link" href="smartalock-it-configuration-02.html">Edit</a>
           </div>
         </div>
@@ -300,7 +106,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-access-card.png" alt="">Initial Locker Access Methods</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-access">—</span>
+            <span class="pill status-pill" id="pill-access">—</span>
             <a class="edit-link" href="smartalock-access-methods-09.html">Edit</a>
           </div>
         </div>
@@ -312,7 +118,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-locker-door-behaviour.png" alt="">Locker Door Behaviour</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-behaviour">—</span>
+            <span class="pill status-pill" id="pill-behaviour">—</span>
             <a class="edit-link" href="smartalock-locker-behaviour-03.html">Edit</a>
           </div>
         </div>
@@ -324,7 +130,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-reservation-type.png" alt="">Reservation Type</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-reservation">—</span>
+            <span class="pill status-pill" id="pill-reservation">—</span>
             <a class="edit-link" href="smartalock-reservation-type-01.html">Edit</a>
           </div>
         </div>
@@ -336,7 +142,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-release-when-idle.png" alt="">Locker Policy</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-locker">—</span>
+            <span class="pill status-pill" id="pill-locker">—</span>
             <a class="edit-link" href="smartalock-locker-policy-05.html">Edit</a>
           </div>
         </div>
@@ -348,7 +154,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-who-can-use-lockers.png" alt="">User Policy</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-user">—</span>
+            <span class="pill status-pill" id="pill-user">—</span>
             <a class="edit-link" href="smartalock-user-policy-06.html">Edit</a>
           </div>
         </div>
@@ -360,7 +166,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-kiosk-customisation.png" alt="">Kiosk Customisation</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-kiosk">—</span>
+            <span class="pill status-pill" id="pill-kiosk">—</span>
             <a class="edit-link" href="smartalock-kiosk-customisation-07.html">Edit</a>
           </div>
         </div>
@@ -372,7 +178,7 @@
         <div class="summary-group-head">
           <h3><img class="summary-icon" src="../assets/images/icon-locker-types-summary.png" alt="">Locker Types</h3>
           <div class="summary-group-head-actions">
-            <span class="status-pill" id="pill-locker-type">—</span>
+            <span class="pill status-pill" id="pill-locker-type">—</span>
             <a class="edit-link" href="smartalock-locker-types-04.html">Edit</a>
           </div>
         </div>
@@ -391,9 +197,9 @@
   </div>
 
   <div class="action-bar">
-    <div class="panel-inner">
+    <div class="panel-inner panel-inner--narrow">
       <div class="save-note"><span id="saveText">Read-only — nothing to save on this page</span></div>
-      <div style="display:flex; gap:10px;">
+      <div class="button-row">
         <button class="ghost" id="printBtn" type="button">Print</button>
         <button class="primary" id="downloadBtn" type="button">Download JSON</button>
       </div>

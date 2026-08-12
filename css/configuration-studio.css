@@ -1,0 +1,1569 @@
+
+/* ---------------------------------------------------------------------------
+   1. TOKENS
+   ------------------------------------------------------------------------ */
+:root {
+  /* type families */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+
+  --fs-hero: 76px;    /* h1 hero */
+  --fs-title: 28px;   /* section titles */
+  --fs-heading: 21px; /* card headings */
+  --fs-lead: 17px;    /* hero subtitle */
+  --fs-body: 15px;    /* card body copy */
+  --fs-sm: 14px;      /* section intro copy */
+  --fs-ui: 13px;      /* buttons, panel headings */
+  --fs-label: 12px;   /* field labels, inputs, small copy */
+  --fs-micro: 11px;   /* tooltips, captions, hints */
+  --fs-tag: 10px;     /* eyebrows, pills, brand tagline */
+
+
+  --fw-hero: 200;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semi: 600;
+
+
+  --ink: #1D1D1F;
+  --ink-soft: #6E6E73;
+  --header-grey: #48484A;
+  --paper: #FFFFFF;
+  --paper-soft: #F5F5F7;
+  --line: #D2D2D7;
+
+
+  --accent: #0071E3;
+  --accent-wash: #E8F1FC;
+  --accent-deep: #0058B0;
+  --danger: #FF3B30;
+  --deep-navy: #102A43;
+  --warn-bg: #FFF4E5;
+  --warn-ink: #B25E09;
+
+  --brand-smartalock: #0071E3;
+  --brand-smartalock-wash: #E8F1FC;
+  --brand-floorsense: #1FAA59;
+  --brand-floorsense-wash: #E6F7ED;
+  --brand-parcel: #8B5CF6;
+  --brand-parcel-wash: #F1EAFC;
+
+
+  --radius-pill: 980px;
+  --radius-frame: 24px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+
+  --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+
+  /* layout */
+  --panel-maxw: 1120px;
+  --panel-maxw-narrow: 860px;
+  --panel-pad: 28px;
+  --content-maxw: 640px;  
+  --grid-maxw: 900px;
+  --visual-w: 480px;      
+
+  /* icon sizes */
+  --icon-lg: 72px;       
+  --icon-md: 56px;
+  --icon-sm: 40px;
+
+  /* motion */
+  --t-fast: .15s;
+  --t-base: .18s;
+}
+
+/* ---------------------------------------------------------------------------
+   2. RESET & BASE
+   ------------------------------------------------------------------------ */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. PAGE SHELL
+   ------------------------------------------------------------------------ */
+.page-main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-inner {
+  max-width: var(--panel-maxw);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 var(--panel-pad);
+}
+
+.panel-inner--narrow { max-width: var(--panel-maxw-narrow); }
+
+.panel-topbar { padding: 0; }
+
+.top-frame {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  padding: 20px 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-scroll {
+  flex: 1;
+  padding: 28px 0 48px;
+}
+
+footer.site-foot {
+  text-align: center;
+  padding: 22px 0 40px;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-normal);
+  color: var(--ink-soft);
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. BRAND LOCKUP
+   ------------------------------------------------------------------------ */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  height: 22px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.brand-divider {
+  color: var(--line);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-normal);
+}
+
+.brand-logo-floorsense {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lead);
+  letter-spacing: -0.02em;
+  color: var(--brand-floorsense);
+}
+
+.brand-tagline {
+  color: var(--ink-soft);
+  font-family: var(--font-text);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-tag);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-left: 10px;
+  border-left: 1px solid var(--line);
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. STEP STRIP 
+   ------------------------------------------------------------------------ */
+.progress-bar,
+.visual-tabs {
+  display: flex;
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+}
+
+.progress-bar { margin: 26px 0 0; }
+
+.visual-tabs {
+  margin: 0 0 10px;
+  max-width: var(--visual-w);
+}
+
+.progress-seg,
+.visual-tab {
+  position: relative;
+  flex: 1;
+  height: 5px;
+  border: none;
+  border-radius: 5px;
+  padding: 0;
+  background: var(--paper-soft);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.progress-seg-fill,
+.visual-tab-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  background: var(--line);
+  transition: background var(--t-base), box-shadow var(--t-base);
+}
+
+.progress-seg.saved .progress-seg-fill { background: var(--deep-navy); }
+
+.progress-seg.current .progress-seg-fill,
+.visual-tab.active .visual-tab-fill {
+  background: var(--accent-deep);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+
+.progress-seg:hover .progress-seg-fill,
+.progress-seg.tapped .progress-seg-fill,
+.visual-tab:hover .visual-tab-fill {
+  background: var(--accent-deep);
+}
+
+/* --- tooltips ------------------------------------------------------------ */
+.progress-seg-tip,
+.visual-tab-tip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-text);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-medium);
+  padding: 6px 11px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+  box-shadow: var(--shadow);
+  z-index: 2;
+}
+
+.progress-seg-tip { bottom: 18px; }
+.visual-tab-tip { bottom: calc(100% + 10px); }
+
+.progress-seg-tip::after,
+.visual-tab-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+}
+
+.progress-seg:hover .progress-seg-tip,
+.progress-seg:focus-visible .progress-seg-tip,
+.progress-seg.tapped .progress-seg-tip,
+.visual-tab:hover .visual-tab-tip,
+.visual-tab:focus-visible .visual-tab-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* keep the first and last tooltips inside the viewport */
+.progress-seg:first-child .progress-seg-tip,
+.visual-tab:first-child .visual-tab-tip {
+  left: 0;
+  transform: translateX(0) translateY(4px);
+}
+
+.progress-seg:first-child .progress-seg-tip::after,
+.visual-tab:first-child .visual-tab-tip::after { left: 14px; }
+
+.progress-seg:first-child:hover .progress-seg-tip,
+.progress-seg:first-child.tapped .progress-seg-tip,
+.visual-tab:first-child:hover .visual-tab-tip {
+  transform: translateX(0) translateY(0);
+}
+
+.progress-seg:last-child .progress-seg-tip,
+.visual-tab:last-child .visual-tab-tip {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(4px);
+}
+
+.progress-seg:last-child .progress-seg-tip::after,
+.visual-tab:last-child .visual-tab-tip::after {
+  left: auto;
+  right: 14px;
+  transform: none;
+}
+
+.progress-seg:last-child:hover .progress-seg-tip,
+.progress-seg:last-child.tapped .progress-seg-tip,
+.visual-tab:last-child:hover .visual-tab-tip {
+  transform: translateX(0) translateY(0);
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. TYPOGRAPHY
+   ------------------------------------------------------------------------ */
+
+/* full-bleed hero title: breaks out of .panel-inner to centre on the viewport */
+h1.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-hero);
+  letter-spacing: -2px;
+  line-height: 1.05;
+  color: var(--deep-navy);
+  margin: 0 0 24px;
+  white-space: nowrap;
+  text-align: center;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.module-heading { display: none; }
+
+.panel-intro {
+  margin: 28px auto;
+  max-width: var(--content-maxw);
+  text-align: center;
+}
+
+.panel-intro p.sub {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-text);
+  font-size: var(--fs-tag);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: var(--accent-wash);
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 18px;
+}
+
+.section-head {
+  margin-bottom: 22px;
+  max-width: var(--content-maxw);
+}
+
+.section-head .eyebrow { margin-bottom: 14px; }
+
+h2.section-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-title);
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  color: var(--header-grey);
+}
+
+.section-head p {
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+   7. LAYOUT
+   ------------------------------------------------------------------------ */
+
+.content-with-visual {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--visual-w);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .content-with-visual { grid-template-columns: minmax(0, 1fr); }
+}
+
+.page-visual { position: static; }
+
+/* two-up card grids */
+.product-columns,
+.qcard-grid,
+.type-check-grid,
+.access-check-grid,
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.product-columns {
+  gap: 24px;
+  max-width: var(--grid-maxw);
+  margin: 0 auto;
+}
+
+.qcard-grid { gap: 18px; max-width: var(--grid-maxw); }
+.qcard-grid .qcard { max-width: none; margin-bottom: 0; }
+
+.type-check-grid { gap: 14px; }
+.access-check-grid { gap: 14px; max-width: var(--grid-maxw); }
+.decision-grid { gap: 16px; }
+
+@media (max-width: 720px) {
+  .product-columns,
+  .qcard-grid,
+  .type-check-grid,
+  .access-check-grid,
+  .decision-grid { grid-template-columns: 1fr; }
+}
+
+.product-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* single-column stack of selectable cards */
+.type-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: var(--content-maxw);
+}
+
+/* the pair of buttons in the action bar */
+.button-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* full-width cell inside .form-grid / .qcard-grid */
+.span-full { grid-column: 1 / -1; }
+
+.is-invisible { visibility: hidden; }
+
+
+/* ---------------------------------------------------------------------------
+   8. VISUAL FRAMES
+   ------------------------------------------------------------------------ */
+.page-visual-frame {
+  width: 100%;
+  max-width: var(--visual-w);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-frame);
+  border: 1.5px dashed var(--line);
+  background: var(--paper-soft);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  color: var(--ink-soft);
+  font-family: var(--font-text);
+  font-size: var(--fs-micro);
+  text-align: center;
+}
+
+.page-visual-frame--wide { aspect-ratio: 4 / 3; }
+
+.page-visual-frame--photo {
+  aspect-ratio: auto;
+  border-style: solid;
+  box-shadow: var(--shadow);
+  display: block;
+  padding: 0;
+}
+
+.page-visual-frame svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  opacity: 0.4;
+}
+
+.page-visual-placeholder-content strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-ui);
+  color: var(--header-grey);
+  margin-bottom: 4px;
+}
+
+/* images are hidden until JS adds .show-image, except in a --photo frame
+   where the image is the whole point */
+.page-visual-frame img {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-visual-frame--photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* JS-driven: swap the dashed placeholder for the framed artwork */
+.page-visual-frame.show-image {
+  aspect-ratio: 1 / 1;
+  border-style: solid;
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+  padding: 0;
+}
+
+.page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
+
+.page-visual-frame.show-image img {
+  display: block;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
+
+.page-visual-frame--natural.show-image { aspect-ratio: auto; }
+
+.page-visual-frame--natural.show-image img {
+  width: 100%;
+  height: auto;
+}
+
+.page-visual-caption {
+  font-size: var(--fs-micro);
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 10px 4px 0;
+  line-height: 1.5;
+}
+
+.assign-with-video {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .assign-with-video { grid-template-columns: minmax(0, 1fr); }
+}
+
+.assign-video {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  position: sticky;
+  top: 24px;
+}
+
+.assign-video-frame {
+  width: 100%;
+  max-width: 320px;
+  height: 100%;
+  border-radius: var(--radius-frame);
+  overflow: hidden;
+  border: 1px solid var(--paper);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assign-video-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+/* ---------------------------------------------------------------------------
+   9. SELECTABLE CARDS
+   ------------------------------------------------------------------------ */
+.tcard,
+.dcard,
+.type-check-card,
+.access-check-card {
+  --tc: var(--accent);
+  --tc-wash: var(--accent-wash);
+  position: relative;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--t-base), background var(--t-base), box-shadow var(--t-base);
+}
+
+.tcard:hover,
+.dcard:hover,
+.type-check-card:hover,
+.access-check-card:hover {
+  border-color: var(--tc);
+}
+
+.tcard.chosen,
+.dcard.chosen,
+.type-check-card.checked,
+.access-check-card.checked {
+  background: var(--tc-wash);
+  border-color: var(--tc);
+}
+
+/* product accents */
+.tcard[data-type="smartalock"] { --tc: var(--brand-smartalock); --tc-wash: var(--brand-smartalock-wash); }
+.tcard[data-type="floorsense"] { --tc: var(--brand-floorsense); --tc-wash: var(--brand-floorsense-wash); }
+.tcard[data-type="admin"]      { --tc: var(--brand-smartalock); --tc-wash: var(--brand-smartalock-wash); }
+.tcard[data-type="user"]       { --tc: var(--brand-floorsense); --tc-wash: var(--brand-floorsense-wash); }
+.tcard[data-type="parcel"]     { --tc: var(--brand-parcel);     --tc-wash: var(--brand-parcel-wash); }
+
+/* --- card layouts ------------------------------------------------------- */
+
+.tcard--block {
+  display: block;
+  padding: 22px 24px;
+}
+
+/* row: tick or radio, then body */
+.tcard--row,
+.access-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.tcard--row { padding: 18px 20px; }
+.access-check-card { padding: 18px 20px; }
+.access-row { cursor: pointer; }
+
+.type-check-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.dcard {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 20px 24px;
+}
+
+.dcard-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* --- card contents ------------------------------------------------------ */
+.tcard-body,
+.access-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tcard h3,
+.dcard h3,
+.qcard h3,
+.summary-group-head h3,
+.type-check-card .type-label,
+.access-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-heading);
+  color: var(--header-grey);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+
+.tcard h3 { color: var(--tc); }
+
+.qcard h3,
+.dcard h3 { margin-bottom: 6px; }
+
+.summary-group-head h3 { margin: 0; }
+
+.access-title {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* a quiet note alongside a card heading, e.g. "— 15s grace" */
+.tcard h3 span.tag,
+.dcard h3 span.tag {
+  font-family: var(--font-text);
+  font-size: var(--fs-micro);
+  color: var(--ink-soft);
+  font-weight: var(--fw-medium);
+}
+
+/* card icons */
+.tcard-icon-img,
+.type-icon-img,
+.access-icon-img { width: var(--icon-md); height: var(--icon-md); flex-shrink: 0; }
+
+.qcard-icon { width: var(--icon-lg); height: var(--icon-lg); flex-shrink: 0; }
+
+.dcard-icon-img,
+.summary-icon { width: var(--icon-sm); height: var(--icon-sm); flex-shrink: 0; }
+
+.access-icon-img { margin-top: 2px; }
+
+/* body copy, shared by every card family */
+.tcard p.desc,
+.dcard p.desc,
+.qcard p.qdesc,
+.access-desc {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-normal);
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.access-desc { display: block; }
+.qcard p.qdesc { margin-bottom: 16px; }
+
+.dcard p.desc {
+  margin-bottom: 18px;
+  flex: 1;
+}
+
+/* --- selection limits (page 01) ----------------------------------------- */
+.tcard.maxed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tcard.maxed:hover { border-color: var(--line); }
+
+.tcard.shake { animation: shakeCard .32s ease; }
+
+/* --- question cards ----------------------------------------------------- */
+.qcard {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  max-width: var(--content-maxw);
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+
+/* highlighted while its matching visual is on screen */
+.qcard.visual-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+
+
+/* ---------------------------------------------------------------------------
+   10. TICKS & RADIOS 
+   ------------------------------------------------------------------------ */
+.tick {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 3px solid var(--line);
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--t-base), background var(--t-base);
+}
+
+.tcard--row .tick,
+.access-row .tick { margin-top: 2px; }
+
+.tick::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  margin-top: -1px;
+  border: solid var(--paper);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(40deg);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.tcard.chosen .tick,
+.type-check-card.checked .tick,
+.access-check-card.checked .tick {
+  border-color: var(--tc);
+  background: var(--tc);
+}
+
+.tcard.chosen .tick::after,
+.type-check-card.checked .tick::after,
+.access-check-card.checked .tick::after { opacity: 1; }
+
+.type-check-card input[type="checkbox"],
+.access-check-card input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. PILLS
+   ------------------------------------------------------------------------ */
+.pill {
+  display: inline-block;
+  font-family: var(--font-text);
+  font-size: var(--fs-tag);
+  font-weight: var(--fw-semi);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  vertical-align: middle;
+  color: var(--accent-deep);
+  background: var(--accent-wash);
+}
+
+.pill--solid {
+  color: var(--paper);
+  background: var(--accent);
+}
+
+/* an "Optional" pill tucked inside an eyebrow */
+.eyebrow .pill { margin-left: 4px; }
+
+.status-pill {
+  color: var(--ink-soft);
+  background: var(--paper-soft);
+}
+
+.status-pill.saved {
+  color: var(--accent-deep);
+  background: var(--accent-wash);
+}
+
+.status-pill.pending {
+  color: var(--warn-ink);
+  background: var(--warn-bg);
+}
+
+/* the door-behaviour cards swap "default" for "selected" once chosen */
+.chosen-flag { display: none; }
+.dcard.chosen .chosen-flag { display: inline-block; }
+.dcard.chosen .default-flag { display: none; }
+
+
+/* ---------------------------------------------------------------------------
+   12. FORMS
+   ------------------------------------------------------------------------ */
+.form-grid,
+.subfields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-grid { gap: 14px; }
+
+/* revealed by JS, so it must not claim grid layout while hidden */
+.subfields-grid {
+  display: none;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.subfields-grid.show { display: grid; }
+
+@media (max-width: 480px) {
+  .form-grid,
+  .subfields-grid { grid-template-columns: 1fr; }
+}
+
+.form-field-full { margin-top: 16px; }
+
+/* labels */
+.form-field label,
+.qcard label,
+.selected-type-row .stt-label {
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+  margin-bottom: 6px;
+}
+
+.selected-type-row .stt-label { color: var(--ink-soft); }
+
+.subfields-grid .field label {
+  display: block;
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-semi);
+  margin-bottom: 6px;
+}
+
+/* controls — white-backed inputs sit on cards, soft-backed inside panels */
+.form-field input,
+.selected-type-row input,
+.qcard select,
+.qcard textarea,
+.qcard input[type="text"],
+.subfields-grid .field input,
+.subfields-grid .field select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  padding: 9px 11px;
+  font-family: var(--font-text);
+  font-size: var(--fs-label);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.qcard select,
+.qcard textarea,
+.qcard input[type="text"],
+.subfields-grid .field input,
+.subfields-grid .field select {
+  padding: 10px 12px;
+  background: var(--paper-soft);
+}
+
+.form-field input:focus,
+.selected-type-row input:focus,
+.qcard select:focus,
+.qcard textarea:focus,
+.qcard input[type="text"]:focus,
+.subfields-grid .field input:focus,
+.subfields-grid .field select:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--paper);
+}
+
+.qcard textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+/* validation */
+.field-error {
+  display: none;
+  margin-top: 8px;
+  font-size: var(--fs-micro);
+  color: var(--danger);
+  font-weight: var(--fw-medium);
+}
+
+.field-error.show { display: block; }
+
+.qcard-subfield { display: none; margin-top: 14px; }
+.qcard-subfield.show { display: block; animation: fadeIn .22s ease; }
+.qcard-subfield.error input { border-color: var(--danger); }
+
+.empty-hint {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-normal);
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. DISCLOSURE PANELS
+   ------------------------------------------------------------------------ */
+.duration-panel,
+.scope-panel,
+.assignment-box {
+  display: none;
+  margin-top: 16px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  background: var(--paper);
+  cursor: default;
+}
+
+.assignment-box {
+  border-width: 1px;
+  background: var(--paper-soft);
+}
+
+.duration-panel { margin-top: 18px; }
+.scope-panel { margin-top: 18px; }
+
+.duration-panel.show,
+.scope-panel.show,
+.assignment-box.show {
+  display: block;
+  animation: fadeIn .22s ease;
+}
+
+.duration-panel h4,
+.scope-panel h4,
+.assignment-box h4 {
+  font-family: var(--font-display);
+  font-size: var(--fs-ui);
+  margin: 0 0 4px;
+  color: var(--header-grey);
+}
+
+.duration-panel > p.hint,
+.scope-panel > p,
+.assignment-box > p {
+  font-size: var(--fs-micro);
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.duration-options,
+.scope-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.duration-option,
+.scope-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.duration-option:hover,
+.scope-option:hover { border-color: var(--ink); }
+
+.duration-option.selected,
+.scope-option.selected {
+  border-color: var(--ink);
+  background: var(--paper-soft);
+}
+
+.duration-option input,
+.scope-option input { accent-color: var(--ink); }
+
+.duration-option .title,
+.scope-option .title {
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-label);
+}
+
+.duration-option .sub,
+.scope-option .sub {
+  font-size: var(--fs-micro);
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+/* page 02's inline setup guide */
+.guide-box {
+  display: none;
+  margin-top: 16px;
+  padding: 16px 18px;
+  background: var(--accent-wash);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+}
+
+.guide-box.show { display: block; animation: fadeIn .22s ease; }
+
+.guide-box p {
+  margin: 0 0 12px;
+  font-size: var(--fs-micro);
+  color: var(--accent-deep);
+}
+
+.guide-button {
+  display: inline-block;
+  padding: 9px 16px;
+  background: var(--accent);
+  color: var(--paper);
+  border-radius: 100px;
+  text-decoration: none;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semi);
+}
+
+.guide-button:hover { background: var(--accent-deep); }
+
+
+/* ---------------------------------------------------------------------------
+   14. LOCKER TYPE ASSIGNMENT (page 04)
+   ------------------------------------------------------------------------ */
+.selected-types {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selected-type-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: end;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-soft);
+  animation: fadeIn .22s ease;
+}
+
+@media (max-width: 480px) {
+  .selected-type-row { grid-template-columns: 1fr; }
+}
+
+.selected-type-row .stt-name {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-sm);
+  color: var(--header-grey);
+}
+
+
+/* ---------------------------------------------------------------------------
+   15. DOOR BEHAVIOUR PREVIEW (page 03)
+   ------------------------------------------------------------------------ */
+.mini-stage {
+  height: 220px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, #F6F6F7, #ECECEE);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mini-lottie { width: 100%; height: 100%; }
+.mini-lottie svg { display: block; margin: 0 auto; }
+
+.mini-unit {
+  width: var(--icon-md);
+  height: 64px;
+  position: relative;
+  display: none;
+}
+
+.mini-unit.show { display: block; }
+
+.mini-unit .mf {
+  position: absolute;
+  inset: 0;
+  background: #1A1B1E;
+  border-radius: var(--radius-xs);
+}
+
+.mini-unit .md {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: 68%;
+  background: #2A2C30;
+  border-radius: 6px;
+  transform-origin: left center;
+}
+
+.mini-stage.pop .md { animation: miniPop 2.6s ease-in-out infinite; }
+.mini-stage.push .md { animation: miniPushDoor 3.4s ease-in-out infinite; }
+.mini-stage.push .mf { animation: miniPushShake 3.4s ease-in-out infinite; }
+
+
+/* ---------------------------------------------------------------------------
+   16. CONFIGURATION SUMMARY (page 08)
+   ------------------------------------------------------------------------ */
+.progress-card {
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-bottom: 24px;
+}
+
+.progress-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.progress-card-top span.ttl,
+.progress-card-top span.pct {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-label);
+  color: var(--header-grey);
+}
+
+.progress-card-top span.pct { color: var(--accent-deep); }
+
+.progress-track {
+  height: 8px;
+  background: var(--line);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 100px;
+  transition: width .3s ease;
+}
+
+.summary-group {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-bottom: 18px;
+}
+
+.summary-group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.summary-group-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.edit-link {
+  font-family: var(--font-text);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semi);
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 5px 13px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: border-color var(--t-fast), background var(--t-fast), color var(--t-fast);
+}
+
+.edit-link:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent-deep);
+}
+
+.summary-row {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.summary-row:first-of-type {
+  border-top: none;
+  padding-top: 10px;
+}
+
+.summary-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.summary-row-top .label,
+.summary-row-top .value {
+  font-family: var(--font-text);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semi);
+  color: var(--ink);
+}
+
+.summary-row-top .value {
+  color: var(--accent-deep);
+  text-align: right;
+}
+
+.summary-desc,
+.summary-note {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-normal);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.summary-desc { margin: 4px 0 0; }
+
+.summary-note {
+  font-style: italic;
+  margin: 8px 0 0;
+}
+
+/* ---------------------------------------------------------------------------
+   17. ACCESS METHOD SUBFIELDS (page 09)
+   ------------------------------------------------------------------------ */
+.access-subfields {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.access-subfields.show { display: flex; }
+
+.access-subfields-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.access-subfield-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.access-subfield-row input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.access-subfield-row label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-normal);
+  color: var(--ink);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+
+/* ---------------------------------------------------------------------------
+   18. PREV / NEXT PAGE NAV
+   ------------------------------------------------------------------------ */
+.page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.page-nav-btn {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.page-nav-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color var(--t-base), background var(--t-base), transform var(--t-fast);
+}
+
+.page-nav-arrow svg {
+  width: 17px;
+  height: 17px;
+  stroke: var(--ink);
+  transition: stroke var(--t-base);
+}
+
+.page-nav-btn:not(.disabled):hover .page-nav-arrow {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  transform: scale(1.06);
+}
+
+.page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+
+.page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+
+.page-nav-btn.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+
+/* ---------------------------------------------------------------------------
+   19. ACTION BAR & BUTTONS
+   ------------------------------------------------------------------------ */
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  padding: 14px 0;
+}
+
+.action-bar .panel-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.save-note {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-normal);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.save-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.save-dot.show { opacity: 1; }
+
+button.primary,
+button.ghost {
+  font-family: var(--font-text);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-ui);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast), transform .1s, opacity var(--t-fast);
+}
+
+button.primary {
+  color: var(--paper);
+  background: var(--accent);
+  border: none;
+  padding: 11px 22px;
+}
+
+button.primary:hover { background: var(--accent-deep); }
+button.primary:active { transform: scale(0.98); }
+
+button.ghost {
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--line);
+  padding: 10px 18px;
+}
+
+button.ghost:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* every page now gets the disabled state the entry point defined alone */
+button.primary:disabled,
+button.ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button.primary:disabled:hover { background: var(--accent); }
+
+
+/* ---------------------------------------------------------------------------
+   20. ANIMATIONS 
+   ------------------------------------------------------------------------ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shakeCard {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+@keyframes miniPop {
+  0%, 55% { transform: rotateY(0); }
+  70%     { transform: rotateY(-46deg); }
+  100%    { transform: rotateY(-38deg); }
+}
+
+@keyframes miniPushShake {
+  0%, 60% { transform: translateX(0); }
+  68%     { transform: translateX(-3px); }
+  76%     { transform: translateX(0); }
+  100%    { transform: translateX(0); }
+}
+
+@keyframes miniPushDoor {
+  0%, 80% { transform: rotateY(0); }
+  94%     { transform: rotateY(-48deg); }
+  100%    { transform: rotateY(-40deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-stage.pop .md,
+  .mini-stage.push .md,
+  .mini-stage.push .mf,
+  .tcard.shake,
+  .selected-type-row,
+  .duration-panel.show,
+  .scope-panel.show,
+  .assignment-box.show,
+  .guide-box.show,
+  .qcard-subfield.show {
+    animation: none;
+  }
+}
