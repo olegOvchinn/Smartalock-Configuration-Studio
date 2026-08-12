@@ -10,7 +10,7 @@ Choosing **Smartalock** routes into the **10-step configuration wizard** under `
 
 | # | File | Module |
 |---|------|--------|
-| 00 | `smartalock-registration-00.html` | Project Registration |
+| 00 | `smartalock-templates-00.html` | Project Registration |
 | 01 | `smartalock-reservation-type-01.html` | Reservation Type |
 | 02 | `smartalock-it-configuration-02.html` | IT Configuration & Integrations |
 | 03 | `smartalock-locker-behaviour-03.html` | Locker Door Behaviour |
