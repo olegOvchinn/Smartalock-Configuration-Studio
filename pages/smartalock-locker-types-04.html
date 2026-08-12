@@ -120,18 +120,30 @@
   .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
 
   /* ---------- locker type checkbox grid ---------- */
-  .type-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .type-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   @media (max-width: 480px) { .type-check-grid { grid-template-columns: 1fr; } }
   .type-check-card {
-    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+    display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-lg); cursor: pointer;
     transition: border-color .15s, background .15s;
   }
   .type-check-card:hover { border-color: var(--accent); }
   .type-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .type-check-card input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
-  .type-check-card span { font-family: var(--font-text); font-weight: 500; font-size: 12.3px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
-  .type-check-card .type-icon-img { width: 42px; height: 42px; flex-shrink: 0; }
+  .type-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .type-tick {
+    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
+    position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .type-check-card.checked .type-tick { border-color: var(--accent); background: var(--accent); }
+  .type-tick::after {
+    content: ''; width: 6px; height: 10px; margin-top: -1px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    opacity: 0; transition: opacity .15s;
+  }
+  .type-check-card.checked .type-tick::after { opacity: 1; }
+  .type-check-card .type-label { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
+  .type-check-card .type-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -284,13 +296,13 @@
           </div>
 
           <div class="type-check-grid" id="typeCheckGrid">
-            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt="">Top</span></label>
-            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt="">Middle</span></label>
-            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt="">Bottom</span></label>
-            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt="">Large</span></label>
-            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt="">Side</span></label>
-            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt="">Small</span></label>
-            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt="">Custom Type</span></label>
+            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt="">Top</span></label>
+            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt="">Middle</span></label>
+            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt="">Bottom</span></label>
+            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt="">Large</span></label>
+            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt="">Side</span></label>
+            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt="">Small</span></label>
+            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt="">Custom Type</span></label>
           </div>
 
           <div class="selected-types" id="selectedTypes"></div>

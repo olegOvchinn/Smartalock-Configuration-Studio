@@ -4,7 +4,9 @@ A static HTML/CSS/JS prototype for designing, configuring and documenting Smarta
 
 ## Start here
 
-The current, actively-developed part of this project is the **10-step configuration wizard** under `pages/`, named `smartalock-<module>-0X.html`:
+Open `pages/configuration-start.html` — this is the entry point. It lets the client choose which product line they're configuring (**Smartalock** or **Floorsense**), each with a description, icon and a live-switching preview panel, before routing into that product's configuration flow.
+
+Choosing **Smartalock** routes into the **10-step configuration wizard** under `pages/`, named `smartalock-<module>-0X.html`:
 
 | # | File | Module |
 |---|------|--------|
@@ -19,7 +21,9 @@ The current, actively-developed part of this project is the **10-step configurat
 | 08 | `smartalock-configuration-summary-08.html` | Configuration Summary |
 | 09 | `smartalock-access-methods-09.html` | Initial Locker Access Methods |
 
-Open `pages/smartalock-registration-00.html` to walk through the whole flow from the beginning, or jump to any step — every page's top progress bar links to all the others. `index.html`, `pages/dashboard.html` and `pages/reports.html` all link to the wizard via a **"Configuration Wizard"** nav item, and their **"Summary"** nav item links to `smartalock-configuration-summary-08.html`.
+Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `configuration-start.html`. Choosing **Floorsense** on the entry page instead routes to `pages/floorsense-templates.html`, that product line's own configuration engine.
+
+`index.html`, `pages/dashboard.html` and `pages/reports.html` all link to `configuration-start.html` via a **"Configuration Wizard"** nav item, and their **"Summary"** nav item links to `smartalock-configuration-summary-08.html`.
 
 ### Conventions used across the 10 wizard pages
 
