@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Registration — Smartalock Configuration Studio (Template)</title>
+<title>Locker Door Behaviour — Smartalock Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
   :root {
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
@@ -89,7 +90,7 @@
   }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
   .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
-  h1 {
+  h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
     font-weight: 200; /* Extra Light */
@@ -104,7 +105,7 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .panel-intro p.sub { font-size: 14.76px; font-weight: 400; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+  .panel-intro p.sub { font-size: 12.3px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
   .panel-topbar { padding: 0; }
   .top-frame {
@@ -114,46 +115,93 @@
   .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head { margin-bottom: 32px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 14.76px; font-weight: 400; line-height: 1.6; margin: 0; }
+  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
 
-  /* ---------- shared text-with-visual layout (image to the right) ---------- */
-  .content-with-visual { display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
-  @media (max-width: 1080px) { .content-with-visual { grid-template-columns: 1fr; } }
-  .page-visual { position: static; }
-  .page-visual-frame {
-    width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden;
-    border: 1.5px solid var(--line); background: var(--paper-soft); box-shadow: var(--shadow);
-  }
-  .page-visual-frame img { display: block; width: 100%; height: auto; }
-  .page-visual-caption { font-size: 9.43px; color: var(--ink-soft); text-align: center; margin: 10px 4px 0; line-height: 1.5; }
+  /* ---------- decision cards ---------- */
+  .decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .decision-grid { grid-template-columns: 1fr; } }
 
-  /* ---------- question cards ---------- */
-  .qcard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; }
-  @media (max-width: 720px) { .qcard-grid { grid-template-columns: 1fr; } }
-  .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
-  .qcard {
+  .dcard {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 18px; max-width: 640px;
+    padding: 22px 20px 24px; position: relative; transition: border-color .18s, background .18s, box-shadow .18s;
+    display: flex; flex-direction: column; cursor: pointer;
   }
-  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
-  .qcard-tag {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  .dcard:hover { border-color: var(--accent); }
+  .dcard.chosen { background: var(--accent-wash); border-color: var(--accent); box-shadow: none; }
+  .dcard-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .default-flag {
+    font-family: var(--font-text); font-size: 8.2px; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
   }
-  .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
-  .form-field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
-  .form-field input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 12.3px; background: var(--paper);
+  .chosen-flag {
+    font-family: var(--font-text); font-size: 8.2px; letter-spacing: 0.05em; text-transform: uppercase;
+    color: #fff; background: var(--accent); padding: 3px 8px; border-radius: 100px; display: none;
   }
-  .form-field input:focus { outline: none; border-color: var(--ink); }
+  .dcard.chosen .chosen-flag { display: inline-block; }
+  .dcard.chosen .default-flag { display: none; }
+
+  /* animated icon per card — real Lottie animation, CSS icon as fallback */
+  .mini-stage {
+    height: 220px; border-radius: var(--radius-sm); background: linear-gradient(160deg,#F6F6F7,#ECECEE);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 14px; overflow: hidden; position: relative;
+  }
+  .mini-lottie { width: 100%; height: 100%; }
+  .mini-lottie svg { display: block; margin: 0 auto; }
+
+  .mini-unit { width: 56px; height: 64px; position: relative; display: none; }
+  .mini-unit.show { display: block; }
+  .mini-unit .mf { position: absolute; inset: 0; background: #1A1B1E; border-radius: 8px; }
+  .mini-unit .md {
+    position: absolute; top: 5px; bottom: 5px; left: 5px; width: 68%; background: #2A2C30; border-radius: 6px;
+    transform-origin: left center;
+  }
+  .mini-stage.pop .md { animation: miniPop 2.6s ease-in-out infinite; }
+  .mini-stage.push .md { animation: miniPushDoor 3.4s ease-in-out infinite; }
+  .mini-stage.push .mf { animation: miniPushShake 3.4s ease-in-out infinite; }
+  @keyframes miniPop { 0%,55%{transform:rotateY(0)} 70%{transform:rotateY(-46deg)} 100%{transform:rotateY(-38deg)} }
+  @keyframes miniPushShake { 0%,60%{transform:translateX(0)} 68%{transform:translateX(-3px)} 76%{transform:translateX(0)} 100%{transform:translateX(0)} }
+  @keyframes miniPushDoor { 0%,80%{transform:rotateY(0)} 94%{transform:rotateY(-48deg)} 100%{transform:rotateY(-40deg)} }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-stage.pop .md, .mini-stage.push .md, .mini-stage.push .mf { animation: none; }
+  }
+
+  .dcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
+  .dcard h3 .dcard-icon-img { width: 40px; height: 40px; flex-shrink: 0; }
+  .dcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 18px 0; flex: 1; }
+
+  /* ---------- scope panel ---------- */
+  .scope-panel {
+    margin-top: 18px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
+    padding: 20px 22px; background: var(--paper); display: none;
+  }
+  .scope-panel.show { display: block; animation: fadeIn .22s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .scope-panel h4 { font-family: var(--font-display); font-size: 11.89px; margin: 0 0 4px; color: var(--header-grey); }
+  .scope-panel > p { font-size: 10.25px; color: var(--ink-soft); margin: 0 0 16px; }
+
+  .scope-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .scope-option {
+    display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 11px 13px; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .scope-option:hover { border-color: var(--ink); }
+  .scope-option.selected { border-color: var(--ink); background: var(--paper-soft); }
+  .scope-option input { accent-color: var(--ink); }
+  .scope-option .title { font-weight: 600; font-size: 11.07px; }
+  .scope-option .sub { font-size: 9.43px; color: var(--ink-soft); margin-top: 2px; }
+
+  .scope-fields { display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .scope-fields.show { display: grid; }
+  @media (max-width: 480px) { .scope-fields { grid-template-columns: 1fr; } }
+  .scope-fields .field label { display: block; font-size: 9.84px; font-weight: 600; margin-bottom: 6px; }
+  .scope-fields .field input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft);
+  }
+  .scope-fields .field input:focus { outline: none; border-color: var(--ink); background: #fff; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -212,43 +260,43 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg current" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="registration" href="smartalock-registration-00.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Project Registration</span>
         </a>
-        <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
+        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
         </a>
-        <a class="progress-seg" data-module="access" href="smartalock-templates-09.html">
+        <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Initial Locker Access Methods</span>
         </a>
-        <a class="progress-seg" data-module="behaviour" href="smartalock-templates-03.html">
+        <a class="progress-seg current" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Door Behaviour</span>
         </a>
-        <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
+        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Types</span>
         </a>
-        <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
+        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Type</span>
         </a>
-        <a class="progress-seg" data-module="locker" href="smartalock-templates-05.html">
+        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Policy</span>
         </a>
-        <a class="progress-seg" data-module="user" href="smartalock-templates-06.html">
+        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">User Policy</span>
         </a>
-        <a class="progress-seg" data-module="kiosk" href="smartalock-templates-07.html">
+        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Kiosk Customisation</span>
         </a>
-        <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
+        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Configuration Summary</span>
         </a>
@@ -258,10 +306,10 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Let's set up your project...</h1>
-        <p class="sub">Add your company and contact details to get started.</p>
+        <h1 class="hero-title">Locker Door Behaviour</h1>
+        <p class="sub">Set how locker doors open and close on this site.</p>
       </div>
-      <h1 class="module-heading">Project Registration</h1>
+      <h1 class="module-heading">Locker Door Behaviour</h1>
     </div>
   </div>
 
@@ -272,88 +320,68 @@
         <span class="eyebrow">Configure</span>
       </div>
 
-      <div class="content-with-visual">
-      <div class="page-text">
+      <div class="decision-grid">
+        <div class="dcard chosen" id="card-pop">
+          <div class="dcard-top">
+            <span class="default-flag">Recommended default</span>
+            <span class="chosen-flag">Selected</span>
+          </div>
+          <div class="mini-stage pop">
+            <div class="mini-lottie" id="lottiePop"></div>
+            <div class="mini-unit" id="fallbackPop"><div class="mf"></div><div class="md"></div></div>
+          </div>
+          <h3><img class="dcard-icon-img" src="../assets/images/icon-pop-open.png" alt="">Pop Open</h3>
+          <p class="desc">Instantaneous soft-pop release on authentication. Best for fast, personal-storage turnaround where users grab and go.</p>
+        </div>
 
-      <div class="qcard-grid">
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-company.png" alt="">Company Details</h3>
-        <p class="qdesc">Basic details about the company and site this configuration is for.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Company Name</label>
-            <input type="text" id="regCustomer" placeholder="Enter company name...">
+        <div class="dcard" id="card-push">
+          <div class="dcard-top">
+            <span class="default-flag" style="visibility:hidden;">·</span>
+            <span class="chosen-flag">Selected</span>
           </div>
-          <div class="form-field">
-            <label>Site Address</label>
-            <input type="text" id="regSite" placeholder="Enter site address...">
+          <div class="mini-stage push">
+            <div class="mini-lottie" id="lottiePush"></div>
+            <div class="mini-unit" id="fallbackPush"><div class="mf"></div><div class="md"></div></div>
           </div>
-          <div class="form-field" style="grid-column: 1 / -1;">
-            <label>Your Email</label>
-            <input type="text" id="regEmail" placeholder="Enter your email address...">
-          </div>
+          <h3><img class="dcard-icon-img" src="../assets/images/icon-push-to-open.png" alt="">Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
+          <p class="desc">The lock disengages but the door stays shut until deliberately pushed, within a 15 second window. Ideal for high-traffic banks.</p>
         </div>
       </div>
 
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-contacts.png" alt="">Contacts <span class="qcard-tag">Optional</span></h3>
-        <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Policy Contact</label>
-            <input type="text" id="regPolicy" placeholder="If different...">
+      <div class="scope-panel" id="scopePanel">
+        <h4>Apply Push to Open behaviour to</h4>
+        <p>Choose which lockers should use the 15 second grace period.</p>
+        <div class="scope-options">
+          <label class="scope-option selected" data-scope="">
+            <input type="radio" name="scope" value="" checked>
+            <div><div class="title">All lockers</div><div class="sub">Apply Push to Open everywhere on this site.</div></div>
+          </label>
+          <label class="scope-option" data-scope="unknown">
+            <input type="radio" name="scope" value="unknown">
+            <div><div class="title">Don't know yet</div><div class="sub">We'll confirm scope with you before handover.</div></div>
+          </label>
+          <label class="scope-option" data-scope="specific">
+            <input type="radio" name="scope" value="specific">
+            <div><div class="title">Specific locker bank or lockers</div><div class="sub">Limit this behaviour to a named bank or a range of locker numbers.</div></div>
+          </label>
+        </div>
+        <div class="scope-fields" id="scopeFields">
+          <div class="field">
+            <label>Locker Bank Name</label>
+            <input type="text" id="behaviourLockerBank" placeholder="e.g. Level 2 Shared Lockers">
           </div>
-          <div class="form-field">
-            <label>IT Contact</label>
-            <input type="text" id="regIT" placeholder="If different...">
-          </div>
-          <div class="form-field">
-            <label>Training Contact</label>
-            <input type="text" id="regTraining" placeholder="If any...">
-          </div>
-          <div class="form-field">
-            <label>Support / Helpdesk Contact</label>
-            <input type="text" id="regSupport" placeholder="Enter support contact...">
-          </div>
-          <div class="form-field">
-            <label>Facilities Contact</label>
-            <input type="text" id="regFacilities" placeholder="Enter facilities contact...">
+          <div class="field">
+            <label>Locker Numbers</label>
+            <input type="text" id="behaviourLockerNumbers" placeholder="e.g. 101–150">
           </div>
         </div>
-      </div>
-
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-dates.png" alt="">Project Dates <span class="qcard-tag">Optional</span></h3>
-        <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Target Installation Month</label>
-            <input type="month" id="regInstallDate">
-          </div>
-          <div class="form-field">
-            <label>Target Go-Live Month</label>
-            <input type="month" id="regCompleteDate">
-          </div>
-        </div>
-      </div>
-      </div>
-
-      </div>
-
-      <div class="page-visual">
-        <div class="page-visual-frame show-image">
-          <img src="../assets/images/registration-process-illustration.png" alt="Registration steps: company details, key contacts, project dates, then ready to configure">
-        </div>
-        <p class="page-visual-caption">From company details to go-live in four steps.</p>
-      </div>
-
       </div>
 
       <div class="page-nav">
-        <span class="page-nav-btn disabled">
+        <a class="page-nav-btn" href="smartalock-access-methods-09.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
-        </span>
-        <a class="page-nav-btn next" href="smartalock-templates-02.html">
+        </a>
+        <a class="page-nav-btn next" href="smartalock-locker-types-04.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -364,7 +392,7 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
       <div style="display:flex; gap:10px;">
-        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="ghost" id="resetBtn" type="button">Reset to default</button>
         <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
       </div>
     </div>
@@ -375,19 +403,15 @@
 </main>
 
 <!--
-  NOTE for Oleg: new first step — "Project Registration" — restyled from register.html to match this
-  template set's shell (progress bar only, no split-hero pane). It now sits in front of IT Configuration
-  (template-02), whose Back arrow has been repointed here; this page's Next arrow / "Save & continue"
-  lead on to IT Configuration. Field set mirrors register.html's Company Details / Contacts / Project
-  Dates sections. Data is saved under project.registration (customer, site, email, policy, it, training,
-  support, facilities, installationDate, completionDate) — the same top-level object register.html and
-  reports.html read from — while moduleStatus.registration drives the progress-bar "saved" state like
-  every other module.
+  NOTE for Oleg: template variant of locker-behaviour-split-v4.html — nav pane removed, horizontal
+  progress bar under the branding instead. No image lived in this page's nav pane (just decorative
+  gradient art), so nothing needed to move — content is otherwise unchanged.
 -->
 
 <script>
 (function(){
   const PROJECT_KEY = "configurationProject";
+  const LOTTIE_BASE = "https://raw.githubusercontent.com/josh-smartalock/lottie-fs/main/animations/Smartalock/";
 
   function loadProject() {
     try {
@@ -409,24 +433,16 @@
   }
 
   let project = loadProject();
-  project.registration = project.registration || {};
   project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
-  const saved = project.registration;
-  const state = {
-    customer: saved.customer || "",
-    site: saved.site || "",
-    email: saved.email || "",
-    policy: saved.policy || "",
-    it: saved.it || "",
-    training: saved.training || "",
-    support: saved.support || "",
-    facilities: saved.facilities || "",
-    installationDate: saved.installationDate || "",
-    completionDate: saved.completionDate || ""
-  };
+  const state = Object.assign({
+    lockerBehaviour: "",
+    pushOpenScope: "",
+    behaviourLockerBank: "",
+    behaviourLockerNumbers: ""
+  }, project.smartalock.wizard.lockerBehaviour || {});
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -450,44 +466,84 @@
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
 
-  /* ---------------- fields ---------------- */
-  const fieldEls = {
-    customer: document.getElementById('regCustomer'),
-    site: document.getElementById('regSite'),
-    email: document.getElementById('regEmail'),
-    policy: document.getElementById('regPolicy'),
-    it: document.getElementById('regIT'),
-    training: document.getElementById('regTraining'),
-    support: document.getElementById('regSupport'),
-    facilities: document.getElementById('regFacilities'),
-    installationDate: document.getElementById('regInstallDate'),
-    completionDate: document.getElementById('regCompleteDate')
-  };
+  /* ---------------- card animations ---------------- */
+  function mountCardLottie(fileName, containerId, fallbackId) {
+    const container = document.getElementById(containerId);
+    const fallback = document.getElementById(fallbackId);
+    if (!window.lottie) { fallback.classList.add('show'); return; }
+    fetch(LOTTIE_BASE + fileName)
+      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(animationData => {
+        lottie.loadAnimation({
+          container,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          animationData
+        });
+      })
+      .catch(() => fallback.classList.add('show'));
+  }
+
+  mountCardLottie('SL_PopOpen.json', 'lottiePop', 'fallbackPop');
+  mountCardLottie('SL_GracePeriod.json', 'lottiePush', 'fallbackPush');
+
+  /* ---------------- decision cards ---------------- */
+  const cardPop = document.getElementById('card-pop');
+  const cardPush = document.getElementById('card-push');
+  const scopePanel = document.getElementById('scopePanel');
+  const scopeFields = document.getElementById('scopeFields');
+  const bankInput = document.getElementById('behaviourLockerBank');
+  const numbersInput = document.getElementById('behaviourLockerNumbers');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
-  Object.keys(fieldEls).forEach(key => {
-    fieldEls[key].value = state[key];
-    fieldEls[key].addEventListener('input', () => {
-      state[key] = fieldEls[key].value;
-      queueSave();
-    });
+  function selectBehaviour(value) {
+    state.lockerBehaviour = value;
+    cardPop.classList.toggle('chosen', value === '');
+    cardPush.classList.toggle('chosen', value === 'push-open');
+    scopePanel.classList.toggle('show', value === 'push-open');
+    if (value !== 'push-open') {
+      state.pushOpenScope = '';
+      scopeFields.classList.remove('show');
+      document.querySelectorAll('.scope-option').forEach(o => o.classList.remove('selected'));
+      document.querySelector('.scope-option[data-scope=""]').classList.add('selected');
+    }
+    queueSave();
+  }
+
+  function selectScope(value) {
+    state.pushOpenScope = value;
+    document.querySelectorAll('.scope-option').forEach(o => o.classList.toggle('selected', o.getAttribute('data-scope') === value));
+    scopeFields.classList.toggle('show', value === 'specific');
+    queueSave();
+  }
+
+  cardPop.addEventListener('click', () => selectBehaviour(''));
+  cardPush.addEventListener('click', () => selectBehaviour('push-open'));
+
+  document.querySelectorAll('.scope-option').forEach(opt => {
+    opt.addEventListener('click', () => selectScope(opt.getAttribute('data-scope')));
   });
 
+  bankInput.value = state.behaviourLockerBank;
+  numbersInput.value = state.behaviourLockerNumbers;
+  bankInput.addEventListener('input', () => { state.behaviourLockerBank = bankInput.value; queueSave(); });
+  numbersInput.addEventListener('input', () => { state.behaviourLockerNumbers = numbersInput.value; queueSave(); });
+
   document.getElementById('resetBtn').addEventListener('click', () => {
-    Object.keys(fieldEls).forEach(key => {
-      state[key] = "";
-      fieldEls[key].value = "";
-    });
+    selectBehaviour('');
+    bankInput.value = ''; numbersInput.value = '';
+    state.behaviourLockerBank = ''; state.behaviourLockerNumbers = '';
     save();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('registration');
+    markModuleSaved('behaviour');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-templates-02.html'; }, 500);
+    setTimeout(() => { window.location.href = 'smartalock-locker-types-04.html'; }, 500);
   });
 
   let saveTimer = null;
@@ -499,11 +555,14 @@
   }
 
   function save() {
-    project.registration = Object.assign({}, project.registration, state);
+    project.smartalock.wizard.lockerBehaviour = state;
     saveProject(project);
     saveText.textContent = 'Selection saved automatically';
     saveDot.classList.add('show');
   }
+
+  selectBehaviour(state.lockerBehaviour || '');
+  if (state.pushOpenScope) selectScope(state.pushOpenScope);
 })();
 </script>
 

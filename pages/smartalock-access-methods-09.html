@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Locker Door Behaviour — Smartalock Configuration Studio (Template)</title>
+<title>Initial Locker Access Methods — Smartalock Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
   :root {
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
@@ -115,93 +114,41 @@
   .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 32px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
 
-  /* ---------- decision cards ---------- */
-  .decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 560px) { .decision-grid { grid-template-columns: 1fr; } }
-
-  .dcard {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 20px 24px; position: relative; transition: border-color .18s, background .18s, box-shadow .18s;
-    display: flex; flex-direction: column; cursor: pointer;
+  /* ---------- access method checkbox grid ---------- */
+  .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 900px; }
+  @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
+  .access-check-card {
+    padding: 16px 18px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md);
+    transition: border-color .15s, background .15s;
   }
-  .dcard:hover { border-color: var(--accent); }
-  .dcard.chosen { background: var(--accent-wash); border-color: var(--accent); box-shadow: none; }
-  .dcard-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
-  .default-flag {
-    font-family: var(--font-text); font-size: 8.2px; letter-spacing: 0.05em; text-transform: uppercase;
+  .access-check-card:hover { border-color: var(--accent); }
+  .access-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .access-row { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+  .access-check-card input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+  .access-icon-img { width: 67.2px; height: 67.2px; flex-shrink: 0; }
+  .access-card-body { min-width: 0; }
+  .access-title { display: block; font-family: var(--font-text); font-weight: 500; font-size: 17.48px; color: var(--ink); margin-bottom: 3px; }
+  .access-desc { display: block; font-size: 12.1px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ---------- access-card sub-fields (e.g. card allocation method) ---------- */
+  .access-subfields { display: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .access-subfields.show { display: flex; }
+  .access-subfields-label { display: flex; align-items: center; gap: 8px; font-size: 12.1px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .access-subfields-tag {
+    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
   }
-  .chosen-flag {
-    font-family: var(--font-text); font-size: 8.2px; letter-spacing: 0.05em; text-transform: uppercase;
-    color: #fff; background: var(--accent); padding: 3px 8px; border-radius: 100px; display: none;
-  }
-  .dcard.chosen .chosen-flag { display: inline-block; }
-  .dcard.chosen .default-flag { display: none; }
+  .access-subfield-row { display: flex; align-items: flex-start; gap: 10px; }
+  .access-subfield-row input[type="radio"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+  .access-subfield-row label { font-size: 12.1px; font-weight: 400; color: var(--ink); line-height: 1.5; cursor: pointer; }
 
-  /* animated icon per card — real Lottie animation, CSS icon as fallback */
-  .mini-stage {
-    height: 220px; border-radius: var(--radius-sm); background: linear-gradient(160deg,#F6F6F7,#ECECEE);
-    display: flex; align-items: center; justify-content: center; margin-bottom: 14px; overflow: hidden; position: relative;
-  }
-  .mini-lottie { width: 100%; height: 100%; }
-  .mini-lottie svg { display: block; margin: 0 auto; }
-
-  .mini-unit { width: 56px; height: 64px; position: relative; display: none; }
-  .mini-unit.show { display: block; }
-  .mini-unit .mf { position: absolute; inset: 0; background: #1A1B1E; border-radius: 8px; }
-  .mini-unit .md {
-    position: absolute; top: 5px; bottom: 5px; left: 5px; width: 68%; background: #2A2C30; border-radius: 6px;
-    transform-origin: left center;
-  }
-  .mini-stage.pop .md { animation: miniPop 2.6s ease-in-out infinite; }
-  .mini-stage.push .md { animation: miniPushDoor 3.4s ease-in-out infinite; }
-  .mini-stage.push .mf { animation: miniPushShake 3.4s ease-in-out infinite; }
-  @keyframes miniPop { 0%,55%{transform:rotateY(0)} 70%{transform:rotateY(-46deg)} 100%{transform:rotateY(-38deg)} }
-  @keyframes miniPushShake { 0%,60%{transform:translateX(0)} 68%{transform:translateX(-3px)} 76%{transform:translateX(0)} 100%{transform:translateX(0)} }
-  @keyframes miniPushDoor { 0%,80%{transform:rotateY(0)} 94%{transform:rotateY(-48deg)} 100%{transform:rotateY(-40deg)} }
-  @media (prefers-reduced-motion: reduce) {
-    .mini-stage.pop .md, .mini-stage.push .md, .mini-stage.push .mf { animation: none; }
-  }
-
-  .dcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .dcard h3 .dcard-icon-img { width: 40px; height: 40px; flex-shrink: 0; }
-  .dcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 18px 0; flex: 1; }
-
-  /* ---------- scope panel ---------- */
-  .scope-panel {
-    margin-top: 18px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
-    padding: 20px 22px; background: var(--paper); display: none;
-  }
-  .scope-panel.show { display: block; animation: fadeIn .22s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  .scope-panel h4 { font-family: var(--font-display); font-size: 11.89px; margin: 0 0 4px; color: var(--header-grey); }
-  .scope-panel > p { font-size: 10.25px; color: var(--ink-soft); margin: 0 0 16px; }
-
-  .scope-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
-  .scope-option {
-    display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: var(--radius-sm);
-    padding: 11px 13px; cursor: pointer; transition: border-color .15s, background .15s;
-  }
-  .scope-option:hover { border-color: var(--ink); }
-  .scope-option.selected { border-color: var(--ink); background: var(--paper-soft); }
-  .scope-option input { accent-color: var(--ink); }
-  .scope-option .title { font-weight: 600; font-size: 11.07px; }
-  .scope-option .sub { font-size: 9.43px; color: var(--ink-soft); margin-top: 2px; }
-
-  .scope-fields { display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
-  .scope-fields.show { display: grid; }
-  @media (max-width: 480px) { .scope-fields { grid-template-columns: 1fr; } }
-  .scope-fields .field label { display: block; font-size: 9.84px; font-weight: 600; margin-bottom: 6px; }
-  .scope-fields .field input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft);
-  }
-  .scope-fields .field input:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .empty-hint { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin-top: 16px; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -260,43 +207,43 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="registration" href="smartalock-registration-00.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Project Registration</span>
         </a>
-        <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
+        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
         </a>
-        <a class="progress-seg" data-module="access" href="smartalock-templates-09.html">
+        <a class="progress-seg current" data-module="access" href="smartalock-access-methods-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Initial Locker Access Methods</span>
         </a>
-        <a class="progress-seg current" data-module="behaviour" href="smartalock-templates-03.html">
+        <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Door Behaviour</span>
         </a>
-        <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
+        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Types</span>
         </a>
-        <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
+        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Type</span>
         </a>
-        <a class="progress-seg" data-module="locker" href="smartalock-templates-05.html">
+        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Policy</span>
         </a>
-        <a class="progress-seg" data-module="user" href="smartalock-templates-06.html">
+        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">User Policy</span>
         </a>
-        <a class="progress-seg" data-module="kiosk" href="smartalock-templates-07.html">
+        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Kiosk Customisation</span>
         </a>
-        <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
+        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Configuration Summary</span>
         </a>
@@ -306,10 +253,10 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Locker Door Behaviour</h1>
-        <p class="sub">Set how locker doors open and close on this site.</p>
+        <h1 class="hero-title">Initial Locker Access Methods</h1>
+        <p class="sub">Choose every access method this site should support.</p>
       </div>
-      <h1 class="module-heading">Locker Door Behaviour</h1>
+      <h1 class="module-heading">Initial Locker Access Methods</h1>
     </div>
   </div>
 
@@ -320,68 +267,84 @@
         <span class="eyebrow">Configure</span>
       </div>
 
-      <div class="decision-grid">
-        <div class="dcard chosen" id="card-pop">
-          <div class="dcard-top">
-            <span class="default-flag">Recommended default</span>
-            <span class="chosen-flag">Selected</span>
+      <div class="access-check-grid" id="accessCheckGrid">
+        <div class="access-check-card" data-method="card">
+          <label class="access-row">
+            <input type="checkbox" value="card">
+            <img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">Building access cards</span>
+              <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
+            </div>
+          </label>
+          <div class="access-subfields" id="cardSubfields">
+            <div class="access-subfield-row">
+              <input type="radio" name="cardAssignMethod" value="import" id="cardAssignImport" checked>
+              <label for="cardAssignImport">We will supply a spreadsheet with usernames and their swipe card Chip Serial Numbers (CSN) for Smartalock to import (default)</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="cardAssignMethod" value="self" id="cardAssignSelf">
+              <label for="cardAssignSelf">We will allow users to allocate cards themselves</label>
+            </div>
           </div>
-          <div class="mini-stage pop">
-            <div class="mini-lottie" id="lottiePop"></div>
-            <div class="mini-unit" id="fallbackPop"><div class="mf"></div><div class="md"></div></div>
-          </div>
-          <h3><img class="dcard-icon-img" src="../assets/images/icon-pop-open.png" alt="">Pop Open</h3>
-          <p class="desc">Instantaneous soft-pop release on authentication. Best for fast, personal-storage turnaround where users grab and go.</p>
         </div>
 
-        <div class="dcard" id="card-push">
-          <div class="dcard-top">
-            <span class="default-flag" style="visibility:hidden;">·</span>
-            <span class="chosen-flag">Selected</span>
+        <div class="access-check-card" data-method="pin">
+          <label class="access-row">
+            <input type="checkbox" value="pin">
+            <img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">PIN number at touchscreen</span>
+              <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
+            </div>
+          </label>
+          <div class="access-subfields" id="pinSubfields">
+            <div class="access-subfields-label">How should PINs be assigned? <span class="access-subfields-tag">Optional</span></div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="random" id="pinAssignRandom">
+              <label for="pinAssignRandom">Random — Smartalock generates a random PIN for each user</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="list" id="pinAssignList">
+              <label for="pinAssignList">We will provide a list of PINs to assign</label>
+            </div>
+            <div class="access-subfield-row">
+              <input type="radio" name="pinAssignMethod" value="shared" id="pinAssignShared">
+              <label for="pinAssignShared">Same PIN for everyone at first — each user sets their own the first time they use it</label>
+            </div>
           </div>
-          <div class="mini-stage push">
-            <div class="mini-lottie" id="lottiePush"></div>
-            <div class="mini-unit" id="fallbackPush"><div class="mf"></div><div class="md"></div></div>
-          </div>
-          <h3><img class="dcard-icon-img" src="../assets/images/icon-push-to-open.png" alt="">Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
-          <p class="desc">The lock disengages but the door stays shut until deliberately pushed, within a 15 second window. Ideal for high-traffic banks.</p>
+        </div>
+
+        <div class="access-check-card" data-method="app">
+          <label class="access-row">
+            <input type="checkbox" value="app">
+            <img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">Floorsense app</span>
+              <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="access-check-card" data-method="qr">
+          <label class="access-row">
+            <input type="checkbox" value="qr">
+            <img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt="">
+            <div class="access-card-body">
+              <span class="access-title">QR code</span>
+              <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
+            </div>
+          </label>
         </div>
       </div>
 
-      <div class="scope-panel" id="scopePanel">
-        <h4>Apply Push to Open behaviour to</h4>
-        <p>Choose which lockers should use the 15 second grace period.</p>
-        <div class="scope-options">
-          <label class="scope-option selected" data-scope="">
-            <input type="radio" name="scope" value="" checked>
-            <div><div class="title">All lockers</div><div class="sub">Apply Push to Open everywhere on this site.</div></div>
-          </label>
-          <label class="scope-option" data-scope="unknown">
-            <input type="radio" name="scope" value="unknown">
-            <div><div class="title">Don't know yet</div><div class="sub">We'll confirm scope with you before handover.</div></div>
-          </label>
-          <label class="scope-option" data-scope="specific">
-            <input type="radio" name="scope" value="specific">
-            <div><div class="title">Specific locker bank or lockers</div><div class="sub">Limit this behaviour to a named bank or a range of locker numbers.</div></div>
-          </label>
-        </div>
-        <div class="scope-fields" id="scopeFields">
-          <div class="field">
-            <label>Locker Bank Name</label>
-            <input type="text" id="behaviourLockerBank" placeholder="e.g. Level 2 Shared Lockers">
-          </div>
-          <div class="field">
-            <label>Locker Numbers</label>
-            <input type="text" id="behaviourLockerNumbers" placeholder="e.g. 101–150">
-          </div>
-        </div>
-      </div>
+      <p class="empty-hint" id="emptyHint">No access methods selected yet — check any that apply above.</p>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-templates-09.html">
+        <a class="page-nav-btn" href="smartalock-it-configuration-02.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-templates-04.html">
+        <a class="page-nav-btn next" href="smartalock-locker-behaviour-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -392,7 +355,7 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
       <div style="display:flex; gap:10px;">
-        <button class="ghost" id="resetBtn" type="button">Reset to default</button>
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
         <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
       </div>
     </div>
@@ -403,15 +366,21 @@
 </main>
 
 <!--
-  NOTE for Oleg: template variant of locker-behaviour-split-v4.html — nav pane removed, horizontal
-  progress bar under the branding instead. No image lived in this page's nav pane (just decorative
-  gradient art), so nothing needed to move — content is otherwise unchanged.
+  NOTE for Oleg: new module — "Initial Locker Access Methods" — restyled from access-methods-v6.html to
+  match this template set's shell (progress bar only, no split-hero pane). Inserted right after IT
+  Configuration & Integrations (template-02) and before Locker Door Behaviour (template-03); those two
+  pages' own Back/Next links have been repointed accordingly. Digital Pass has been removed, leaving
+  card / pin / app / qr. When "Building access cards" is selected, an extra field appears asking how
+  cards will be assigned (spreadsheet import by Smartalock, default, vs. users self-allocating). When
+  "PIN number at touchscreen" is selected, an optional field appears asking how PINs should be
+  assigned (random / client-provided list / same-for-everyone-until-first-use) - left unset unless
+  the client has a preference. State is saved under project.smartalock.wizard.accessMethods as
+  { selected: [...], cardAssignMethod, pinAssignMethod }.
 -->
 
 <script>
 (function(){
   const PROJECT_KEY = "configurationProject";
-  const LOTTIE_BASE = "https://raw.githubusercontent.com/josh-smartalock/lottie-fs/main/animations/Smartalock/";
 
   function loadProject() {
     try {
@@ -437,12 +406,12 @@
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
-  const state = Object.assign({
-    lockerBehaviour: "",
-    pushOpenScope: "",
-    behaviourLockerBank: "",
-    behaviourLockerNumbers: ""
-  }, project.smartalock.wizard.lockerBehaviour || {});
+  const saved = project.smartalock.wizard.accessMethods || {};
+  const state = {
+    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    cardAssignMethod: saved.cardAssignMethod === 'self' ? 'self' : 'import',
+    pinAssignMethod: ['random','list','shared'].includes(saved.pinAssignMethod) ? saved.pinAssignMethod : ''
+  };
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -466,84 +435,94 @@
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
 
-  /* ---------------- card animations ---------------- */
-  function mountCardLottie(fileName, containerId, fallbackId) {
-    const container = document.getElementById(containerId);
-    const fallback = document.getElementById(fallbackId);
-    if (!window.lottie) { fallback.classList.add('show'); return; }
-    fetch(LOTTIE_BASE + fileName)
-      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-      .then(animationData => {
-        lottie.loadAnimation({
-          container,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          animationData
-        });
-      })
-      .catch(() => fallback.classList.add('show'));
-  }
-
-  mountCardLottie('SL_PopOpen.json', 'lottiePop', 'fallbackPop');
-  mountCardLottie('SL_GracePeriod.json', 'lottiePush', 'fallbackPush');
-
-  /* ---------------- decision cards ---------------- */
-  const cardPop = document.getElementById('card-pop');
-  const cardPush = document.getElementById('card-push');
-  const scopePanel = document.getElementById('scopePanel');
-  const scopeFields = document.getElementById('scopeFields');
-  const bankInput = document.getElementById('behaviourLockerBank');
-  const numbersInput = document.getElementById('behaviourLockerNumbers');
+  /* ---------------- access method grid ---------------- */
+  const grid = document.getElementById('accessCheckGrid');
+  const emptyHint = document.getElementById('emptyHint');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
-  function selectBehaviour(value) {
-    state.lockerBehaviour = value;
-    cardPop.classList.toggle('chosen', value === '');
-    cardPush.classList.toggle('chosen', value === 'push-open');
-    scopePanel.classList.toggle('show', value === 'push-open');
-    if (value !== 'push-open') {
-      state.pushOpenScope = '';
-      scopeFields.classList.remove('show');
-      document.querySelectorAll('.scope-option').forEach(o => o.classList.remove('selected'));
-      document.querySelector('.scope-option[data-scope=""]').classList.add('selected');
-    }
-    queueSave();
+  function renderEmptyHint() {
+    emptyHint.style.display = state.selected.length ? 'none' : 'block';
   }
 
-  function selectScope(value) {
-    state.pushOpenScope = value;
-    document.querySelectorAll('.scope-option').forEach(o => o.classList.toggle('selected', o.getAttribute('data-scope') === value));
-    scopeFields.classList.toggle('show', value === 'specific');
-    queueSave();
+  const cardSubfields = document.getElementById('cardSubfields');
+  const cardAssignRadios = document.querySelectorAll('input[name="cardAssignMethod"]');
+
+  function applyCardSubfields(checked) {
+    cardSubfields.classList.toggle('show', checked);
   }
 
-  cardPop.addEventListener('click', () => selectBehaviour(''));
-  cardPush.addEventListener('click', () => selectBehaviour('push-open'));
-
-  document.querySelectorAll('.scope-option').forEach(opt => {
-    opt.addEventListener('click', () => selectScope(opt.getAttribute('data-scope')));
+  cardAssignRadios.forEach(radio => {
+    radio.checked = radio.value === state.cardAssignMethod;
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        state.cardAssignMethod = radio.value;
+        queueSave();
+      }
+    });
   });
 
-  bankInput.value = state.behaviourLockerBank;
-  numbersInput.value = state.behaviourLockerNumbers;
-  bankInput.addEventListener('input', () => { state.behaviourLockerBank = bankInput.value; queueSave(); });
-  numbersInput.addEventListener('input', () => { state.behaviourLockerNumbers = numbersInput.value; queueSave(); });
+  const pinSubfields = document.getElementById('pinSubfields');
+  const pinAssignRadios = document.querySelectorAll('input[name="pinAssignMethod"]');
+
+  function applyPinSubfields(checked) {
+    pinSubfields.classList.toggle('show', checked);
+  }
+
+  pinAssignRadios.forEach(radio => {
+    radio.checked = radio.value === state.pinAssignMethod;
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        state.pinAssignMethod = radio.value;
+        queueSave();
+      }
+    });
+  });
+
+  grid.querySelectorAll('.access-check-card').forEach(card => {
+    const method = card.getAttribute('data-method');
+    const checkbox = card.querySelector('input[type="checkbox"]');
+    checkbox.checked = state.selected.includes(method);
+    card.classList.toggle('checked', checkbox.checked);
+    if (method === 'card') applyCardSubfields(checkbox.checked);
+    if (method === 'pin') applyPinSubfields(checkbox.checked);
+
+    checkbox.addEventListener('change', () => {
+      card.classList.toggle('checked', checkbox.checked);
+      if (checkbox.checked) {
+        if (!state.selected.includes(method)) state.selected.push(method);
+      } else {
+        state.selected = state.selected.filter(m => m !== method);
+      }
+      if (method === 'card') applyCardSubfields(checkbox.checked);
+      if (method === 'pin') applyPinSubfields(checkbox.checked);
+      renderEmptyHint();
+      queueSave();
+    });
+  });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    selectBehaviour('');
-    bankInput.value = ''; numbersInput.value = '';
-    state.behaviourLockerBank = ''; state.behaviourLockerNumbers = '';
+    state.selected = [];
+    state.cardAssignMethod = 'import';
+    state.pinAssignMethod = '';
+    grid.querySelectorAll('.access-check-card').forEach(card => {
+      card.classList.remove('checked');
+      card.querySelector('input[type="checkbox"]').checked = false;
+    });
+    cardAssignRadios.forEach(radio => { radio.checked = radio.value === 'import'; });
+    pinAssignRadios.forEach(radio => { radio.checked = false; });
+    applyCardSubfields(false);
+    applyPinSubfields(false);
+    renderEmptyHint();
     save();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('behaviour');
+    markModuleSaved('access');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-templates-04.html'; }, 500);
+    setTimeout(() => { window.location.href = 'smartalock-locker-behaviour-03.html'; }, 500);
   });
 
   let saveTimer = null;
@@ -555,14 +534,13 @@
   }
 
   function save() {
-    project.smartalock.wizard.lockerBehaviour = state;
+    project.smartalock.wizard.accessMethods = state;
     saveProject(project);
     saveText.textContent = 'Selection saved automatically';
     saveDot.classList.add('show');
   }
 
-  selectBehaviour(state.lockerBehaviour || '');
-  if (state.pushOpenScope) selectScope(state.pushOpenScope);
+  renderEmptyHint();
 })();
 </script>
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Policy — Smartalock Configuration Studio (Template)</title>
+<title>Locker Types — Smartalock Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -43,7 +43,7 @@
 
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
-  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.92px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
   /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
   .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
@@ -61,7 +61,7 @@
 
   .progress-seg-tip {
     position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
-    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 10.37px; font-weight: 500;
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
     padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
     transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
   }
@@ -84,7 +84,7 @@
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
   .eyebrow {
-    font-family: var(--font-text); font-size: 10.37px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
     display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
   }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
@@ -104,7 +104,7 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .panel-intro p.sub { font-size: 13.53px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+  .panel-intro p.sub { font-size: 12.3px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
   .panel-topbar { padding: 0; }
   .top-frame {
@@ -114,68 +114,54 @@
   .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 560px; }
+  .section-head { margin-bottom: 22px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 13.08px; line-height: 1.6; margin: 0; }
+  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
 
-  /* ---------- shared text-with-visual layout (image/placeholder to the right) ---------- */
-  .content-with-visual { display: grid; grid-template-columns: 560px 480px; gap: 24px; align-items: start; }
-  @media (max-width: 1080px) { .content-with-visual { grid-template-columns: 1fr; } }
-  .page-visual { position: static; }
-  .page-visual-frame {
-    width: 100%; max-width: 480px; border-radius: 24px; overflow: hidden;
-    border: 1.5px dashed var(--line); background: var(--paper-soft);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-    aspect-ratio: 4 / 5; color: var(--ink-soft); font-family: var(--font-text); font-size: 10.82px; text-align: center; padding: 20px;
+  /* ---------- locker type checkbox grid ---------- */
+  .type-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 480px) { .type-check-grid { grid-template-columns: 1fr; } }
+  .type-check-card {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md); cursor: pointer;
+    transition: border-color .15s, background .15s;
   }
-  .page-visual-frame svg { width: 40px; height: 40px; opacity: 0.4; }
-  .page-visual-frame img { display: none; width: 100%; height: 100%; object-fit: cover; }
-  .page-visual-frame.show-image {
-    border-style: solid; border-color: var(--line); box-shadow: var(--shadow); aspect-ratio: 1 / 1; padding: 0;
-    background: #FFFFFF;
-  }
-  .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
-  .page-visual-frame.show-image img { display: block; width: 96.6%; height: 96.6%; object-fit: contain; }
-
-  /* ---------- question cards ---------- */
-  .qcard {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 18px; max-width: 560px;
-  }
-  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
-  .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
-  .qcard label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
-  .qcard select, .qcard textarea, .qcard input[type="text"] {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
-    font-family: var(--font-text); font-size: 11.73px; background: var(--paper-soft); color: var(--ink);
-  }
-  .qcard select:focus, .qcard textarea:focus, .qcard input[type="text"]:focus { outline: none; border-color: var(--ink); background: #fff; }
-  .qcard textarea { min-height: 90px; resize: vertical; font-family: var(--font-text); }
+  .type-check-card:hover { border-color: var(--accent); }
+  .type-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .type-check-card input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+  .type-check-card span { font-family: var(--font-text); font-weight: 500; font-size: 12.3px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+  .type-check-card .type-icon-img { width: 42px; height: 42px; flex-shrink: 0; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-  .assignment-box {
-    margin-top: 16px; padding: 20px 22px; background: var(--paper-soft); border: 1px solid var(--line);
-    border-radius: var(--radius-md); display: none;
+  .selected-types { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .selected-type-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-md);
+    background: var(--paper-soft); animation: fadeIn .22s ease;
   }
-  .assignment-box.show { display: block; animation: fadeIn .22s ease; }
-  .assignment-box h4 { font-family: var(--font-display); font-size: 12.63px; margin: 0 0 4px; color: var(--header-grey); }
-  .assignment-box > p { font-size: 10.82px; color: var(--ink-soft); margin: 0 0 16px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
-  .form-field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
-  .form-field input {
+  @media (max-width: 480px) { .selected-type-row { grid-template-columns: 1fr; } }
+  .selected-type-row .stt-label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; color: var(--ink-soft); }
+  .selected-type-row .stt-name { font-family: var(--font-display); font-weight: 700; font-size: 11.89px; color: var(--header-grey); }
+  .selected-type-row input {
     width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 11.73px; background: var(--paper);
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper);
   }
-  .form-field input:focus { outline: none; border-color: var(--ink); }
-  .form-field-full { margin-top: 16px; }
-  .qcard-tag {
-    font-family: var(--font-text); font-size: 9.02px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 9px; border-radius: 100px; vertical-align: middle;
+  .selected-type-row input:focus { outline: none; border-color: var(--ink); }
+
+  .empty-hint { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin-top: 16px; }
+
+  /* ---------- assign-locker-types + video (video now sits to the right) ---------- */
+  .assign-with-video { display: grid; grid-template-columns: 1fr 320px; gap: 40px; align-items: stretch; }
+  @media (max-width: 900px) { .assign-with-video { grid-template-columns: 1fr; } }
+  .assign-video { display: flex; justify-content: center; height: 100%; position: sticky; top: 24px; }
+  .assign-video-frame {
+    width: 100%; max-width: 320px; height: 100%; border-radius: 24px; overflow: hidden;
+    border: 1px solid #FFFFFF; box-shadow: var(--shadow); background: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
   }
+  .assign-video-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -234,113 +220,96 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="registration" href="smartalock-registration-00.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Project Registration</span>
         </a>
-          <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
-          </a>
-          <a class="progress-seg" data-module="access" href="smartalock-templates-09.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Initial Locker Access Methods</span>
-          </a>
-          <a class="progress-seg" data-module="behaviour" href="smartalock-templates-03.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Door Behaviour</span>
-          </a>
-          <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Types</span>
-          </a>
-          <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Reservation Type</span>
-          </a>
-          <a class="progress-seg" data-module="locker" href="smartalock-templates-05.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Policy</span>
-          </a>
-          <a class="progress-seg current" data-module="user" href="smartalock-templates-06.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">User Policy</span>
-          </a>
-          <a class="progress-seg" data-module="kiosk" href="smartalock-templates-07.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Kiosk Customisation</span>
-          </a>
-          <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Configuration Summary</span>
-          </a>
+        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
+        </a>
+        <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Initial Locker Access Methods</span>
+        </a>
+        <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Door Behaviour</span>
+        </a>
+        <a class="progress-seg current" data-module="locker-type" href="smartalock-locker-types-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Types</span>
+        </a>
+        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Type</span>
+        </a>
+        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Policy</span>
+        </a>
+        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">User Policy</span>
+        </a>
+        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Kiosk Customisation</span>
+        </a>
+        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Configuration Summary</span>
+        </a>
         </nav>
       </div>
     </div>
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">User Policy</h1>
-        <p class="sub">Decide who can access lockers on this site.</p>
+        <h1 class="hero-title">Locker Types</h1>
+        <p class="sub">Choose which locker types are available on this site.</p>
       </div>
-      <h1 class="module-heading">User Policy</h1>
+      <h1 class="module-heading">Locker Types</h1>
     </div>
   </div>
 
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
+      <div class="assign-with-video">
+        <div class="assign-main">
 
-      <div class="content-with-visual">
-        <div class="page-text">
-
-      <div class="qcard">
-        <h3><img class="qcard-icon" src="../assets/images/icon-who-can-use-lockers.png" alt="">Who Can Use Lockers</h3>
-        <p class="qdesc">Define which users are permitted to access lockers.</p>
-        <label>Access policy</label>
-        <select id="userAccessPolicy">
-          <option value="">Anyone</option>
-          <option value="all">All registered users</option>
-          <option value="groups">Selected user groups</option>
-        </select>
-
-        <div class="assignment-box" id="userGroupsBox">
-          <h4>Locker Group Allocation</h4>
-          <p>Specify the relationship between user groups and locker groups.</p>
-          <div class="form-grid">
-            <div class="form-field">
-              <label>Locker Group</label>
-              <input type="text" id="lockerGroupName" placeholder="e.g. Level 2 Shared Lockers">
-            </div>
-            <div class="form-field">
-              <label>User Group</label>
-              <input type="text" id="userGroupName" placeholder="e.g. Marketing Team">
-            </div>
+          <div class="section-head">
+            <span class="eyebrow">Configure <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;margin-left:4px;">Optional</span></span>
           </div>
-          <div class="form-field form-field-full">
-            <label>Additional allocation details <span class="qcard-tag">Optional</span></label>
-            <textarea id="allocationDetails" placeholder="Specify any additional user group or locker group allocations..."></textarea>
+
+          <div class="type-check-grid" id="typeCheckGrid">
+            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt="">Top</span></label>
+            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt="">Middle</span></label>
+            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt="">Bottom</span></label>
+            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt="">Large</span></label>
+            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt="">Side</span></label>
+            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt="">Small</span></label>
+            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt="">Custom Type</span></label>
           </div>
-        </div>
-      </div>
+
+          <div class="selected-types" id="selectedTypes"></div>
+          <p class="empty-hint" id="emptyHint">No locker types selected yet — check any that apply above.</p>
 
         </div>
 
-        <div class="page-visual">
-          <div class="page-visual-frame show-image">
-            <img id="accessPolicyVisualImg" src="" alt="">
+        <div class="assign-video">
+          <div class="assign-video-frame">
+            <img src="../assets/images/locker-type-demo-v2.gif" alt="Locker type demo">
           </div>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-templates-05.html">
+        <a class="page-nav-btn" href="smartalock-locker-behaviour-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-templates-07.html">
+        <a class="page-nav-btn next" href="smartalock-reservation-type-01.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -362,8 +331,9 @@
 </main>
 
 <!--
-  NOTE for Oleg: template variant of user-policy-v4.html — nav pane removed, horizontal progress bar
-  under the branding instead. No image lived in this page's nav pane, so content is otherwise unchanged.
+  NOTE for Oleg: template variant of locker-type-v4.html — nav pane removed, horizontal progress bar
+  under the branding instead. The demo GIF already lived alongside the type-check grid (not in the old
+  nav pane), so it's untouched here.
 -->
 
 <script>
@@ -394,14 +364,17 @@
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
-  const savedUserPolicy = project.smartalock.wizard.user || {};
-  let accessPolicyChosen = Object.prototype.hasOwnProperty.call(savedUserPolicy, 'userAccessPolicy');
-  const state = Object.assign({
-    userAccessPolicy: "",
-    lockerGroupName: "",
-    userGroupName: "",
-    allocationDetails: ""
-  }, savedUserPolicy);
+  const TYPE_LABELS = {
+    large: 'Large', side: 'Side', top: 'Top', middle: 'Middle',
+    bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type'
+  };
+  const TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+
+  const saved = project.smartalock.wizard.lockerType || {};
+  const state = {
+    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    exampleNumbers: saved.exampleNumbers || {}
+  };
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -425,66 +398,77 @@
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
 
-  /* ---------------- fields ---------------- */
-  const userAccessPolicy = document.getElementById('userAccessPolicy');
-  const userGroupsBox = document.getElementById('userGroupsBox');
-  const lockerGroupName = document.getElementById('lockerGroupName');
-  const userGroupName = document.getElementById('userGroupName');
-  const allocationDetails = document.getElementById('allocationDetails');
+  /* ---------------- type grid ---------------- */
+  const grid = document.getElementById('typeCheckGrid');
+  const selectedTypes = document.getElementById('selectedTypes');
+  const emptyHint = document.getElementById('emptyHint');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
-  const accessPolicyVisualImg = document.getElementById('accessPolicyVisualImg');
-  const ACCESS_VISUAL_SRC = {
-    '': { src: '../assets/images/access-anyone.png', alt: 'Anyone' },
-    all: { src: '../assets/images/access-all-registered.png', alt: 'All Registered Users' },
-    groups: { src: '../assets/images/access-selected-groups.png', alt: 'Selected User Groups' }
-  };
 
-  function applyVisibility() {
-    userGroupsBox.classList.toggle('show', state.userAccessPolicy === 'groups');
-
-    const visualKey = accessPolicyChosen ? state.userAccessPolicy : 'all';
-    const visual = ACCESS_VISUAL_SRC[visualKey];
-    if (visual) {
-      accessPolicyVisualImg.src = visual.src;
-      accessPolicyVisualImg.alt = visual.alt;
-    }
+  function renderSelectedRows() {
+    selectedTypes.innerHTML = '';
+    const ordered = TYPE_ORDER.filter(t => state.selected.includes(t));
+    emptyHint.style.display = ordered.length ? 'none' : 'block';
+    ordered.forEach(type => {
+      const isCustom = type === 'custom';
+      const fieldLabel = isCustom ? 'Enter your custom locker type name' : 'Example Locker Number';
+      const fieldPlaceholder = isCustom ? 'e.g. "Middle Top"' : 'e.g. 101';
+      const row = document.createElement('div');
+      row.className = 'selected-type-row';
+      row.innerHTML = `
+        <div>
+          <span class="stt-label">Locker Type</span>
+          <span class="stt-name">${TYPE_LABELS[type]}</span>
+        </div>
+        <div>
+          <span class="stt-label">${fieldLabel}</span>
+          <input type="text" placeholder="${fieldPlaceholder}" data-type="${type}" value="${state.exampleNumbers[type] || ''}">
+        </div>
+      `;
+      row.querySelector('input').addEventListener('input', (e) => {
+        state.exampleNumbers[type] = e.target.value;
+        queueSave();
+      });
+      selectedTypes.appendChild(row);
+    });
   }
 
-  userAccessPolicy.value = state.userAccessPolicy;
-  lockerGroupName.value = state.lockerGroupName;
-  userGroupName.value = state.userGroupName;
-  allocationDetails.value = state.allocationDetails;
-  applyVisibility();
+  grid.querySelectorAll('.type-check-card').forEach(card => {
+    const type = card.getAttribute('data-type');
+    const checkbox = card.querySelector('input');
+    checkbox.checked = state.selected.includes(type);
+    card.classList.toggle('checked', checkbox.checked);
 
-  userAccessPolicy.addEventListener('change', () => { state.userAccessPolicy = userAccessPolicy.value; accessPolicyChosen = true; applyVisibility(); queueSave(); });
-  lockerGroupName.addEventListener('input', () => { state.lockerGroupName = lockerGroupName.value; queueSave(); });
-  userGroupName.addEventListener('input', () => { state.userGroupName = userGroupName.value; queueSave(); });
-  allocationDetails.addEventListener('input', () => {
-    state.allocationDetails = allocationDetails.value;
-    queueSave();
+    checkbox.addEventListener('change', () => {
+      card.classList.toggle('checked', checkbox.checked);
+      if (checkbox.checked) {
+        if (!state.selected.includes(type)) state.selected.push(type);
+      } else {
+        state.selected = state.selected.filter(t => t !== type);
+        delete state.exampleNumbers[type];
+      }
+      renderSelectedRows();
+      queueSave();
+    });
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.userAccessPolicy = '';
-    state.lockerGroupName = '';
-    state.userGroupName = '';
-    state.allocationDetails = '';
-    accessPolicyChosen = false;
-    userAccessPolicy.value = '';
-    lockerGroupName.value = '';
-    userGroupName.value = '';
-    allocationDetails.value = '';
-    applyVisibility();
+    state.selected = [];
+    state.exampleNumbers = {};
+    grid.querySelectorAll('.type-check-card').forEach(card => {
+      card.classList.remove('checked');
+      card.querySelector('input').checked = false;
+    });
+    renderSelectedRows();
     save();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('user');
+    markModuleSaved('locker-type');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-templates-07.html'; }, 500);
+    setTimeout(() => { window.location.href = 'smartalock-reservation-type-01.html'; }, 500);
   });
 
   let saveTimer = null;
@@ -496,11 +480,13 @@
   }
 
   function save() {
-    project.smartalock.wizard.user = state;
+    project.smartalock.wizard.lockerType = state;
     saveProject(project);
     saveText.textContent = 'Selection saved automatically';
     saveDot.classList.add('show');
   }
+
+  renderSelectedRows();
 })();
 </script>
 

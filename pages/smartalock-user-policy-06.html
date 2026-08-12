@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Locker Policy — Smartalock Configuration Studio (Template)</title>
+<title>User Policy — Smartalock Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -136,14 +136,13 @@
     background: #FFFFFF;
   }
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
-  .page-visual-frame.show-image img { display: block; width: 80.5%; height: 80.5%; object-fit: contain; }
+  .page-visual-frame.show-image img { display: block; width: 96.6%; height: 96.6%; object-fit: contain; }
 
   /* ---------- question cards ---------- */
   .qcard {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 18px; max-width: 560px; transition: border-color .18s, box-shadow .18s;
+    padding: 22px 24px; margin-bottom: 18px; max-width: 560px;
   }
-  .qcard.visual-active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
   .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
@@ -153,16 +152,30 @@
     font-family: var(--font-text); font-size: 11.73px; background: var(--paper-soft); color: var(--ink);
   }
   .qcard select:focus, .qcard textarea:focus, .qcard input[type="text"]:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .qcard textarea { min-height: 90px; resize: vertical; font-family: var(--font-text); }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-  .qcard-subfield { margin-top: 14px; display: none; }
-  .qcard-subfield.show { display: block; animation: fadeIn .22s ease; }
-  .field-error {
-    display: none; margin-top: 8px; font-size: 10.82px; color: var(--danger); font-weight: 500;
+  .assignment-box {
+    margin-top: 16px; padding: 20px 22px; background: var(--paper-soft); border: 1px solid var(--line);
+    border-radius: var(--radius-md); display: none;
   }
-  .field-error.show { display: block; }
-  .qcard-subfield.error input { border-color: var(--danger); }
+  .assignment-box.show { display: block; animation: fadeIn .22s ease; }
+  .assignment-box h4 { font-family: var(--font-display); font-size: 12.63px; margin: 0 0 4px; color: var(--header-grey); }
+  .assignment-box > p { font-size: 10.82px; color: var(--ink-soft); margin: 0 0 16px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
+  .form-field input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 11.73px; background: var(--paper);
+  }
+  .form-field input:focus { outline: none; border-color: var(--ink); }
+  .form-field-full { margin-top: 16px; }
+  .qcard-tag {
+    font-family: var(--font-text); font-size: 9.02px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 9px; border-radius: 100px; vertical-align: middle;
+  }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -221,43 +234,43 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="registration" href="smartalock-registration-00.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Project Registration</span>
         </a>
-          <a class="progress-seg" data-module="it" href="smartalock-templates-02.html">
+          <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
           </a>
-          <a class="progress-seg" data-module="access" href="smartalock-templates-09.html">
+          <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Initial Locker Access Methods</span>
           </a>
-          <a class="progress-seg" data-module="behaviour" href="smartalock-templates-03.html">
+          <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Locker Door Behaviour</span>
           </a>
-          <a class="progress-seg" data-module="locker-type" href="smartalock-templates-04.html">
+          <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Locker Types</span>
           </a>
-          <a class="progress-seg" data-module="reservation" href="smartalock-templates-01.html">
+          <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Reservation Type</span>
           </a>
-          <a class="progress-seg current" data-module="locker" href="smartalock-templates-05.html">
+          <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Locker Policy</span>
           </a>
-          <a class="progress-seg" data-module="user" href="smartalock-templates-06.html">
+          <a class="progress-seg current" data-module="user" href="smartalock-user-policy-06.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">User Policy</span>
           </a>
-          <a class="progress-seg" data-module="kiosk" href="smartalock-templates-07.html">
+          <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Kiosk Customisation</span>
           </a>
-          <a class="progress-seg" data-module="summary" href="smartalock-templates-08.html">
+          <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Configuration Summary</span>
           </a>
@@ -267,10 +280,10 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Locker Policy</h1>
-        <p class="sub">Idle timeout, per-user limits and release timing.</p>
+        <h1 class="hero-title">User Policy</h1>
+        <p class="sub">Decide who can access lockers on this site.</p>
       </div>
-      <h1 class="module-heading">Locker Policy</h1>
+      <h1 class="module-heading">User Policy</h1>
     </div>
   </div>
 
@@ -284,59 +297,50 @@
       <div class="content-with-visual">
         <div class="page-text">
 
-      <div class="qcard" id="qcard-idle" data-visual="idle">
-        <h3><img class="qcard-icon" src="../assets/images/icon-release-when-idle.png" alt="">Release when reserved but unused</h3>
-        <p class="qdesc">Choose how long a locker can remain unused before it is automatically released.</p>
-        <label>Release when idle</label>
-        <select id="idleDuration">
-          <option value="">Off</option>
-          <option value="48h">48 hours</option>
-          <option value="custom">Custom...</option>
+      <div class="qcard">
+        <h3><img class="qcard-icon" src="../assets/images/icon-who-can-use-lockers.png" alt="">Who Can Use Lockers</h3>
+        <p class="qdesc">Define which users are permitted to access lockers.</p>
+        <label>Access policy</label>
+        <select id="userAccessPolicy">
+          <option value="">Anyone</option>
+          <option value="all">All registered users</option>
+          <option value="groups">Selected user groups</option>
         </select>
 
-        <div class="qcard-subfield" id="customIdleWrap">
-          <label>Specify idle duration</label>
-          <input type="text" id="customIdleDuration" placeholder="Example: 72 hours">
-          <div class="field-error" id="customIdleError">Please specify the idle duration.</div>
+        <div class="assignment-box" id="userGroupsBox">
+          <h4>Locker Group Allocation</h4>
+          <p>Specify the relationship between user groups and locker groups.</p>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Locker Group</label>
+              <input type="text" id="lockerGroupName" placeholder="e.g. Level 2 Shared Lockers">
+            </div>
+            <div class="form-field">
+              <label>User Group</label>
+              <input type="text" id="userGroupName" placeholder="e.g. Marketing Team">
+            </div>
+          </div>
+          <div class="form-field form-field-full">
+            <label>Additional allocation details <span class="qcard-tag">Optional</span></label>
+            <textarea id="allocationDetails" placeholder="Specify any additional user group or locker group allocations..."></textarea>
+          </div>
         </div>
-      </div>
-
-      <div class="qcard" id="qcard-limits" data-visual="limits">
-        <h3><img class="qcard-icon" src="../assets/images/icon-locker-limits.png" alt="">Lockers per User</h3>
-        <p class="qdesc">Define how many lockers a user can reserve.</p>
-        <label>Maximum lockers per user</label>
-        <select id="lockerLimit">
-          <option value="2">2</option>
-          <option value="1">1</option>
-          <option value="3">3</option>
-          <option value="unlimited">No limit</option>
-        </select>
-      </div>
-
-      <div class="qcard" id="qcard-behaviour" data-visual="behaviour">
-        <h3><img class="qcard-icon" src="../assets/images/icon-release-behaviour.png" alt="">Release Behaviour</h3>
-        <p class="qdesc">Define when a locker becomes available again.</p>
-        <label>When do we release an expired locker?</label>
-        <select id="releaseBehaviour">
-          <option value="grace">Allow one final locker access after expiry</option>
-          <option value="immediate">Release when reservation expires</option>
-        </select>
       </div>
 
         </div>
 
         <div class="page-visual">
           <div class="page-visual-frame show-image">
-            <img id="lockerPolicyVisualImg" src="" alt="">
+            <img id="accessPolicyVisualImg" src="" alt="">
           </div>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-templates-01.html">
+        <a class="page-nav-btn" href="smartalock-locker-policy-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-templates-06.html">
+        <a class="page-nav-btn next" href="smartalock-kiosk-customisation-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -358,7 +362,7 @@
 </main>
 
 <!--
-  NOTE for Oleg: template variant of locker-policy-v4.html — nav pane removed, horizontal progress bar
+  NOTE for Oleg: template variant of user-policy-v4.html — nav pane removed, horizontal progress bar
   under the branding instead. No image lived in this page's nav pane, so content is otherwise unchanged.
 -->
 
@@ -390,12 +394,14 @@
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
+  const savedUserPolicy = project.smartalock.wizard.user || {};
+  let accessPolicyChosen = Object.prototype.hasOwnProperty.call(savedUserPolicy, 'userAccessPolicy');
   const state = Object.assign({
-    idleDuration: "",
-    customIdleDuration: "",
-    lockerLimit: "2",
-    releaseBehaviour: "grace"
-  }, project.smartalock.wizard.locker || {});
+    userAccessPolicy: "",
+    lockerGroupName: "",
+    userGroupName: "",
+    allocationDetails: ""
+  }, savedUserPolicy);
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -420,87 +426,65 @@
   });
 
   /* ---------------- fields ---------------- */
-  const idleDuration = document.getElementById('idleDuration');
-  const customIdleWrap = document.getElementById('customIdleWrap');
-  const customIdleDuration = document.getElementById('customIdleDuration');
-  const customIdleError = document.getElementById('customIdleError');
-  const lockerLimit = document.getElementById('lockerLimit');
-  const releaseBehaviour = document.getElementById('releaseBehaviour');
+  const userAccessPolicy = document.getElementById('userAccessPolicy');
+  const userGroupsBox = document.getElementById('userGroupsBox');
+  const lockerGroupName = document.getElementById('lockerGroupName');
+  const userGroupName = document.getElementById('userGroupName');
+  const allocationDetails = document.getElementById('allocationDetails');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
-
-  function applyIdleVisibility() {
-    customIdleWrap.classList.toggle('show', state.idleDuration === 'custom');
-    if (state.idleDuration !== 'custom') clearIdleError();
-  }
-  function showIdleError() {
-    customIdleWrap.classList.add('error');
-    customIdleError.classList.add('show');
-  }
-  function clearIdleError() {
-    customIdleWrap.classList.remove('error');
-    customIdleError.classList.remove('show');
-  }
-
-  idleDuration.value = state.idleDuration;
-  customIdleDuration.value = state.customIdleDuration;
-  lockerLimit.value = state.lockerLimit;
-  releaseBehaviour.value = state.releaseBehaviour;
-  applyIdleVisibility();
-
-  /* ---------------- policy visual (switches per card, defaults to idle) ---------------- */
-  const lockerPolicyVisualImg = document.getElementById('lockerPolicyVisualImg');
-  const VISUAL_SRC = {
-    idle: { src: '../assets/images/locker-policy-release-when-idle.png', alt: 'Release when reserved but unused' },
-    limits: { src: '../assets/images/locker-policy-lockers-per-user.png', alt: 'Lockers per User' },
-    behaviour: { src: '../assets/images/locker-policy-release-behaviour.png', alt: 'Release Behaviour' }
+  const accessPolicyVisualImg = document.getElementById('accessPolicyVisualImg');
+  const ACCESS_VISUAL_SRC = {
+    '': { src: '../assets/images/access-anyone.png', alt: 'Anyone' },
+    all: { src: '../assets/images/access-all-registered.png', alt: 'All Registered Users' },
+    groups: { src: '../assets/images/access-selected-groups.png', alt: 'Selected User Groups' }
   };
-  function showPolicyVisual(key) {
-    const visual = VISUAL_SRC[key];
-    if (!visual) return;
-    lockerPolicyVisualImg.src = visual.src;
-    lockerPolicyVisualImg.alt = visual.alt;
-    document.querySelectorAll('.qcard[data-visual]').forEach(c => c.classList.toggle('visual-active', c.getAttribute('data-visual') === key));
-  }
-  document.querySelectorAll('.qcard[data-visual]').forEach(card => {
-    card.addEventListener('focusin', () => showPolicyVisual(card.getAttribute('data-visual')));
-    card.addEventListener('click', () => showPolicyVisual(card.getAttribute('data-visual')));
-  });
-  showPolicyVisual('idle');
 
-  idleDuration.addEventListener('change', () => { state.idleDuration = idleDuration.value; applyIdleVisibility(); queueSave(); });
-  customIdleDuration.addEventListener('input', () => {
-    state.customIdleDuration = customIdleDuration.value;
-    if (customIdleDuration.value.trim() !== '') clearIdleError();
+  function applyVisibility() {
+    userGroupsBox.classList.toggle('show', state.userAccessPolicy === 'groups');
+
+    const visualKey = accessPolicyChosen ? state.userAccessPolicy : 'all';
+    const visual = ACCESS_VISUAL_SRC[visualKey];
+    if (visual) {
+      accessPolicyVisualImg.src = visual.src;
+      accessPolicyVisualImg.alt = visual.alt;
+    }
+  }
+
+  userAccessPolicy.value = state.userAccessPolicy;
+  lockerGroupName.value = state.lockerGroupName;
+  userGroupName.value = state.userGroupName;
+  allocationDetails.value = state.allocationDetails;
+  applyVisibility();
+
+  userAccessPolicy.addEventListener('change', () => { state.userAccessPolicy = userAccessPolicy.value; accessPolicyChosen = true; applyVisibility(); queueSave(); });
+  lockerGroupName.addEventListener('input', () => { state.lockerGroupName = lockerGroupName.value; queueSave(); });
+  userGroupName.addEventListener('input', () => { state.userGroupName = userGroupName.value; queueSave(); });
+  allocationDetails.addEventListener('input', () => {
+    state.allocationDetails = allocationDetails.value;
     queueSave();
   });
-  lockerLimit.addEventListener('change', () => { state.lockerLimit = lockerLimit.value; queueSave(); });
-  releaseBehaviour.addEventListener('change', () => { state.releaseBehaviour = releaseBehaviour.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.idleDuration = '';
-    state.customIdleDuration = '';
-    state.lockerLimit = '2';
-    state.releaseBehaviour = 'grace';
-    idleDuration.value = '';
-    customIdleDuration.value = '';
-    lockerLimit.value = '2';
-    releaseBehaviour.value = 'grace';
-    applyIdleVisibility();
+    state.userAccessPolicy = '';
+    state.lockerGroupName = '';
+    state.userGroupName = '';
+    state.allocationDetails = '';
+    accessPolicyChosen = false;
+    userAccessPolicy.value = '';
+    lockerGroupName.value = '';
+    userGroupName.value = '';
+    allocationDetails.value = '';
+    applyVisibility();
     save();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
-    if (state.idleDuration === 'custom' && customIdleDuration.value.trim() === '') {
-      showIdleError();
-      customIdleDuration.focus();
-      return;
-    }
     save();
-    markModuleSaved('locker');
+    markModuleSaved('user');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-templates-06.html'; }, 500);
+    setTimeout(() => { window.location.href = 'smartalock-kiosk-customisation-07.html'; }, 500);
   });
 
   let saveTimer = null;
@@ -512,7 +496,7 @@
   }
 
   function save() {
-    project.smartalock.wizard.locker = state;
+    project.smartalock.wizard.user = state;
     saveProject(project);
     saveText.textContent = 'Selection saved automatically';
     saveDot.classList.add('show');
