@@ -259,11 +259,15 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Policy</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg current" data-module="reservation-length" href="floorsense-reservation-length-05.html">
+        <a class="progress-seg current" data-module="reservation-length" href="floorsense-reservation-length-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
@@ -350,7 +354,7 @@
       </label>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-prebooking-advance-04.html">
+        <a class="page-nav-btn" href="floorsense-prebooking-advance-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <span class="page-nav-btn disabled">
@@ -376,9 +380,9 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 05 of the Floorsense wizard family — follows floorsense-prebooking-
-  advance-04.html. This page was split out of the original Check-in Policy page per a later
-  request, so it covers two related settings: Default Reservation Length: a radio group defaulting
+  NOTE for Oleg: module 06 of the Floorsense wizard family (renamed from 05 — see below) — follows
+  floorsense-prebooking-advance-05.html. This page was split out of the original Check-in Policy
+  page per a later request, so it covers two related settings: Default Reservation Length: a radio group defaulting
   to "Until the user releases the desk themselves" (no default was specified in the brief, so the
   first/most permissive option was picked — flag if a different default is wanted); selecting
   "For a fixed period" reveals a free-text field rather than a rigid duration picker, since the
@@ -387,12 +391,20 @@
   Other, defaulting to 1) added per a follow-up request, with "Other" revealing a free numeric
   field; plus a standalone toggle for "user can tag onto certain (non bookable) meeting space
   desks without losing existing workspace desk reservation" — kept independent of the radio group
-  since it's a separate on/off feature, not a value for the same question. There's no module 06
+  since it's a separate on/off feature, not a value for the same question. There's no module 07
   yet, so the next-arrow is disabled; Continue just saves in place. State lives at
   project.floorsense.wizard.reservationLength = { reservationLengthMode,
   reservationLengthFixedDescription } and project.floorsense.wizard.maxDesksPerUser =
   { mode, otherValue, allowMeetingSpaceTag } in the same "configurationProject" localStorage key
   as the other Floorsense modules.
+
+  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-04.html) was
+  inserted earlier in the wizard, which bumped floorsense-prebooking-advance-04.html to -05.html;
+  this file was renamed from floorsense-reservation-length-05.html to -06.html to keep the numbers
+  sequential (a straight filesystem rename — field ids, state shape, and everything else below are
+  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance-05.html
+  accordingly, and its progress bar gained a 7th "idle-release" segment between "Check-in Policy"
+  and "Prebooking Window".
 -->
 
 <script>

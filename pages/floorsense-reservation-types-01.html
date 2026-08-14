@@ -258,11 +258,15 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Policy</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-05.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
@@ -356,7 +360,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn" href="pick-a-product.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <a class="page-nav-btn next" href="floorsense-checkin-methods-02.html">
@@ -386,8 +390,16 @@
   parallel to the Smartalock family. State now lives under the shared "configurationProject"
   localStorage key at project.floorsense.wizard.reservationTypes (was previously its own
   top-level "floorsenseDeskTemplates" key on the old floorsense-templates.html — migrated here
-  since this is now a first-class wizard module). Continue routes to
-  floorsense-checkin-methods-02.html. "Team Leader Allocated" and "Booked on Behalf" were added
+  since this is now a first-class wizard module). Per a later request, this page is now the
+  Floorsense wizard's actual entry point (its back-arrow goes straight to pick-a-product.html, and
+  pick-a-product.html's Floorsense card now lands here instead of on floorsense-setup-path-00.html)
+  — the click-through order is 01 -> 00 -> 02 -> 03 -> 04 -> 05, so Continue now routes to
+  floorsense-setup-path-00.html instead of floorsense-checkin-methods-02.html; setup-path-00's
+  own "Build Your Own" branch now continues to checkin-methods-02.html directly, since reservation
+  types are already collected by the time someone reaches it. The progress bar above still lists
+  all six modules in their original 00-05 numeric order regardless of this click-through order,
+  matching the convention used for the Smartalock wizard's own 00/02 reorder. "Team Leader
+  Allocated" and "Booked on Behalf" were added
   as two more selectable cards (data-template="team-leader" / "booked-on-behalf") per a later
   request — both are plain multi-select cards with no sub-panel, so they're picked up
   automatically by the existing generic .desk-check-card checkbox loop below without any JS
@@ -402,6 +414,17 @@
   agent following the org's policy rules, rather than a person selecting or being assigned a desk
   directly — flag if this needs its own configuration (e.g. which policy rules the agent follows)
   once that's specified; for now it's just a selectable allocation method like the others.
+
+  Per a later request, the Floorsense wizard's click-through order changed again:
+  floorsense-setup-path-00.html now comes AFTER floorsense-checkin-methods-02.html instead of
+  right after this page (order is now 01 -> 02 -> 00 -> 03 -> 04 -> 05 -> 06, was 01 -> 00 -> 02 ->
+  ...). This page remains the wizard's entry point (back-arrow still goes to pick-a-product.html),
+  but its next-arrow/Continue destination changed from floorsense-setup-path-00.html to
+  floorsense-checkin-methods-02.html. See floorsense-checkin-methods-02.html's and
+  floorsense-setup-path-00.html's own NOTEs for the rest of that reorder. The progress bar above
+  also gained a 7th "idle-release" segment (a new page inserted between Check-in Policy and
+  Prebooking Window — see floorsense-idle-release-04.html) — unrelated to this reorder, but landed
+  in the same round of edits.
 -->
 
 <script>

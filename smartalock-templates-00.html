@@ -45,44 +45,6 @@
   .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
-  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
-  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
-  .progress-seg {
-    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
-    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  }
-  .progress-seg-fill {
-    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
-    transition: background .18s, box-shadow .18s;
-  }
-  .progress-seg.saved .progress-seg-fill { background: #102A43; }
-  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
-  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
-
-  .progress-seg-tip {
-    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
-    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
-    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
-    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
-  }
-  .progress-seg-tip::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--ink);
-  }
-  .progress-seg:hover .progress-seg-tip,
-  .progress-seg:focus-visible .progress-seg-tip,
-  .progress-seg.tapped .progress-seg-tip {
-    opacity: 1; transform: translateX(-50%) translateY(0);
-  }
-  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
-  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
-  .progress-seg:first-child:hover .progress-seg-tip,
-  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
-  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
-  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
-  .progress-seg:last-child:hover .progress-seg-tip,
-  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
-
   .eyebrow {
     font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
     display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
@@ -157,7 +119,7 @@
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    display: flex; align-items: center; justify-content: flex-end; gap: 16px;
     margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
   }
   .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
@@ -225,52 +187,9 @@
     <div class="top-frame">
       <div class="panel-inner">
         <div class="brand">
-          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <img class="brand-logo" src="assets/images/smartalock-logo.png" alt="Smartalock">
           <span class="brand-tagline">Configuration Studio · Module Preview</span>
         </div>
-
-        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg current" data-module="registration" href="smartalock-templates-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Project Registration</span>
-        </a>
-        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
-        </a>
-        <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Initial Locker Access Methods</span>
-        </a>
-        <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Door Behaviour</span>
-        </a>
-        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Types</span>
-        </a>
-        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Reservation Type</span>
-        </a>
-        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Policy</span>
-        </a>
-        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">User Policy</span>
-        </a>
-        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Kiosk Customisation</span>
-        </a>
-        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Configuration Summary</span>
-        </a>
-        </nav>
       </div>
     </div>
 
@@ -295,7 +214,7 @@
 
       <div class="qcard-grid">
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-company.png" alt="">Company Details</h3>
+        <h3><img class="qcard-icon" src="assets/images/icon-company.png" alt="">Company Details</h3>
         <p class="qdesc">Basic details about the company and site this configuration is for.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -314,7 +233,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-contacts.png" alt="">Contacts <span class="qcard-tag">Optional</span></h3>
+        <h3><img class="qcard-icon" src="assets/images/icon-contacts.png" alt="">Contacts <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -341,7 +260,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-dates.png" alt="">Project Dates <span class="qcard-tag">Optional</span></h3>
+        <h3><img class="qcard-icon" src="assets/images/icon-dates.png" alt="">Project Dates <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -360,7 +279,7 @@
 
       <div class="page-visual">
         <div class="page-visual-frame show-image">
-          <img src="../assets/images/registration-process-illustration.png" alt="Registration steps: company details, key contacts, project dates, then ready to configure">
+          <img src="assets/images/registration-process-illustration.png" alt="Registration steps: company details, key contacts, project dates, then ready to configure">
         </div>
         <p class="page-visual-caption">From company details to go-live in four steps.</p>
       </div>
@@ -368,10 +287,7 @@
       </div>
 
       <div class="page-nav">
-        <span class="page-nav-btn disabled">
-          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
-        </span>
-        <a class="page-nav-btn next" href="smartalock-it-configuration-02.html">
+        <a class="page-nav-btn next" href="pages/smartalock-it-configuration-02.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -399,12 +315,28 @@
   lead on to IT Configuration. Field set mirrors register.html's Company Details / Contacts / Project
   Dates sections. Data is saved under project.registration (customer, site, email, policy, it, training,
   support, facilities, installationDate, completionDate) — the same top-level object register.html and
-  reports.html read from — while moduleStatus.registration drives the progress-bar "saved" state like
-  every other module. Per a later request, this page is now the true starting page of the whole site
-  (opened before index.html, not after it) — its back-arrow was disabled (span.page-nav-btn.disabled)
-  since there's nothing before it anymore. The opening sequence is now 00 -> 02 (IT Configuration) ->
-  index.html, where index.html's Smartalock card resumes the wizard at Access Methods (09) rather
-  than restarting here.
+  reports.html read from — while moduleStatus.registration still gets set via markModuleSaved() on
+  Continue, for other pages' progress bars to read. Per a later request, this page is now the true
+  starting page of the whole site (opened before index.html, not after it) — its back-arrow was
+  disabled (span.page-nav-btn.disabled) since there's nothing before it anymore. The opening
+  sequence is now 00 -> 02 (IT Configuration) -> index.html, where index.html's Smartalock card
+  resumes the wizard at Access Methods (09) rather than restarting here. Per a further request, the
+  progress bar itself (nav.progress-bar, all its CSS, and the tap/hover listener wiring) was removed
+  from this page entirely, since it's now a standalone entry point rather than a step inside the
+  visible 10-segment wizard sequence — markModuleSaved() still writes moduleStatus.registration so
+  the bar on other pages (which still show a "registration" segment) reflects completion correctly.
+  Per a further request, this file was physically moved from pages/ to the project root (it's now
+  literally the first file you open — /smartalock-templates-00.html, not pages/smartalock-templates-
+  00.html), and its now-disabled back-arrow was removed outright rather than left as a disabled span
+  (page-nav's justify-content changed from space-between to flex-end so the remaining next-arrow
+  still sits correctly on the right). All of its own asset paths lost their `../` prefix (e.g.
+  assets/images/smartalock-logo.png, not ../assets/images/...) since it's now one level higher than
+  before, and its next-arrow / Continue-button destination gained a `pages/` prefix (pages/smartalock-
+  it-configuration-02.html) for the same reason. Every other Smartalock wizard page's progress-seg
+  link back to this page was updated from href="smartalock-templates-00.html" to
+  href="../smartalock-templates-00.html" to match its new location. The site's old root index.html
+  was renamed to pages/pick-a-product.html (still the Smartalock/Floorsense picker, just relocated
+  and no longer the first page opened) — see its own NOTE for details.
 -->
 
 <script>
@@ -450,27 +382,11 @@
     completionDate: saved.completionDate || ""
   };
 
-  /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
-  function renderProgressBar() {
-    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
-      const key = seg.getAttribute('data-module');
-      seg.classList.toggle('saved', !!project.smartalock.wizard.moduleStatus[key]);
-    });
-  }
+  /* ---------------- module-status tracking (no visible progress bar on this page) ---------------- */
   function markModuleSaved(key) {
     project.smartalock.wizard.moduleStatus[key] = true;
     saveProject(project);
-    renderProgressBar();
   }
-  renderProgressBar();
-
-  document.querySelectorAll('.progress-seg').forEach(seg => {
-    seg.addEventListener('pointerdown', () => {
-      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
-      seg.classList.add('tapped');
-    });
-    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
-  });
 
   /* ---------------- fields ---------------- */
   const fieldEls = {
@@ -509,7 +425,7 @@
     markModuleSaved('registration');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-it-configuration-02.html'; }, 500);
+    setTimeout(() => { window.location.href = 'pages/smartalock-it-configuration-02.html'; }, 500);
   });
 
   let saveTimer = null;

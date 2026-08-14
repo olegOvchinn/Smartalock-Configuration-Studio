@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         alert("No project loaded.");
 
-        window.location.href = "../index.html";
+        window.location.href = "pick-a-product.html";
 
         return;
 

@@ -121,12 +121,12 @@
   button.primary:hover { background: var(--accent-deep); }
   button.primary:active { transform: scale(0.98); }
   button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
-  button.ghost {
+  .ghost {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent);
     background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
-    transition: border-color .15s, background .15s;
+    transition: border-color .15s, background .15s; text-decoration: none; display: inline-flex; align-items: center;
   }
-  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+  .ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
@@ -157,7 +157,7 @@
     <div class="top-frame">
       <div class="panel-inner">
         <div class="brand">
-          <img class="brand-logo" src="assets/images/smartalock-logo.png" alt="Smartalock">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
           <span class="brand-divider">×</span>
           <span class="brand-logo-floorsense">Floorsense</span>
           <span class="brand-tagline">Configuration Studio · Getting Started</span>
@@ -221,7 +221,10 @@
 
   <div class="action-bar">
     <div class="panel-inner">
-      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Pick a product line to continue</span></div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <a class="ghost" href="smartalock-it-configuration-02.html">← Back</a>
+        <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Pick a product line to continue</span></div>
+      </div>
       <div style="display:flex; gap:10px;">
         <button class="ghost" id="clearBtn" type="button">Clear</button>
         <button class="primary" id="continueBtn" type="button" disabled>Continue</button>
@@ -234,22 +237,26 @@
 </main>
 
 <!--
-  NOTE for Oleg: this is the site's home page. Formerly pages/configuration-start.html, moved to the
-  project root and given the site's name so it loads automatically when the folder/domain root is
-  opened. Choosing "Floorsense" still routes to pages/floorsense-setup-path-00.html (start of that
-  product line's own configuration engine, unchanged).
-
-  Per a later request, this page is no longer the very first thing a Smartalock user sees: Project
-  Registration (smartalock-templates-00.html) and IT Configuration (smartalock-it-configuration-02.html)
-  now happen BEFORE this picker, as universal pre-steps that apply regardless of which product gets
-  configured next — 00 -> 02 -> here. Accordingly, the "Smartalock" card's destination changed from
-  smartalock-templates-00.html to smartalock-access-methods-09.html: since 00 and 02 are already
-  done by the time someone lands here from 02's continue button, choosing Smartalock resumes the
-  wizard at its next actual step (Access Methods, 09) rather than restarting Project Registration.
-  The rest of the Smartalock order (09 -> 03 -> 04 -> 01 -> 05 -> 06 -> 07 -> 08) is unchanged. This
-  page still has no page-nav back-arrow even though it's no longer literally first — flag if you'd
-  like one added back to smartalock-it-configuration-02.html for symmetry. No project state is
-  written here — this page is a router only, not a wizard module.
+  NOTE for Oleg: this is the Smartalock/Floorsense product picker. Formerly pages/configuration-
+  start.html, then promoted to the project root as index.html so it loaded automatically at the
+  site root. Per a later request it was renamed to pick-a-product.html and moved into pages/,
+  since it's no longer the very first thing anyone sees: Project Registration
+  (../smartalock-templates-00.html, now living at the project root) and IT Configuration
+  (smartalock-it-configuration-02.html) happen BEFORE this picker as universal pre-steps — the
+  opening sequence is 00 -> 02 -> here. Choosing "Smartalock" resumes the wizard at Access Methods
+  (smartalock-access-methods-09.html) rather than restarting at 00, since 00/02 are already done by
+  the time someone reaches this page from 02's continue button. Choosing "Floorsense" now routes
+  to floorsense-reservation-types-01.html — per a later request, the Floorsense wizard's internal
+  click-through order was changed to 01 -> 00 -> 02 -> 03 -> 04 -> 05 (reservation-types-01 is now
+  that wizard's own entry page instead of setup-path-00; see the NOTE comments on those two files
+  for the full rewiring). All three destination paths dropped their pages/ prefix since this file
+  now lives alongside them as a sibling, rather than one level up at the project root. Every page
+  that used to link to ../index.html (it-configuration-02's next-arrow/Continue, access-methods-
+  09's back-arrow, floorsense-setup-path-00's back-arrow, plus the legacy dashboard/reports/wizard/
+  ai-policy-workshop/templates pages' "Home" links and js/dashboard.js) was repointed to
+  pick-a-product.html. A back-arrow (to smartalock-it-configuration-02.html) was added to this
+  page's action-bar area since it's now genuinely reached mid-flow, not just as an unlinked root
+  page. No project state is written here — this page is a router only, not a wizard module.
 -->
 
 <script>
@@ -257,11 +264,11 @@
   const PRODUCTS = {
     smartalock: {
       label: 'Smartalock',
-      dest: 'pages/smartalock-access-methods-09.html'
+      dest: 'smartalock-access-methods-09.html'
     },
     floorsense: {
       label: 'Floorsense',
-      dest: 'pages/floorsense-setup-path-00.html'
+      dest: 'floorsense-reservation-types-01.html'
     }
   };
 

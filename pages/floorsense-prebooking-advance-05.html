@@ -239,11 +239,15 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Policy</span>
         </a>
-        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-05.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
@@ -286,10 +290,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-checkin-policy-03.html">
+        <a class="page-nav-btn" href="floorsense-idle-release-04.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-reservation-length-05.html">
+        <a class="page-nav-btn next" href="floorsense-reservation-length-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -312,13 +316,21 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 04 of the Floorsense wizard family — follows floorsense-checkin-
-  policy-03.html and continues to floorsense-reservation-length-05.html. This page was split out
-  of the original Check-in Policy page per a later request, so it only covers the prebooking
-  advance-window field (default 8 days, clamped to a max of 15 in both the input's max attribute
-  and in JS on input/blur). State lives at project.floorsense.wizard.prebookingAdvance =
+  NOTE for Oleg: module 05 of the Floorsense wizard family (renamed from 04 — see below) — follows
+  floorsense-idle-release-04.html and continues to floorsense-reservation-length-06.html. This page
+  was split out of the original Check-in Policy page per a later request, so it only covers the
+  prebooking advance-window field (default 8 days, clamped to a max of 15 in both the input's max
+  attribute and in JS on input/blur). State lives at project.floorsense.wizard.prebookingAdvance =
   { prebookingAdvanceDays } in the same "configurationProject" localStorage key as the other
   Floorsense modules.
+
+  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-04.html) was
+  inserted into the wizard immediately before this one, so this file was renamed from
+  floorsense-prebooking-advance-04.html to -05.html to make room (a straight filesystem rename —
+  the field ids, state shape, and everything else below are unchanged). This page's back-arrow
+  changed from floorsense-checkin-policy-03.html to floorsense-idle-release-04.html accordingly,
+  and its progress bar gained a 7th "idle-release" segment between "Check-in Policy" and
+  "Prebooking Window".
 -->
 
 <script>

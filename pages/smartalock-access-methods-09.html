@@ -237,7 +237,7 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="registration" href="../smartalock-templates-00.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Project Registration</span>
         </a>
@@ -375,7 +375,7 @@
       <p class="empty-hint" id="emptyHint">No access methods selected yet — check any that apply above.</p>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="../index.html">
+        <a class="page-nav-btn" href="pick-a-product.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <a class="page-nav-btn next" href="smartalock-locker-behaviour-03.html">
@@ -410,10 +410,13 @@
   assigned (random / client-provided list / same-for-everyone-until-first-use) - left unset unless
   the client has a preference. State is saved under project.smartalock.wizard.accessMethods as
   { selected: [...], cardAssignMethod, pinAssignMethod }. Back-arrow was repointed from
-  smartalock-it-configuration-02.html to ../index.html per a later request: Project Registration (00)
-  and IT Configuration (02) now happen before the product picker, and index.html's Smartalock card
-  routes straight here (resuming the wizard) rather than restarting at 00 — so this page's "back" now
-  correctly reflects how it's actually reached.
+  smartalock-it-configuration-02.html to the product picker per a later request: Project
+  Registration (00) and IT Configuration (02) now happen before the product picker, and the
+  picker's Smartalock card routes straight here (resuming the wizard) rather than restarting at 00
+  — so this page's "back" now correctly reflects how it's actually reached. Per a further request,
+  root-level index.html was renamed to pages/pick-a-product.html (this page's back-arrow now points
+  there directly, same-folder link, no more ../) and smartalock-templates-00.html moved from pages/
+  to the project root (this page's progress-seg link to it above gained a ../ prefix accordingly).
 -->
 
 <script>

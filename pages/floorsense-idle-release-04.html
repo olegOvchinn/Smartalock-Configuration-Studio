@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check-in Methods — Floorsense Configuration Studio (Template)</title>
+<title>Auto-Release on Idle — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -121,49 +121,41 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
-  .section-head p a { color: var(--accent-deep); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--accent-wash); }
-  .section-head p a:hover { border-bottom-color: var(--accent-deep); }
 
-  /* ---------- desk reservation-method cards (multi-select, same tick-box language as pages 04/09) ---------- */
-  .desk-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
-  .desk-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+  /* ---------- explainer card (icon+desc, live example, footer) — shared pattern, first introduced on floorsense-checkin-policy-03.html ---------- */
+  .checkin-card {
+    max-width: 640px; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); overflow: hidden;
   }
-  .desk-check-card:hover { border-color: var(--accent); }
-  .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .desk-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
-  .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .desk-tick {
-    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
+  .checkin-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  .desk-check-card.checked .desk-tick { border-color: var(--accent); background: var(--accent); }
-  .desk-tick::after {
-    content: ''; width: 6px; height: 10px; margin-top: -1px;
-    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
-    opacity: 0; transition: opacity .15s;
+  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
+  .checkin-inline-field {
+    display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
+    background: var(--accent-wash); border-radius: 8px; padding: 2px 4px 2px 8px; margin: 0 1px;
   }
-  .desk-check-card.checked .desk-tick::after { opacity: 1; }
-  .desk-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
-  .desk-card-body { min-width: 0; flex: 1; }
-  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
-  .desk-tag {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
+  .checkin-inline-input {
+    width: 42px; border: none; background: transparent; font-family: var(--font-text);
+    font-size: 14.76px; font-weight: 700; color: var(--accent-deep); text-align: right; padding: 2px 0;
   }
-  .desk-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .desk-note { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+  .checkin-inline-input:focus { outline: none; }
+  .checkin-inline-suffix { font-size: 13.5px; font-weight: 600; color: var(--accent-deep); padding-right: 4px; }
 
-  /* ---------- pre-booking follow-up notice (matches access-subfields pattern) ---------- */
-  .desk-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .desk-subfields.show { display: flex; }
-  .desk-subfields-label { display: flex; align-items: center; gap: 8px; font-size: 12.1px; font-weight: 500; color: var(--ink); margin: 0; }
-  .desk-subfields-tag {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
+  .checkin-example { background: var(--paper-soft); padding: 20px 22px 24px; }
+  .checkin-example-label {
+    font-family: var(--font-text); font-size: 9.43px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent-deep); display: block; text-align: center; margin-bottom: 6px;
   }
+  .checkin-example svg { width: 100%; height: auto; display: block; }
+
+  .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
+  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -199,7 +191,6 @@
   }
   button.primary:hover { background: var(--accent-deep); }
   button.primary:active { transform: scale(0.98); }
-  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
   button.ghost {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
     background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
@@ -251,7 +242,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg current" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
@@ -259,7 +250,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Policy</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-04.html">
+        <a class="progress-seg current" data-module="idle-release" href="floorsense-idle-release-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
         </a>
@@ -277,9 +268,9 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Check-in Methods</h1>
-        <p class="sub">Choose how end users can reserve and check into a desk.</p>
+        <span class="eyebrow">Configure</span>
+        <h1 class="hero-title">Auto-Release on Idle</h1>
+        <p class="sub">Free up desks that were reserved but never actually used.</p>
       </div>
     </div>
   </div>
@@ -287,84 +278,68 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Initial Desk Reservation Methods</h2>
-      </div>
-
-      <div class="desk-check-grid" id="methodGrid">
-        <div class="desk-check-card" data-method="card">
-          <label class="desk-row">
-            <input type="checkbox" value="card">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">Building Access Cards at Desk <span class="desk-tag">Default</span></h3>
-              <p class="desk-desc">Users swipe their existing building access card or fob at any desk to reserve it for their session.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="desk-check-card" data-method="app">
-          <label class="desk-row">
-            <input type="checkbox" value="app">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">Floorsense App at Desk</h3>
-              <p class="desk-desc">Known users open the Floorsense App and tap to reserve the desk they're sitting at.</p>
-              <p class="desk-note">Not available for anonymous users.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="desk-check-card" data-method="qr">
-          <label class="desk-row">
-            <input type="checkbox" value="qr">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2M14 19h2M17 17h4v4h-4z" fill="currentColor" stroke="none"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">QR Code at Desk</h3>
-              <p class="desk-desc">Users scan a QR code displayed at the desk to reserve it for their session.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="desk-check-card" data-method="wallet">
-          <label class="desk-row">
-            <input type="checkbox" value="wallet">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 8.5h18"/><line x1="7" y1="13" x2="12" y2="13"/><line x1="7" y1="16.5" x2="15" y2="16.5"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">Wallet Pass at Desk</h3>
-              <p class="desk-desc">Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it.</p>
-              <p class="desk-note">Not available for anonymous users.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="desk-check-card" data-method="prebooking">
-          <label class="desk-row">
-            <input type="checkbox" value="prebooking">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">Floorsense App or Web Portal Prebooking</h3>
-              <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense App, the my.floorsense.com.au web portal, or a kiosk with a swipe card reader. A pre-booked desk must still be physically checked into via App or swipe card within a set time, or it's released back to general availability.</p>
-              <p class="desk-note">Not available for anonymous users.</p>
-            </div>
-          </label>
-          <div class="desk-subfields" id="prebookingSubfields">
-            <div class="desk-subfields-label">Pre-booking rules will be configured in a follow-up step <span class="desk-subfields-tag">If enabled for all users</span></div>
+      <div class="checkin-card">
+        <div class="checkin-card-header">
+          <div class="checkin-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
           </div>
+          <p class="checkin-card-desc">
+            If a desk sits unclaimed or unused for
+            <span class="checkin-inline-field">
+              <input type="number" min="0" step="0.5" value="3" class="checkin-inline-input" id="idleHours" aria-label="Auto-release on idle, hours">
+              <span class="checkin-inline-suffix">hours</span>
+            </span>
+            it's automatically released back to general availability.
+          </p>
+        </div>
+
+        <div class="checkin-example">
+          <span class="checkin-example-label">Example</span>
+          <svg viewBox="0 0 900 90" role="img">
+            <title>Auto-release on idle, independent of the day's schedule</title>
+            <desc>A three-step flow: a desk is reserved with no check-in yet, three hours pass with no activity (which can happen at any time on any day, not tied to any particular reservation window), then the desk is released back to general use.</desc>
+            <style>
+              .ir-lbl { font-family: 'Inter', -apple-system, sans-serif; }
+              .ir-title { font-size: 13px; font-weight: 600; fill: #1D1D1F; }
+              .ir-sub { font-size: 10.5px; fill: #6E6E73; }
+            </style>
+            <rect x="30" y="15" width="230" height="58" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
+            <text x="145" y="40" class="ir-lbl ir-title" text-anchor="middle">Desk reserved</text>
+            <text x="145" y="58" class="ir-lbl ir-sub" text-anchor="middle">no check-in yet</text>
+
+            <path d="M266 44 L300 44" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#irArrow)"/>
+
+            <rect x="306" y="15" width="290" height="58" rx="12" fill="#E6F7ED" stroke="#1FAA59" stroke-width="1.5"/>
+            <text x="451" y="40" class="ir-lbl ir-title" text-anchor="middle" fill="#178A48" id="irMiddleTitle">3 hours pass, idle</text>
+            <text x="451" y="58" class="ir-lbl ir-sub" text-anchor="middle" fill="#178A48">can happen any time, any day</text>
+
+            <path d="M602 44 L636 44" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#irArrow)"/>
+
+            <rect x="642" y="15" width="228" height="58" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
+            <text x="756" y="40" class="ir-lbl ir-title" text-anchor="middle">Desk released</text>
+            <text x="756" y="58" class="ir-lbl ir-sub" text-anchor="middle">back to general use</text>
+
+            <defs>
+              <marker id="irArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#AEAEB2"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+
+        <div class="checkin-footer">
+          <div class="checkin-footer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-reservation-types-01.html">
+        <a class="page-nav-btn" href="floorsense-checkin-policy-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn next" href="floorsense-prebooking-advance-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -387,32 +362,34 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 02 of the Floorsense wizard family — continues to floorsense-checkin-
-  policy-03.html. Per a later request, this page's place in the click-through order moved: it now
-  follows floorsense-setup-path-00.html (order is 01 -> 00 -> 02 -> 03 -> 04 -> 05), so this page's
-  back-arrow points to floorsense-setup-path-00.html instead of floorsense-reservation-types-
-  01.html (which is now the wizard's entry point, reached before setup-path-00). The "Overview"
-  section-head above the card grid ("How can end users self-reserve a desk?" plus its three
-  explanatory paragraphs) was removed per a later request, leaving only the "Configure" section-
-  head straight into the card grid. "Building Access Cards at
-  Desk" defaults on (matches the brief's "(default)" note); the other two are off by default and
-  both flagged "not available for anonymous users". Selecting the Prebooking option reveals a
-  short notice that pre-booking rules get asked about in a follow-up step — that follow-up is
-  module 03 (Check-in Policy). State lives at project.floorsense.wizard.checkinMethods =
-  { selected: [...] } in the same "configurationProject" localStorage key as module 01.
+  NOTE for Oleg: module 04 of the Floorsense wizard family, new — split out of
+  floorsense-checkin-policy-03.html per a request ("make it a separate page following 03"). Covers
+  the single "Auto-Release on Idle" setting (idleHours, default 3) that used to live in
+  checkin-policy-03's "Default Reservation Times" section. Built with the same .checkin-card
+  explainer pattern established there (icon + description header with the idleHours number field
+  inline via .checkin-inline-field, a shaded "EXAMPLE" panel — reusing the exact 3-step
+  idle-release SVG that was drafted for checkin-policy-03 before the split — and a footer strip).
+  Unlike checkin-policy-03's two cards, this page has only one topic, so it skips the numbered
+  "1./2./3." section-head prefix used there (that numbering exists specifically to distinguish
+  multiple topics stacked on one page; a single-topic page like this one, or like
+  floorsense-checkin-methods-02.html, doesn't need it) — the hero title alone ("Auto-Release on
+  Idle") carries the heading. The shared .checkin-card/.checkin-inline-field/.checkin-example/
+  .checkin-footer CSS was copied verbatim from checkin-policy-03.html (including the .checkin-
+  timeline-* rules for that page's check-in-window example, which aren't used here and could be
+  trimmed, but were left in for drop-in consistency with the source page's stylesheet).
 
-  Per a later request, the Floorsense wizard's click-through order changed again: this page now
-  comes right after floorsense-reservation-types-01.html and BEFORE floorsense-setup-path-00.html
-  (order is now 01 -> 02 -> 00 -> 03 -> 04 -> 05 -> 06, was 01 -> 00 -> 02 -> ...). This page's
-  back-arrow changed from floorsense-setup-path-00.html to floorsense-reservation-types-01.html,
-  and its next-arrow/Continue destination changed from floorsense-checkin-policy-03.html to
-  floorsense-setup-path-00.html accordingly (setup-path-00's own "Build Your Own" branch now
-  continues straight to floorsense-checkin-policy-03.html instead of back here, since this page is
-  already done by the time someone reaches setup-path-00). See floorsense-reservation-types-
-  01.html's and floorsense-setup-path-00.html's own NOTEs for the rest of that reorder. The
-  progress bar above also gained a 7th "idle-release" segment (a new page inserted between
-  Check-in Policy and Prebooking Window — see floorsense-idle-release-04.html) — unrelated to this
-  reorder, but landed in the same round of edits.
+  Inserted into the click-through order immediately after floorsense-checkin-policy-03.html and
+  before floorsense-prebooking-advance-05.html: back-arrow goes to checkin-policy-03.html,
+  next-arrow/Continue goes to prebooking-advance-05.html (renamed from -04.html to make room for
+  this page taking the 04 slot — see that file's own NOTE). All 6 pre-existing Floorsense pages
+  (00, 01, 02, 03, prebooking [now 05], reservation-length [now 06]) had a new "idle-release"
+  progress-bar segment inserted between "Check-in Policy" and "Prebooking Window" to include this
+  page — the bar still lists modules in fixed 00-06 numeric order regardless of click-through
+  order, per the established convention.
+
+  State lives at project.floorsense.wizard.idleRelease = { idleHours } — a new top-level key,
+  separate from checkin-policy-03's own project.floorsense.wizard.checkinPolicy (which no longer
+  includes idleHours). markModuleSaved key is 'idle-release'. Reset restores idleHours to 3.
 -->
 
 <script>
@@ -443,10 +420,9 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const DEFAULT_SELECTED = ['card'];
-  const saved = project.floorsense.wizard.checkinMethods || {};
+  const saved = project.floorsense.wizard.idleRelease || {};
   const state = {
-    selected: Array.isArray(saved.selected) ? saved.selected : DEFAULT_SELECTED
+    idleHours: Number.isFinite(saved.idleHours) ? saved.idleHours : 3
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -471,14 +447,15 @@
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
 
-  /* ---------------- reservation-method grid ---------------- */
-  const grid = document.getElementById('methodGrid');
-  const prebookingSubfields = document.getElementById('prebookingSubfields');
+  /* ---------------- fields ---------------- */
+  const idleHours = document.getElementById('idleHours');
+  const irMiddleTitle = document.getElementById('irMiddleTitle');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
   function save() {
-    project.floorsense.wizard.checkinMethods = state;
+    state.idleHours = parseFloat(idleHours.value) || 0;
+    project.floorsense.wizard.idleRelease = state;
     saveProject(project);
   }
 
@@ -488,43 +465,38 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
-  grid.querySelectorAll('.desk-check-card').forEach(card => {
-    const method = card.getAttribute('data-method');
-    const checkbox = card.querySelector('input[type="checkbox"]');
-    checkbox.checked = state.selected.includes(method);
-    card.classList.toggle('checked', checkbox.checked);
-    if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
+  function formatHours(h) {
+    const rounded = Math.round(h * 100) / 100;
+    return rounded === 1 ? '1 hour' : rounded + ' hours';
+  }
 
-    checkbox.addEventListener('change', () => {
-      card.classList.toggle('checked', checkbox.checked);
-      if (checkbox.checked) {
-        if (!state.selected.includes(method)) state.selected.push(method);
-      } else {
-        state.selected = state.selected.filter(m => m !== method);
-      }
-      if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
-      queueSave();
-    });
+  function updateExample() {
+    irMiddleTitle.textContent = formatHours(state.idleHours) + ' pass, idle';
+  }
+
+  function applyState() {
+    idleHours.value = state.idleHours;
+    updateExample();
+  }
+  applyState();
+
+  idleHours.addEventListener('input', () => {
+    state.idleHours = parseFloat(idleHours.value) || 0;
+    updateExample();
+    queueSave();
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.selected = DEFAULT_SELECTED.slice();
-    grid.querySelectorAll('.desk-check-card').forEach(card => {
-      const method = card.getAttribute('data-method');
-      const checkbox = card.querySelector('input[type="checkbox"]');
-      checkbox.checked = state.selected.includes(method);
-      card.classList.toggle('checked', checkbox.checked);
-      if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
-    });
+    state.idleHours = 3;
+    applyState();
     queueSave();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('checkin-methods');
+    markModuleSaved('idle-release');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-setup-path-00.html'; }, 500);
   });
 })();
 </script>
