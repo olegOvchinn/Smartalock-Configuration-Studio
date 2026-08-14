@@ -234,13 +234,22 @@
 </main>
 
 <!--
-  NOTE for Oleg: this is the site's home page — the entry point that sits before the numbered wizard
-  family (pages/smartalock-<module>-0X.html). Formerly pages/configuration-start.html, moved to the
+  NOTE for Oleg: this is the site's home page. Formerly pages/configuration-start.html, moved to the
   project root and given the site's name so it loads automatically when the folder/domain root is
-  opened. Choosing "Smartalock" routes to pages/smartalock-templates-00.html (start of the 10-step
-  wizard); choosing "Floorsense" routes to pages/floorsense-setup-path-00.html (start of that product line's own
-  configuration engine). No project state is written here — this page is a router only, not a wizard
-  module.
+  opened. Choosing "Floorsense" still routes to pages/floorsense-setup-path-00.html (start of that
+  product line's own configuration engine, unchanged).
+
+  Per a later request, this page is no longer the very first thing a Smartalock user sees: Project
+  Registration (smartalock-templates-00.html) and IT Configuration (smartalock-it-configuration-02.html)
+  now happen BEFORE this picker, as universal pre-steps that apply regardless of which product gets
+  configured next — 00 -> 02 -> here. Accordingly, the "Smartalock" card's destination changed from
+  smartalock-templates-00.html to smartalock-access-methods-09.html: since 00 and 02 are already
+  done by the time someone lands here from 02's continue button, choosing Smartalock resumes the
+  wizard at its next actual step (Access Methods, 09) rather than restarting Project Registration.
+  The rest of the Smartalock order (09 -> 03 -> 04 -> 01 -> 05 -> 06 -> 07 -> 08) is unchanged. This
+  page still has no page-nav back-arrow even though it's no longer literally first — flag if you'd
+  like one added back to smartalock-it-configuration-02.html for symmetry. No project state is
+  written here — this page is a router only, not a wizard module.
 -->
 
 <script>
@@ -248,7 +257,7 @@
   const PRODUCTS = {
     smartalock: {
       label: 'Smartalock',
-      dest: 'pages/smartalock-templates-00.html'
+      dest: 'pages/smartalock-access-methods-09.html'
     },
     floorsense: {
       label: 'Floorsense',

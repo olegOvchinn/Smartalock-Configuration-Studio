@@ -4,24 +4,30 @@ A static HTML/CSS/JS prototype for designing, configuring and documenting Smarta
 
 ## Start here
 
-Open `index.html` at the project root — this is the entry point. It lets the client choose which product line they're configuring (**Smartalock** or **Floorsense**), each with a description, icon and a live-switching preview panel, before routing into that product's configuration flow.
+Open `pages/smartalock-templates-00.html` (**Project Registration**) — this is now the site's actual starting page, not `index.html`. Its back-arrow is disabled since nothing comes before it.
 
-Choosing **Smartalock** routes into the **10-step configuration wizard** under `pages/`, named `smartalock-<module>-0X.html`:
+From there the flow is:
+
+1. `smartalock-templates-00.html` — Project Registration
+2. `smartalock-it-configuration-02.html` — IT Configuration & Integrations
+3. `index.html` — the product picker, reached only after 00 → 02, not before
+
+`index.html` lets the client choose which product line to configure next (**Smartalock** or **Floorsense**), each with a description, icon and a live-switching preview panel. Choosing **Smartalock** here resumes the wizard at `smartalock-access-methods-09.html` (skipping 00/02, since those are already done) and continues through the rest of the **10-step configuration wizard** under `pages/`, named `smartalock-<module>-0X.html`:
 
 | # | File | Module |
 |---|------|--------|
-| 00 | `smartalock-templates-00.html` | Project Registration |
+| 00 | `smartalock-templates-00.html` | Project Registration *(site entry point — done before index.html)* |
 | 01 | `smartalock-reservation-type-01.html` | Reservation Type |
-| 02 | `smartalock-it-configuration-02.html` | IT Configuration & Integrations |
+| 02 | `smartalock-it-configuration-02.html` | IT Configuration & Integrations *(done before index.html)* |
 | 03 | `smartalock-locker-behaviour-03.html` | Locker Door Behaviour |
 | 04 | `smartalock-locker-types-04.html` | Locker Types |
 | 05 | `smartalock-locker-policy-05.html` | Locker Policy |
 | 06 | `smartalock-user-policy-06.html` | User Policy |
 | 07 | `smartalock-kiosk-customisation-07.html` | Kiosk Customisation |
 | 08 | `smartalock-configuration-summary-08.html` | Configuration Summary |
-| 09 | `smartalock-access-methods-09.html` | Initial Locker Access Methods |
+| 09 | `smartalock-access-methods-09.html` | Initial Locker Access Methods *(index.html's Smartalock card lands here)* |
 
-Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `index.html`. Choosing **Floorsense** on the entry page instead routes into its own wizard, `pages/floorsense-<module>-0X.html`:
+The actual click-through order (module numbers don't match navigation order) is: **00 → 02 → index.html → 09 → 03 → 04 → 01 → 05 → 06 → 07 → 08**. Every wizard page's top progress bar still links to all the others regardless of this navigation order. Choosing **Floorsense** on the index page instead routes into its own wizard, `pages/floorsense-<module>-0X.html`:
 
 | # | File | Module |
 |---|------|--------|

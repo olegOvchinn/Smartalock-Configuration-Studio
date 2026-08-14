@@ -368,9 +368,9 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="../index.html">
+        <span class="page-nav-btn disabled">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
-        </a>
+        </span>
         <a class="page-nav-btn next" href="smartalock-it-configuration-02.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
@@ -400,7 +400,11 @@
   Dates sections. Data is saved under project.registration (customer, site, email, policy, it, training,
   support, facilities, installationDate, completionDate) — the same top-level object register.html and
   reports.html read from — while moduleStatus.registration drives the progress-bar "saved" state like
-  every other module.
+  every other module. Per a later request, this page is now the true starting page of the whole site
+  (opened before index.html, not after it) — its back-arrow was disabled (span.page-nav-btn.disabled)
+  since there's nothing before it anymore. The opening sequence is now 00 -> 02 (IT Configuration) ->
+  index.html, where index.html's Smartalock card resumes the wizard at Access Methods (09) rather
+  than restarting here.
 -->
 
 <script>

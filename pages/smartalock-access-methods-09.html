@@ -375,7 +375,7 @@
       <p class="empty-hint" id="emptyHint">No access methods selected yet — check any that apply above.</p>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-it-configuration-02.html">
+        <a class="page-nav-btn" href="../index.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <a class="page-nav-btn next" href="smartalock-locker-behaviour-03.html">
@@ -409,7 +409,11 @@
   "PIN number at touchscreen" is selected, an optional field appears asking how PINs should be
   assigned (random / client-provided list / same-for-everyone-until-first-use) - left unset unless
   the client has a preference. State is saved under project.smartalock.wizard.accessMethods as
-  { selected: [...], cardAssignMethod, pinAssignMethod }.
+  { selected: [...], cardAssignMethod, pinAssignMethod }. Back-arrow was repointed from
+  smartalock-it-configuration-02.html to ../index.html per a later request: Project Registration (00)
+  and IT Configuration (02) now happen before the product picker, and index.html's Smartalock card
+  routes straight here (resuming the wizard) rather than restarting at 00 — so this page's "back" now
+  correctly reflects how it's actually reached.
 -->
 
 <script>

@@ -425,7 +425,7 @@
       <a class="page-nav-btn" href="smartalock-templates-00.html">
         <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
       </a>
-      <a class="page-nav-btn next" href="smartalock-access-methods-09.html">
+      <a class="page-nav-btn next" href="../index.html">
         <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
       </a>
     </div>
@@ -449,7 +449,13 @@
   NOTE for Oleg: template variant of it-configuration-v4.html. The right-hand nav pane (and the
   architecture diagram that lived behind it as a background image) is gone. The diagram now sits in a
   small sticky card to the left of the question cards, and the module list is a horizontal progress bar
-  under the branding, same pattern as the other templates in this set.
+  under the branding, same pattern as the other templates in this set. This page's next-arrow and
+  Continue button were repointed from smartalock-access-methods-09.html to ../index.html per a later
+  request: Project Registration (00) and IT Configuration (02) are now treated as universal pre-steps
+  that happen before the product picker, so 00 -> 02 -> index.html is the new opening sequence.
+  index.html's Smartalock card now resumes the wizard at Access Methods (09) instead of restarting at
+  00, since 00/02 are already done by the time someone reaches index from here. The rest of the
+  Smartalock wizard order (09 -> 03 -> 04 -> 01 -> 05 -> 06 -> 07 -> 08) is unchanged.
 -->
 
 <script>
@@ -579,7 +585,7 @@
     markModuleSaved('it');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-access-methods-09.html'; }, 500);
+    setTimeout(() => { window.location.href = '../index.html'; }, 500);
   });
 
   let saveTimer = null;
