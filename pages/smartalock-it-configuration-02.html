@@ -249,6 +249,24 @@
   button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
+  .panel-topbar > .panel-inner { perspective: 900px; }
+  .panel-intro {
+    transform-origin: 50% 0%;
+    max-height: 400px;
+    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
+                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
+  }
+  .panel-intro.hero-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: rotateX(-100deg);
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -578,6 +596,16 @@
     saveText.textContent = 'Selection saved automatically';
     saveDot.classList.add('show');
   }
+})();
+</script>
+
+<script>
+(function(){
+  var intro = document.querySelector('.panel-intro');
+  if (!intro) return;
+  setTimeout(function(){
+    intro.classList.add('hero-collapsed');
+  }, 5000);
 })();
 </script>
 

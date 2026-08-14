@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Registration — Smartalock Configuration Studio (Template)</title>
+<title>Prebooking — How Far In Advance — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,9 +17,9 @@
     --paper: #FFFFFF;
     --paper-soft: #F5F5F7;
     --line: #D2D2D7;
-    --accent: #0071E3;
-    --accent-wash: #E8F1FC;
-    --accent-deep: #0058B0;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
     --danger: #FF3B30;
     --radius-lg: 20px;
     --radius-md: 14px;
@@ -43,9 +43,11 @@
 
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
-  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
   .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
   .progress-seg {
     position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
@@ -89,7 +91,7 @@
   }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
   .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
-  h1 {
+  h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
     font-weight: 200; /* Extra Light */
@@ -104,56 +106,45 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .panel-intro p.sub { font-size: 19.19px; font-weight: 400; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
   .panel-topbar { padding: 0; }
   .top-frame {
     position: sticky; top: 0; z-index: 50; background: var(--paper);
     padding: 20px 0 16px; border-bottom: 1px solid var(--line);
   }
-  .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 14.76px; font-weight: 400; line-height: 1.6; margin: 0; }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
+  .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- shared text-with-visual layout (image to the right) ---------- */
-  .content-with-visual { display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
-  @media (max-width: 1080px) { .content-with-visual { grid-template-columns: 1fr; } }
-  .page-visual { position: static; }
-  .page-visual-frame {
-    width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden;
-    border: 1.5px solid var(--line); background: var(--paper-soft); box-shadow: var(--shadow);
-  }
-  .page-visual-frame img { display: block; width: 100%; height: auto; }
-  .page-visual-caption { font-size: 9.43px; color: var(--ink-soft); text-align: center; margin: 10px 4px 0; line-height: 1.5; }
-
-  /* ---------- question cards ---------- */
-  .qcard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; }
-  @media (max-width: 720px) { .qcard-grid { grid-template-columns: 1fr; } }
-  .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
-  .qcard {
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
+  @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
+  .policy-grid.single { grid-template-columns: 1fr; }
+  .policy-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 18px; max-width: 640px;
+    padding: 18px 20px;
   }
-  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
-  .qcard-tag {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
-  }
-  .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
+  .policy-row { display: flex; align-items: flex-start; gap: 14px; }
+  .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .policy-card-body { min-width: 0; flex: 1; }
+  .policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .policy-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
-  .form-field label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
-  .form-field input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 12.3px; background: var(--paper);
+  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
   }
-  .form-field input:focus { outline: none; border-color: var(--ink); }
+  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -185,12 +176,12 @@
   button.primary {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
     background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
-    transition: background .15s, transform .1s;
+    transition: background .15s, transform .1s, opacity .15s;
   }
   button.primary:hover { background: var(--accent-deep); }
   button.primary:active { transform: scale(0.98); }
   button.ghost {
-    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent);
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
     background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
     transition: border-color .15s, background .15s;
   }
@@ -226,49 +217,35 @@
       <div class="panel-inner">
         <div class="brand">
           <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
           <span class="brand-tagline">Configuration Studio · Module Preview</span>
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg current" data-module="registration" href="smartalock-templates-00.html">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Project Registration</span>
+          <span class="progress-seg-tip">Setup Path</span>
         </a>
-        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Initial Locker Access Methods</span>
+          <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
+        <a class="progress-seg" data-module="checkin-policy" href="floorsense-checkin-policy-03.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Door Behaviour</span>
+          <span class="progress-seg-tip">Check-in Policy</span>
         </a>
-        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
+        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Types</span>
+          <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-05.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Reservation Type</span>
-        </a>
-        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Policy</span>
-        </a>
-        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">User Policy</span>
-        </a>
-        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Kiosk Customisation</span>
-        </a>
-        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Configuration Summary</span>
+          <span class="progress-seg-tip">Reservation Length</span>
         </a>
         </nav>
       </div>
@@ -276,10 +253,10 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Let's set up your project...</h1>
-        <p class="sub">Add your company and contact details to get started.</p>
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Prebooking — How Far In Advance</h1>
+        <p class="sub">Set how many days ahead of time a user can reserve a desk.</p>
       </div>
-      <h1 class="module-heading">Project Registration</h1>
     </div>
   </div>
 
@@ -288,93 +265,35 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
+        <h2 class="section-title">Prebooking Window</h2>
+        <p>If prebooking desks is allowed via the App or a kiosk, how far out can a user make a prebooking? Some customers restrict this to up to 3 days ahead, while others allow up to 9 days in advance.</p>
       </div>
 
-      <div class="content-with-visual">
-      <div class="page-text">
-
-      <div class="qcard-grid">
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-company.png" alt="">Company Details</h3>
-        <p class="qdesc">Basic details about the company and site this configuration is for.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Company Name</label>
-            <input type="text" id="regCustomer" placeholder="Enter company name...">
-          </div>
-          <div class="form-field">
-            <label>Site Address</label>
-            <input type="text" id="regSite" placeholder="Enter site address...">
-          </div>
-          <div class="form-field" style="grid-column: 1 / -1;">
-            <label>Your Email</label>
-            <input type="text" id="regEmail" placeholder="Enter your email address...">
+      <div class="policy-grid single">
+        <div class="policy-card">
+          <div class="policy-row">
+            <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div class="policy-card-body">
+              <h3 class="policy-title">Prebooking window</h3>
+              <p class="policy-desc">How many days in advance can a user make a prebooking? The default is 8 days; the maximum allowed is 15 days.</p>
+              <div class="minute-field">
+                <input type="number" min="1" max="15" step="1" value="8" class="minute-input" id="prebookingAdvanceDays" aria-label="Prebooking window, days in advance">
+                <span class="minute-suffix">days in advance (max 15)</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-contacts.png" alt="">Contacts <span class="qcard-tag">Optional</span></h3>
-        <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Policy Contact</label>
-            <input type="text" id="regPolicy" placeholder="If different...">
-          </div>
-          <div class="form-field">
-            <label>IT Contact</label>
-            <input type="text" id="regIT" placeholder="If different...">
-          </div>
-          <div class="form-field">
-            <label>Training Contact</label>
-            <input type="text" id="regTraining" placeholder="If any...">
-          </div>
-          <div class="form-field">
-            <label>Support / Helpdesk Contact</label>
-            <input type="text" id="regSupport" placeholder="Enter support contact...">
-          </div>
-          <div class="form-field">
-            <label>Facilities Contact</label>
-            <input type="text" id="regFacilities" placeholder="Enter facilities contact...">
-          </div>
-        </div>
-      </div>
-
-      <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="../assets/images/icon-dates.png" alt="">Project Dates <span class="qcard-tag">Optional</span></h3>
-        <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Target Installation Month</label>
-            <input type="month" id="regInstallDate">
-          </div>
-          <div class="form-field">
-            <label>Target Go-Live Month</label>
-            <input type="month" id="regCompleteDate">
-          </div>
-        </div>
-      </div>
-      </div>
-
-      </div>
-
-      <div class="page-visual">
-        <div class="page-visual-frame show-image">
-          <img src="../assets/images/registration-process-illustration.png" alt="Registration steps: company details, key contacts, project dates, then ready to configure">
-        </div>
-        <p class="page-visual-caption">From company details to go-live in four steps.</p>
-      </div>
-
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="../index.html">
+        <a class="page-nav-btn" href="floorsense-checkin-policy-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-it-configuration-02.html">
+        <a class="page-nav-btn next" href="floorsense-reservation-length-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
+
     </div>
   </div>
 
@@ -393,14 +312,13 @@
 </main>
 
 <!--
-  NOTE for Oleg: new first step — "Project Registration" — restyled from register.html to match this
-  template set's shell (progress bar only, no split-hero pane). It now sits in front of IT Configuration
-  (template-02), whose Back arrow has been repointed here; this page's Next arrow / "Save & continue"
-  lead on to IT Configuration. Field set mirrors register.html's Company Details / Contacts / Project
-  Dates sections. Data is saved under project.registration (customer, site, email, policy, it, training,
-  support, facilities, installationDate, completionDate) — the same top-level object register.html and
-  reports.html read from — while moduleStatus.registration drives the progress-bar "saved" state like
-  every other module.
+  NOTE for Oleg: module 04 of the Floorsense wizard family — follows floorsense-checkin-
+  policy-03.html and continues to floorsense-reservation-length-05.html. This page was split out
+  of the original Check-in Policy page per a later request, so it only covers the prebooking
+  advance-window field (default 8 days, clamped to a max of 15 in both the input's max attribute
+  and in JS on input/blur). State lives at project.floorsense.wizard.prebookingAdvance =
+  { prebookingAdvanceDays } in the same "configurationProject" localStorage key as the other
+  Floorsense modules.
 -->
 
 <script>
@@ -427,34 +345,24 @@
   }
 
   let project = loadProject();
-  project.registration = project.registration || {};
-  project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
-  project.smartalock.wizard = project.smartalock.wizard || {};
-  project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.registration;
+  const saved = project.floorsense.wizard.prebookingAdvance || {};
   const state = {
-    customer: saved.customer || "",
-    site: saved.site || "",
-    email: saved.email || "",
-    policy: saved.policy || "",
-    it: saved.it || "",
-    training: saved.training || "",
-    support: saved.support || "",
-    facilities: saved.facilities || "",
-    installationDate: saved.installationDate || "",
-    completionDate: saved.completionDate || ""
+    prebookingAdvanceDays: Number.isFinite(saved.prebookingAdvanceDays) ? saved.prebookingAdvanceDays : 8
   };
 
-  /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
+  /* ---------------- horizontal progress bar ---------------- */
   function renderProgressBar() {
     document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
       const key = seg.getAttribute('data-module');
-      seg.classList.toggle('saved', !!project.smartalock.wizard.moduleStatus[key]);
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
     });
   }
   function markModuleSaved(key) {
-    project.smartalock.wizard.moduleStatus[key] = true;
+    project.floorsense.wizard.moduleStatus[key] = true;
     saveProject(project);
     renderProgressBar();
   }
@@ -469,59 +377,54 @@
   });
 
   /* ---------------- fields ---------------- */
-  const fieldEls = {
-    customer: document.getElementById('regCustomer'),
-    site: document.getElementById('regSite'),
-    email: document.getElementById('regEmail'),
-    policy: document.getElementById('regPolicy'),
-    it: document.getElementById('regIT'),
-    training: document.getElementById('regTraining'),
-    support: document.getElementById('regSupport'),
-    facilities: document.getElementById('regFacilities'),
-    installationDate: document.getElementById('regInstallDate'),
-    completionDate: document.getElementById('regCompleteDate')
-  };
+  const prebookingAdvanceDays = document.getElementById('prebookingAdvanceDays');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
-  Object.keys(fieldEls).forEach(key => {
-    fieldEls[key].value = state[key];
-    fieldEls[key].addEventListener('input', () => {
-      state[key] = fieldEls[key].value;
-      queueSave();
-    });
+  const PREBOOKING_MAX_DAYS = 15;
+
+  function clampPrebookingDays() {
+    let value = parseInt(prebookingAdvanceDays.value, 10);
+    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (value > PREBOOKING_MAX_DAYS) value = PREBOOKING_MAX_DAYS;
+    prebookingAdvanceDays.value = value;
+    return value;
+  }
+
+  function save() {
+    state.prebookingAdvanceDays = clampPrebookingDays();
+    project.floorsense.wizard.prebookingAdvance = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function applyState() {
+    prebookingAdvanceDays.value = state.prebookingAdvanceDays;
+  }
+  applyState();
+
+  prebookingAdvanceDays.addEventListener('input', () => {
+    clampPrebookingDays();
+    queueSave();
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    Object.keys(fieldEls).forEach(key => {
-      state[key] = "";
-      fieldEls[key].value = "";
-    });
-    save();
+    state.prebookingAdvanceDays = 8;
+    applyState();
+    queueSave();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('registration');
+    markModuleSaved('prebooking-advance');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-it-configuration-02.html'; }, 500);
   });
-
-  let saveTimer = null;
-  function queueSave() {
-    saveText.textContent = 'Saving…';
-    saveDot.classList.remove('show');
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(save, 450);
-  }
-
-  function save() {
-    project.registration = Object.assign({}, project.registration, state);
-    saveProject(project);
-    saveText.textContent = 'Selection saved automatically';
-    saveDot.classList.add('show');
-  }
 })();
 </script>
 

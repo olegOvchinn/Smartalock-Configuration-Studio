@@ -21,7 +21,20 @@ Choosing **Smartalock** routes into the **10-step configuration wizard** under `
 | 08 | `smartalock-configuration-summary-08.html` | Configuration Summary |
 | 09 | `smartalock-access-methods-09.html` | Initial Locker Access Methods |
 
-Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `index.html`. Choosing **Floorsense** on the entry page instead routes to `pages/floorsense-templates.html`, that product line's own configuration engine.
+Every wizard page's top progress bar links to all the others, and module 00's back-arrow returns to `index.html`. Choosing **Floorsense** on the entry page instead routes into its own wizard, `pages/floorsense-<module>-0X.html`:
+
+| # | File | Module |
+|---|------|--------|
+| 00 | `floorsense-setup-path-00.html` | Setup Path (Relaxed / Pre-Configured / Strict / Build Your Own) |
+| 01 | `floorsense-reservation-types-01.html` | Desk Allocation Method (Dedicated Workstations / Reserved by User as Needed / Team Leader Allocated / Booked on Behalf) |
+| 02 | `floorsense-checkin-methods-02.html` | Check-in Methods |
+| 03 | `floorsense-checkin-policy-03.html` | Check-in Policy (check-in window only) |
+| 04 | `floorsense-prebooking-advance-04.html` | Prebooking — How Far In Advance |
+| 05 | `floorsense-reservation-length-05.html` | Default Reservation Length |
+
+The Floorsense wizard's own progress bar links between those, and module 00's back-arrow returns to `index.html`. Its state lives under `project.floorsense.wizard` in the same `configurationProject` localStorage key described below — `setupPath`, `reservationTypes`, `checkinMethods`, `checkinPolicy`, `prebookingAdvance` and `reservationLength` respectively. Module 05 is currently the last one built, so its next-arrow is disabled.
+
+Module 00 also branches: choosing **Relaxed**, **Pre-Configured**, or **Strict** all route to `floorsense-out-of-box-policy.html` — an unnumbered, read-only summary of Floorsense's default policy that skips the 01–05 walkthrough entirely (Relaxed/Strict pass a `?preset=` query string so the page can reflect the choice in its heading, though the underlying numbers are currently shared with Pre-Configured pending distinct values). Choosing **Build Your Own** continues into module 01 as described above.
 
 `pages/dashboard.html` and `pages/reports.html` both link back to `index.html` via a **"Configuration Wizard"** nav item, and their **"Summary"** nav item links to `smartalock-configuration-summary-08.html`.
 
@@ -53,7 +66,7 @@ Every wizard page's top progress bar links to all the others, and module 00's ba
 - `index.html` — the site's home page (see "Start here" above). It no longer links to Dashboard, Configuration Engine, Implementation Ready, or Reports — those pages predate the product-picker flow and are currently only reachable by opening their file directly (`pages/dashboard.html`, `pages/reports.html`, `pages/smartalock-wizard.html`, `pages/smartalock-templates.html`) or via each other's own top nav.
 - `pages/dashboard.html`, `pages/reports.html` — surrounding app shell (predates the wizard work above).
 - `pages/smartalock-wizard.html` — a separate reference/spec document (not part of the numbered wizard family) that the wizard's field definitions were originally researched from.
-- `pages/register.html`, `pages/project-home.html`, `pages/floorsense-templates.html`, `pages/ai-policy-workshop.html`, `pages/smartalock-templates.html` — other standalone app pages, unrelated to the wizard.
+- `pages/register.html`, `pages/project-home.html`, `pages/ai-policy-workshop.html`, `pages/smartalock-templates.html` — other standalone app pages, unrelated to the wizard.
 - `assets/`, `css/`, `js/` — shared images/icons, stylesheets and scripts for the pages above. Each of the 10 wizard pages is self-contained (styles and script inlined in the page itself) and doesn't depend on `css/`/`js/`.
 - `data/`, `docs/`, `output/` — supporting data files, spec docs, and generated report output; not touched by the wizard work.
 

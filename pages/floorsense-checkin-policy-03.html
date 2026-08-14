@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in Policy — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head + .section-head { margin-top: 36px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
+  .section-head p:last-child { margin-bottom: 0; }
+
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
+  @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
+  .policy-grid.single { grid-template-columns: 1fr; }
+  .policy-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px;
+  }
+  .policy-row { display: flex; align-items: flex-start; gap: 14px; }
+  .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .policy-card-body { min-width: 0; flex: 1; }
+  .policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .policy-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+
+  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
+  }
+  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
+
+  .time-input {
+    width: 130px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    color: var(--ink);
+  }
+  .time-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+  /* ---------- default-times explainer diagram + grouped sub-sections ---------- */
+  .policy-diagram-frame { max-width: 900px; margin: 0 0 32px; }
+  .policy-diagram-frame svg { width: 100%; height: auto; display: block; }
+  .policy-subgroup { max-width: 640px; }
+  .policy-subgroup + .policy-subgroup { margin-top: 28px; }
+  .policy-subgroup-title { font-family: var(--font-display); font-weight: 500; font-size: 15px; color: var(--header-grey); margin: 0 0 12px; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
+  .panel-topbar > .panel-inner { perspective: 900px; }
+  .panel-intro {
+    transform-origin: 50% 0%;
+    max-height: 400px;
+    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
+                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
+  }
+  .panel-intro.hero-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: rotateX(-100deg);
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg current" data-module="checkin-policy" href="floorsense-checkin-policy-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Policy</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Check-in Policy</h1>
+        <p class="sub">Define check-in windows and the default reservation start, end, idle-release and duration times.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="section-head">
+        <span class="eyebrow">Overview</span>
+        <h2 class="section-title">Check-in Window</h2>
+        <p>End users can check in to their desk up to a set number of minutes before or after their reservation's start time. Outside that window, an unclaimed desk automatically reverts to being generally available.</p>
+      </div>
+
+      <div class="policy-grid" id="windowGrid">
+        <div class="policy-card">
+          <div class="policy-row">
+            <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-3 2"/></svg>
+            <div class="policy-card-body">
+              <h3 class="policy-title">Check in early</h3>
+              <p class="policy-desc">How many minutes before the reservation start time can a user check in?</p>
+              <div class="minute-field">
+                <input type="number" min="0" step="5" value="60" class="minute-input" id="checkInEarly" aria-label="Check in early, minutes">
+                <span class="minute-suffix">minutes before</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="policy-card">
+          <div class="policy-row">
+            <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <div class="policy-card-body">
+              <h3 class="policy-title">Check in late</h3>
+              <p class="policy-desc">How many minutes after the reservation start time can a user still check in before the desk is released?</p>
+              <div class="minute-field">
+                <input type="number" min="0" step="5" value="60" class="minute-input" id="checkInLate" aria-label="Check in late, minutes">
+                <span class="minute-suffix">minutes after</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="eyebrow">Configure</span>
+        <h2 class="section-title">Default Reservation Times</h2>
+        <p>Four settings define a typical reservation day — see how they relate below. All are customisable.</p>
+      </div>
+
+      <div class="policy-diagram-frame">
+        <svg viewBox="0 0 900 300" role="img">
+          <title>How the default reservation window, duration and idle-release setting relate</title>
+          <desc>A timeline shows the 8:30–17:00 reservation window with a 9-hour default duration bar that runs 30 minutes past the end time. Below it, a four-step flow shows a desk being auto-released after 3 idle hours.</desc>
+          <style>
+            .pd-lbl { font-family: 'Inter', -apple-system, sans-serif; }
+            .pd-val { font-size: 13px; font-weight: 700; fill: #178A48; }
+            .pd-tick { font-size: 11px; fill: #6E6E73; }
+            .pd-sub { font-size: 11px; fill: #6E6E73; }
+            .pd-sub-accent { font-size: 11px; fill: #178A48; }
+            .pd-cap { font-size: 10.5px; fill: #B36B00; }
+            .pd-box-title { font-size: 12.5px; font-weight: 600; fill: #1D1D1F; }
+            .pd-box-sub { font-size: 10.5px; fill: #6E6E73; }
+          </style>
+
+          <!-- reservation window bar (8:30 - 17:00) -->
+          <rect x="177" y="50" width="553" height="30" rx="8" fill="#E6F7ED" stroke="#1FAA59" stroke-width="1.5"/>
+          <line x1="177" y1="42" x2="177" y2="170" stroke="#1FAA59" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <line x1="730" y1="42" x2="730" y2="170" stroke="#1FAA59" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="177" y="36" class="pd-lbl pd-val" text-anchor="middle">Start 8:30</text>
+          <text x="730" y="36" class="pd-lbl pd-val" text-anchor="middle">End 17:00</text>
+          <text x="453" y="69" class="pd-lbl pd-sub-accent" text-anchor="middle">Reservation window (8.5h)</text>
+
+          <!-- default duration bar (8:30 - 17:30), overhang highlighted -->
+          <rect x="177" y="95" width="553" height="26" rx="7" fill="#F5F5F7" stroke="#AEAEB2" stroke-width="1.5"/>
+          <rect x="730" y="95" width="32.5" height="26" rx="7" fill="#FFF4E5" stroke="#D98E04" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <text x="453" y="112" class="pd-lbl pd-sub" text-anchor="middle">Default duration: 9 hours</text>
+          <text x="746" y="138" class="pd-lbl pd-cap" text-anchor="middle">+30 min past End Time</text>
+
+          <!-- hour axis -->
+          <line x1="80" y1="170" x2="860" y2="170" stroke="#D2D2D7" stroke-width="1.5"/>
+          <g class="pd-lbl pd-tick" text-anchor="middle">
+            <line x1="80" y1="164" x2="80" y2="176" stroke="#D2D2D7"/><text x="80" y="192">7</text>
+            <line x1="145" y1="164" x2="145" y2="176" stroke="#D2D2D7"/><text x="145" y="192">8</text>
+            <line x1="210" y1="164" x2="210" y2="176" stroke="#D2D2D7"/><text x="210" y="192">9</text>
+            <line x1="275" y1="164" x2="275" y2="176" stroke="#D2D2D7"/><text x="275" y="192">10</text>
+            <line x1="340" y1="164" x2="340" y2="176" stroke="#D2D2D7"/><text x="340" y="192">11</text>
+            <line x1="405" y1="164" x2="405" y2="176" stroke="#D2D2D7"/><text x="405" y="192">12</text>
+            <line x1="470" y1="164" x2="470" y2="176" stroke="#D2D2D7"/><text x="470" y="192">13</text>
+            <line x1="535" y1="164" x2="535" y2="176" stroke="#D2D2D7"/><text x="535" y="192">14</text>
+            <line x1="600" y1="164" x2="600" y2="176" stroke="#D2D2D7"/><text x="600" y="192">15</text>
+            <line x1="665" y1="164" x2="665" y2="176" stroke="#D2D2D7"/><text x="665" y="192">16</text>
+            <line x1="730" y1="164" x2="730" y2="176" stroke="#D2D2D7"/><text x="730" y="192">17</text>
+            <line x1="795" y1="164" x2="795" y2="176" stroke="#D2D2D7"/><text x="795" y="192">18</text>
+            <line x1="860" y1="164" x2="860" y2="176" stroke="#D2D2D7"/><text x="860" y="192">19</text>
+          </g>
+
+          <!-- idle-release flow -->
+          <rect x="40" y="220" width="180" height="72" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
+          <text x="130" y="253" class="pd-lbl pd-box-title" text-anchor="middle">Desk reserved</text>
+          <text x="130" y="271" class="pd-lbl pd-box-sub" text-anchor="middle">Booking begins</text>
+
+          <path d="M226 256 L256 256" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#pdArrow)"/>
+
+          <rect x="262" y="220" width="180" height="72" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
+          <text x="352" y="253" class="pd-lbl pd-box-title" text-anchor="middle">No activity</text>
+          <text x="352" y="271" class="pd-lbl pd-box-sub" text-anchor="middle">No check-in or tag</text>
+
+          <path d="M448 256 L478 256" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#pdArrow)"/>
+
+          <rect x="484" y="220" width="180" height="72" rx="12" fill="#E6F7ED" stroke="#1FAA59" stroke-width="1.5"/>
+          <text x="574" y="253" class="pd-lbl pd-box-title" text-anchor="middle" fill="#178A48">3 hours pass</text>
+          <text x="574" y="271" class="pd-lbl pd-box-sub" text-anchor="middle" fill="#178A48">Idle threshold</text>
+
+          <path d="M670 256 L700 256" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#pdArrow)"/>
+
+          <rect x="706" y="220" width="154" height="72" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
+          <text x="783" y="253" class="pd-lbl pd-box-title" text-anchor="middle">Desk released</text>
+          <text x="783" y="271" class="pd-lbl pd-box-sub" text-anchor="middle">Back to general use</text>
+
+          <defs>
+            <marker id="pdArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" fill="#AEAEB2"/>
+            </marker>
+          </defs>
+        </svg>
+        <p class="policy-hint">Auto-release on idle applies any time a desk sits unused — it isn't tied to the window above. The 9-hour default duration currently runs 30 minutes past the 17:00 end time; worth checking these are meant to line up.</p>
+      </div>
+
+      <div class="policy-subgroup">
+        <h3 class="policy-subgroup-title">Reservation Window</h3>
+        <div class="policy-grid" id="windowTimesGrid">
+          <div class="policy-card">
+            <div class="policy-row">
+              <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-4-1"/></svg>
+              <div class="policy-card-body">
+                <h3 class="policy-title">Default Start Time</h3>
+                <p class="policy-desc">The default time a reservation begins.</p>
+                <div class="minute-field">
+                  <input type="time" value="08:30" class="time-input" id="defaultStartTime" aria-label="Default start time">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="policy-card">
+            <div class="policy-row">
+              <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 3"/></svg>
+              <div class="policy-card-body">
+                <h3 class="policy-title">Default End Time</h3>
+                <p class="policy-desc">The default time a reservation ends.</p>
+                <div class="minute-field">
+                  <input type="time" value="17:00" class="time-input" id="defaultEndTime" aria-label="Default end time">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="policy-subgroup">
+        <h3 class="policy-subgroup-title">Idle &amp; Duration</h3>
+        <div class="policy-grid" id="idleDurationGrid">
+          <div class="policy-card">
+            <div class="policy-row">
+              <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+              <div class="policy-card-body">
+                <h3 class="policy-title">Auto-Release on Idle</h3>
+                <p class="policy-desc">If a desk sits unclaimed or unused for this long, it's released back to general availability.</p>
+                <div class="minute-field">
+                  <input type="number" min="0" step="0.5" value="3" class="minute-input" id="idleHours" aria-label="Auto-release on idle, hours">
+                  <span class="minute-suffix">hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="policy-card">
+            <div class="policy-row">
+              <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12M6 22h12M6 2c0 5 4 6 6 8-2 2-6 3-6 8M18 2c0 5-4 6-6 8 2 2 6 3 6 8"/></svg>
+              <div class="policy-card-body">
+                <h3 class="policy-title">Default Reservation Duration</h3>
+                <p class="policy-desc">How long a reservation lasts by default, from the start time above.</p>
+                <div class="minute-field">
+                  <input type="number" min="0" step="0.5" value="9" class="minute-input" id="defaultDurationHours" aria-label="Default reservation duration, hours">
+                  <span class="minute-suffix">hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-checkin-methods-02.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-prebooking-advance-04.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: module 03 of the Floorsense wizard family — follows floorsense-checkin-
+  methods-02.html and continues to floorsense-prebooking-advance-04.html. Covers the Check-in
+  Window (early/late minutes, both default 60) plus a second "Default Reservation Times" section
+  added per a later request: Default Start Time (08:30) and Default End Time (17:00) as native
+  <input type="time">, Auto-Release on Idle (3 hours) and Default Reservation Duration (9 hours)
+  as decimal-hour number fields (step 0.5) — all four are plain defaults with no cross-field
+  validation (e.g. duration isn't forced to equal end-minus-start). Prebooking window length and
+  the separate "how long can a user keep a self-assigned desk" question were split out into their
+  own modules (04 and 05) earlier and are unrelated to this section. The four fields are preceded
+  by a static inline SVG explainer (.policy-diagram-frame — a timeline for start/end/duration plus
+  a 4-step idle-release flow, hardcoded hex colors matching this page's own accent palette rather
+  than var() in SVG attributes for broader render reliability) and grouped into two
+  .policy-subgroup blocks ("Reservation Window" and "Idle & Duration") per a later
+  reorganize-for-clarity request — field ids/JS wiring are unchanged, only the surrounding markup
+  moved. State lives at project.floorsense.wizard.checkinPolicy = { checkInEarlyMinutes,
+  checkInLateMinutes, defaultStartTime, defaultEndTime, idleHours, defaultDurationHours } in the
+  same "configurationProject" localStorage key as modules 01–02.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  const saved = project.floorsense.wizard.checkinPolicy || {};
+  const state = {
+    checkInEarlyMinutes: Number.isFinite(saved.checkInEarlyMinutes) ? saved.checkInEarlyMinutes : 60,
+    checkInLateMinutes: Number.isFinite(saved.checkInLateMinutes) ? saved.checkInLateMinutes : 60,
+    defaultStartTime: saved.defaultStartTime || '08:30',
+    defaultEndTime: saved.defaultEndTime || '17:00',
+    idleHours: Number.isFinite(saved.idleHours) ? saved.idleHours : 3,
+    defaultDurationHours: Number.isFinite(saved.defaultDurationHours) ? saved.defaultDurationHours : 9
+  };
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- fields ---------------- */
+  const checkInEarly = document.getElementById('checkInEarly');
+  const checkInLate = document.getElementById('checkInLate');
+  const defaultStartTime = document.getElementById('defaultStartTime');
+  const defaultEndTime = document.getElementById('defaultEndTime');
+  const idleHours = document.getElementById('idleHours');
+  const defaultDurationHours = document.getElementById('defaultDurationHours');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function save() {
+    state.checkInEarlyMinutes = parseInt(checkInEarly.value, 10) || 0;
+    state.checkInLateMinutes = parseInt(checkInLate.value, 10) || 0;
+    state.defaultStartTime = defaultStartTime.value || '08:30';
+    state.defaultEndTime = defaultEndTime.value || '17:00';
+    state.idleHours = parseFloat(idleHours.value) || 0;
+    state.defaultDurationHours = parseFloat(defaultDurationHours.value) || 0;
+    project.floorsense.wizard.checkinPolicy = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function applyState() {
+    checkInEarly.value = state.checkInEarlyMinutes;
+    checkInLate.value = state.checkInLateMinutes;
+    defaultStartTime.value = state.defaultStartTime;
+    defaultEndTime.value = state.defaultEndTime;
+    idleHours.value = state.idleHours;
+    defaultDurationHours.value = state.defaultDurationHours;
+  }
+  applyState();
+
+  [checkInEarly, checkInLate, defaultStartTime, defaultEndTime, idleHours, defaultDurationHours].forEach(input => {
+    input.addEventListener('input', queueSave);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.checkInEarlyMinutes = 60;
+    state.checkInLateMinutes = 60;
+    state.defaultStartTime = '08:30';
+    state.defaultEndTime = '17:00';
+    state.idleHours = 3;
+    state.defaultDurationHours = 9;
+    applyState();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('checkin-policy');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var intro = document.querySelector('.panel-intro');
+  if (!intro) return;
+  setTimeout(function(){
+    intro.classList.add('hero-collapsed');
+  }, 5000);
+})();
+</script>
+
+</body>
+</html>

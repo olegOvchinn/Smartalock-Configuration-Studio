@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Out of the Box Policy — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
+
+  /* ---------- ready-to-go banner + discrepancy notice ---------- */
+  .ready-banner {
+    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 22px;
+    background: var(--accent-wash); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 14px 16px;
+  }
+  .ready-banner svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
+  .ready-banner p { margin: 0; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
+
+  .download-card {
+    display: flex; align-items: center; gap: 16px; max-width: 640px; margin: 0 0 22px;
+    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
+  }
+  .download-card-icon {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--accent-wash);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent-deep);
+  }
+  .download-card-icon svg { width: 20px; height: 20px; }
+  .download-card-body { flex: 1; min-width: 0; }
+  .download-card-body h3 { margin: 0 0 3px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--ink); }
+  .download-card-body p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+  .download-btn {
+    display: flex; align-items: center; gap: 7px; flex-shrink: 0; text-decoration: none;
+    font-family: var(--font-text); font-weight: 600; font-size: 12.5px; color: #fff;
+    background: var(--accent); border-radius: 980px; padding: 10px 18px; white-space: nowrap;
+    transition: background .15s;
+  }
+  .download-btn:hover { background: var(--accent-deep); }
+  .download-btn svg { width: 15px; height: 15px; }
+
+  /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary-08.html) ---------- */
+  .summary-group {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 20px 22px; margin-bottom: 18px; max-width: 640px;
+  }
+  .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
+  .summary-group-head h3 .summary-icon { width: 32px; height: 32px; flex-shrink: 0; color: var(--accent); }
+  .edit-link {
+    font-family: var(--font-text); font-size: 10.25px; font-weight: 600; color: var(--accent-deep);
+    text-decoration: none; border: 1px solid var(--line); border-radius: 100px; padding: 5px 13px;
+    flex-shrink: 0; white-space: nowrap; transition: border-color .15s, background .15s, color .15s;
+  }
+  .edit-link:hover { border-color: var(--accent); background: var(--accent-wash); }
+  .summary-row { padding: 12px 0; border-top: 1px solid var(--line); }
+  .summary-row:first-of-type { border-top: none; padding-top: 10px; }
+  .summary-row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+  .summary-row-top .label { font-family: var(--font-text); font-size: 12.1px; font-weight: 600; color: var(--ink); }
+  .summary-row-top .value-group { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+  .summary-row-top .value { font-family: var(--font-text); font-size: 12.1px; font-weight: 600; color: var(--accent-deep); text-align: right; white-space: nowrap; }
+  .row-edit-link {
+    font-family: var(--font-text); font-size: 9.6px; font-weight: 600; color: var(--accent-deep);
+    text-decoration: none; border: 1px solid var(--line); border-radius: 100px; padding: 3px 10px;
+    white-space: nowrap; transition: border-color .15s, background .15s;
+  }
+  .row-edit-link:hover { border-color: var(--accent); background: var(--accent-wash); }
+  .summary-desc { font-size: 12.9px; font-weight: 400; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.55; }
+  .summary-note { font-size: 11.48px; font-weight: 500; color: #B36B00; margin: 8px 0 0; line-height: 1.5; }
+
+  /* ---------- per-row training request tick box (Configured Separately card) ---------- */
+  .training-check { display: flex; align-items: flex-start; gap: 8px; margin-top: 9px; cursor: pointer; }
+  .training-check input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .training-check-tick {
+    width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--line); background: var(--paper);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;
+    transition: border-color .15s, background .15s; margin-top: 1px;
+  }
+  .training-check-tick::after {
+    content: ''; width: 7px; height: 5px; opacity: 0;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px); transition: opacity .12s;
+  }
+  .training-check input:checked ~ .training-check-tick { background: var(--accent); border-color: var(--accent); }
+  .training-check input:checked ~ .training-check-tick::after { opacity: 1; }
+  .training-check-label { font-size: 11.8px; color: var(--accent-deep); font-weight: 600; line-height: 1.4; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
+  .panel-topbar > .panel-inner { perspective: 900px; }
+  .panel-intro {
+    transform-origin: 50% 0%;
+    max-height: 400px;
+    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
+                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
+  }
+  .panel-intro.hero-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: rotateX(-100deg);
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg current" data-module="out-of-box-policy" href="floorsense-out-of-box-policy.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Out of the Box Policy</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title" id="pageHeroTitle">Out of the Box Policy</h1>
+        <p class="sub" id="pageHeroSub">Here's what's included by default — nothing to configure, just review and confirm.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="section-head">
+        <span class="eyebrow">Review</span>
+      </div>
+
+      <div class="ready-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+        <p>These settings follow Floorsense's best practice and are ready to go as-is. Nothing below needs to be configured.</p>
+      </div>
+
+      <div class="download-card">
+        <div class="download-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="download-card-body">
+          <h3>Explain this policy to your end users</h3>
+          <p>A short, plain-English guide with illustrations covering check-in, booking and privacy — ready to share with staff as-is.</p>
+        </div>
+        <a class="download-btn" href="../assets/documents/floorsense-desk-booking-guide.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </a>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Check-in Window</h3>
+          <a class="edit-link" href="floorsense-checkin-policy-03.html">Edit</a>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Check-in window</span><span class="value">60 min before – 60 min after</span></div>
+          <p class="summary-desc">End users can confirm (check in to) a desk booking at the desk starting 60 minutes before the reservation's start time, and no later than 60 minutes after it. Example: for an 8:00 AM booking, check-in is available from 7:00 AM through to 9:00 AM.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prebooking &amp; Duration</h3>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top">
+            <span class="label">Prebooking window</span>
+            <span class="value-group"><span class="value">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html">Edit</a></span>
+          </div>
+          <p class="summary-desc">Users can book a desk up to 8 days ahead of time.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top">
+            <span class="label">Default reservation duration</span>
+            <span class="value-group"><span class="value">9 hours</span><a class="row-edit-link" href="floorsense-checkin-policy-03.html">Edit</a></span>
+          </div>
+          <p class="summary-desc">A reservation lasts 9 hours by default.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>Check-in Behaviour</h3>
+          <a class="edit-link" href="floorsense-checkin-methods-02.html">Edit</a>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Card swipe</span><span class="value">In, then out</span></div>
+          <p class="summary-desc">The first card swipe at a desk checks the user in; the second swipe checks them out.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Checking in elsewhere</span><span class="value">Auto-cancels old booking</span></div>
+          <p class="summary-desc">If a user already has a reservation for one desk but checks in at a different desk, their original reservation is automatically cancelled.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>Access Methods</h3>
+          <a class="edit-link" href="floorsense-checkin-methods-02.html">Edit</a>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Enabled methods</span><span class="value">Cards · App · Desktop</span></div>
+          <p class="summary-desc">Building access cards, the Floorsense mobile app, and the desktop app are all available out of the box. Wallet pass is available too, but as a paid add-on it isn't enabled by default.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-13a2 2 0 0 1 2-2h3v15"/><path d="M15 21v-9a2 2 0 0 1 2-2h3v11"/><line x1="2" y1="21" x2="22" y2="21"/></svg>Additional Options</h3>
+          <a class="edit-link" href="floorsense-reservation-length-05.html">Edit</a>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">NSNP</span><span class="value">Depends on policy</span></div>
+          <p class="summary-desc">Not part of the fixed defaults — whether this applies depends on your organisation's own policy. Confirm before go-live.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Sit-stand desks</span><span class="value">Off</span></div>
+          <p class="summary-desc">Sit-stand desk integration is disabled by default.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Recurring bookings</span><span class="value">Disabled</span></div>
+          <p class="summary-desc">Users can't set up repeating reservations by default.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Privacy</span><span class="value">Do Not Disturb available</span></div>
+          <p class="summary-desc">Users can set a Do Not Disturb status to limit interruptions.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M14.7 20a5 5 0 0 1 8.3-3.7"/></svg>Configured Separately</h3>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Teams</span><span class="value">Subject to creation</span></div>
+          <p class="summary-desc">Team groupings aren't set up out of the box — these are created separately when needed.</p>
+          <label class="training-check">
+            <input type="checkbox" id="trainingTeams">
+            <span class="training-check-tick" aria-hidden="true"></span>
+            <span class="training-check-label">Tick for training on how Teams are set up</span>
+          </label>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Book on Behalf</span><span class="value">Subject to creation</span></div>
+          <p class="summary-desc">Delegated booking (one person booking for another) isn't enabled out of the box — set up separately if required.</p>
+          <label class="training-check">
+            <input type="checkbox" id="trainingBookOnBehalf">
+            <span class="training-check-tick" aria-hidden="true"></span>
+            <span class="training-check-label">Tick for training on how Book on Behalf is set up</span>
+          </label>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Notifications</span><span class="value">Subject to creation</span></div>
+          <p class="summary-desc">Notification rules aren't configured out of the box — set up separately based on your preferences.</p>
+          <label class="training-check">
+            <input type="checkbox" id="trainingNotifications">
+            <span class="training-check-tick" aria-hidden="true"></span>
+            <span class="training-check-label">Tick for training on how Notifications are set up</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <span class="page-nav-btn next disabled">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to go — no changes needed</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="primary" id="continueBtn" type="button">Confirm &amp; finish</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: this page is only reached when "Pre-Configured" is selected on
+  floorsense-setup-path-00.html — it's a shortcut that bypasses the 01–05 customise wizard
+  entirely, so it deliberately has no 0X number (it isn't a step in that sequence). Everything
+  here is read-only, reusing the .summary-group/.summary-row pattern from
+  smartalock-configuration-summary-08.html (recoloured to the Floorsense green palette) since
+  there's nothing to configure — the client is just reviewing Floorsense's fixed best-practice
+  defaults from the brief. The check-in window was originally given as "30 minutes before" but its
+  own worked example (8 AM booking, check-in opens 7 AM) implied 60 minutes before, matching the
+  Check-in Policy page's own 60/60 defaults — corrected to 60/60 per a follow-up confirmation, so
+  that row no longer carries a discrepancy flag. The default reservation duration was likewise
+  originally given as 8 hours here versus 9 hours already set on the Check-in Policy page's Default
+  Reservation Duration field — corrected to 9 hours per a follow-up instruction, so the amber
+  .setup-notice banner and its accompanying .summary-note (which existed solely to flag this one
+  discrepancy) were both removed outright rather than left empty. There are no more open
+  discrepancies on this page. The end-user PDF guide
+  (assets/documents/floorsense-desk-booking-guide.pdf) was updated to match — its "Your desk is
+  yours for 8 hours" card now reads 9 hours. "NSNP" is presented verbatim as given in the
+  brief since its expansion wasn't specified — flag if it needs a fuller explanation before this
+  is shown to a client. Every summary-group except Configured Separately has an Edit pill
+  (top-right of the group heading, reusing smartalock-configuration-summary-08.html's .edit-link
+  styling) added per a later request so the client can jump straight into the customise wizard and
+  change a default without going through the whole walkthrough. Mapping is best-effort where a
+  group's values live on a single page: Check-in Window -> checkin-policy-03, Check-in Behaviour
+  and Access Methods -> checkin-methods-02, Additional Options -> reservation-length-05 (none of
+  these groups' individual fields — check-in behaviour rules, NSNP, sit-stand, recurring bookings —
+  actually exist as editable controls anywhere in the prototype yet, so their Edit links land on
+  the closest related wizard page rather than a dedicated field; flag if/when those controls get
+  built so the links can point precisely). Configured Separately's Edit pill was removed per a
+  follow-up request, since its three rows now carry their own per-row training tick boxes instead
+  (see below) and a group-level Edit link to reservation-types-01 wasn't adding much. Each of the
+  three Configured Separately rows (Teams, Book on Behalf, Notifications)
+  now has its own small .training-check tick box — "Tick for training on how ___ is set up" — since
+  a client may want training on only one or two of the three, not all-or-nothing. State saves to
+  outOfBoxPolicy.trainingRequested = { teams, bookOnBehalf, notifications } (each a bool, saved
+  immediately on change and again on Confirm & finish); these are plain request flags, not wired to
+  any notification/CRM system yet. The end-user PDF guide
+  (assets/documents/floorsense-desk-booking-guide.pdf) was updated to match: its "Not switched on
+  yet at your workplace" box now also lists "Team bookings, booking on behalf of a colleague, and
+  custom notifications" alongside Sit-stand/Recurring, with a line noting that if any of these are
+  turned on, the workplace will arrange training — kept as one general note there since the PDF is
+  a simple end-user overview, not itemised per-feature like the tick boxes above.
+  Prebooking & Duration is the one group whose two rows genuinely live on two different
+  pages, so it skips the group-level Edit link in favour of a smaller .row-edit-link on each row
+  (prebooking-advance-04 for the window, checkin-policy-03 for the duration). None of these Edit
+  links carry any state — they're plain navigation, consistent with this page having nothing to
+  save itself. A .download-card sits above the discrepancy notice offering
+  assets/documents/floorsense-desk-booking-guide.pdf — a separately hand-authored, illustrated
+  end-user guide (green cover, icon badges, plain-English rewrite of check-in window/prebooking/
+  duration/tap in-out/desk-switch/access methods/DND, plus a "not switched on yet" box for sit-
+  stand and recurring bookings) built via weasyprint from HTML/CSS with inline SVG icons
+  (icons need stroke="currentColor" on the <svg> plus a CSS color: rule on the container/class,
+  not stroke:, or weasyprint renders them blank). NSNP and the "subject to creation" admin items
+  (Teams/Book on Behalf/Notifications) are deliberately left out of the guide as not end-user-
+  relevant. The link uses the native download attribute, no JS wiring. Progress bar only shows 2 segments (setup-path, out-of-box-policy) rather
+  than the full 6-segment bar used on 00 and 01–05, since this page sits on a separate branch and
+  showing the 01–05 segments as available would misrepresent this as part of that sequence. Next
+  arrow is disabled (terminal page for this branch, mirrors smartalock-configuration-summary-08.html's
+  pattern). "Confirm & finish" marks moduleStatus['out-of-box-policy'] and floorsense.configured,
+  then routes to project-home.html. State lives at project.floorsense.wizard.outOfBoxPolicy =
+  { acknowledged: true, preset, trainingRequested } in the same "configurationProject"
+  localStorage key as the rest of the Floorsense wizard. This page is also the shared landing spot
+  for the "Relaxed" and "Strict" preset cards added to floorsense-setup-path-00.html — they link
+  here with ?preset=relaxed / ?preset=strict, read via a plain URLSearchParams lookup on load. If
+  recognised, it swaps #pageHeroTitle/#pageHeroSub to "Relaxed Preset" / "Strict Preset" wording;
+  otherwise (no param, or "preconfigured") it falls back to the original "Out of the Box Policy"
+  copy and an internal preset value of 'recommended'. Flag: none of the summary numbers below
+  (check-in window, prebooking days, duration, etc.) actually change per preset yet — no brief has
+  specified distinct relaxed/strict values, so all three currently show the exact same defaults;
+  only the heading changes. Revisit once real relaxed/strict numbers are provided, at which point
+  the summary rows will need to branch on `preset` too.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  /* ---------------- preset (relaxed / strict) query param ---------------- */
+  const PRESET_LABELS = { relaxed: 'Relaxed', strict: 'Strict' };
+  const presetParam = new URLSearchParams(window.location.search).get('preset');
+  const preset = PRESET_LABELS[presetParam] ? presetParam : 'recommended';
+  if (PRESET_LABELS[preset]) {
+    document.getElementById('pageHeroTitle').textContent = PRESET_LABELS[preset] + ' Preset';
+    document.getElementById('pageHeroSub').textContent =
+      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset — nothing to configure, just review and confirm.";
+  }
+
+  const savedOOB = project.floorsense.wizard.outOfBoxPolicy || {};
+  const savedTraining = savedOOB.trainingRequested || {};
+  const trainingCheckboxes = {
+    teams: document.getElementById('trainingTeams'),
+    bookOnBehalf: document.getElementById('trainingBookOnBehalf'),
+    notifications: document.getElementById('trainingNotifications')
+  };
+  Object.keys(trainingCheckboxes).forEach(key => {
+    trainingCheckboxes[key].checked = !!savedTraining[key];
+    trainingCheckboxes[key].addEventListener('change', () => {
+      const trainingRequested = Object.assign({}, (project.floorsense.wizard.outOfBoxPolicy || {}).trainingRequested);
+      trainingRequested[key] = trainingCheckboxes[key].checked;
+      project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { trainingRequested });
+      saveProject(project);
+    });
+  });
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- confirm & finish ---------------- */
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    project.floorsense.wizard.outOfBoxPolicy = {
+      acknowledged: true,
+      preset: preset,
+      trainingRequested: {
+        teams: trainingCheckboxes.teams.checked,
+        bookOnBehalf: trainingCheckboxes.bookOnBehalf.checked,
+        notifications: trainingCheckboxes.notifications.checked
+      }
+    };
+    project.floorsense.configured = true;
+    markModuleSaved('out-of-box-policy');
+    saveDot.classList.add('show');
+    saveText.textContent = 'Saved to project configuration';
+    setTimeout(() => { window.location.href = 'project-home.html'; }, 500);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var intro = document.querySelector('.panel-intro');
+  if (!intro) return;
+  setTimeout(function(){
+    intro.classList.add('hero-collapsed');
+  }, 5000);
+})();
+</script>
+
+</body>
+</html>

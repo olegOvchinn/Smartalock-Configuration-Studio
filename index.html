@@ -129,6 +129,24 @@
   button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
+  .panel-topbar > .panel-inner { perspective: 900px; }
+  .panel-intro {
+    transform-origin: 50% 0%;
+    max-height: 400px;
+    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
+                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
+  }
+  .panel-intro.hero-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: rotateX(-100deg);
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -220,7 +238,7 @@
   family (pages/smartalock-<module>-0X.html). Formerly pages/configuration-start.html, moved to the
   project root and given the site's name so it loads automatically when the folder/domain root is
   opened. Choosing "Smartalock" routes to pages/smartalock-templates-00.html (start of the 10-step
-  wizard); choosing "Floorsense" routes to pages/floorsense-templates.html (that product line's own
+  wizard); choosing "Floorsense" routes to pages/floorsense-setup-path-00.html (start of that product line's own
   configuration engine). No project state is written here — this page is a router only, not a wizard
   module.
 -->
@@ -234,7 +252,7 @@
     },
     floorsense: {
       label: 'Floorsense',
-      dest: 'pages/floorsense-templates.html'
+      dest: 'pages/floorsense-setup-path-00.html'
     }
   };
 
@@ -269,6 +287,16 @@
     if (!selected) return;
     window.location.href = PRODUCTS[selected].dest;
   });
+})();
+</script>
+
+<script>
+(function(){
+  var intro = document.querySelector('.panel-intro');
+  if (!intro) return;
+  setTimeout(function(){
+    intro.classList.add('hero-collapsed');
+  }, 5000);
 })();
 </script>
 

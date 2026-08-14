@@ -186,6 +186,47 @@ Register
 
 <script>
 
+const project = loadProject();
+
+if (project && project.registration) {
+
+    const r = project.registration;
+
+    document.getElementById("projectTitle").textContent =
+        `${r.customer || "-"} - ${r.site || "-"}`;
+
+    document.getElementById("reportCompany").textContent =
+        r.customer || "-";
+
+    document.getElementById("reportSite").textContent =
+        r.site || "-";
+
+    document.getElementById("reportEmail").textContent =
+        r.email || "-";
+
+    document.getElementById("reportPolicy").textContent =
+        r.policy || "-";
+
+    document.getElementById("reportIT").textContent =
+        r.it || "-";
+
+    document.getElementById("reportTraining").textContent =
+        r.training || "-";
+
+    document.getElementById("reportSupport").textContent =
+        r.support || "-";
+
+    document.getElementById("reportFacilities").textContent =
+        r.facilities || "-";
+
+    document.getElementById("reportInstallation").textContent =
+        r.installationDate || "-";
+
+    document.getElementById("reportCompletion").textContent =
+        r.completionDate || "-";
+
+}
+
 function registerProject() {
 
 const project = loadProject();

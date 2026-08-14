@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup Path — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
+
+  /* ---------- recommendation notice ---------- */
+  .setup-notice {
+    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 22px;
+    background: #FFF8E6; border: 1px solid #F0D793; border-radius: var(--radius-md); padding: 14px 16px;
+  }
+  .setup-notice svg { width: 20px; height: 20px; flex-shrink: 0; color: #B36B00; margin-top: 1px; }
+  .setup-notice p { margin: 0; font-size: 13.12px; line-height: 1.55; color: #7A4B00; }
+
+  /* ---------- setup-path cards (single-select radio, same visual language as desk-check-card) ---------- */
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  .path-check-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px; transition: border-color .15s, background .15s;
+  }
+  .path-check-card:hover { border-color: var(--accent); }
+  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .path-tick {
+    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .path-check-card.checked .path-tick { border-color: var(--accent); }
+  .path-tick::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+    opacity: 0; transition: opacity .15s;
+  }
+  .path-check-card.checked .path-tick::after { opacity: 1; }
+  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .path-card-body { min-width: 0; flex: 1; }
+  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .path-note { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+  .path-tag {
+    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 9px; border-radius: 999px; vertical-align: middle;
+  }
+
+  /* ---------- customise consent sub-panel ---------- */
+  .path-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .path-subfields.show { display: flex; }
+  .path-subfields-label { font-size: 12.1px; font-weight: 500; color: var(--ink); line-height: 1.55; margin: 0; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
+  .panel-topbar > .panel-inner { perspective: 900px; }
+  .panel-intro {
+    transform-origin: 50% 0%;
+    max-height: 400px;
+    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
+                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
+  }
+  .panel-intro.hero-collapsed {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: rotateX(-100deg);
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg current" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-policy" href="floorsense-checkin-policy-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Policy</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Setup Path</h1>
+        <p class="sub">Choose how you'd like to configure this Floorsense deployment.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="section-head">
+        <span class="eyebrow">Configure</span>
+      </div>
+
+      <div class="setup-notice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+        <p>We recommend the <strong>Pre-Configured</strong> setup below — it's ready to go, follows Floorsense's best practice, and is far easier to maintain and explain to your end users.</p>
+      </div>
+
+      <div class="path-check-grid" id="pathGrid">
+        <div class="path-check-card" data-path="relaxed">
+          <label class="path-row">
+            <input type="radio" name="setupPath" value="relaxed">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M17 10V7a5 5 0 0 0-9.5-2.2"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">Relaxed</h3>
+              <p class="path-desc">A lighter-touch preset with fewer restrictions and more flexibility for users. Good for workplaces that are still easing staff into structured desk booking.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="path-check-card" data-path="preconfigured">
+          <label class="path-row">
+            <input type="radio" name="setupPath" value="preconfigured">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">Pre-Configured <span class="path-tag">Recommended</span></h3>
+              <p class="path-desc">Every setting is pre-set to Floorsense's best-practice defaults. It's ready to go immediately, and because it follows a standard pattern, it's much easier to maintain and explain to your end users.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="path-check-card" data-path="strict">
+          <label class="path-row">
+            <input type="radio" name="setupPath" value="strict">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">Strict</h3>
+              <p class="path-desc">A tighter preset that enforces desk booking rules more firmly, with less room for exceptions. Best where it's important people actually use the workspace as intended.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="path-check-card" data-path="customise">
+          <label class="path-row">
+            <input type="radio" name="setupPath" value="customise">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3l3 3L7 20l-4 1 1-4z"/><path d="M13 8l3-3 3 3-3 3"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">Build Your Own</h3>
+              <p class="path-desc">Step through every main configuration and set it up exactly as you'd like.</p>
+              <p class="path-note">Use carefully — over-customising can make the system harder to maintain and explain to end users, and is subject to Floorsense's approval.</p>
+            </div>
+          </label>
+          <div class="path-subfields" id="customiseSubfields">
+            <p class="path-subfields-label">Before you continue: any customisation beyond the recommended defaults needs to be reviewed and approved by Floorsense, and should be kept as simple as possible.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="../index.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-reservation-types-01.html" id="pageNavNext">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">No setup path selected yet</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button" disabled>Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: module 00 of the Floorsense wizard family — the new first step, inserted before
+  floorsense-reservation-types-01.html per a later request. Presents four mutually-exclusive setup
+  paths as radio cards (name="setupPath"), in order: "relaxed" (a lighter-touch preset, fewer
+  restrictions), "preconfigured" (badged Recommended, all settings follow Floorsense best practice,
+  easiest to maintain/explain), "strict" (a tighter preset enforcing the rules more firmly, for
+  workplaces where correct desk-booking behaviour matters), and "customise" (walk through every
+  main setting; carries a caution note plus a conditional reveal reiterating that customisation
+  needs Floorsense's approval and should be kept simple). The relaxed/strict cards were added per a
+  follow-up request — flag: their copy describes the intent (looser vs firmer enforcement) but no
+  brief has yet specified distinct numeric defaults for them (check-in window, prebooking days,
+  duration, etc.), so both currently land on the exact same policy numbers as "preconfigured"; see
+  the matching flag in floorsense-out-of-box-policy.html's NOTE. Continue branches by PATH_DEST:
+  "preconfigured" routes to floorsense-out-of-box-policy.html; "relaxed"/"strict" route to the same
+  page with a ?preset=relaxed / ?preset=strict query string so it can reflect the choice in its
+  heading; "customise" routes to floorsense-reservation-types-01.html as before, continuing into
+  the full walkthrough. The bottom-right page-nav arrow's href updates live to match the current
+  selection (falls back to the customise destination if nothing's picked yet). State lives at
+  project.floorsense.wizard.setupPath = { selected: 'relaxed' | 'preconfigured' | 'strict' |
+  'customise' } in the same "configurationProject" localStorage key as the rest of the Floorsense
+  wizard. All 5 downstream pages (01–05) had a new "setup-path" progress-bar segment added as their
+  first entry, and page 01's back-arrow now points here instead of ../index.html.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  const saved = project.floorsense.wizard.setupPath || {};
+  const state = {
+    selected: saved.selected || ""
+  };
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- setup path grid ---------------- */
+  const grid = document.getElementById('pathGrid');
+  const customiseSubfields = document.getElementById('customiseSubfields');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+  const continueBtn = document.getElementById('continueBtn');
+  const pageNavNext = document.getElementById('pageNavNext');
+
+  const PATH_DEST = {
+    relaxed: 'floorsense-out-of-box-policy.html?preset=relaxed',
+    preconfigured: 'floorsense-out-of-box-policy.html',
+    strict: 'floorsense-out-of-box-policy.html?preset=strict',
+    customise: 'floorsense-reservation-types-01.html'
+  };
+
+  function save() {
+    project.floorsense.wizard.setupPath = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function updateSummary() {
+    const labels = {
+      relaxed: 'Relaxed preset selected',
+      preconfigured: 'Pre-Configured selected',
+      strict: 'Strict preset selected',
+      customise: 'Build Your Own selected'
+    };
+    saveText.textContent = labels[state.selected] || 'No setup path selected yet';
+    continueBtn.disabled = !state.selected;
+    pageNavNext.href = PATH_DEST[state.selected] || PATH_DEST.customise;
+  }
+
+  grid.querySelectorAll('.path-check-card').forEach(card => {
+    const path = card.getAttribute('data-path');
+    const radio = card.querySelector('input[type="radio"]');
+    radio.checked = state.selected === path;
+    card.classList.toggle('checked', radio.checked);
+    if (path === 'customise') customiseSubfields.classList.toggle('show', radio.checked);
+
+    radio.addEventListener('change', () => {
+      state.selected = path;
+      grid.querySelectorAll('.path-check-card').forEach(c => {
+        const checked = c.getAttribute('data-path') === path;
+        c.classList.toggle('checked', checked);
+        if (c.getAttribute('data-path') === 'customise') customiseSubfields.classList.toggle('show', checked);
+      });
+      updateSummary();
+      queueSave();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.selected = "";
+    grid.querySelectorAll('.path-check-card').forEach(card => {
+      card.classList.remove('checked');
+      card.querySelector('input[type="radio"]').checked = false;
+    });
+    customiseSubfields.classList.remove('show');
+    updateSummary();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    if (!state.selected) return;
+    save();
+    markModuleSaved('setup-path');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    const dest = PATH_DEST[state.selected] || PATH_DEST.customise;
+    setTimeout(() => { window.location.href = dest; }, 500);
+  });
+
+  updateSummary();
+})();
+</script>
+
+<script>
+(function(){
+  var intro = document.querySelector('.panel-intro');
+  if (!intro) return;
+  setTimeout(function(){
+    intro.classList.add('hero-collapsed');
+  }, 5000);
+})();
+</script>
+
+</body>
+</html>
