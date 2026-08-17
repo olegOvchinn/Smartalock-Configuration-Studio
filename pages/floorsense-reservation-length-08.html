@@ -242,21 +242,21 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-05.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-06.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-07.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Prebooking Window</span>
         </a>
         <a class="progress-seg current" data-module="reservation-length" href="floorsense-reservation-length-08.html">
           <span class="progress-seg-fill"></span>
@@ -345,7 +345,7 @@
       </label>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-prebooking-advance-07.html">
+        <a class="page-nav-btn" href="floorsense-idle-release-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <span class="page-nav-btn disabled">
@@ -372,7 +372,7 @@
 
 <!--
   NOTE for Oleg: module 07 of the Floorsense wizard family (renamed twice — see below) — follows
-  floorsense-prebooking-advance-07.html. This page was split out of the original Check-in Policy
+  floorsense-prebooking-advance-04.html. This page was split out of the original Check-in Policy
   page per a later request, so it covers two related settings: Default Reservation Length: a radio group defaulting
   to "Until the user releases the desk themselves" (no default was specified in the brief, so the
   first/most permissive option was picked — flag if a different default is wanted); selecting
@@ -389,23 +389,30 @@
   { mode, otherValue, allowMeetingSpaceTag } in the same "configurationProject" localStorage key
   as the other Floorsense modules.
 
-  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-06.html) was
+  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-07.html) was
   inserted earlier in the wizard, which bumped floorsense-prebooking-advance-04.html to -05.html;
   this file was renamed from floorsense-reservation-length-05.html to -06.html to keep the numbers
   sequential (a straight filesystem rename — field ids, state shape, and everything else below are
-  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance-07.html
+  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance-04.html
   accordingly, and its progress bar gained a 7th "idle-release" segment between "Check-in Policy"
   and "Prebooking Window".
 
   RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
   its own page before Check-in Window, this file was renamed AGAIN, from
   floorsense-reservation-length-06.html to -07.html, to keep numbers sequential after
-  floorsense-default-reservation-times-04.html was inserted earlier in the wizard (which bumped
+  floorsense-default-reservation-times-05.html was inserted earlier in the wizard (which bumped
   every downstream file up by one). This page's back-arrow was updated to
-  floorsense-prebooking-advance-07.html (itself renamed from -05.html in the same cascade); field
+  floorsense-prebooking-advance-04.html (itself renamed from -05.html in the same cascade); field
   ids and state shape are unchanged. The progress bar above gained an eighth segment ("Default
-  Reservation Times") inserted before "Check-in Window" — see floorsense-checkin-window-05.html's
-  and floorsense-default-reservation-times-04.html's own NOTEs for the full story of that split.
+  Reservation Times") inserted before "Check-in Window" — see floorsense-checkin-window-06.html's
+  and floorsense-default-reservation-times-05.html's own NOTEs for the full story of that split.
+
+  MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking was
+  relocated from module 07 to immediately follow Business Hours (module 04 now); this page's own
+  file number (08) didn't change, since it was already last, but its back-arrow now points to
+  floorsense-idle-release-07.html (was floorsense-prebooking-advance-04.html, itself renamed from
+  -07.html) since Auto-Release on Idle now immediately precedes it instead of Prebooking. See
+  floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
 -->
 
 <script>

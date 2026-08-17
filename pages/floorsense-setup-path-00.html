@@ -241,21 +241,21 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-05.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-06.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-07.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Prebooking Window</span>
         </a>
         <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
           <span class="progress-seg-fill"></span>
@@ -405,13 +405,13 @@
   05(prebooking) -> 06(reservation-length)). This page's back-arrow changed from
   floorsense-reservation-types-01.html to floorsense-checkin-methods-02.html, and its "customise"
   branch/next-arrow changed from floorsense-checkin-methods-02.html to
-  floorsense-checkin-window-05.html (checkin-methods-02 is now already done by the time someone
+  floorsense-checkin-window-06.html (checkin-methods-02 is now already done by the time someone
   reaches this page, so "Build Your Own" continues straight to Check-in Policy instead). The
   "relaxed" / "preconfigured" / "strict" shortcuts to floorsense-out-of-box-policy.html are, again,
   unaffected — that branch logic only cares about which page it's ON, not what precedes it. See
   floorsense-reservation-types-01.html's and floorsense-checkin-methods-02.html's own NOTEs for the
   rest of that reorder. Separately, a new "Auto-Release on Idle" page
-  (floorsense-idle-release-06.html) was inserted later in the wizard (between Check-in Policy and
+  (floorsense-idle-release-07.html) was inserted later in the wizard (between Check-in Policy and
   Prebooking Window), which is why the progress bar above now has 7 segments instead of 6 and the
   old modules 04/05 are now 05/06 — unrelated to this page's own reorder, but landed in the same
   round of edits.
@@ -419,14 +419,14 @@
   MOST RECENT CHANGE: per a follow-up request ("create a separate page for Default Reservation
   Times and put it before check in window page"), the old floorsense-checkin-policy-03.html was
   split: its "Default Reservation Times" card moved to a brand-new
-  floorsense-default-reservation-times-04.html, and the remaining Check-in Window content was
-  renamed to floorsense-checkin-window-05.html. This page's "customise" branch/next-arrow
+  floorsense-default-reservation-times-05.html, and the remaining Check-in Window content was
+  renamed to floorsense-checkin-window-06.html. This page's "customise" branch/next-arrow
   (PATH_DEST.customise) and the static #pageNavNext fallback both changed from
-  floorsense-checkin-window-05.html to floorsense-default-reservation-times-04.html accordingly,
+  floorsense-checkin-window-06.html to floorsense-default-reservation-times-05.html accordingly,
   since that new page now immediately follows this one in the click-through order. The
   "relaxed"/"preconfigured"/"strict" shortcuts are unaffected. The progress bar above gained an
   eighth segment ("Default Reservation Times", inserted before "Check-in Window") — see
-  floorsense-default-reservation-times-04.html's and floorsense-checkin-window-05.html's own NOTEs
+  floorsense-default-reservation-times-05.html's and floorsense-checkin-window-06.html's own NOTEs
   for the rest of that split.
 -->
 

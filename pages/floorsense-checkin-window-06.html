@@ -404,21 +404,21 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg current" data-module="checkin-window" href="floorsense-checkin-window-05.html">
+        <a class="progress-seg current" data-module="checkin-window" href="floorsense-checkin-window-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-06.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-07.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Prebooking Window</span>
         </a>
         <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
           <span class="progress-seg-fill"></span>
@@ -499,10 +499,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-default-reservation-times-04.html">
+        <a class="page-nav-btn" href="floorsense-default-reservation-times-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-idle-release-06.html">
+        <a class="page-nav-btn next" href="floorsense-idle-release-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -526,7 +526,7 @@
 
 <!--
   NOTE for Oleg: module 03 of the Floorsense wizard family — follows floorsense-checkin-
-  methods-02.html and continues to floorsense-prebooking-advance-07.html. Covers the Check-in
+  methods-02.html and continues to floorsense-prebooking-advance-04.html. Covers the Check-in
   Window (early/late minutes, both default 60) plus a second "Default Reservation Times" section
   added per a later request: Default Start Time (08:30) and Default End Time (17:00) as native
   <input type="time">, Auto-Release on Idle (3 hours) and Default Reservation Duration (9 hours)
@@ -611,13 +611,13 @@
   same page ("3. Auto-Release on Idle", built the same way as the other two, including its own
   3-step idle-release SVG) — per a follow-up request ("make it a separate page following 03"),
   that card was pulled back out and rebuilt as its own standalone page instead:
-  floorsense-idle-release-06.html, inserted immediately after this page in the click-through order.
+  floorsense-idle-release-07.html, inserted immediately after this page in the click-through order.
   This page's own state (project.floorsense.wizard.checkinPolicy) no longer includes idleHours —
   it moved to its own project.floorsense.wizard.idleRelease = { idleHours } key on the new page;
   the four remaining checkinPolicy fields (checkInEarlyMinutes, checkInLateMinutes,
   defaultStartTime, defaultEndTime, defaultDurationHours) are unchanged. This page's next-arrow/
-  Continue destination changed from floorsense-prebooking-advance-07.html to
-  floorsense-idle-release-06.html accordingly. See floorsense-idle-release-06.html's own NOTE for
+  Continue destination changed from floorsense-prebooking-advance-04.html to
+  floorsense-idle-release-07.html accordingly. See floorsense-idle-release-07.html's own NOTE for
   the rest of that page's details.
 
   Separately, per another request, the Floorsense wizard's click-through order changed again:
@@ -632,7 +632,7 @@
 
   MOST RECENT CHANGE: per a follow-up request ("create a separate page for Default Reservation
   Times and put it before check in window page"), this file was renamed from
-  floorsense-checkin-policy-03.html to floorsense-checkin-window-05.html and its "2. Default
+  floorsense-checkin-policy-03.html to floorsense-checkin-window-06.html and its "2. Default
   Reservation Times" card was extracted into a brand-new floorsense-default-reservation-times-
   03.html, inserted immediately BEFORE this page in the click-through order (same pattern used
   earlier for the idle-release split above). This page is now single-topic, so — matching the
@@ -641,8 +641,8 @@
   the hero. Downstream files were cascade-renamed to keep numbers sequential:
   floorsense-idle-release-04.html -> -05.html, floorsense-prebooking-advance-05.html -> -06.html,
   floorsense-reservation-length-06.html -> -07.html. This page's back-arrow now points to
-  floorsense-default-reservation-times-04.html (was floorsense-setup-path-00.html); its next-arrow
-  is unchanged (floorsense-idle-release-06.html, just renamed). The progress bar gained an eighth
+  floorsense-default-reservation-times-05.html (was floorsense-setup-path-00.html); its next-arrow
+  is unchanged (floorsense-idle-release-07.html, just renamed). The progress bar gained an eighth
   segment, "Default Reservation Times", inserted before this page's own "Check-in Window" segment
   (renamed from "Check-in Policy"); both segment rename and insertion were applied identically
   across all seven pages that share the full progress bar.
@@ -659,7 +659,7 @@
   with the new page order — Default Reservation Times is now visited BEFORE Check-in Window, so by
   the time a user reaches this page the value already exists in localStorage. The example is no
   longer "live" with respect to that one field (no input on this page to listen to), but remains
-  live for checkInEarly/checkInLate. See floorsense-default-reservation-times-04.html's own NOTE
+  live for checkInEarly/checkInLate. See floorsense-default-reservation-times-05.html's own NOTE
   for the rest of that page's details.
 
   Per a follow-up request ("make it more user-friendly, maybe an animation to illustrate this?"),
@@ -772,11 +772,11 @@
   will visually "unmoor" them from their centered position for the animation's duration.
 
   FIX: continueBtn saved state and marked the progress segment but never navigated anywhere —
-  added the missing `setTimeout(() => window.location.href = 'floorsense-idle-release-06.html',
+  added the missing `setTimeout(() => window.location.href = 'floorsense-idle-release-07.html',
   500)` redirect, matching the pattern used on floorsense-setup-path-00.html/
   floorsense-reservation-types-01.html/floorsense-checkin-methods-02.html. Same bug found and fixed
-  at the same time on floorsense-default-reservation-times-04.html,
-  floorsense-idle-release-06.html and floorsense-prebooking-advance-07.html.
+  at the same time on floorsense-default-reservation-times-05.html,
+  floorsense-idle-release-07.html and floorsense-prebooking-advance-04.html.
 
   MOST RECENT CHANGE: per a follow-up request, the on-rail drag handles (createTimelineHandle(),
   pointerdown/move/up on the .handle circles) were replaced with a pair of Apple Clock-style time
@@ -1203,7 +1203,7 @@
     markModuleSaved('checkin-window');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-idle-release-06.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-idle-release-07.html'; }, 500);
   });
 })();
 </script>
