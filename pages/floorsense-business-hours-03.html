@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Hours — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+
+  /* ---------- business hours: single explainer card (icon+desc, live diagram, footer),
+     same shell as floorsense-checkin-window-05.html's .checkin-card ---------- */
+  .checkin-card {
+    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
+  .checkin-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
+
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  .timeline-header { margin-bottom: 4px; }
+  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
+  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
+
+  /* ---------- diagram row: an Apple-Clock-style time drum on each side of the rail, rolling
+     either drum moves that side's pin (and the connecting "open" zone between them) — same
+     mechanics as floorsense-checkin-window-05.html's earliest/latest drums, but here both ends
+     are independent (Opens/Closes) rather than offsets from a fixed center booking-start time,
+     so both pins are the same normal size and both move along a plain day-scale rail. ---------- */
+  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 64px 20px 40px; flex: 1; min-width: 0; }
+  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
+  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+
+  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node .anchor-pin {
+    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
+    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+  }
+  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+
+  /* ---------- Apple Clock-style time drum: native scroll + scroll-snap gives free momentum/
+     touch/wheel support without custom pointer-drag math. Each row is an absolute clock time
+     (30-min steps); the settled center row is the picked value. Ported verbatim, including the
+     white/3D body treatment, from floorsense-checkin-window-05.html. ---------- */
+  .time-drum {
+    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
+  }
+  .time-drum::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
+    background: linear-gradient(to bottom,
+      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
+      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
+  }
+  .time-drum-window {
+    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
+    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
+    background: rgba(16,42,67,0.03);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
+  }
+  .time-drum-scroll {
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
+    border-radius: 12px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+  }
+  .time-drum-scroll::-webkit-scrollbar { display: none; }
+  .time-drum-pad { height: 60px; }
+  .time-drum-row {
+    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
+  }
+  .time-drum-row.selected {
+    font-size: 15px; font-weight: 700; color: #102A43;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
+     scaleX are animated on elements that don't rely on `transform` for their own centering, since
+     .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves. ---------- */
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-pop-handle {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .timeline-card.animate-in .anchor-pin {
+    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .timeline-card.animate-in .label-time,
+  .timeline-card.animate-in .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .15s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
+  }
+
+  .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
+  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg current" data-module="business-hours" href="floorsense-business-hours-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Default Reservation Times</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Window</span>
+        </a>
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Business Hours</h1>
+        <p class="sub">Set the standard opening and closing time used as the default for most users.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="checkin-card">
+        <div class="checkin-card-header">
+          <div class="checkin-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          </div>
+          <p class="checkin-card-desc">
+            Most users share the same standard business hours — roll the time drums on either side
+            of the diagram below to set when the day opens and closes. These hours apply across the
+            floor by default; individual modules further on can still carve out exceptions.
+          </p>
+        </div>
+
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <p class="timeline-subtitle">Standard hours: <strong id="businessHoursRangeLabel">9:00 AM – 5:00 PM</strong></p>
+          </div>
+          <div class="timeline-diagram-row">
+            <div class="time-drum" id="openDrum" tabindex="0" role="slider" aria-label="Opening time" aria-valuemin="0" aria-valuemax="1410">
+              <div class="time-drum-window"></div>
+              <div class="time-drum-scroll" id="openDrumScroll"></div>
+            </div>
+            <div class="timeline-track-wrapper">
+              <div class="timeline-rail">
+                <div class="timeline-zone" id="businessHoursZone"></div>
+              </div>
+              <div class="timeline-node" id="openNode">
+                <div class="anchor-pin"></div>
+                <div class="label-time" id="openTime">9:00 AM</div>
+                <div class="label-desc">Opens</div>
+              </div>
+              <div class="timeline-node" id="closeNode">
+                <div class="anchor-pin"></div>
+                <div class="label-time primary" id="closeTime">5:00 PM</div>
+                <div class="label-desc">Closes</div>
+              </div>
+            </div>
+            <div class="time-drum" id="closeDrum" tabindex="0" role="slider" aria-label="Closing time" aria-valuemin="0" aria-valuemax="1410">
+              <div class="time-drum-window"></div>
+              <div class="time-drum-scroll" id="closeDrumScroll"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkin-footer">
+          <div class="checkin-footer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
+          </div>
+          <p class="checkin-footer-text">These hours are used across the rest of this wizard as the standard, floor-wide default.</p>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-default-reservation-times-04.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: brand-new module of the Floorsense wizard family, inserted per a follow-up request
+  ("create a new page between current 03 and 02. there we will let client to select business hours
+  start and end for most of the users. make it similarly as on page 04 one card, one timeline two
+  drums clear and frinendly"). This is a genuinely new setting — a floor-wide default Opens/Closes
+  time used for most users — not a field carved out of an existing page.
+
+  Slotted in as module 03, taking over that number (and that click-through position, right after
+  floorsense-setup-path-00.html) from Default Reservation Times, which — along with every module
+  after it — was renumbered up by one to make room: floorsense-default-reservation-times-03.html
+  became floorsense-default-reservation-times-04.html, floorsense-checkin-window-04.html became
+  floorsense-checkin-window-05.html, floorsense-idle-release-05.html became
+  floorsense-idle-release-06.html, floorsense-prebooking-advance-06.html became
+  floorsense-prebooking-advance-07.html, and floorsense-reservation-length-07.html became
+  floorsense-reservation-length-08.html. Every Floorsense wizard page's progress-bar nav (including
+  this one) was updated to the new 9-segment 00–08 list; floorsense-setup-path-00.html's
+  PATH_DEST.customise and #pageNavNext fallback now point here instead of straight to Default
+  Reservation Times; floorsense-out-of-box-policy.html's edit-links and README.md's module table
+  were updated for the renumbered files. Click-through order is otherwise unchanged: 01 → 02 → 00 →
+  03 (this page) → 04 → 05 → 06 → 07 → 08.
+
+  Design deliberately mirrors floorsense-checkin-window-05.html per the request ("similarly as on
+  page 04 one card, one timeline two drums") — one .checkin-card with an icon+description header, a
+  single .timeline-card diagram, and a .checkin-footer strip — but simplified for a two-independent-
+  endpoint value instead of an offset-from-a-fixed-center window: there's no oversized "center" pin
+  here, since neither Opens nor Closes is a fixed anchor the other is measured against. Both pins
+  are the same normal size (.anchor-pin, no .center-node), positioned directly on a plain day-scale
+  rail (minutesToPercent(), RAIL_START_MIN 6:00 AM–RAIL_END_MIN 10:00 PM, the same scale
+  floorsense-default-reservation-times-04.html used for its two-sample-booking rows) rather than the
+  offset-from-center percent math checkin-window's earliest/latest sliders use. A single shaded
+  .timeline-zone (accent gradient, no pre/post split) fills the span between them. "Opens" keeps the
+  default accent-green label-time color and "Closes" gets the navy .label-time.primary treatment,
+  echoing the green-start/navy-end coloring convention used on the other reservation-time diagrams.
+
+  Both drums are the same absolute-clock-time Apple Clock-style .time-drum ported verbatim (30-min
+  steps, white/3D styling) from floorsense-checkin-window-05.html's buildDrumRows()/createTimeDrum().
+  A MIN_BUSINESS_HOURS_MINUTES (60min) clampMinutes hook on each drum keeps Opens from being dragged
+  past (Closes − 1h) and Closes from being dragged before (Opens + 1h), reading the OTHER drum's
+  live state at clamp-time (rather than a fixed constant, since — unlike checkin-window's fixed
+  booking-start reference — both ends here are independently adjustable). This assumes a same-day
+  span (Closes after Opens); overnight/24-hour operation (closing after midnight) isn't handled, on
+  the assumption that a single "standard business hours" default is meant for a typical same-day
+  window — sites needing something more exotic can revisit this page later.
+
+  State lives at project.floorsense.wizard.businessHours = { openTime, closeTime } (24h "HH:MM"
+  strings, defaulting to 09:00/17:00 — a classic "9 to 5", deliberately different from the 8:30
+  example used elsewhere for a single booking's default start, since this is a distinct, more
+  universal floor-wide concept) in the same "configurationProject" localStorage key as the other
+  modules. Nothing else in the wizard reads this value yet (no other page's diagram is wired to it);
+  it's a standalone default for now. markModuleSaved('business-hours') marks this module's own
+  progress-bar segment saved on Continue, which redirects to
+  floorsense-default-reservation-times-04.html.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  const saved = project.floorsense.wizard.businessHours || {};
+  const state = {
+    openTime: saved.openTime || '09:00',
+    closeTime: saved.closeTime || '17:00'
+  };
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- time helpers ---------------- */
+  function parseTimeToMinutes(hhmm) {
+    const parts = (hhmm || '09:00').split(':');
+    const h = parseInt(parts[0], 10) || 0;
+    const m = parseInt(parts[1], 10) || 0;
+    return h * 60 + m;
+  }
+  function formatMinutesAs12Hour(totalMinutes) {
+    totalMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+    let h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+  }
+  function minutesToHHMM(totalMinutes) {
+    totalMinutes = ((Math.round(totalMinutes) % 1440) + 1440) % 1440;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  }
+
+  const RAIL_START_MIN = 6 * 60;   // 6:00 AM
+  const RAIL_END_MIN = 22 * 60;    // 10:00 PM
+  function minutesToPercent(minutes) {
+    return Math.max(0, Math.min(100, ((minutes - RAIL_START_MIN) / (RAIL_END_MIN - RAIL_START_MIN)) * 100));
+  }
+
+  /* ---------------- rail: Opens/Closes pins + connecting zone, driven by the drums below ---------------- */
+  const openNode = document.getElementById('openNode');
+  const closeNode = document.getElementById('closeNode');
+  const businessHoursZone = document.getElementById('businessHoursZone');
+  const openTimeEl = document.getElementById('openTime');
+  const closeTimeEl = document.getElementById('closeTime');
+  const businessHoursRangeLabel = document.getElementById('businessHoursRangeLabel');
+
+  function renderDiagram() {
+    const openMinutes = parseTimeToMinutes(state.openTime);
+    const closeMinutes = parseTimeToMinutes(state.closeTime);
+    const openPercent = minutesToPercent(openMinutes);
+    const closePercent = minutesToPercent(closeMinutes);
+    openNode.style.left = openPercent + '%';
+    closeNode.style.left = closePercent + '%';
+    businessHoursZone.style.left = openPercent + '%';
+    businessHoursZone.style.width = Math.max(0, closePercent - openPercent) + '%';
+    const openLabel = formatMinutesAs12Hour(openMinutes);
+    const closeLabel = formatMinutesAs12Hour(closeMinutes);
+    openTimeEl.textContent = openLabel;
+    closeTimeEl.textContent = closeLabel;
+    businessHoursRangeLabel.textContent = openLabel + ' – ' + closeLabel;
+  }
+
+  /* ---------------- Apple Clock-style time drums (30-min steps, full 24h), ported from
+     floorsense-checkin-window-05.html. See that page's own NOTE for the scroll-snap mechanics. */
+  const DRUM_ROW_H = 30;
+  const timeDrumValues = [];
+  for (let m = 0; m < 1440; m += 30) timeDrumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
+
+  function buildDrumRows(scrollEl, values) {
+    let html = '<div class="time-drum-pad"></div>';
+    values.forEach((v, i) => {
+      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
+    });
+    html += '<div class="time-drum-pad"></div>';
+    scrollEl.innerHTML = html;
+    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  }
+
+  function createTimeDrum(scrollEl, values, opts) {
+    const rows = buildDrumRows(scrollEl, values);
+    let current = -1;
+    let settleTimer = null;
+
+    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
+    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
+    function highlight(index) {
+      if (index === current) return;
+      current = index;
+      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
+      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
+      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
+    }
+    function nearestIndexForMinutes(minutes) {
+      let best = 0, bestDiff = Infinity;
+      values.forEach((v, i) => {
+        const diff = Math.abs(v.minutes - minutes);
+        if (diff < bestDiff) { bestDiff = diff; best = i; }
+      });
+      return best;
+    }
+    function scrollToIndex(index, smooth) {
+      index = clampIndex(index);
+      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
+      highlight(index);
+    }
+
+    // Applies opts.clampMinutes (if given) to an index so the drum can never settle on a value
+    // that would leave less than the minimum gap to the OTHER drum's current value.
+    function clampedIndex(index) {
+      if (!opts.clampMinutes) return index;
+      const wanted = values[clampIndex(index)].minutes;
+      const allowed = opts.clampMinutes(wanted);
+      return allowed === wanted ? index : nearestIndexForMinutes(allowed);
+    }
+
+    scrollEl.addEventListener('scroll', () => {
+      highlight(clampIndex(indexFromScroll()));
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const settled = clampedIndex(indexFromScroll());
+        scrollToIndex(settled, true);
+        if (opts.onChange) opts.onChange(values[settled].minutes);
+      }, 120);
+    }, { passive: true });
+
+    scrollEl.parentElement.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const i = clampedIndex(indexFromScroll() + 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const i = clampedIndex(indexFromScroll() - 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      }
+    });
+
+    scrollToIndex(clampedIndex(nearestIndexForMinutes(opts.initialMinutes)), false);
+
+    return {
+      setMinutes(minutes) { scrollToIndex(clampedIndex(nearestIndexForMinutes(minutes)), false); }
+    };
+  }
+
+  // Neither drum may land within this many minutes of the other — a business day shorter than an
+  // hour isn't a realistic default. Each clamp reads the OTHER drum's live state at call-time,
+  // since (unlike checkin-window's fixed booking-start reference) both ends here can move.
+  const MIN_BUSINESS_HOURS_MINUTES = 60;
+
+  const openDrum = createTimeDrum(document.getElementById('openDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.openTime),
+    clampMinutes: (minutes) => Math.min(minutes, parseTimeToMinutes(state.closeTime) - MIN_BUSINESS_HOURS_MINUTES),
+    onChange: (minutes) => {
+      state.openTime = minutesToHHMM(minutes);
+      renderDiagram();
+      queueSave();
+    }
+  });
+  const closeDrum = createTimeDrum(document.getElementById('closeDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.closeTime),
+    clampMinutes: (minutes) => Math.max(minutes, parseTimeToMinutes(state.openTime) + MIN_BUSINESS_HOURS_MINUTES),
+    onChange: (minutes) => {
+      state.closeTime = minutesToHHMM(minutes);
+      renderDiagram();
+      queueSave();
+    }
+  });
+
+  /* ---------------- fields ---------------- */
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function save() {
+    project.floorsense.wizard.businessHours = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function applyState() {
+    openDrum.setMinutes(parseTimeToMinutes(state.openTime));
+    closeDrum.setMinutes(parseTimeToMinutes(state.closeTime));
+  }
+
+  renderDiagram();
+
+  /* ---------------- reveal animation: plays once when the diagram scrolls into view ---------------- */
+  const timelineCard = document.querySelector('.timeline-card');
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (timelineCard && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            timelineCard.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      revealObserver.observe(timelineCard);
+    } else {
+      timelineCard.classList.add('animate-in');
+    }
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.openTime = '09:00';
+    state.closeTime = '17:00';
+    applyState();
+    renderDiagram();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('business-hours');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-default-reservation-times-04.html'; }, 500);
+  });
+})();
+</script>
+
+</body>
+</html>

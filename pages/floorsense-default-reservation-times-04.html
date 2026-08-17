@@ -199,7 +199,7 @@
 
   /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, rolling the
      drum moves the relevant pin (and, for cards 2/3, the connecting zone) — ported from
-     floorsense-checkin-window-04.html's check-in-window drum, generalized to take an explicit
+     floorsense-checkin-window-05.html's check-in-window drum, generalized to take an explicit
      `values` array so this page can drive one drum with absolute clock times (card 1's start,
      card 3's end) and another with elapsed durations (card 2's fixed length). ---------- */
   .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
@@ -222,7 +222,7 @@
     font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
   /* ---------- enlarged "start" pin: card 1's own node is centered on its solo timeline
-     (.center-node, left:50%, exactly the same size as floorsense-checkin-window-04.html's
+     (.center-node, left:50%, exactly the same size as floorsense-checkin-window-05.html's
      "Booking start" pin); cards 2/3 reuse the same pin/label sizing via .big-anchor for their
      start reference node, but that node's `left` is set from JS instead of fixed at 50%, since
      it shares the rail with a second, normal-sized "end" node driven by that card's own drum. ---------- */
@@ -238,7 +238,7 @@
   .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
   /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
-     from floorsense-checkin-window-04.html, including its white/3D body treatment. ---------- */
+     from floorsense-checkin-window-05.html, including its white/3D body treatment. ---------- */
   .time-drum {
     position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
     background: #fff; border-radius: 12px;
@@ -276,7 +276,7 @@
   /* ---------- reveal animation: plays once when the example scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
      .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
-     (same constraint as floorsense-checkin-window-04.html's diagram). Row B is staggered slightly
+     (same constraint as floorsense-checkin-window-05.html's diagram). Row B is staggered slightly
      behind Row A so the two comparisons read as a sequence rather than firing all at once. ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ci-pop-handle {
@@ -389,23 +389,27 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg current" data-module="default-reservation-times" href="floorsense-default-reservation-times-03.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
+        </a>
+        <a class="progress-seg current" data-module="default-reservation-times" href="floorsense-default-reservation-times-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-04.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-05.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-06.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-07.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
@@ -430,7 +434,7 @@
         <!-- Card 1: start time — not part of the end-mode choice below, just a plain setting.
              The plain <input type="time"> and its "Example" comparison diagram are gone; a single
              Apple-Clock-style time drum (30-min steps, absolute clock time) sits to the left of a
-             solo timeline whose one pin is enlarged to match floorsense-checkin-window-04.html's
+             solo timeline whose one pin is enlarged to match floorsense-checkin-window-05.html's
              "Booking start" pin (.center-node, 66px). -->
         <div class="info-card">
           <div class="info-row">
@@ -564,10 +568,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn" href="floorsense-business-hours-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-checkin-window-04.html">
+        <a class="page-nav-btn next" href="floorsense-checkin-window-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -596,17 +600,17 @@
   rebuilt earlier this session into two numbered sections on one page ("1. Check-in Window" and
   "2. Default Reservation Times", each an explainer card) — see that page's own history for the
   full backstory. This request pulled the "2. Default Reservation Times" card out onto its own
-  page, positioned immediately BEFORE the renamed floorsense-checkin-window-04.html in the
+  page, positioned immediately BEFORE the renamed floorsense-checkin-window-05.html in the
   click-through order (same "insert a page into the fixed sequence" pattern used earlier for
   splitting Auto-Release on Idle into its own page). Since this page is now single-topic, the
   numeric "2." prefix and section-head eyebrow were dropped — matching the convention already
-  established for floorsense-idle-release-05.html — and the .checkin-card sits directly under the
+  established for floorsense-idle-release-06.html — and the .checkin-card sits directly under the
   hero.
 
   Content, styling and the 3-lane timeline SVG (Check-in window / Reservation window / Default
   duration, same static illustrative example values: 8:30 start, 17:00 end, 9h duration, ±60min
   check-in window) are carried over verbatim from the old combined page's "2." section — see
-  floorsense-checkin-window-04.html's own NOTE for the full history of that diagram's design
+  floorsense-checkin-window-05.html's own NOTE for the full history of that diagram's design
   (originally a single cramped combined SVG, redesigned into separate timeline + idle-release
   diagrams, then this timeline was nested inside the explainer card as its "EXAMPLE" panel).
   Despite the "checkin-" class prefix, .checkin-card/.checkin-card-header/.checkin-inline-field/
@@ -616,7 +620,7 @@
 
   State lives at project.floorsense.wizard.defaultReservationTimes = { defaultStartTime,
   defaultEndTime, defaultDurationHours } — split out of the old combined checkinPolicy key. The
-  neighboring floorsense-checkin-window-04.html page's own Check-in Window "earliest/latest you
+  neighboring floorsense-checkin-window-05.html page's own Check-in Window "earliest/latest you
   can check in" example still needs a booking start time to compute against; since that field no
   longer lives on that page, its updateCheckinExample() now reads
   project.floorsense.wizard.defaultReservationTimes.defaultStartTime directly from localStorage at
@@ -626,7 +630,7 @@
 
   Back-arrow points to floorsense-setup-path-00.html (this page now sits directly after Setup
   Path in the click-through order, taking over that slot from Check-in Window); next-arrow points
-  to floorsense-checkin-window-04.html. floorsense-setup-path-00.html's own "customise" branch
+  to floorsense-checkin-window-05.html. floorsense-setup-path-00.html's own "customise" branch
   destination and static next-arrow fallback were updated to land here instead of Check-in Window
   — see that page's own NOTE. The progress bar above lists all eight modules in their fixed 00-07
   numeric order (this page's own "Default Reservation Times" segment inserted between "Check-in
@@ -638,17 +642,17 @@
   navigated anywhere — unlike floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
   floorsense-checkin-methods-02.html's continueBtn handlers, which all redirect via
   `setTimeout(() => window.location.href = ..., 500)` after saving. Added the same redirect here,
-  to floorsense-checkin-window-04.html (matching this page's own page-nav next-arrow). The same
-  missing-redirect bug was found and fixed on floorsense-checkin-window-04.html,
-  floorsense-idle-release-05.html and floorsense-prebooking-advance-06.html at the same time (all
+  to floorsense-checkin-window-05.html (matching this page's own page-nav next-arrow). The same
+  missing-redirect bug was found and fixed on floorsense-checkin-window-05.html,
+  floorsense-idle-release-06.html and floorsense-prebooking-advance-07.html at the same time (all
   four are pages built/rebuilt during this session's Check-in Policy split/redesign work);
-  floorsense-reservation-length-07.html correctly has no redirect since its next-arrow is disabled
+  floorsense-reservation-length-08.html correctly has no redirect since its next-arrow is disabled
   (it's the last module currently built).
 
   MOST RECENT CHANGE: per a follow-up request ("recreate diagram and card similar style to 04"),
   the old static 3-lane SVG (Check-in window / Reservation window / Default duration) was replaced
   with the same .timeline-card/.timeline-rail/.timeline-node structure just built on
-  floorsense-checkin-window-04.html, and .checkin-card was widened from 640px to 760px to match.
+  floorsense-checkin-window-05.html, and .checkin-card was widened from 640px to 760px to match.
   Unlike page 04's before/after-from-a-fixed-center model, this page's data is a start/end/duration
   triple, so the diagram was adapted rather than copied verbatim: one rail spans a fixed 6:00 AM –
   10:00 PM day-range (RAIL_START_MIN/RAIL_END_MIN, clamped), with two always-shown navy .anchor-pin
@@ -760,14 +764,14 @@
   are gone. The now-dead .checkin-inline-field/-input/-input-time/-suffix and .timeline-badge CSS
   was deleted along with them (contradicting this NOTE's own paragraph above, which is now stale —
   those classes are no longer kept). Each card instead gets one Apple Clock-style time drum (ported
-  from floorsense-checkin-window-04.html's .time-drum, including its white/3D styling) placed to
+  from floorsense-checkin-window-05.html's .time-drum, including its white/3D styling) placed to
   the left of a single simplified timeline: card 1's drum picks an absolute clock time and drives
   its lone pin; card 2's drum picks an elapsed duration (30-min steps, formatted "Xh Ym") and drives
   an "Ends" pin a duration's distance from a "Starts" pin; card 3's drum picks an absolute clock
   time and drives its own "Ends" pin the same way. The "Starts" pin on cards 2/3 is read-only,
   always reflecting card 1's own default start time — turning either card's drum only ever moves
   that card's own "Ends" pin. Per "make pin larger, same as start time on page 04," card 1's solo
-  pin reuses .center-node (left:50%, 66px pin, exactly floorsense-checkin-window-04.html's
+  pin reuses .center-node (left:50%, 66px pin, exactly floorsense-checkin-window-05.html's
   "Booking start" sizing); cards 2/3's "Starts" pins reuse the same 66px/label sizing via a new
   .big-anchor class that omits the left:50% rule, since that pin sits at a fixed left-edge position
   (ROW_EDGE_PERCENT = 10%) rather than centered, leaving room on the rail for the smaller "Ends" pin
@@ -787,7 +791,7 @@
 
   MOST RECENT CHANGE: per a follow-up request ("on the reservation end cards make start pin smaler
   but end as large as start"), cards 2 and 3's pin sizing was swapped — the .big-anchor class (66px
-  pin, matching floorsense-checkin-window-04.html's "Booking start" sizing) now sits on
+  pin, matching floorsense-checkin-window-05.html's "Booking start" sizing) now sits on
   durationEndNode/fixedEndEndNode instead of durationStartNode/fixedEndStartNode, and the enlarged
   navy "primary" label-time styling moved with it (durationEndTime/fixedEndEndTime now carry
   label-time.primary; durationStartTime/fixedEndStartTime dropped back to the plain small green
@@ -995,7 +999,7 @@
   }
 
   /* ---------------- Apple Clock-style time drums, ported from
-     floorsense-checkin-window-04.html and generalized to take an explicit `values` array (rather
+     floorsense-checkin-window-05.html and generalized to take an explicit `values` array (rather
      than a single closure-captured value list), since this page needs two different value sets:
      absolute clock times for card 1's start and card 3's end, and elapsed durations for card 2's
      fixed length. See that page's own NOTE for the scroll-snap mechanics. ---------------- */
@@ -1142,7 +1146,7 @@
     markModuleSaved('default-reservation-times');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-checkin-window-04.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-checkin-window-05.html'; }, 500);
   });
 })();
 </script>
