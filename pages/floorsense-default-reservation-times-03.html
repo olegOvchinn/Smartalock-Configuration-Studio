@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Default Reservation Times — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head + .section-head { margin-top: 36px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
+  .section-head p:last-child { margin-bottom: 0; }
+
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
+  @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
+  .policy-grid.single { grid-template-columns: 1fr; }
+  .policy-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px;
+  }
+  .policy-row { display: flex; align-items: flex-start; gap: 14px; }
+  .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .policy-card-body { min-width: 0; flex: 1; }
+  .policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .policy-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+
+  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
+  }
+  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
+
+  .time-input {
+    width: 130px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    color: var(--ink);
+  }
+  .time-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+  /* ---------- end-mode choice: two selectable cards, same radio-card pattern used for the
+     Relaxed/Strict presets on floorsense-setup-path-00.html ---------- */
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; margin: 4px 0 26px; }
+  .path-check-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px; transition: border-color .15s, background .15s;
+  }
+  .path-check-card:hover { border-color: var(--accent); }
+  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .path-tick {
+    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .path-check-card.checked .path-tick { border-color: var(--accent); }
+  .path-tick::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+    opacity: 0; transition: opacity .15s;
+  }
+  .path-check-card.checked .path-tick::after { opacity: 1; }
+  .path-icon-img { width: 38px; height: 38px; flex-shrink: 0; color: var(--accent); margin-top: 2px; }
+  .path-card-body { min-width: 0; flex: 1; }
+  .path-title { font-family: var(--font-display); font-weight: 500; font-size: 17.5px; color: var(--header-grey); margin: 0 0 6px; }
+  .path-desc { font-size: 13.5px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .path-card-field { margin-top: 12px; }
+
+  /* ---------- card 1 (default start time): same visual weight as the path-check-cards below but
+     not a radio choice, so it uses a plain bordered card with no tick ---------- */
+  .cards-wrap { max-width: 760px; margin: 0 auto; }
+  .info-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px; margin: 4px 0 14px;
+  }
+  .info-row { display: flex; align-items: flex-start; gap: 14px; }
+  .section-choice-label { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 4px 4px 10px; }
+
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 26px; }
+  .timeline-card.nested { margin-top: 14px; border-radius: 14px; padding: 20px 22px 22px; }
+  .timeline-header { margin-bottom: 4px; }
+  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
+  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
+
+  /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, rolling the
+     drum moves the relevant pin (and, for cards 2/3, the connecting zone) — ported from
+     floorsense-checkin-window-04.html's check-in-window drum, generalized to take an explicit
+     `values` array so this page can drive one drum with absolute clock times (card 1's start,
+     card 3's end) and another with elapsed durations (card 2's fixed length). ---------- */
+  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
+  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
+  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+
+  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node .anchor-pin {
+    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
+    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+  }
+  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+  /* ---------- enlarged "start" pin: card 1's own node is centered on its solo timeline
+     (.center-node, left:50%, exactly the same size as floorsense-checkin-window-04.html's
+     "Booking start" pin); cards 2/3 reuse the same pin/label sizing via .big-anchor for their
+     start reference node, but that node's `left` is set from JS instead of fixed at 50%, since
+     it shares the rail with a second, normal-sized "end" node driven by that card's own drum. ---------- */
+  .center-node { left: 50%; }
+  .center-node .anchor-pin,
+  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
+  .center-node .label-time.primary,
+  .big-anchor .label-time.primary {
+    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .center-node .label-desc,
+  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
+
+  /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
+     from floorsense-checkin-window-04.html, including its white/3D body treatment. ---------- */
+  .time-drum {
+    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
+  }
+  .time-drum::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
+    background: linear-gradient(to bottom,
+      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
+      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
+  }
+  .time-drum-window {
+    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
+    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
+    background: rgba(16,42,67,0.03);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
+  }
+  .time-drum-scroll {
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
+    border-radius: 12px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+  }
+  .time-drum-scroll::-webkit-scrollbar { display: none; }
+  .time-drum-pad { height: 60px; }
+  .time-drum-row {
+    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
+  }
+  .time-drum-row.selected {
+    font-size: 15px; font-weight: 700; color: #102A43;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ---------- reveal animation: plays once when the example scrolls into view. Only opacity/
+     scaleX are animated on elements that don't rely on `transform` for their own centering, since
+     .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
+     (same constraint as floorsense-checkin-window-04.html's diagram). Row B is staggered slightly
+     behind Row A so the two comparisons read as a sequence rather than firing all at once. ---------- */
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-pop-handle {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .timeline-card.animate-in .anchor-pin {
+    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .timeline-card.animate-in .label-time,
+  .timeline-card.animate-in .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .15s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
+  }
+
+  .footer-hint { display: flex; align-items: center; gap: 14px; margin-top: 8px; padding: 2px 4px; }
+  .footer-hint-icon { width: 30px; height: 30px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .footer-hint-icon svg { width: 26px; height: 26px; }
+  .footer-hint-text { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+
+  /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
+  .policy-diagram-frame {
+    max-width: 900px; margin: 0 0 20px; padding: 20px 22px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
+  }
+  .policy-diagram-frame svg { width: 100%; height: auto; display: block; }
+  .policy-diagram-frame + .policy-diagram-frame { margin-top: 0; margin-bottom: 28px; }
+  .policy-subgroup { max-width: 640px; }
+  .policy-subgroup + .policy-subgroup { margin-top: 28px; }
+  .policy-subgroup-title { font-family: var(--font-display); font-weight: 500; font-size: 15px; color: var(--header-grey); margin: 0 0 12px; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg current" data-module="default-reservation-times" href="floorsense-default-reservation-times-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Default Reservation Times</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Window</span>
+        </a>
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Default Reservation Times</h1>
+        <p class="sub">Choose how a reservation's end time is worked out, and set the default start time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="cards-wrap">
+
+        <!-- Card 1: start time — not part of the end-mode choice below, just a plain setting.
+             The plain <input type="time"> and its "Example" comparison diagram are gone; a single
+             Apple-Clock-style time drum (30-min steps, absolute clock time) sits to the left of a
+             solo timeline whose one pin is enlarged to match floorsense-checkin-window-04.html's
+             "Booking start" pin (.center-node, 66px). -->
+        <div class="info-card">
+          <div class="info-row">
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">Start time if booked in advance</h3>
+              <p class="path-desc">
+                If someone books ahead without picking their own time, their reservation starts at:
+              </p>
+              <div class="timeline-card nested">
+                <div class="timeline-header">
+                  <p class="timeline-subtitle">Default start time: <strong id="card1StartLabel">8:30 AM</strong></p>
+                </div>
+                <div class="timeline-diagram-row">
+                  <div class="time-drum" id="card1StartDrum" tabindex="0" role="slider" aria-label="Default start time" aria-valuemin="0" aria-valuemax="1410">
+                    <div class="time-drum-window"></div>
+                    <div class="time-drum-scroll" id="card1StartDrumScroll"></div>
+                  </div>
+                  <div class="timeline-track-wrapper">
+                    <div class="timeline-rail"></div>
+                    <div class="timeline-node center-node" id="card1StartNode">
+                      <div class="anchor-pin"></div>
+                      <div class="label-time primary" id="card1StartTime">8:30 AM</div>
+                      <div class="label-desc">Default start</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="section-choice-label">Choose below how the reservation's end time should be worked out:</p>
+
+        <div class="path-check-grid" id="endModeGrid">
+
+          <!-- Card 2: end time worked out as a fixed duration after the start time. The number
+               input and two-row "Example" comparison are gone; a duration drum (30-min steps) sits
+               to the left of a single timeline showing card 1's start (enlarged, read-only here)
+               and this card's own drum-controlled end, joined by a shaded zone. -->
+          <div class="path-check-card" data-mode="duration">
+            <label class="path-row">
+              <input type="radio" name="endMode" value="duration">
+              <span class="path-tick" aria-hidden="true"></span>
+              <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+              <div class="path-card-body">
+                <h3 class="path-title">Reservation ends after a fixed number of hours</h3>
+                <p class="path-desc">Every booking lasts the same length, no matter what time it starts — book at 8:30 AM or 1:00 PM and either way you get the full duration below.</p>
+                <div class="timeline-card nested">
+                  <div class="timeline-header">
+                    <p class="timeline-subtitle">Fixed duration: <strong id="durationLabel">9h</strong></p>
+                  </div>
+                  <div class="timeline-diagram-row">
+                    <div class="time-drum" id="durationDrum" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="1440">
+                      <div class="time-drum-window"></div>
+                      <div class="time-drum-scroll" id="durationDrumScroll"></div>
+                    </div>
+                    <div class="timeline-track-wrapper">
+                      <div class="timeline-rail">
+                        <div class="timeline-zone" id="durationZone"></div>
+                      </div>
+                      <div class="timeline-node big-anchor" id="durationStartNode">
+                        <div class="anchor-pin"></div>
+                        <div class="label-time primary" id="durationStartTime">8:30 AM</div>
+                        <div class="label-desc">Starts</div>
+                      </div>
+                      <div class="timeline-node" id="durationEndNode">
+                        <div class="anchor-pin"></div>
+                        <div class="label-time" id="durationEndTime">5:30 PM</div>
+                        <div class="label-desc">Ends</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="policy-hint" id="durationHint">A booking made without a chosen time lasts 9h, starting from the default start time above.</p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Card 3: end time worked out as a shared close-of-business clock time. The time input
+               and two-row "Example" comparison are gone; an absolute-time drum sits to the left of
+               a single timeline showing card 1's start (enlarged, read-only here) and this card's
+               own drum-controlled end, joined by a shaded zone. -->
+          <div class="path-check-card" data-mode="fixed-end">
+            <label class="path-row">
+              <input type="radio" name="endMode" value="fixed-end">
+              <span class="path-tick" aria-hidden="true"></span>
+              <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/><path d="M12 2.3v1.4M12 20.3v1.4M2.3 12h1.4M20.3 12h1.4"/></svg>
+              <div class="path-card-body">
+                <h3 class="path-title">Reservation ends at close of business hours</h3>
+                <p class="path-desc">Every booking ends at the same time each day, no matter when it starts — book early for a longer reservation, book late for a shorter one.</p>
+                <div class="timeline-card nested">
+                  <div class="timeline-header">
+                    <p class="timeline-subtitle">Shared end time: <strong id="fixedEndLabel">5:00 PM</strong></p>
+                  </div>
+                  <div class="timeline-diagram-row">
+                    <div class="time-drum" id="fixedEndDrum" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="1410">
+                      <div class="time-drum-window"></div>
+                      <div class="time-drum-scroll" id="fixedEndDrumScroll"></div>
+                    </div>
+                    <div class="timeline-track-wrapper">
+                      <div class="timeline-rail">
+                        <div class="timeline-zone" id="fixedEndZone"></div>
+                      </div>
+                      <div class="timeline-node big-anchor" id="fixedEndStartNode">
+                        <div class="anchor-pin"></div>
+                        <div class="label-time primary" id="fixedEndStartTime">8:30 AM</div>
+                        <div class="label-desc">Starts</div>
+                      </div>
+                      <div class="timeline-node" id="fixedEndEndNode">
+                        <div class="anchor-pin"></div>
+                        <div class="label-time" id="fixedEndEndTime">5:00 PM</div>
+                        <div class="label-desc">Ends</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="policy-hint" id="fixedEndHint">A booking made without a chosen time ends at 5:00 PM, no matter when it starts.</p>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="footer-hint">
+          <div class="footer-hint-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="10.5" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <p class="footer-hint-text">Users can always set their own start time — this choice only decides how the end time (or duration) is worked out when they don't.</p>
+        </div>
+
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-checkin-window-04.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: module 03 of the Floorsense wizard family, new — split out of the old combined
+  floorsense-checkin-policy-03.html per a follow-up request ("create a separate page for Default
+  Reservation Times and put it before check in window page"). That combined page had already been
+  rebuilt earlier this session into two numbered sections on one page ("1. Check-in Window" and
+  "2. Default Reservation Times", each an explainer card) — see that page's own history for the
+  full backstory. This request pulled the "2. Default Reservation Times" card out onto its own
+  page, positioned immediately BEFORE the renamed floorsense-checkin-window-04.html in the
+  click-through order (same "insert a page into the fixed sequence" pattern used earlier for
+  splitting Auto-Release on Idle into its own page). Since this page is now single-topic, the
+  numeric "2." prefix and section-head eyebrow were dropped — matching the convention already
+  established for floorsense-idle-release-05.html — and the .checkin-card sits directly under the
+  hero.
+
+  Content, styling and the 3-lane timeline SVG (Check-in window / Reservation window / Default
+  duration, same static illustrative example values: 8:30 start, 17:00 end, 9h duration, ±60min
+  check-in window) are carried over verbatim from the old combined page's "2." section — see
+  floorsense-checkin-window-04.html's own NOTE for the full history of that diagram's design
+  (originally a single cramped combined SVG, redesigned into separate timeline + idle-release
+  diagrams, then this timeline was nested inside the explainer card as its "EXAMPLE" panel).
+  Despite the "checkin-" class prefix, .checkin-card/.checkin-card-header/.checkin-inline-field/
+  .checkin-example/.checkin-footer etc. are shared, generic explainer-card classes used across
+  several pages in this wizard — named for where the pattern was first introduced (the Check-in
+  Window card), not renamed since.
+
+  State lives at project.floorsense.wizard.defaultReservationTimes = { defaultStartTime,
+  defaultEndTime, defaultDurationHours } — split out of the old combined checkinPolicy key. The
+  neighboring floorsense-checkin-window-04.html page's own Check-in Window "earliest/latest you
+  can check in" example still needs a booking start time to compute against; since that field no
+  longer lives on that page, its updateCheckinExample() now reads
+  project.floorsense.wizard.defaultReservationTimes.defaultStartTime directly from localStorage at
+  load time (falling back to '08:30' if this page hasn't been visited yet) instead of a live
+  same-page <input>. This works cleanly with the new page order, since a user reaches this page
+  BEFORE Check-in Window.
+
+  Back-arrow points to floorsense-setup-path-00.html (this page now sits directly after Setup
+  Path in the click-through order, taking over that slot from Check-in Window); next-arrow points
+  to floorsense-checkin-window-04.html. floorsense-setup-path-00.html's own "customise" branch
+  destination and static next-arrow fallback were updated to land here instead of Check-in Window
+  — see that page's own NOTE. The progress bar above lists all eight modules in their fixed 00-07
+  numeric order (this page's own "Default Reservation Times" segment inserted between "Check-in
+  Methods" and "Check-in Window"), regardless of click-through order, per the established
+  convention. markModuleSaved('default-reservation-times') marks this module's own progress-bar
+  segment saved on Continue.
+
+  FIX: the Continue button saved state and marked the progress segment but never actually
+  navigated anywhere — unlike floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
+  floorsense-checkin-methods-02.html's continueBtn handlers, which all redirect via
+  `setTimeout(() => window.location.href = ..., 500)` after saving. Added the same redirect here,
+  to floorsense-checkin-window-04.html (matching this page's own page-nav next-arrow). The same
+  missing-redirect bug was found and fixed on floorsense-checkin-window-04.html,
+  floorsense-idle-release-05.html and floorsense-prebooking-advance-06.html at the same time (all
+  four are pages built/rebuilt during this session's Check-in Policy split/redesign work);
+  floorsense-reservation-length-07.html correctly has no redirect since its next-arrow is disabled
+  (it's the last module currently built).
+
+  MOST RECENT CHANGE: per a follow-up request ("recreate diagram and card similar style to 04"),
+  the old static 3-lane SVG (Check-in window / Reservation window / Default duration) was replaced
+  with the same .timeline-card/.timeline-rail/.timeline-node structure just built on
+  floorsense-checkin-window-04.html, and .checkin-card was widened from 640px to 760px to match.
+  Unlike page 04's before/after-from-a-fixed-center model, this page's data is a start/end/duration
+  triple, so the diagram was adapted rather than copied verbatim: one rail spans a fixed 6:00 AM –
+  10:00 PM day-range (RAIL_START_MIN/RAIL_END_MIN, clamped), with two always-shown navy .anchor-pin
+  nodes for Default start/Default end (positioned by parseTimeToMinutes()/minutesToPercent()) and a
+  shaded .timeline-zone.reservation-window band between them. A third amber node/zone
+  (duration-node/.duration-overhang) only appears when defaultStartTime + defaultDurationHours
+  doesn't land exactly on defaultEndTime — carrying forward the old SVG's "30 min overhang" concept,
+  but now generically handling duration ending either past or before the end time, and hiding
+  itself entirely when the three values already line up (previously this comparison was hardcoded
+  to the one 8:30/17:00/9h example). The diagram is also now genuinely LIVE — the old SVG's numbers
+  never actually updated when the fields were edited; updateDiagram() now runs on load, on every
+  field's 'input' event, and after Reset. The reveal-animation treatment (scroll-triggered
+  IntersectionObserver adding .animate-in, ci-fade/ci-pop-handle/ci-grow keyframes, prefers-
+  reduced-motion guards) mirrors page 04's, adapted to grow the reservation-window zone outward
+  from the start pin instead of outward from a fixed center.
+
+  Also per a follow-up request ("remove the animation that hides hero from all the pages"), the
+  hero auto-collapse feature (the `.panel-intro`/`.panel-topbar > .panel-inner { perspective }` CSS
+  and the trailing `setTimeout(() => intro.classList.add('hero-collapsed'), 5000)` script) was
+  removed from this page as part of a sitewide cleanup — see the other wizard pages for the same
+  removal.
+
+  MOST RECENT CHANGE: per a follow-up request, this page's whole premise changed from "here's one
+  default template booking (8:30-17:00, 9h)" to a genuine POLICY CHOICE: how should a booking's end
+  time be worked out, for ANY start time a user picks, not just one illustrative default? The old
+  defaultEndTime/defaultDurationHours "mismatch" framing (where the two could drift apart and the
+  page just flagged it as something to line up) didn't actually make sense as a real product
+  decision — the request reframed it as two mutually-exclusive strategies for computing a
+  reservation's end time, matching a `name="endMode"` two-card radio choice (same
+  .path-check-card/.path-tick/.path-row pattern as the Relaxed/Strict presets on
+  floorsense-setup-path-00.html, copied verbatim into this page's own <style>):
+  1. "Fixed duration" (endMode: 'duration', the default) — every booking lasts
+     defaultDurationHours, regardless of start time; end time floats. The hours field
+     (#defaultDurationHours) now lives inside this card instead of the old header sentence.
+  2. "Shared end time" (endMode: 'fixed-end') — every booking ends at defaultEndTime, regardless
+     of start time; duration floats (shrinks the later someone books). The time field
+     (#defaultEndTime) now lives inside this card.
+  Both fields remain saved/editable at all times regardless of which card is selected (so switching
+  back and forth doesn't lose data) — only state.endMode decides which one actually governs
+  computeEndMinutes(). The header sentence above the cards was trimmed to only the default start
+  time, since start time is independent of this choice (it's just what a hands-off booking starts
+  at; the endMode choice governs what happens next).
+
+  The EXAMPLE diagram was rebuilt from one single-booking rail into TWO stacked mini-rails, each
+  showing a full sample booking (start pin -> shaded zone -> end pin): row A starts at
+  defaultStartTime, row B starts 4 hours later (SAMPLE_B_OFFSET_MINUTES, wraps past midnight via
+  `% 1440` if defaultStartTime is already late in the day) — chosen specifically to make the two
+  endMode choices visually self-explanatory without reading any text: in Fixed duration mode both
+  zones are the SAME WIDTH but sit at different horizontal positions (same length, different end
+  time); in Shared end time mode both zones END at the SAME horizontal position but have different
+  widths (same end time, different length). renderSampleRow()/computeEndMinutes() are shared by
+  both rows and by updateDiagram(), so editing any of the three fields or switching endMode
+  recomputes both rows and the explanatory modeHint sentence live. The reveal animation (still
+  IntersectionObserver + ci-fade/ci-pop-handle/ci-grow on .timeline-card, prefers-reduced-motion
+  guarded) was generalized from the old single-row version to run once per element class rather
+  than per specific node id, with row B given a `.row-b` animation-delay so the two rows visibly
+  cascade rather than firing at once. The old amber duration-node/.duration-overhang mismatch
+  concept from the previous diagram redesign is gone entirely — that concept only made sense when
+  duration and end-time were two independent, possibly-conflicting fields on one static example;
+  now they're two alternative strategies for the same underlying question, so there is no
+  "mismatch" state to flag.
+
+  Per a further follow-up ("put the card in the middle"), .checkin-card was sitting flush against
+  the left edge of the wider 1120px .panel-inner (it had a max-width but no margin, so it hugged
+  the left side rather than centering) — added `margin: 0 auto;`. The same request asked to remove
+  any image placeholder; none exists on this page (the only <img> is the real Smartalock brand
+  logo), so no change was needed there.
+
+  MOST RECENT CHANGE: per a follow-up request ("Fixed duration"/"Shared end time" naming wasn't
+  good enough, wanted 3 cards with each diagram open by default), the page was restructured from
+  one wrapping .checkin-card containing a 2-card radio choice plus one shared diagram, into THREE
+  independent, always-expanded cards, each with its own name and its own self-contained diagram:
+  1. "Start time if booked in advance" (.info-card, NOT part of the radio choice — it's a plain
+     setting, not one of two alternatives) — the #defaultStartTime field, now with its own little
+     single-pin example diagram showing where that time lands on the day's timeline.
+  2. "Reservation ends after a fixed number of hours" (renamed from "Fixed duration",
+     data-mode="duration") — same #defaultDurationHours field as before, but now with its OWN
+     two-sample-booking diagram nested directly inside the card (durationSampleA/B* ids), always
+     showing what fixed-duration would do regardless of whether it's actually selected.
+  3. "Reservation ends at close of business hours" (renamed from "Shared end time",
+     data-mode="fixed-end") — same #defaultEndTime field, with its own two-sample-booking diagram
+     (fixedEndSampleA/B* ids) always showing what a shared end-time would do.
+  The overall .checkin-card wrapper (border/background/icon-header) was removed entirely — it's
+  replaced by a plain `.cards-wrap` (just max-width + centering) holding the three cards directly;
+  its unused CSS (.checkin-card/.checkin-card-header/.checkin-card-icon/.checkin-card-desc) was
+  deleted, though the shared .checkin-inline-field/-input/-input-time/-suffix classes are kept
+  since all three cards still use them for their inline fields. The closing footer note moved from
+  a bordered .checkin-footer strip (which needed a card to attach to) to a plain unbordered
+  .footer-hint paragraph below the three cards.
+
+  Because each card now explains ONLY its own scenario rather than "whichever mode is currently
+  selected," the JS no longer needs computeEndMinutes()'s endMode branch for the diagrams —
+  updateDurationDiagram() and updateFixedEndDiagram() each compute their own end time directly
+  (start+duration, or the fixed end time) and call the same renderSampleRow(startMinutes,
+  endMinutes, els) helper (now takes endMinutes as an explicit argument instead of deriving it
+  internally). updateCard1Diagram() is new and just positions one pin from defaultStartTime.
+  updateAllDiagrams() runs all three together on load, on any of the three fields' 'input' events,
+  and after Reset; selecting a radio card no longer needs to recompute diagrams (they're
+  mode-independent now) — it just calls queueSave(). The reveal animation now uses
+  querySelectorAll('.timeline-card') instead of querySelector() (there are three now, one nested
+  in each card) and observes/animates each independently as it scrolls into view, rather than a
+  single shared IntersectionObserver target — satisfying "diagrams open by default" simply by never
+  having any collapse/expand state to begin with; each is plain, always-visible markup.
+
+  MOST RECENT CHANGE: per a follow-up request ("remove examples and fill in field. instead put
+  clock drums like on page 04 to the left of the timeline. make pin larger, same as start time on
+  page 04"), all three cards' plain <input> fields and their "Example" two-row comparison diagrams
+  (.mode-example-rows, .mode-example-row-label, row-a/row-b, the "Books at A / Books at B" pairs)
+  are gone. The now-dead .checkin-inline-field/-input/-input-time/-suffix and .timeline-badge CSS
+  was deleted along with them (contradicting this NOTE's own paragraph above, which is now stale —
+  those classes are no longer kept). Each card instead gets one Apple Clock-style time drum (ported
+  from floorsense-checkin-window-04.html's .time-drum, including its white/3D styling) placed to
+  the left of a single simplified timeline: card 1's drum picks an absolute clock time and drives
+  its lone pin; card 2's drum picks an elapsed duration (30-min steps, formatted "Xh Ym") and drives
+  an "Ends" pin a duration's distance from a "Starts" pin; card 3's drum picks an absolute clock
+  time and drives its own "Ends" pin the same way. The "Starts" pin on cards 2/3 is read-only,
+  always reflecting card 1's own default start time — turning either card's drum only ever moves
+  that card's own "Ends" pin. Per "make pin larger, same as start time on page 04," card 1's solo
+  pin reuses .center-node (left:50%, 66px pin, exactly floorsense-checkin-window-04.html's
+  "Booking start" sizing); cards 2/3's "Starts" pins reuse the same 66px/label sizing via a new
+  .big-anchor class that omits the left:50% rule, since that pin sits at a fixed left-edge position
+  (ROW_EDGE_PERCENT = 10%) rather than centered, leaving room on the rail for the smaller "Ends" pin
+  to travel per createTimeDrum()'s onChange. buildDrumRows()/createTimeDrum() were ported from page
+  04 but generalized to take an explicit `values` array parameter (rather than one closure-captured
+  global list), since this page needs two different value sets on the same drum mechanics: absolute
+  clock times (timeDrumValues, shared by cards 1 and 3) and elapsed durations (durationDrumValues,
+  card 2 only, 30-min steps from 30min to 24h). A new minutesToHHMM() helper converts a drum's
+  raw minutes back into the "HH:MM" string state.defaultStartTime/defaultEndTime need for
+  localStorage/cross-page compatibility. renderSampleRow()/elsFor() (the old two-node-per-row
+  helpers) are gone, replaced by direct per-card update functions (updateCard1Diagram/
+  updateDurationDiagram/updateFixedEndDiagram) that also each update their card's own header
+  subtitle ("Default start time: 8:30 AM" / "Fixed duration: 9h" / "Shared end time: 5:00 PM").
+  save()/applyState() no longer read from/write to DOM <input>s — state is now updated directly by
+  each drum's onChange handler, and applyState() (used on load and after Reset) repositions all
+  three drums via their returned setMinutes() plus re-syncs the end-mode radio cards.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  const saved = project.floorsense.wizard.defaultReservationTimes || {};
+  const state = {
+    defaultStartTime: saved.defaultStartTime || '08:30',
+    defaultEndTime: saved.defaultEndTime || '17:00',
+    defaultDurationHours: Number.isFinite(saved.defaultDurationHours) ? saved.defaultDurationHours : 9,
+    endMode: saved.endMode === 'fixed-end' ? 'fixed-end' : 'duration'
+  };
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- fields ---------------- */
+  const endModeGrid = document.getElementById('endModeGrid');
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function save() {
+    project.floorsense.wizard.defaultReservationTimes = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function setEndModeCards(mode) {
+    endModeGrid.querySelectorAll('.path-check-card').forEach(card => {
+      const isMatch = card.getAttribute('data-mode') === mode;
+      card.classList.toggle('checked', isMatch);
+      card.querySelector('input[type="radio"]').checked = isMatch;
+    });
+  }
+
+  endModeGrid.querySelectorAll('.path-check-card').forEach(card => {
+    const mode = card.getAttribute('data-mode');
+    card.querySelector('input[type="radio"]').addEventListener('change', () => {
+      state.endMode = mode;
+      setEndModeCards(mode);
+      queueSave();
+    });
+  });
+
+  /* ---------------- diagrams: each of the three cards still explains ITSELF with its own
+     always-visible diagram, but each is now driven by a clock drum instead of a plain <input> —
+     card 1 shows a single enlarged start-time pin; cards 2/3 each show that same start (fed from
+     card 1, enlarged to match, not interactive here) plus their own drum-controlled end, joined
+     by a shaded zone, instead of the old two-sample "Books at A / Books at B" comparison. -------- */
+  function parseTimeToMinutes(hhmm) {
+    const parts = (hhmm || '08:30').split(':');
+    const h = parseInt(parts[0], 10) || 0;
+    const m = parseInt(parts[1], 10) || 0;
+    return h * 60 + m;
+  }
+  function formatMinutesAs12Hour(totalMinutes) {
+    totalMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+    let h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+  }
+  function formatDurationMinutes(mins) {
+    mins = Math.round(Math.abs(mins));
+    const h = Math.floor(mins / 60), m = mins % 60;
+    if (h === 0) return m + ' min';
+    if (m === 0) return h + 'h';
+    return h + 'h ' + m + 'm';
+  }
+  function minutesToHHMM(totalMinutes) {
+    totalMinutes = ((Math.round(totalMinutes) % 1440) + 1440) % 1440;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  }
+
+  // Cards 2/3's start pin sits at a fixed spot near the left edge of its rail (ROW_EDGE_PERCENT)
+  // instead of centered, since that rail also needs room for a second, moving "end" pin; the end
+  // pin's travel is scaled against DURATION_MAX_MINUTES so very long durations/late end times
+  // still land within the rail instead of running off its right edge.
+  const ROW_EDGE_PERCENT = 10;
+  const DURATION_MAX_MINUTES = 16 * 60;
+  function endPercentForOffset(offsetMinutes) {
+    const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
+    return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
+  }
+
+  const card1StartLabel = document.getElementById('card1StartLabel');
+  const card1StartTime = document.getElementById('card1StartTime');
+
+  const durationLabel = document.getElementById('durationLabel');
+  const durationStartNode = document.getElementById('durationStartNode');
+  const durationStartTime = document.getElementById('durationStartTime');
+  const durationEndNode = document.getElementById('durationEndNode');
+  const durationEndTime = document.getElementById('durationEndTime');
+  const durationZone = document.getElementById('durationZone');
+  const durationHint = document.getElementById('durationHint');
+
+  const fixedEndLabel = document.getElementById('fixedEndLabel');
+  const fixedEndStartNode = document.getElementById('fixedEndStartNode');
+  const fixedEndStartTime = document.getElementById('fixedEndStartTime');
+  const fixedEndEndNode = document.getElementById('fixedEndEndNode');
+  const fixedEndEndTime = document.getElementById('fixedEndEndTime');
+  const fixedEndZone = document.getElementById('fixedEndZone');
+  const fixedEndHint = document.getElementById('fixedEndHint');
+
+  function updateCard1Diagram() {
+    const startLabel = formatMinutesAs12Hour(parseTimeToMinutes(state.defaultStartTime));
+    card1StartLabel.textContent = startLabel;
+    card1StartTime.textContent = startLabel;
+  }
+
+  function updateDurationDiagram() {
+    const startMinutes = parseTimeToMinutes(state.defaultStartTime);
+    const durationMinutes = Math.round((parseFloat(state.defaultDurationHours) || 0) * 60);
+    const endPercent = endPercentForOffset(durationMinutes);
+    durationStartNode.style.left = ROW_EDGE_PERCENT + '%';
+    durationEndNode.style.left = endPercent + '%';
+    durationZone.style.left = ROW_EDGE_PERCENT + '%';
+    durationZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    durationStartTime.textContent = formatMinutesAs12Hour(startMinutes);
+    durationEndTime.textContent = formatMinutesAs12Hour(startMinutes + durationMinutes);
+    durationLabel.textContent = formatDurationMinutes(durationMinutes);
+    durationHint.textContent = 'A booking made without a chosen time lasts ' + formatDurationMinutes(durationMinutes) +
+      ', starting from the default start time above.';
+  }
+
+  function updateFixedEndDiagram() {
+    const startMinutes = parseTimeToMinutes(state.defaultStartTime);
+    const endMinutes = parseTimeToMinutes(state.defaultEndTime);
+    const endPercent = endPercentForOffset(endMinutes - startMinutes);
+    fixedEndStartNode.style.left = ROW_EDGE_PERCENT + '%';
+    fixedEndEndNode.style.left = endPercent + '%';
+    fixedEndZone.style.left = ROW_EDGE_PERCENT + '%';
+    fixedEndZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    fixedEndStartTime.textContent = formatMinutesAs12Hour(startMinutes);
+    fixedEndEndTime.textContent = formatMinutesAs12Hour(endMinutes);
+    fixedEndLabel.textContent = formatMinutesAs12Hour(endMinutes);
+    fixedEndHint.textContent = 'A booking made without a chosen time ends at ' + formatMinutesAs12Hour(endMinutes) +
+      ', no matter when it starts.';
+  }
+
+  function updateAllDiagrams() {
+    updateCard1Diagram();
+    updateDurationDiagram();
+    updateFixedEndDiagram();
+  }
+
+  /* ---------------- Apple Clock-style time drums, ported from
+     floorsense-checkin-window-04.html and generalized to take an explicit `values` array (rather
+     than a single closure-captured value list), since this page needs two different value sets:
+     absolute clock times for card 1's start and card 3's end, and elapsed durations for card 2's
+     fixed length. See that page's own NOTE for the scroll-snap mechanics. ---------------- */
+  const DRUM_ROW_H = 30;
+  const timeDrumValues = [];
+  for (let m = 0; m < 1440; m += 30) timeDrumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
+  const durationDrumValues = [];
+  for (let m = 30; m <= 24 * 60; m += 30) durationDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
+
+  function buildDrumRows(scrollEl, values) {
+    let html = '<div class="time-drum-pad"></div>';
+    values.forEach((v, i) => {
+      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
+    });
+    html += '<div class="time-drum-pad"></div>';
+    scrollEl.innerHTML = html;
+    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  }
+
+  function createTimeDrum(scrollEl, values, opts) {
+    const rows = buildDrumRows(scrollEl, values);
+    let current = -1;
+    let settleTimer = null;
+
+    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
+    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
+    function highlight(index) {
+      if (index === current) return;
+      current = index;
+      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
+      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
+      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
+    }
+    function nearestIndexForMinutes(minutes) {
+      let best = 0, bestDiff = Infinity;
+      values.forEach((v, i) => {
+        const diff = Math.abs(v.minutes - minutes);
+        if (diff < bestDiff) { bestDiff = diff; best = i; }
+      });
+      return best;
+    }
+    function scrollToIndex(index, smooth) {
+      index = clampIndex(index);
+      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
+      highlight(index);
+    }
+
+    scrollEl.addEventListener('scroll', () => {
+      highlight(clampIndex(indexFromScroll()));
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const settled = clampIndex(indexFromScroll());
+        scrollToIndex(settled, true);
+        if (opts.onChange) opts.onChange(values[settled].minutes);
+      }, 120);
+    }, { passive: true });
+
+    scrollEl.parentElement.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const i = clampIndex(indexFromScroll() + 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const i = clampIndex(indexFromScroll() - 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      }
+    });
+
+    scrollToIndex(nearestIndexForMinutes(opts.initialMinutes), false);
+
+    return {
+      setMinutes(minutes) { scrollToIndex(nearestIndexForMinutes(minutes), false); }
+    };
+  }
+
+  const card1StartDrum = createTimeDrum(document.getElementById('card1StartDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.defaultStartTime),
+    onChange: (minutes) => {
+      state.defaultStartTime = minutesToHHMM(minutes);
+      updateAllDiagrams();
+      queueSave();
+    }
+  });
+  const durationDrum = createTimeDrum(document.getElementById('durationDrumScroll'), durationDrumValues, {
+    initialMinutes: Math.round((parseFloat(state.defaultDurationHours) || 0) * 60),
+    onChange: (minutes) => {
+      state.defaultDurationHours = minutes / 60;
+      updateAllDiagrams();
+      queueSave();
+    }
+  });
+  const fixedEndDrum = createTimeDrum(document.getElementById('fixedEndDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.defaultEndTime),
+    onChange: (minutes) => {
+      state.defaultEndTime = minutesToHHMM(minutes);
+      updateAllDiagrams();
+      queueSave();
+    }
+  });
+
+  function applyState() {
+    card1StartDrum.setMinutes(parseTimeToMinutes(state.defaultStartTime));
+    durationDrum.setMinutes(Math.round((parseFloat(state.defaultDurationHours) || 0) * 60));
+    fixedEndDrum.setMinutes(parseTimeToMinutes(state.defaultEndTime));
+    setEndModeCards(state.endMode);
+  }
+  applyState();
+  updateAllDiagrams();
+
+  /* ---------------- reveal animation: plays once per card as each one scrolls into view ---------------- */
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timelineCards = document.querySelectorAll('.timeline-card');
+  if (timelineCards.length && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      timelineCards.forEach(card => revealObserver.observe(card));
+    } else {
+      timelineCards.forEach(card => card.classList.add('animate-in'));
+    }
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.defaultStartTime = '08:30';
+    state.defaultEndTime = '17:00';
+    state.defaultDurationHours = 9;
+    state.endMode = 'duration';
+    applyState();
+    updateAllDiagrams();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('default-reservation-times');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-checkin-window-04.html'; }, 500);
+  });
+})();
+</script>
+
+</body>
+</html>

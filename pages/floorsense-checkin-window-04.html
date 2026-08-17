@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in Window — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head + .section-head { margin-top: 36px; }
+  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
+  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
+  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
+  .section-head p:last-child { margin-bottom: 0; }
+
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
+  @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
+  .policy-grid.single { grid-template-columns: 1fr; }
+  .policy-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px;
+  }
+  .policy-row { display: flex; align-items: flex-start; gap: 14px; }
+  .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .policy-card-body { min-width: 0; flex: 1; }
+  .policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .policy-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+
+  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
+  }
+  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
+
+  .time-input {
+    width: 130px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    color: var(--ink);
+  }
+  .time-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+  /* ---------- check-in window: single explainer card (icon+desc, live example, footer) ---------- */
+  .checkin-card {
+    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
+  .checkin-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
+  .checkin-inline-field {
+    display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
+    background: var(--accent-wash); border-radius: 8px; padding: 2px 4px 2px 8px; margin: 0 1px;
+  }
+  .checkin-inline-input {
+    width: 42px; border: none; background: transparent; font-family: var(--font-text);
+    font-size: 14.76px; font-weight: 700; color: var(--accent-deep); text-align: right; padding: 2px 0;
+  }
+  .checkin-inline-input:focus { outline: none; }
+  .checkin-inline-suffix { font-size: 13.5px; font-weight: 600; color: var(--accent-deep); padding-right: 4px; }
+  .checkin-inline-field.time { padding: 2px 8px; }
+  .checkin-inline-input-time {
+    border: none; background: transparent; font-family: var(--font-text);
+    font-size: 14.76px; font-weight: 700; color: var(--accent-deep);
+  }
+  .checkin-inline-input-time:focus { outline: none; }
+  .checkin-card + .checkin-card { margin-top: 20px; }
+
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  .timeline-header { margin-bottom: 4px; }
+  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
+  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
+
+  /* ---------- diagram row: an Apple-Clock-style time drum on each side of the rail, rolling the
+     drum moves that side's slider/zone on the rail between them ---------- */
+  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
+  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
+  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; }
+  .timeline-zone.pre-window { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+  .timeline-zone.post-window { background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+
+  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node .handle {
+    display: block; width: 16px; height: 16px; border-radius: 50%; background: #102A43;
+    border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node .anchor-pin {
+    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
+    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+  }
+  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+  /* ---------- booking start: centered on the rail, with an oversized pin (3x the enlarged 22px
+     size = 66px) and a label scaled back down (3x smaller than the enlarged 67.5px size = 22.5px) ---------- */
+  .center-node { left: 50%; }
+  .center-node .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
+  .center-node .label-time.primary {
+    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .center-node .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
+
+  /* ---------- Apple Clock-style time drum: native scroll + scroll-snap gives free momentum/
+     touch/wheel support without custom pointer-drag math. Each row is an absolute clock time
+     (30-min steps); the settled center row is the picked value. ---------- */
+  .time-drum {
+    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
+  }
+  /* subtle top/bottom shading over the white drum body, like light curving away over a cylinder,
+     so the numbers read as sitting on a rotating 3D wheel rather than a flat scroll list */
+  .time-drum::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
+    background: linear-gradient(to bottom,
+      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
+      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
+  }
+  .time-drum-window {
+    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
+    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
+    background: rgba(16,42,67,0.03);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
+  }
+  .time-drum-scroll {
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
+    border-radius: 12px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+  }
+  .time-drum-scroll::-webkit-scrollbar { display: none; }
+  .time-drum-pad { height: 60px; }
+  .time-drum-row {
+    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
+  }
+  .time-drum-row.selected {
+    font-size: 15px; font-weight: 700; color: #102A43;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ---------- reveal animation: plays once when the example scrolls into view, showing the
+     window "opening" outward from the fixed booking-start time. Only opacity/box-shadow/scaleX
+     are animated on elements that don't rely on `transform` for their own positioning, since
+     .timeline-node/.label-time/.label-desc/.tooltip use translate()/translateX() to center
+     themselves and a CSS animation on `transform` would overwrite that base offset. ---------- */
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-pop-handle {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes ci-ping {
+    0% { box-shadow: 0 0 0 0 rgba(16,42,67,0.35); }
+    70% { box-shadow: 0 0 0 11px rgba(16,42,67,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,42,67,0); }
+  }
+  .timeline-card.animate-in .anchor-pin {
+    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both, ci-ping 1.4s ease-out .35s 2;
+  }
+  .timeline-card.animate-in .center-node .label-time,
+  .timeline-card.animate-in .center-node .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone.pre-window {
+    transform-origin: right center;
+    animation: ci-grow .5s ease-out .3s both;
+  }
+  .timeline-card.animate-in .timeline-zone.post-window {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .3s both;
+  }
+  .timeline-card.animate-in .start-node .handle,
+  .timeline-card.animate-in .end-node .handle {
+    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) .65s both;
+  }
+  .timeline-card.animate-in .start-node .label-time,
+  .timeline-card.animate-in .start-node .label-desc,
+  .timeline-card.animate-in .end-node .label-time,
+  .timeline-card.animate-in .end-node .label-desc {
+    animation: ci-fade .4s ease-out .65s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
+  }
+
+  .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
+  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+
+  /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
+  .policy-diagram-frame {
+    max-width: 900px; margin: 0 0 20px; padding: 20px 22px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
+  }
+  .policy-diagram-frame svg { width: 100%; height: auto; display: block; }
+  .policy-diagram-frame + .policy-diagram-frame { margin-top: 0; margin-bottom: 28px; }
+  .policy-subgroup { max-width: 640px; }
+  .policy-subgroup + .policy-subgroup { margin-top: 28px; }
+  .policy-subgroup-title { font-family: var(--font-display); font-weight: 500; font-size: 15px; color: var(--header-grey); margin: 0 0 12px; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Default Reservation Times</span>
+        </a>
+        <a class="progress-seg current" data-module="checkin-window" href="floorsense-checkin-window-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Window</span>
+        </a>
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Getting Started</span>
+        <h1 class="hero-title">Check-in Window</h1>
+        <p class="sub">Define how early or late a user can confirm their desk booking.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="checkin-card">
+        <div class="checkin-card-header">
+          <div class="checkin-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          </div>
+          <p class="checkin-card-desc">
+            Users can confirm (check in) their desk booking at the desk within a window before and
+            after the booking start time — roll the time drums on either side of the diagram below
+            to set how wide that window is. Outside that window, an unclaimed desk automatically
+            reverts to being generally available.
+          </p>
+        </div>
+
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <p class="timeline-subtitle">Booking start time: <strong id="checkinExampleStart">8:30 AM</strong></p>
+          </div>
+          <div class="timeline-diagram-row">
+            <div class="time-drum" id="earliestDrum" tabindex="0" role="slider" aria-label="Earliest check-in time" aria-valuemin="0" aria-valuemax="1410">
+              <div class="time-drum-window"></div>
+              <div class="time-drum-scroll" id="earliestDrumScroll"></div>
+            </div>
+            <div class="timeline-track-wrapper">
+              <div class="timeline-rail">
+                <div class="timeline-zone pre-window" id="preWindowZone"></div>
+                <div class="timeline-zone post-window" id="postWindowZone"></div>
+              </div>
+              <div class="timeline-node start-node" id="startNode">
+                <div class="handle"></div>
+                <div class="label-time" id="checkinEarliestTime">7:30 AM</div>
+                <div class="label-desc" id="startGapLabel">30 min before</div>
+              </div>
+              <div class="timeline-node center-node">
+                <div class="anchor-pin"></div>
+                <div class="label-time primary" id="checkinStartTime">8:30 AM</div>
+                <div class="label-desc">Booking start</div>
+              </div>
+              <div class="timeline-node end-node" id="endNode">
+                <div class="handle"></div>
+                <div class="label-time" id="checkinLatestTime">9:30 AM</div>
+                <div class="label-desc" id="endGapLabel">60 min after</div>
+              </div>
+            </div>
+            <div class="time-drum" id="latestDrum" tabindex="0" role="slider" aria-label="Latest check-in time" aria-valuemin="0" aria-valuemax="1410">
+              <div class="time-drum-window"></div>
+              <div class="time-drum-scroll" id="latestDrumScroll"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkin-footer">
+          <div class="checkin-footer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg>
+          </div>
+          <p class="checkin-footer-text">Check in using <span id="checkinMethodsList">any of the methods enabled</span>.</p>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-default-reservation-times-03.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-idle-release-05.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: module 03 of the Floorsense wizard family — follows floorsense-checkin-
+  methods-02.html and continues to floorsense-prebooking-advance-06.html. Covers the Check-in
+  Window (early/late minutes, both default 60) plus a second "Default Reservation Times" section
+  added per a later request: Default Start Time (08:30) and Default End Time (17:00) as native
+  <input type="time">, Auto-Release on Idle (3 hours) and Default Reservation Duration (9 hours)
+  as decimal-hour number fields (step 0.5) — all four are plain defaults with no cross-field
+  validation (e.g. duration isn't forced to equal end-minus-start). Prebooking window length and
+  the separate "how long can a user keep a self-assigned desk" question were split out into their
+  own modules (04 and 05) earlier and are unrelated to this section. The four fields are preceded
+  by a static inline SVG explainer (.policy-diagram-frame — a timeline for start/end/duration plus
+  a 4-step idle-release flow, hardcoded hex colors matching this page's own accent palette rather
+  than var() in SVG attributes for broader render reliability) and grouped into two
+  .policy-subgroup blocks ("Reservation Window" and "Idle & Duration") per a later
+  reorganize-for-clarity request — field ids/JS wiring are unchanged, only the surrounding markup
+  moved. State lives at project.floorsense.wizard.checkinPolicy = { checkInEarlyMinutes,
+  checkInLateMinutes, defaultStartTime, defaultEndTime, idleHours, defaultDurationHours } in the
+  same "configurationProject" localStorage key as modules 01–02.
+
+  Per a later request (page 03 needs to be rewritten to be more user-friendly, starting with the
+  diagram since the old one wasn't good), the single combined SVG that crammed a timeline AND a
+  4-step idle-release flowchart into one visual was replaced with two separate, clearly-labelled
+  diagrams inside their own bordered .policy-diagram-frame cards:
+  1. A 3-lane timeline (Check-in window / Reservation window / Default duration), each lane
+     left-labelled and aligned to the same hour axis, replacing the old cramped "reservation window
+     bar + duration bar + hour axis" stack that only showed two of the three concepts. The old
+     "worth checking these are meant to line up" hint (which read like an admission of a bug) was
+     replaced with a neutral, actionable one: "adjust either value below if they should line up."
+  2. A separate, visually distinct 3-step idle-release strip (down from 4 boxes: merged "Desk
+     reserved"/"No activity" into one "Desk reserved · no check-in yet" step), explicitly labelled
+     "can happen any time, any day" so it reads as decoupled from the reservation-window timeline
+     above it, rather than needing a caption to explain the two aren't connected (the old page's
+     hint text had to say "it isn't tied to the window above" — the new layout makes that obvious
+     without needing to say so).
+  Also added a line above both diagrams clarifying that users can always set their own start/end
+  time — the numbers shown are just what a reservation defaults to if someone books ahead and
+  confirms without changing anything (this was previously unstated; the section only said "All are
+  customisable" without clarifying customisable *by whom*, which could have read as this being an
+  admin-only default with no per-booking override). Diagram data (8:30/17:00/9h/±60min/3h) is still
+  static illustrative example content matching the field defaults below, not wired to live input
+  values — same as before. This is the first step in a broader "make page 03 friendlier" pass;
+  further UX changes to this page may follow.
+
+  Per a further request (client shared reference screenshots of a friendlier end-user "Check-in
+  Window" explainer card), the two side-by-side "Check in early" / "Check in late" .policy-cards
+  were merged into one .checkin-card matching that reference's layout: an icon + description
+  header (with the checkInEarly/checkInLate number inputs now inline within the sentence itself,
+  via .checkin-inline-field, rather than as separate boxed fields below separate titles), a
+  shaded "EXAMPLE" panel below with a 3-point timeline (Earliest you can check in / Booking start
+  time / Latest you can check in), and a footer strip about how to actually check in at the desk.
+  Unlike the reference screenshot's hardcoded "1 hour" example text, this example is LIVE — it
+  recomputes from the actual checkInEarly/checkInLate values (still defaulting to 60/60, editable
+  by the client same as before) AND from the "Default Start Time" field down in the Reservation
+  Window subgroup (so changing that field also updates this example, tying the two sections
+  together — see updateCheckinExample() near the bottom of the script, listening on all three
+  inputs). Times in the example are formatted 12-hour with AM/PM (via formatMinutesAs12Hour) for a
+  friendlier feel, distinct from the 24-hour <input type="time"> used for the actual Default
+  Start/End Time fields elsewhere on the page. The footer strip's check-in-methods copy was
+  reworded from the reference's generic "handset, mobile app or kiosk" to reference this project's
+  actual Check-in Methods options from module 02 (building access card, Floorsense App, QR code,
+  wallet pass) rather than copying language from an unrelated product. The reference screenshots
+  also included separate "IMPORTANT" / "BE CONSIDERATE" info strips below the card — those were
+  NOT added here, since the request was specifically about turning the Check-in Window section
+  into one card; flag if those should be added as a follow-up.
+
+  Per a further request (client shared a reference screenshot of a "2. Book in Advance" style
+  card and asked for the "Default Reservation Times" section to get the same review), that section
+  was rebuilt the same way as the Check-in Window card above: numbered "2. Default Reservation
+  Times" section-head, one .checkin-card with an icon + description header (Default Start Time /
+  Default End Time / Default Reservation Duration now inline in the sentence — .checkin-inline-
+  field.time for the two <input type="time"> fields, plain .checkin-inline-field for the hours
+  number field), the existing 3-lane timeline SVG nested inside as the card's shaded "EXAMPLE"
+  panel (dropped its old standalone .policy-diagram-frame border since it's now nested), and a
+  footer strip repeating the "these are just defaults" copy that used to sit in the section-head
+  paragraph. NOTE: despite the "checkin-" prefix, .checkin-card/.checkin-card-header/.checkin-
+  inline-field/.checkin-example/.checkin-footer etc. are now shared, generic explainer-card classes
+  used by more than one section on this page — named for where the pattern was first introduced,
+  not renamed since. The old .policy-subgroup ("Reservation Window" / "Idle & Duration") and bare
+  .policy-diagram-frame wrapper markup were removed as dead weight once their contents moved inside
+  the new cards; the .policy-subgroup/.policy-diagram-frame CSS rules were left in place in case
+  they're still handy for a future section, but nothing on this page currently uses them — flag
+  for cleanup if that bothers you.
+
+  Auto-Release on Idle (idleHours) was ORIGINALLY going to become a third numbered card on this
+  same page ("3. Auto-Release on Idle", built the same way as the other two, including its own
+  3-step idle-release SVG) — per a follow-up request ("make it a separate page following 03"),
+  that card was pulled back out and rebuilt as its own standalone page instead:
+  floorsense-idle-release-05.html, inserted immediately after this page in the click-through order.
+  This page's own state (project.floorsense.wizard.checkinPolicy) no longer includes idleHours —
+  it moved to its own project.floorsense.wizard.idleRelease = { idleHours } key on the new page;
+  the four remaining checkinPolicy fields (checkInEarlyMinutes, checkInLateMinutes,
+  defaultStartTime, defaultEndTime, defaultDurationHours) are unchanged. This page's next-arrow/
+  Continue destination changed from floorsense-prebooking-advance-06.html to
+  floorsense-idle-release-05.html accordingly. See floorsense-idle-release-05.html's own NOTE for
+  the rest of that page's details.
+
+  Separately, per another request, the Floorsense wizard's click-through order changed again:
+  floorsense-setup-path-00.html now comes AFTER floorsense-checkin-methods-02.html (order is now
+  01 -> 02 -> 00 -> 03 -> 04(idle-release) -> 05(prebooking) -> 06(reservation-length), was
+  01 -> 00 -> 02 -> ...). This page's own back-arrow changed from floorsense-checkin-methods-
+  02.html to floorsense-setup-path-00.html accordingly (00 now immediately precedes 03, not 02).
+  See floorsense-setup-path-00.html's and floorsense-checkin-methods-02.html's own NOTEs for the
+  rest of that reorder. The progress bar above (now 7 segments, "Auto-Release on Idle" added
+  between Check-in Policy and Prebooking Window) still lists all modules in their fixed 00-06
+  numeric order regardless of click-through order, per the established convention.
+
+  MOST RECENT CHANGE: per a follow-up request ("create a separate page for Default Reservation
+  Times and put it before check in window page"), this file was renamed from
+  floorsense-checkin-policy-03.html to floorsense-checkin-window-04.html and its "2. Default
+  Reservation Times" card was extracted into a brand-new floorsense-default-reservation-times-
+  03.html, inserted immediately BEFORE this page in the click-through order (same pattern used
+  earlier for the idle-release split above). This page is now single-topic, so — matching the
+  idle-release-05.html precedent of dropping the numeric prefix on single-topic pages — the
+  "1. Check-in Window" section-head was removed too; the .checkin-card now sits directly under
+  the hero. Downstream files were cascade-renamed to keep numbers sequential:
+  floorsense-idle-release-04.html -> -05.html, floorsense-prebooking-advance-05.html -> -06.html,
+  floorsense-reservation-length-06.html -> -07.html. This page's back-arrow now points to
+  floorsense-default-reservation-times-03.html (was floorsense-setup-path-00.html); its next-arrow
+  is unchanged (floorsense-idle-release-05.html, just renamed). The progress bar gained an eighth
+  segment, "Default Reservation Times", inserted before this page's own "Check-in Window" segment
+  (renamed from "Check-in Policy"); both segment rename and insertion were applied identically
+  across all seven pages that share the full progress bar.
+
+  State was split accordingly: this page's own state key was renamed from
+  project.floorsense.wizard.checkinPolicy to project.floorsense.wizard.checkinWindow, now holding
+  only { checkInEarlyMinutes, checkInLateMinutes }. The three former defaultStartTime/
+  defaultEndTime/defaultDurationHours fields moved to the new page's own
+  project.floorsense.wizard.defaultReservationTimes key. Because the Check-in Window example still
+  needs a booking start time to compute "earliest/latest you can check in," and that field no
+  longer lives on this page, updateCheckinExample() now reads it once at load time from
+  project.floorsense.wizard.defaultReservationTimes.defaultStartTime (falling back to '08:30' if
+  the new page hasn't been visited yet) instead of a live same-page <input>. This works naturally
+  with the new page order — Default Reservation Times is now visited BEFORE Check-in Window, so by
+  the time a user reaches this page the value already exists in localStorage. The example is no
+  longer "live" with respect to that one field (no input on this page to listen to), but remains
+  live for checkInEarly/checkInLate. See floorsense-default-reservation-times-03.html's own NOTE
+  for the rest of that page's details.
+
+  Per a follow-up request ("make it more user-friendly, maybe an animation to illustrate this?"),
+  the EXAMPLE timeline now plays a one-time reveal animation the first time it scrolls into view:
+  the "Booking start time" dot pops in with a soft double radar-ping (ci-ping keyframes, using the
+  same #102A43 navy as the mid dot so it reads as "this is the anchor point"), then the two
+  .checkin-timeline-track segments (given new .left/.right modifier classes so they can be targeted
+  independently — previously both were bare .checkin-timeline-track with no way to distinguish
+  them) grow outward from that dot via ci-grow-left/ci-grow-right (scaleX 0 -> 1, transform-origin
+  anchored to the mid-dot side of each track), and finally the earliest/latest dots + their time
+  labels and captions pop in together. The staging (mid dot -> tracks growing outward -> outer
+  dots) is meant to visually tell the story "your booking time is fixed, then a window opens up
+  around it" rather than just fading the whole diagram in at once. Implementation is pure CSS
+  keyframes gated behind a `.checkin-example.animate-in` class; the class is added exactly once via
+  an IntersectionObserver on `.checkin-example` (threshold 0.35, unobserves itself after firing).
+  `prefers-reduced-motion: reduce` is checked in JS before even attaching the observer (skips
+  entirely, leaving the diagram in its normal end-state appearance since the unanimated CSS default
+  already matches the final frame) and is also guarded defensively in CSS
+  (`@media (prefers-reduced-motion: reduce) { .checkin-example.animate-in * { animation: none
+  !important; } }`) in case something else adds the class later. This only affects the EXAMPLE
+  panel's one-time entrance — it's unrelated to (and doesn't replace) the live recompute in
+  updateCheckinExample() when the checkInEarly/checkInLate fields change; editing those fields
+  after the reveal has played just updates the text/values instantly, same as before.
+
+  Per a further follow-up in the same request, two more values were confirmed/wired to pull from
+  their real source pages instead of being hardcoded: (1) the EXAMPLE's booking start time was
+  already reading from project.floorsense.wizard.defaultReservationTimes.defaultStartTime (page
+  03's own state — see the "State was split accordingly" paragraph above) rather than a local
+  field, so no change was needed there, just confirmed correct; (2) the footer strip's check-in
+  methods copy — previously a hardcoded "building access card, Floorsense App, QR code, or wallet
+  pass" list — now reads project.floorsense.wizard.checkinMethods.selected (page 02's own saved
+  state) and builds the sentence dynamically via renderCheckinMethodsFooter()/
+  CHECKIN_METHOD_LABELS, so it always reflects whichever methods the client actually enabled on
+  Check-in Methods (falls back to 'card' — the same DEFAULT_SELECTED used on that page — if nothing
+  has been saved yet). Only the four physical at-desk check-in methods (card/app/qr/wallet) are
+  included; 'prebooking' is intentionally excluded since it's a booking-ahead method, not itself a
+  way to check in at the desk (a pre-booked desk still needs an app/card check-in per that method's
+  own description on page 02). The "Check-in Methods" mention was originally a link to
+  floorsense-checkin-methods-02.html (.checkin-footer-link), but that trailing "in Check-in
+  Methods" phrase and link were removed per a follow-up request — the sentence now just reads
+  "Check in using {method(s)}." — so the .checkin-footer-link CSS rule was also deleted as unused.
+
+  Per a follow-up request ("replace the fill-in 'min before'/'min after' number inputs with
+  drums, similar to what Apple have in the Clock app"), the two plain <input type="number"> fields
+  that used to sit inline in the header sentence were briefly replaced with a custom scrollable
+  "number drum" picker (a below-the-text .ci-drum-row with two Apple Clock-style scroll wheels).
+  That approach was SUPERSEDED almost immediately by the next request below — the drums never
+  shipped in a final form and their markup/CSS/JS have been removed entirely rather than left as
+  dead code.
+
+  Per the immediate follow-up ("sliders on the lines instead of drums, values 0.5h/1h/1.5h/2h/
+  3h...up to 9h"), the early/late controls moved a second time onto the EXAMPLE timeline itself as
+  native <input type="range"> handles restyled to look like small navy dots, one per
+  .checkin-timeline-track segment, each with a floating value bubble. A follow-up after that
+  ("make the card wider, one timeline instead of two") widened .checkin-card and merged the two
+  visually-mismatched track segments into one continuous baseline element so the line no longer
+  had a color/gap seam in the middle. All of that intermediate work (native range inputs, the
+  two-track-plus-baseline hybrid, .ci-slider/.ci-slider-bubble/.checkin-timeline-baseline) was
+  SUPERSEDED by the request below and has been removed outright.
+
+  MOST RECENT REDESIGN: per a follow-up providing a specific reference markup ("try this instead"
+  — a .timeline-card/.timeline-header/.timeline-track-wrapper/.timeline-rail/.timeline-zone/
+  .timeline-node structure), the whole EXAMPLE section was rebuilt around that markup rather than
+  evolving the old .checkin-example/.checkin-timeline-* structure further. Key differences from
+  every earlier version: (1) genuinely ONE rail element (.timeline-rail, a single flat bar) with
+  two colored .timeline-zone bands (pre-window/post-window) layered on top showing the valid
+  check-in window as shaded regions rather than just a thin line; (2) the two draggable points
+  (.timeline-node.start-node/.end-node, each with a .handle circle) and the fixed center point
+  (.timeline-node.center-node, with a non-draggable .anchor-pin) are positioned with plain
+  percentage `left` values along that ONE rail, computed from a shared 0-100% scale where 50% =
+  the fixed booking-start anchor, 0% = the largest "before" duration (9h) and 100% = the largest
+  "after" duration (9h) — so both handles live on the same physical line by construction, not two
+  separate elements stitched together; (3) dragging is now custom pointer-event code
+  (createTimelineHandle()) rather than native <input type="range">, since each handle's value maps
+  to only HALF of the shared 0-100% scale (0-50% for the before-handle, 50-100% for the after-
+  handle) with independent min/max hour ranges — a mapping a single native range input can't
+  express directly. Each handle also shows a small floating .tooltip above it (e.g. "1h before" /
+  "30 min after" via formatDuration(), which switches to "N min" below 1 hour and "Nh" at/above it)
+  in addition to the absolute computed time (.label-time, still the same checkinEarliestTime/
+  checkinStartTime/checkinLatestTime element ids as every earlier version, so updateCheckinExample()
+  needed no changes) and a static caption (.label-desc: "Earliest check-in" / "Booking start" /
+  "Latest check-in").
+
+  Implementation: createTimelineHandle(nodeEl, tooltipEl, zoneEl, {initialMinutes, side, onChange})
+  — `side` is 'before' or 'after' and determines which half of the 0-100% scale and which zone
+  element (.preWindowZone/.postWindowZone) this handle drives. indexToPercent()/percentToIndex()
+  convert between a HOUR_STEPS index (0-10, same [0.5,1,1.5,2,3,4,5,6,7,8,9] array as the previous
+  slider version) and its position on the shared scale; render() sets nodeEl.style.left, the
+  matching zone's left/width (pre-window zone spans from the handle's percent to 50%; post-window
+  spans from 50% to the handle's percent), the tooltip text, and aria-valuenow. Dragging is done
+  via pointerdown on .handle -> pointermove/pointerup on `document` (so the drag keeps tracking
+  even if the pointer leaves the small handle), converting clientX to a percentage of
+  `.timeline-rail`'s own getBoundingClientRect() (so this works regardless of the now-wider 760px
+  card or future width changes) and rounding to the nearest step on every move for a live-updating
+  example, matching the "continuous while dragging" feel the native range inputs had. Each node
+  also has tabindex="0"/role="slider" with aria-valuemin/max/now for basic keyboard support
+  (ArrowUp/ArrowRight increase the value, ArrowDown/ArrowLeft decrease it, by convention regardless
+  of which visual direction that corresponds to). save()/applyState() are unchanged in shape from
+  the previous version (state.checkInEarlyMinutes/checkInLateMinutes, startHandle.setMinutes()/
+  endHandle.setMinutes() called by Reset and on initial load).
+
+  A layout note for future edits: .timeline-node/.label-time/.label-desc/.tooltip all rely on
+  `transform: translate(...)` for their own centering (translate(-50%,-50%) on the node itself,
+  translateX(-50%) on the labels/tooltip) — the reveal-animation was written to only ever animate
+  `opacity`/`box-shadow`/`scaleX` on elements that do NOT already use `transform` for positioning
+  (e.g. .handle and .anchor-pin have no base transform, so animating `transform:scale()` on them
+  is safe; the labels/tooltip instead just fade via opacity so their own translateX(-50%) is never
+  clobbered by an animation). Keep that constraint in mind if this diagram gets more animation
+  polish later — animating `transform` directly on .timeline-node/.label-time/.label-desc/.tooltip
+  will visually "unmoor" them from their centered position for the animation's duration.
+
+  FIX: continueBtn saved state and marked the progress segment but never navigated anywhere —
+  added the missing `setTimeout(() => window.location.href = 'floorsense-idle-release-05.html',
+  500)` redirect, matching the pattern used on floorsense-setup-path-00.html/
+  floorsense-reservation-types-01.html/floorsense-checkin-methods-02.html. Same bug found and fixed
+  at the same time on floorsense-default-reservation-times-03.html,
+  floorsense-idle-release-05.html and floorsense-prebooking-advance-06.html.
+
+  MOST RECENT CHANGE: per a follow-up request, the on-rail drag handles (createTimelineHandle(),
+  pointerdown/move/up on the .handle circles) were replaced with a pair of Apple Clock-style time
+  drums placed on either side of the rail (.time-drum, one per side, #earliestDrum/#latestDrum),
+  and the "Example" badge was removed from the header. Unlike the removed drums from an earlier,
+  fully-superseded attempt in this file's history (which picked a plain minute count), these drums
+  show actual absolute clock times in 30-minute steps across a full 24h (drumValues, 48 rows,
+  formatMinutesAs12Hour) — e.g. rolling to "7:00 AM" directly sets the earliest check-in time,
+  rather than picking a "1h before" duration. Rolling a drum still drives the same
+  checkInEarlyMinutes/checkInLateMinutes state as before (converted from the drum's absolute
+  minutes via `startMinutes - minutes` / `minutes - startMinutes`, clamped to >= 0) and moves that
+  side's dot + shaded zone on the rail (renderRailPositions(), using a fixed 12h MAX_OFFSET_MINUTES
+  scale for the dot's percent position along the rail — separate from the drum's own 24h value
+  range). The drums use native scroll + `scroll-snap-type: y mandatory` rather than custom
+  pointer-drag math, so momentum/touch/mouse-wheel/trackpad all work for free; a `scroll` listener
+  debounces to detect when the scroll has settled (120ms), snaps to the nearest row via
+  `scrollTo({behavior:'smooth'})`, and fires onChange with that row's absolute minutes. The
+  start-node/end-node rail dots lost their tabindex/role="slider"/keyboard handling since they're
+  no longer directly interactive — that responsibility moved to the drums themselves (each drum
+  container has role="slider"/aria-valuemin/max/now/valuetext, with ArrowUp/ArrowDown keyboard
+  support stepping one row at a time). The "Booking start" center label was also enlarged to 5x
+  its previous size (13.5px -> 67.5px, weight dropped to 200 to match the site's hero-title
+  aesthetic at that scale) and made the visual anchor of the diagram, with .timeline-track-wrapper's
+  top margin increased (64px -> 160px) to make room for the much taller label, and each .time-drum
+  given a calculated margin-top (95px) so its own vertical center lines up with the rail rather than
+  centering against the whole (now much taller) row. Exact pixel alignment between the drums and
+  the rail line could not be visually verified this session (no headless-browser/screenshot
+  capability available in this sandbox) — worth a quick visual check in a real browser and a small
+  margin-top nudge if the drums look off-center against the rail.
+
+  Per a further follow-up ("put the card in the middle"), .checkin-card was sitting flush against
+  the left edge of the wider 1120px .panel-inner (it had a max-width but no margin, so it hugged
+  the left side rather than centering) — added `margin: 0 auto;`. The same request asked to remove
+  any image placeholder; none exists on this page (the only <img> is the real Smartalock brand
+  logo), so no change was needed there.
+
+  MOST RECENT CHANGE: per a follow-up request, the drums can no longer settle on a check-in time
+  within 30 minutes of the booking start time (previously they could scroll all the way to the
+  booking start itself, i.e. a 0-minute setup window). createTimeDrum() gained an optional
+  `opts.clampMinutes(minutes) => minutes` hook, applied via a new internal `clampedIndex()` wrapper
+  at every point an index gets committed — scroll-settle, ArrowUp/ArrowDown, initial load, and
+  setMinutes() — so the drum visually snaps back to the nearest valid time (rather than resting on
+  an invalid one and only correcting the underlying state) if the user scrolls or arrows past the
+  limit. MIN_GAP_MINUTES = 30 defines the limit; earliestDrum's clamp caps it at
+  `startMinutes - 30`, latestDrum's clamp floors it at `startMinutes + 30`, and the onChange
+  handlers' own `Math.max(0, ...)` floor was likewise raised to `Math.max(MIN_GAP_MINUTES, ...)` as
+  a second line of defense on the derived checkInEarlyMinutes/checkInLateMinutes state. Separately,
+  per the same request, the default values changed: checkInEarlyMinutes 60 -> 30 (checkInLateMinutes
+  stays 60) — updated both the initial `state` fallback and the Reset button handler.
+
+  MOST RECENT CHANGE: per a follow-up request ("30 min from booking start shouldn't be covered by
+  the booking-start pin"), the rail's offsetToPercent() scale was reworked. On the old 12h
+  (MAX_OFFSET_MINUTES) scale, the new 30-minute minimum gap only moved a dot ~2% of the rail's
+  width from center — comfortably inside the footprint of the enlarged 66px booking-start pin, so
+  the earliest/latest dot could render essentially underneath it at the minimum setting. Fixed two
+  ways together: (1) MAX_OFFSET_MINUTES lowered from 12h to 3h, so realistic check-in-window values
+  occupy a much larger share of the rail (a dot now reaches the rail's outer edge at a 3h gap
+  instead of 12h — larger gaps still work, they just all render pinned at the edge past 3h, same as
+  before past 12h); (2) added MIN_VISUAL_PERCENT (10) as a floor in offsetToPercent() — every dot is
+  guaranteed at least 10% of the rail's width from center regardless of the actual offset or the
+  rail's rendered pixel width, rather than the previous straight-line scale which shrank toward
+  zero distance as the offset shrank toward zero. The two together mean a 30-minute gap now sits
+  roughly 17% of the rail's width from center (10% floor + 30/180 of the remaining 40%), clearly
+  outside the pin's radius.
+
+  MOST RECENT CHANGE: per a follow-up request, fixed a bug where the "Booking start" center-node
+  was rendering flush against the LEFT edge of the rail instead of the middle — `.timeline-node`
+  never had a default `left` value (only start-node/end-node get `left` set inline by JS), and
+  since .center-node has no id/JS to set it either, its absolute-position "auto" left resolved to
+  its static-flow position (effectively 0). Added `.center-node { left: 50%; }` to fix this
+  directly. At the same time, per the same request: the label was made 3x SMALLER (67.5px -> 22.5px,
+  since the earlier "5x larger" pass made it too dominant once the drums were added on either side)
+  and the pin was made 3x LARGER (22px -> 66px, border 4px -> 12px, same 0.18 border/diameter ratio
+  preserved) so the pin itself, not the text, is now the dominant visual anchor. Because the giant
+  label is gone, .timeline-track-wrapper's top margin was reduced from 160px back down to 90px
+  (just enough to clear the now-much-bigger 66px pin + its smaller label, which needs less vertical
+  room than the old giant text did) and each .time-drum's margin-top was recalculated to re-center
+  against the rail (95px -> 15px, i.e. wrapper-top-margin(90) minus half the drum's own height(75)).
+
+  MOST RECENT CHANGE: per a follow-up request, the floating `.tooltip` bubble above the start/end
+  handles (previously showing e.g. "1h before"/"30 min after" via formatDurationLabel(), which
+  switched to an "Nh"/"Nh Nm" format at/above 60 minutes) was removed entirely — CSS rules
+  (.timeline-node .tooltip/.tooltip::after), its reveal-animation references, and its two
+  `<div class="tooltip">` elements are all gone. That gap text didn't disappear though: it moved
+  into the .label-desc caption below each handle (id="startGapLabel"/"endGapLabel", replacing the
+  removed static "Earliest check-in"/"Latest check-in" wording) and is now always expressed purely
+  in minutes via a new formatMinutesOnly() helper (which replaced formatDurationLabel(), now
+  unused and deleted) — e.g. "90 min before" rather than "1h 30m before" — per the request to
+  standardize on an "xx min before" format regardless of size.
+
+  MOST RECENT CHANGE: per a follow-up request ("make drums white with slight shadow gradient, so
+  the drum and numbers are virtually 3D"), .time-drum gained a solid white background (previously
+  transparent, showing the card's --paper-soft grey through it), rounded corners, and a soft
+  drop-shadow to lift it off the page. A new `.time-drum::before` pseudo-element overlays a subtle
+  dark-to-clear-to-dark vertical gradient (rgba(16,42,67,0.09) at the top/bottom edges, fully clear
+  in the middle band) to suggest the drum's surface curving away from the viewer like a physical
+  cylinder, rather than a flat list. `.time-drum-window` (the selection band in the middle) gained a
+  faint tinted background plus a double inset box-shadow (top and bottom) so it reads as a slightly
+  recessed groove the numbers pass through. `.time-drum-row.selected` gained a 1px white
+  text-shadow underneath the text for a subtle embossed/engraved look on the highlighted number.
+  `.time-drum-scroll` gained matching border-radius so its content doesn't square off past the
+  drum's now-rounded corners. All of this is purely cosmetic (box-shadow/background/text-shadow) —
+  no changes to the scroll-snap mechanics, clampMinutes() gap enforcement, or drum value logic.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  const saved = project.floorsense.wizard.checkinWindow || {};
+  const state = {
+    checkInEarlyMinutes: Number.isFinite(saved.checkInEarlyMinutes) ? saved.checkInEarlyMinutes : 30,
+    checkInLateMinutes: Number.isFinite(saved.checkInLateMinutes) ? saved.checkInLateMinutes : 60
+  };
+  const defaultReservationTimes = project.floorsense.wizard.defaultReservationTimes || {};
+  const savedDefaultStartTime = defaultReservationTimes.defaultStartTime || '08:30';
+
+  /* ---------------- check-in methods footer text, sourced from page 02's saved selection ---------------- */
+  const CHECKIN_METHOD_LABELS = {
+    card: 'building access card',
+    app: 'Floorsense App',
+    qr: 'QR code',
+    wallet: 'wallet pass'
+  };
+  function renderCheckinMethodsFooter() {
+    const listEl = document.getElementById('checkinMethodsList');
+    if (!listEl) return;
+    const savedMethods = project.floorsense.wizard.checkinMethods || {};
+    const selected = Array.isArray(savedMethods.selected) ? savedMethods.selected : ['card'];
+    const labels = selected.map(m => CHECKIN_METHOD_LABELS[m]).filter(Boolean);
+    let text;
+    if (labels.length === 0) {
+      text = 'a method enabled';
+    } else if (labels.length === 1) {
+      text = labels[0];
+    } else if (labels.length === 2) {
+      text = labels[0] + ' or ' + labels[1];
+    } else {
+      text = labels.slice(0, -1).join(', ') + ', or ' + labels[labels.length - 1];
+    }
+    listEl.textContent = text;
+  }
+  renderCheckinMethodsFooter();
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- time helpers ---------------- */
+  function parseTimeToMinutes(hhmm) {
+    const parts = (hhmm || '08:30').split(':');
+    const h = parseInt(parts[0], 10) || 0;
+    const m = parseInt(parts[1], 10) || 0;
+    return h * 60 + m;
+  }
+  function formatMinutesAs12Hour(totalMinutes) {
+    totalMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+    let h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+  }
+  function formatMinutesOnly(minutes) {
+    return Math.round(Math.abs(minutes)) + ' min';
+  }
+
+  const startMinutes = parseTimeToMinutes(savedDefaultStartTime);
+
+  /* ---------------- Apple Clock-style time drums (30-min steps, full 24h) driving the rail's
+     start/end sliders. See the "Apple Clock" .time-drum CSS above for the scroll-snap mechanics. */
+  const DRUM_ROW_H = 30;
+  const drumValues = [];
+  for (let m = 0; m < 1440; m += 30) drumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
+
+  function buildDrumRows(scrollEl) {
+    let html = '<div class="time-drum-pad"></div>';
+    drumValues.forEach((v, i) => {
+      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
+    });
+    html += '<div class="time-drum-pad"></div>';
+    scrollEl.innerHTML = html;
+    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  }
+
+  function createTimeDrum(scrollEl, opts) {
+    const rows = buildDrumRows(scrollEl);
+    let current = -1;
+    let settleTimer = null;
+
+    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
+    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
+    function highlight(index) {
+      if (index === current) return;
+      current = index;
+      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
+      scrollEl.parentElement.setAttribute('aria-valuenow', drumValues[index].minutes);
+      scrollEl.parentElement.setAttribute('aria-valuetext', drumValues[index].label);
+    }
+    function nearestIndexForMinutes(minutes) {
+      let best = 0, bestDiff = Infinity;
+      drumValues.forEach((v, i) => {
+        const diff = Math.abs(v.minutes - minutes);
+        if (diff < bestDiff) { bestDiff = diff; best = i; }
+      });
+      return best;
+    }
+    function scrollToIndex(index, smooth) {
+      index = clampIndex(index);
+      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
+      highlight(index);
+    }
+
+    // Applies opts.clampMinutes (if given) to an index so the drum can never settle on a value
+    // that would put less than the minimum gap between check-in time and booking start.
+    function clampedIndex(index) {
+      if (!opts.clampMinutes) return index;
+      const wanted = drumValues[clampIndex(index)].minutes;
+      const allowed = opts.clampMinutes(wanted);
+      return allowed === wanted ? index : nearestIndexForMinutes(allowed);
+    }
+
+    scrollEl.addEventListener('scroll', () => {
+      highlight(clampIndex(indexFromScroll()));
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const settled = clampedIndex(indexFromScroll());
+        scrollToIndex(settled, true);
+        if (opts.onChange) opts.onChange(drumValues[settled].minutes);
+      }, 120);
+    }, { passive: true });
+
+    scrollEl.parentElement.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const i = clampedIndex(indexFromScroll() + 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(drumValues[i].minutes);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const i = clampedIndex(indexFromScroll() - 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(drumValues[i].minutes);
+      }
+    });
+
+    scrollToIndex(clampedIndex(nearestIndexForMinutes(opts.initialMinutes)), false);
+
+    return {
+      setMinutes(minutes) { scrollToIndex(clampedIndex(nearestIndexForMinutes(minutes)), false); }
+    };
+  }
+
+  /* ---------------- rail: earliest/latest dots + shaded zones, driven by the drums above ---------------- */
+  // Scaled down from a 12h range so the minimum 30-minute gap (MIN_GAP_MINUTES) still lands a
+  // visible distance from center — on the old 12h scale, 30 minutes was only ~2% of the rail,
+  // well inside the footprint of the now much-bigger booking-start pin. MIN_VISUAL_PERCENT also
+  // reserves a guaranteed minimum distance from center regardless of the rail's rendered pixel
+  // width, so the dot can never visually disappear under the pin even at the smallest gap.
+  const MAX_OFFSET_MINUTES = 3 * 60;
+  const MIN_VISUAL_PERCENT = 10;
+  const startNode = document.getElementById('startNode');
+  const endNode = document.getElementById('endNode');
+  const preWindowZone = document.getElementById('preWindowZone');
+  const postWindowZone = document.getElementById('postWindowZone');
+  const startGapLabel = document.getElementById('startGapLabel');
+  const endGapLabel = document.getElementById('endGapLabel');
+
+  function offsetToPercent(offsetMinutes, side) {
+    const t = Math.max(0, Math.min(MAX_OFFSET_MINUTES, offsetMinutes)) / MAX_OFFSET_MINUTES;
+    const percentFromCenter = MIN_VISUAL_PERCENT + t * (50 - MIN_VISUAL_PERCENT);
+    return side === 'before' ? 50 - percentFromCenter : 50 + percentFromCenter;
+  }
+
+  function renderRailPositions() {
+    const startPercent = offsetToPercent(state.checkInEarlyMinutes, 'before');
+    const endPercent = offsetToPercent(state.checkInLateMinutes, 'after');
+    startNode.style.left = startPercent + '%';
+    endNode.style.left = endPercent + '%';
+    preWindowZone.style.left = startPercent + '%';
+    preWindowZone.style.width = (50 - startPercent) + '%';
+    postWindowZone.style.left = '50%';
+    postWindowZone.style.width = (endPercent - 50) + '%';
+    startGapLabel.textContent = formatMinutesOnly(state.checkInEarlyMinutes) + ' before';
+    endGapLabel.textContent = formatMinutesOnly(state.checkInLateMinutes) + ' after';
+  }
+
+  /* ---------------- fields ---------------- */
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function save() {
+    project.floorsense.wizard.checkinWindow = state;
+    saveProject(project);
+  }
+
+  function queueSave() {
+    save();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function applyState() {
+    earliestDrum.setMinutes(startMinutes - state.checkInEarlyMinutes);
+    latestDrum.setMinutes(startMinutes + state.checkInLateMinutes);
+    renderRailPositions();
+  }
+
+  // Neither drum may land closer than this to the booking start time — an earliest/latest
+  // check-in time within 30 minutes of the booking itself would leave no real setup window.
+  const MIN_GAP_MINUTES = 30;
+
+  const earliestDrum = createTimeDrum(document.getElementById('earliestDrumScroll'), {
+    initialMinutes: startMinutes - state.checkInEarlyMinutes,
+    clampMinutes: (minutes) => Math.min(minutes, startMinutes - MIN_GAP_MINUTES),
+    onChange: (minutes) => {
+      state.checkInEarlyMinutes = Math.max(MIN_GAP_MINUTES, startMinutes - minutes);
+      renderRailPositions();
+      updateCheckinExample();
+      queueSave();
+    }
+  });
+  const latestDrum = createTimeDrum(document.getElementById('latestDrumScroll'), {
+    initialMinutes: startMinutes + state.checkInLateMinutes,
+    clampMinutes: (minutes) => Math.max(minutes, startMinutes + MIN_GAP_MINUTES),
+    onChange: (minutes) => {
+      state.checkInLateMinutes = Math.max(MIN_GAP_MINUTES, minutes - startMinutes);
+      renderRailPositions();
+      updateCheckinExample();
+      queueSave();
+    }
+  });
+  renderRailPositions();
+
+  /* ---------------- check-in window live example ---------------- */
+  const checkinExampleStart = document.getElementById('checkinExampleStart');
+  const checkinStartTime = document.getElementById('checkinStartTime');
+  const checkinEarliestTime = document.getElementById('checkinEarliestTime');
+  const checkinLatestTime = document.getElementById('checkinLatestTime');
+
+  function updateCheckinExample() {
+    const early = state.checkInEarlyMinutes;
+    const late = state.checkInLateMinutes;
+    const startLabel = formatMinutesAs12Hour(startMinutes);
+    checkinExampleStart.textContent = startLabel;
+    checkinStartTime.textContent = startLabel;
+    checkinEarliestTime.textContent = formatMinutesAs12Hour(startMinutes - early);
+    checkinLatestTime.textContent = formatMinutesAs12Hour(startMinutes + late);
+  }
+  updateCheckinExample();
+
+  /* ---------------- reveal animation: plays once when the example scrolls into view ---------------- */
+  const timelineCard = document.querySelector('.timeline-card');
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (timelineCard && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            timelineCard.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      revealObserver.observe(timelineCard);
+    } else {
+      timelineCard.classList.add('animate-in');
+    }
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.checkInEarlyMinutes = 30;
+    state.checkInLateMinutes = 60;
+    applyState();
+    updateCheckinExample();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    save();
+    markModuleSaved('checkin-window');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-idle-release-05.html'; }, 500);
+  });
+})();
+</script>
+
+</body>
+</html>

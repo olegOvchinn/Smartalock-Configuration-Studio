@@ -209,23 +209,6 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
-  /* ---------- hero auto-collapse: rolls the intro up like a drum after 5s so the cards below the progress bar are visible sooner ---------- */
-  .panel-topbar > .panel-inner { perspective: 900px; }
-  .panel-intro {
-    transform-origin: 50% 0%;
-    max-height: 400px;
-    transition: max-height .6s cubic-bezier(.65,0,.35,1), opacity .45s ease,
-                transform .6s cubic-bezier(.65,0,.35,1), margin .6s cubic-bezier(.65,0,.35,1);
-  }
-  .panel-intro.hero-collapsed {
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transform: rotateX(-100deg);
-    margin-top: 0;
-    margin-bottom: 0;
-    pointer-events: none;
-  }
 </style>
 </head>
 <body>
@@ -255,19 +238,23 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="checkin-policy" href="floorsense-checkin-policy-03.html">
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-03.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Check-in Policy</span>
+          <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-04.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Window</span>
+        </a>
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-05.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-06.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
@@ -405,13 +392,13 @@
   comes right after floorsense-reservation-types-01.html and BEFORE floorsense-setup-path-00.html
   (order is now 01 -> 02 -> 00 -> 03 -> 04 -> 05 -> 06, was 01 -> 00 -> 02 -> ...). This page's
   back-arrow changed from floorsense-setup-path-00.html to floorsense-reservation-types-01.html,
-  and its next-arrow/Continue destination changed from floorsense-checkin-policy-03.html to
+  and its next-arrow/Continue destination changed from floorsense-checkin-window-04.html to
   floorsense-setup-path-00.html accordingly (setup-path-00's own "Build Your Own" branch now
-  continues straight to floorsense-checkin-policy-03.html instead of back here, since this page is
+  continues straight to floorsense-checkin-window-04.html instead of back here, since this page is
   already done by the time someone reaches setup-path-00). See floorsense-reservation-types-
   01.html's and floorsense-setup-path-00.html's own NOTEs for the rest of that reorder. The
   progress bar above also gained a 7th "idle-release" segment (a new page inserted between
-  Check-in Policy and Prebooking Window — see floorsense-idle-release-04.html) — unrelated to this
+  Check-in Policy and Prebooking Window — see floorsense-idle-release-05.html) — unrelated to this
   reorder, but landed in the same round of edits.
 -->
 
@@ -526,16 +513,6 @@
     saveDot.classList.add('show');
     setTimeout(() => { window.location.href = 'floorsense-setup-path-00.html'; }, 500);
   });
-})();
-</script>
-
-<script>
-(function(){
-  var intro = document.querySelector('.panel-intro');
-  if (!intro) return;
-  setTimeout(function(){
-    intro.classList.add('hero-collapsed');
-  }, 5000);
 })();
 </script>
 
