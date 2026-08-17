@@ -492,14 +492,14 @@
                       <div class="timeline-rail">
                         <div class="timeline-zone" id="durationZone"></div>
                       </div>
-                      <div class="timeline-node big-anchor" id="durationStartNode">
+                      <div class="timeline-node" id="durationStartNode">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary" id="durationStartTime">8:30 AM</div>
+                        <div class="label-time" id="durationStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node" id="durationEndNode">
+                      <div class="timeline-node big-anchor" id="durationEndNode">
                         <div class="anchor-pin"></div>
-                        <div class="label-time" id="durationEndTime">5:30 PM</div>
+                        <div class="label-time primary" id="durationEndTime">5:30 PM</div>
                         <div class="label-desc">Ends</div>
                       </div>
                     </div>
@@ -535,14 +535,14 @@
                       <div class="timeline-rail">
                         <div class="timeline-zone" id="fixedEndZone"></div>
                       </div>
-                      <div class="timeline-node big-anchor" id="fixedEndStartNode">
+                      <div class="timeline-node" id="fixedEndStartNode">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary" id="fixedEndStartTime">8:30 AM</div>
+                        <div class="label-time" id="fixedEndStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node" id="fixedEndEndNode">
+                      <div class="timeline-node big-anchor" id="fixedEndEndNode">
                         <div class="anchor-pin"></div>
-                        <div class="label-time" id="fixedEndEndTime">5:00 PM</div>
+                        <div class="label-time primary" id="fixedEndEndTime">5:00 PM</div>
                         <div class="label-desc">Ends</div>
                       </div>
                     </div>
@@ -784,6 +784,17 @@
   save()/applyState() no longer read from/write to DOM <input>s — state is now updated directly by
   each drum's onChange handler, and applyState() (used on load and after Reset) repositions all
   three drums via their returned setMinutes() plus re-syncs the end-mode radio cards.
+
+  MOST RECENT CHANGE: per a follow-up request ("on the reservation end cards make start pin smaler
+  but end as large as start"), cards 2 and 3's pin sizing was swapped — the .big-anchor class (66px
+  pin, matching floorsense-checkin-window-04.html's "Booking start" sizing) now sits on
+  durationEndNode/fixedEndEndNode instead of durationStartNode/fixedEndStartNode, and the enlarged
+  navy "primary" label-time styling moved with it (durationEndTime/fixedEndEndTime now carry
+  label-time.primary; durationStartTime/fixedEndStartTime dropped back to the plain small green
+  label-time). The "Starts" pin on both cards is now the small default anchor-pin size, while
+  "Ends" — the value each card's own drum actually controls — is the large, emphasized one. Purely
+  a visual swap: no change to the underlying position math (ROW_EDGE_PERCENT fixed-left start,
+  endPercentForOffset()-driven end) or to which node each drum's onChange updates.
 -->
 
 <script>
