@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>No Swipe No Power (NSNP) — Floorsense Configuration Studio (Template)</title>
+<title>Auto-Release on Idle — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -122,52 +122,58 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
-  .path-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+  /* ---------- explainer card (icon+desc, live diagram, footer) — shared pattern, first introduced
+     on floorsense-checkin-window-07.html; widened from 640px to 760px and centered to match that
+     page's own card sizing ---------- */
+  .checkin-card {
+    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); overflow: hidden;
   }
-  .path-check-card:hover { border-color: var(--accent); }
-  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
-  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .path-tick {
-    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
+  .checkin-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  .path-check-card.checked .path-tick { border-color: var(--accent); }
-  .path-tick::after {
-    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
-    opacity: 0; transition: opacity .15s;
-  }
-  .path-check-card.checked .path-tick::after { opacity: 1; }
-  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
-  .path-card-body { min-width: 0; flex: 1; }
-  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
-  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .path-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .path-subfields.show { display: flex; }
-  .path-subfields-label { display: block; font-size: 12.1px; font-weight: 500; color: var(--ink); line-height: 1.55; margin: 0 0 6px; }
-  .path-subfields textarea {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; resize: vertical;
-    font-family: var(--font-text); font-size: 12.1px; background: var(--paper-soft); min-height: 64px;
-  }
-  .path-subfields textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
-  /* ---------- power grace period diagram — same explainer-diagram building blocks used on
-     floorsense-idle-release-07.html, but standalone (not nested inside a .checkin-card) since this
-     page's primary interaction is the mode grid above, not a single explainer card. ---------- */
-  .nsnp-grace-block { display: none; margin-top: 20px; max-width: 760px; }
-  .nsnp-grace-block.show { display: block; }
+  /* ---------- on/off switch, ported from smartalock-kiosk-customisation-07.html's .switch —
+     this is the wizard's second optional feature (after floorsense-nsnp-10.html), so it needs its
+     own enable/disable control; unlike NSNP's 4-way mode grid, a single-topic explainer page like
+     this one only needs a plain on/off toggle. ---------- */
+  .idle-toggle-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .idle-toggle-label { font-size: 13.12px; font-weight: 600; color: var(--ink); }
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+
+  /* ---------- body wrapper: the diagram + footer are hidden entirely until the feature is
+     switched on, same show/hide convention (rather than opacity/pointer-events dimming) used for
+     floorsense-nsnp-10.html's conditional grace-period block. ---------- */
+  .idle-body { display: none; }
+  .idle-body.show { display: block; }
+
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
-  .timeline-card.standalone { border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
   .timeline-header { margin-bottom: 4px; }
   .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
 
+  /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, ported from
+     floorsense-checkin-window-07.html's earliest/latest drums — but idle release has only one real
+     value (how long a desk may sit idle before release), not two independent times, so there's a
+     single drum here instead of one on each side. Neither pin is an absolute clock time (idle
+     release isn't tied to any time of day), so both label-times show elapsed hours instead. ---------- */
   .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
   .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
   .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
@@ -187,6 +193,10 @@
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
     font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
+  /* ---------- "Released" is the value the drum actually controls, so it gets the enlarged pin/
+     label treatment (same 66px sizing as the other reservation-time diagrams' emphasized pin),
+     positioned via JS rather than fixed at center since "Reserved" sits at a fixed left-edge spot
+     on the same rail. ---------- */
   .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
   .big-anchor .label-time.primary {
     font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
@@ -194,6 +204,8 @@
   }
   .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
+  /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
+     from floorsense-checkin-window-07.html, including its white/3D body treatment. ---------- */
   .time-drum {
     position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
     background: #fff; border-radius: 12px;
@@ -228,6 +240,10 @@
     text-shadow: 0 1px 0 rgba(255,255,255,0.9);
   }
 
+  /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
+     scaleX are animated on elements that don't rely on `transform` for their own centering, since
+     .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
+     (same constraint as floorsense-checkin-window-07.html's diagram). ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ci-pop-handle {
     from { opacity: 0; transform: scale(0.4); }
@@ -251,6 +267,11 @@
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
   }
+
+  .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
+  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -324,39 +345,43 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk &amp; User Groups</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-04.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-06.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-07.html">
+        <a class="progress-seg current" data-module="idle-release" href="floorsense-idle-release-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
-        <a class="progress-seg current" data-module="nsnp" href="floorsense-nsnp-09.html">
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-10.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-10.html">
+        <a class="progress-seg" data-module="fme" href="floorsense-fme-11.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-11.html">
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-12.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
         </a>
@@ -367,8 +392,8 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Additional Features · Optional</span>
-        <h1 class="hero-title">No Swipe No Power</h1>
-        <p class="sub">Automatically cut power to a desk when it's occupied without a valid badge swipe.</p>
+        <h1 class="hero-title">Auto-Release on Idle</h1>
+        <p class="sub">Optionally free up desks that were reserved but never actually used — off by default.</p>
       </div>
     </div>
   </div>
@@ -376,101 +401,67 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-        <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>NSNP requires NSNP relay units installed at each desk to function — if a desk is occupied but nobody has swiped a valid badge, power to its outlets is cut until a valid swipe is detected. This is entirely optional. Choose how you'd like to roll it out, or skip it if you won't be using it.</p>
-      </div>
-
-      <div class="path-check-grid" id="nsnpGrid">
-        <div class="path-check-card" data-mode="all">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="all">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">All desks</h3>
-              <p class="path-desc">Every desk has an NSNP relay unit installed and enforces this power policy.</p>
+      <div class="checkin-card">
+        <div class="checkin-card-header">
+          <div class="checkin-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <p class="checkin-card-desc">
+              This is an optional feature, off by default. If turned on, a desk that sits unclaimed
+              or unused for long enough is automatically released back to general availability — use
+              the drum below to set how long a desk may sit idle before that happens.
+            </p>
+            <div class="idle-toggle-row">
+              <span class="idle-toggle-label">Enable Auto-Release on Idle</span>
+              <button type="button" class="switch" id="idleEnableSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on Idle"></button>
             </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-mode="list">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="list">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">We will provide a list of NSNP enabled desks</h3>
-              <p class="path-desc">We'll send Smartalock a list of which desks have NSNP relay units installed and should enforce this policy.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-mode="none">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="none">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">We will not be using NSNP</h3>
-              <p class="path-desc">Skip this feature — desks won't have automatic power cutoff for missed badge swipes.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-mode="other">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="other">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Other</h3>
-              <p class="path-desc">Some other arrangement — describe it below.</p>
-            </div>
-          </label>
-          <div class="path-subfields" id="otherSubfields">
-            <label for="otherNote" class="path-subfields-label">Describe the arrangement</label>
-            <textarea id="otherNote" placeholder="e.g. NSNP on hot-desks only, standard desks excluded"></textarea>
           </div>
         </div>
-      </div>
 
-      <div class="nsnp-grace-block" id="graceBlock">
-        <div class="timeline-card standalone">
+        <div class="idle-body" id="idleBody">
+        <div class="timeline-card">
           <div class="timeline-header">
-            <p class="timeline-subtitle">Power grace period: <strong id="graceLabel">1h</strong></p>
+            <p class="timeline-subtitle">Auto-release after: <strong id="idleHoursLabel">3h</strong></p>
           </div>
           <div class="timeline-diagram-row">
-            <div class="time-drum" id="graceDrum" tabindex="0" role="slider" aria-label="Power grace period" aria-valuemin="5" aria-valuemax="240">
+            <div class="time-drum" id="idleDrum" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
               <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="graceDrumScroll"></div>
+              <div class="time-drum-scroll" id="idleDrumScroll"></div>
             </div>
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
-                <div class="timeline-zone" id="graceZone"></div>
+                <div class="timeline-zone" id="idleZone"></div>
               </div>
-              <div class="timeline-node" id="graceStartNode">
+              <div class="timeline-node" id="idleStartNode">
                 <div class="anchor-pin"></div>
-                <div class="label-time">0 min</div>
-                <div class="label-desc">Badge swipe</div>
+                <div class="label-time">0h</div>
+                <div class="label-desc">Reserved</div>
               </div>
-              <div class="timeline-node big-anchor" id="graceEndNode">
+              <div class="timeline-node big-anchor" id="idleEndNode">
                 <div class="anchor-pin"></div>
-                <div class="label-time primary" id="graceEndTime">1h</div>
-                <div class="label-desc">Power cut</div>
+                <div class="label-time primary" id="idleEndTime">3h</div>
+                <div class="label-desc">Released</div>
               </div>
             </div>
           </div>
-          <p class="policy-hint" id="graceHint">If no valid badge swipe is detected within 1h of a desk becoming occupied, power to its outlets is cut.</p>
+          <p class="policy-hint" id="idleHint">If a desk sits unclaimed or unused for 3 hours, it's automatically released back to general availability — this can happen at any time of day, on any day.</p>
+        </div>
+
+        <div class="checkin-footer">
+          <div class="checkin-footer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
+        </div>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-reservation-length-08.html">
+        <a class="page-nav-btn" href="floorsense-checkin-window-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-fme-10.html">
+        <a class="page-nav-btn next" href="floorsense-reservation-length-09.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -493,54 +484,100 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 09 of the Floorsense wizard family, new — appended after
-  floorsense-reservation-length-08.html per a request to add an "Additional Features (optional)"
-  page covering "No Swipe No Power (NSNP)": the desk power policy that requires NSNP relay units
-  installed at each desk to function (cutting power to a desk's outlets if it's occupied without a
-  valid badge swipe). This is the first genuinely optional module in the wizard — every other page
-  configures a setting that always applies, whereas NSNP is opt-in hardware-dependent behaviour, so
-  the hero/progress-bar tooltip both say "Optional" to flag that.
+  NOTE for Oleg: module 04 of the Floorsense wizard family, new — split out of
+  floorsense-checkin-window-07.html per a request ("make it a separate page following 03"). Covers
+  the single "Auto-Release on Idle" setting (idleHours, default 3) that used to live in
+  checkin-policy-03's "Default Reservation Times" section. Built with the same .checkin-card
+  explainer pattern established there (icon + description header with the idleHours number field
+  inline via .checkin-inline-field, a shaded "EXAMPLE" panel — reusing the exact 3-step
+  idle-release SVG that was drafted for checkin-policy-03 before the split — and a footer strip).
+  Unlike checkin-policy-03's two cards, this page has only one topic, so it skips the numbered
+  "1./2./3." section-head prefix used there (that numbering exists specifically to distinguish
+  multiple topics stacked on one page; a single-topic page like this one, or like
+  floorsense-checkin-methods-02.html, doesn't need it) — the hero title alone ("Auto-Release on
+  Idle") carries the heading. The shared .checkin-card/.checkin-inline-field/.checkin-example/
+  .checkin-footer CSS was copied verbatim from checkin-policy-03.html (including the .checkin-
+  timeline-* rules for that page's check-in-window example, which aren't used here and could be
+  trimmed, but were left in for drop-in consistency with the source page's stylesheet).
 
-  Structurally this page is a hybrid of the two templates used elsewhere: the main interaction is a
-  4-option mode grid (.path-check-grid/.path-check-card), ported verbatim from
-  floorsense-setup-path-00.html's radio-card pattern, rather than the single explainer-card pattern
-  used on floorsense-business-hours-04.html/floorsense-checkin-window-06.html/
-  floorsense-idle-release-07.html — because the primary question here ("how do you want to roll
-  this out, or not at all") is a multiple-choice pick, not a single time/duration value. The four
-  modes are: "All desks", "We will provide a list of NSNP enabled desks" (list assumed to be
-  supplied to Smartalock separately — this page doesn't collect the list itself), "We will not be
-  using NSNP" (the default — NSNP ships off unless a client opts in), and "Other" (reveals a
-  free-text textarea via the same .path-subfields show/hide pattern used for Setup Path's "Build
-  Your Own" card).
+  Inserted into the click-through order immediately after floorsense-checkin-window-07.html and
+  before floorsense-prebooking-advance-04.html: back-arrow goes to checkin-policy-03.html,
+  next-arrow/Continue goes to prebooking-advance-05.html (renamed from -04.html to make room for
+  this page taking the 04 slot — see that file's own NOTE). All 6 pre-existing Floorsense pages
+  (00, 01, 02, 03, prebooking [now 05], reservation-length [now 06]) had a new "idle-release"
+  progress-bar segment inserted between "Check-in Policy" and "Prebooking Window" to include this
+  page — the bar still lists modules in fixed 00-06 numeric order regardless of click-through
+  order, per the established convention.
 
-  Whenever the selected mode isn't "none", a second supplementary block appears below the grid: a
-  "Power grace period" diagram reusing the Apple Clock-style time-drum + fixed-start/duration-driven-
-  end timeline geometry built for floorsense-idle-release-07.html (small "Badge swipe" pin fixed at
-  the rail's left edge, enlarged "Power cut" pin driven by the drum, joined by a shaded zone) —
-  conceptually the same shape (an elapsed duration before an automatic action fires), just a
-  shorter range: 5-to-240-minute steps of 5 minutes (vs. idle release's 30-min-to-24h) since a power
-  grace period is realistically a matter of minutes, not hours, defaulting to 60 min (shown as
-  "1h"). Because this page has no single wrapping .checkin-card (unlike the explainer-card pages),
-  a `.timeline-card.standalone` modifier adds its own border/radius so the drum diagram still reads
-  as a self-contained card.
+  State lives at project.floorsense.wizard.idleRelease = { idleHours } — a new top-level key,
+  separate from checkin-policy-03's own project.floorsense.wizard.checkinPolicy (which no longer
+  includes idleHours). markModuleSaved key is 'idle-release'. Reset restores idleHours to 3.
 
-  State lives at project.floorsense.wizard.nsnp = { mode, otherNote, graceMinutes } — a new
-  top-level key. mode defaults to 'none' (off) per the brief ("default its turned off"); graceMinutes
-  defaults to 60 regardless of mode (it's only surfaced in the UI, and only saved as meaningful,
-  once mode !== 'none', but the value itself persists across mode toggles so flipping back and
-  forth doesn't lose a client's chosen grace period). markModuleSaved key is 'nsnp'.
+  RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
+  its own page before Check-in Window, this file itself was renamed from
+  floorsense-idle-release-04.html to floorsense-idle-release-08.html (it now takes the "05" slot,
+  vacated when floorsense-checkin-policy-03.html was renamed to floorsense-checkin-window-07.html
+  and split into two pages — see that file's and the new floorsense-default-reservation-times-
+  03.html's own NOTEs for the full story). This page's back-arrow was updated to
+  floorsense-checkin-window-07.html and its next-arrow to floorsense-prebooking-advance-04.html
+  (renamed from -05.html in the same cascade). The progress bar above gained an eighth segment
+  ("Default Reservation Times") inserted before "Check-in Window"; all references above to
+  "checkin-policy-03.html" and "prebooking-advance-05.html" are historical and now stale filenames
+  — see the current cross-linked pages for the live routing.
 
-  This is currently the last module in the wizard: back-arrow goes to
-  floorsense-reservation-length-08.html (whose own previously-disabled next-arrow/Continue-redirect
-  now point here — see that file's NOTE), and this page's own next-arrow is disabled with no
-  Continue redirect, matching the "last page" pattern used by -08.html before this page existed.
-  The progress bar above gained a tenth "nsnp" segment at the end on all 10 Floorsense pages.
+  FIX: continueBtn saved state and marked the progress segment but never navigated anywhere —
+  added the missing `setTimeout(() => window.location.href = ..., 500)` redirect, matching the
+  pattern used on floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
+  floorsense-checkin-methods-02.html. Same bug found and fixed at the same time on
+  floorsense-default-reservation-times-06.html, floorsense-checkin-window-07.html and
+  floorsense-prebooking-advance-04.html.
 
-  MOST RECENT CHANGE: a new module 10, floorsense-fme-10.html ("Follow Me Ergonomics"), was appended
-  after this page — this is no longer the last module in the wizard. Its previously-disabled
-  next-arrow is now a live link to floorsense-fme-10.html, and the Continue button now redirects
-  there too (same fix pattern applied to floorsense-reservation-length-08.html when this page was
-  added after it). See floorsense-fme-10.html's own NOTE for the new page's full details.
+  MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking was
+  relocated to immediately follow Business Hours (taking over module number 04), which pushed this
+  page from module 06 to 07 — renamed from floorsense-idle-release-06.html. Its next-arrow and
+  Continue redirect now point to floorsense-reservation-length-09.html (was
+  floorsense-prebooking-advance-04.html, which this page used to precede); its back-arrow is
+  unchanged (floorsense-checkin-window-07.html, itself renamed from -05). See
+  floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
+
+  MOST RECENT CHANGE: per a request to restyle this card and diagram to match
+  floorsense-checkin-window-07.html, removed the old static SVG 3-step flowchart
+  (.checkin-example/#irMiddleTitle) and the inline <input id="idleHours"> number field
+  (.checkin-inline-field/-input/-suffix) — all now dead and deleted from the CSS. In their place,
+  the card body now uses a .timeline-card with one Apple Clock-style time drum (30-min steps, 30min
+  to 24h, labelled via formatDurationMinutes) driving a two-pin timeline: a small fixed "Reserved"
+  pin at the rail's left edge (0h, always) and an enlarged "Released" pin (.big-anchor) whose
+  position and label track the drum, joined by a single shaded .timeline-zone. This reuses the
+  fixed-left-anchor + duration-driven-end geometry model from
+  floorsense-default-reservation-times-06.html's duration card (ROW_EDGE_PERCENT=10,
+  endPercentForOffset()) rather than checkin-window-06's offset-from-center model, since idle
+  release has only one real value (an elapsed duration), not two independent clock times needing a
+  shared center reference. buildDrumRows()/createTimeDrum() were ported verbatim from that page.
+  Also widened/centered .checkin-card from max-width:640px to 760px/margin:0 auto and added the
+  page05-style .timeline-card/.timeline-diagram-row/.timeline-track-wrapper/.timeline-node/
+  .anchor-pin/.label-time/.label-desc/.big-anchor/.time-drum/.policy-hint CSS suite plus a
+  single-zone (non-split) reveal animation, all copied and adapted from those two reference pages.
+  The card-desc text no longer references an inline field; it now just points at the drum below.
+  state.idleHours (project.floorsense.wizard.idleRelease.idleHours) is unchanged — this was a
+  styling/graphics change only, not a data-model change — default remains 3.
+
+  MOST RECENT CHANGE: per a request to mark this as an optional function that's off by default,
+  Auto-Release on Idle is now the wizard's second opt-in module (after floorsense-nsnp-10.html).
+  Added an on/off .switch control (ported from smartalock-kiosk-customisation-07.html's toggle
+  pattern) inside .checkin-card-header, labelled "Enable Auto-Release on Idle". The .timeline-card
+  diagram and .checkin-footer are now wrapped in a new #idleBody element that's hidden entirely
+  (display:none, no "show" class) until the switch is turned on — the same show/hide convention
+  used for floorsense-nsnp-10.html's conditional grace-period block, rather than dimming via
+  opacity/pointer-events. State gained a new `enabled` boolean:
+  project.floorsense.wizard.idleRelease = { enabled, idleHours }, defaulting to enabled:false;
+  idleHours still defaults to 3 and is preserved even while disabled, so re-enabling doesn't lose a
+  previously-chosen duration. Reset now also sets enabled back to false. markModuleSaved still fires
+  on Continue regardless of the switch state, consistent with how floorsense-nsnp-10.html marks
+  itself saved regardless of which mode is chosen. The hero eyebrow changed from "Configure" to
+  "Additional Features · Optional" to match the NSNP page, and the progress-bar tooltip across all
+  10 Floorsense pages now reads "Auto-Release on Idle (Optional)". Reservation Length's own
+  section-head copy ("...if that feature is enabled...") already anticipated this and needed no
+  change.
 -->
 
 <script>
@@ -571,11 +608,10 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.floorsense.wizard.nsnp || {};
+  const saved = project.floorsense.wizard.idleRelease || {};
   const state = {
-    mode: saved.mode || 'none',
-    otherNote: saved.otherNote || "",
-    graceMinutes: Number.isFinite(saved.graceMinutes) ? saved.graceMinutes : 60
+    enabled: !!saved.enabled,
+    idleHours: Number.isFinite(saved.idleHours) ? saved.idleHours : 3
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -601,16 +637,11 @@
   });
 
   /* ---------------- fields ---------------- */
-  const grid = document.getElementById('nsnpGrid');
-  const otherSubfields = document.getElementById('otherSubfields');
-  const otherNote = document.getElementById('otherNote');
-  const graceBlock = document.getElementById('graceBlock');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
   function save() {
-    state.otherNote = otherNote.value;
-    project.floorsense.wizard.nsnp = state;
+    project.floorsense.wizard.idleRelease = state;
     saveProject(project);
   }
 
@@ -627,42 +658,49 @@
     if (m === 0) return h + 'h';
     return h + 'h ' + m + 'm';
   }
+  function formatHours(h) {
+    const rounded = Math.round(h * 100) / 100;
+    return rounded === 1 ? '1 hour' : rounded + ' hours';
+  }
 
-  /* ---------------- power grace period diagram: fixed-left-anchor + duration-driven-end geometry,
-     same model used by floorsense-idle-release-07.html/floorsense-default-reservation-times-05.html ---------------- */
+  /* ---------------- diagram: a small fixed "Reserved" pin at the rail's left edge and a big
+     "Released" pin driven by the idle-duration drum, joined by a shaded zone — same
+     fixed-left-anchor + duration-driven-end geometry used by
+     floorsense-default-reservation-times-06.html's duration card, since idle release is a single
+     elapsed-time value rather than two independent clock times. ---------------- */
   const ROW_EDGE_PERCENT = 10;
-  const DURATION_MAX_MINUTES = 240;
+  const DURATION_MAX_MINUTES = 24 * 60;
   function endPercentForOffset(offsetMinutes) {
     const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
     return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
   }
 
-  const graceLabel = document.getElementById('graceLabel');
-  const graceStartNode = document.getElementById('graceStartNode');
-  const graceEndNode = document.getElementById('graceEndNode');
-  const graceEndTime = document.getElementById('graceEndTime');
-  const graceZone = document.getElementById('graceZone');
-  const graceHint = document.getElementById('graceHint');
+  const idleHoursLabel = document.getElementById('idleHoursLabel');
+  const idleStartNode = document.getElementById('idleStartNode');
+  const idleEndNode = document.getElementById('idleEndNode');
+  const idleEndTime = document.getElementById('idleEndTime');
+  const idleZone = document.getElementById('idleZone');
+  const idleHint = document.getElementById('idleHint');
 
-  function updateGraceDiagram() {
-    const graceMinutes = Math.round(state.graceMinutes) || 0;
-    const endPercent = endPercentForOffset(graceMinutes);
-    graceStartNode.style.left = ROW_EDGE_PERCENT + '%';
-    graceEndNode.style.left = endPercent + '%';
-    graceZone.style.left = ROW_EDGE_PERCENT + '%';
-    graceZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
-    const durLabel = formatDurationMinutes(graceMinutes);
-    graceLabel.textContent = durLabel;
-    graceEndTime.textContent = durLabel;
-    graceHint.textContent = 'If no valid badge swipe is detected within ' + durLabel +
-      ' of a desk becoming occupied, power to its outlets is cut.';
+  function updateDiagram() {
+    const idleMinutes = Math.round((parseFloat(state.idleHours) || 0) * 60);
+    const endPercent = endPercentForOffset(idleMinutes);
+    idleStartNode.style.left = ROW_EDGE_PERCENT + '%';
+    idleEndNode.style.left = endPercent + '%';
+    idleZone.style.left = ROW_EDGE_PERCENT + '%';
+    idleZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    const durLabel = formatDurationMinutes(idleMinutes);
+    idleHoursLabel.textContent = durLabel;
+    idleEndTime.textContent = durLabel;
+    idleHint.textContent = 'If a desk sits unclaimed or unused for ' + formatHours(state.idleHours) +
+      ', it\'s automatically released back to general availability — this can happen at any time of day, on any day.';
   }
 
   /* ---------------- Apple Clock-style time drum, ported from
-     floorsense-idle-release-07.html/floorsense-default-reservation-times-05.html ---------------- */
+     floorsense-default-reservation-times-06.html/floorsense-checkin-window-07.html ---------------- */
   const DRUM_ROW_H = 30;
-  const graceDrumValues = [];
-  for (let m = 5; m <= 240; m += 5) graceDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
+  const idleDrumValues = [];
+  for (let m = 30; m <= 24 * 60; m += 30) idleDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
 
   function buildDrumRows(scrollEl, values) {
     let html = '<div class="time-drum-pad"></div>';
@@ -733,47 +771,41 @@
     };
   }
 
-  const graceDrum = createTimeDrum(document.getElementById('graceDrumScroll'), graceDrumValues, {
-    initialMinutes: state.graceMinutes,
+  const idleDrum = createTimeDrum(document.getElementById('idleDrumScroll'), idleDrumValues, {
+    initialMinutes: Math.round((parseFloat(state.idleHours) || 0) * 60),
     onChange: (minutes) => {
-      state.graceMinutes = minutes;
-      updateGraceDiagram();
+      state.idleHours = minutes / 60;
+      updateDiagram();
       queueSave();
     }
   });
 
-  /* ---------------- mode grid ---------------- */
-  function setModeCards(mode) {
-    grid.querySelectorAll('.path-check-card').forEach(card => {
-      const isMatch = card.getAttribute('data-mode') === mode;
-      card.classList.toggle('checked', isMatch);
-      card.querySelector('input[type="radio"]').checked = isMatch;
-    });
-    otherSubfields.classList.toggle('show', mode === 'other');
-    const showGrace = mode !== 'none';
-    graceBlock.classList.toggle('show', showGrace);
-    // Re-sync the drum's scroll position whenever the block becomes visible: while
-    // display:none, scrollTop is clamped to 0 by the browser (the element has no layout box), so
-    // any position set earlier while hidden is lost and must be re-applied now that it can scroll.
-    if (showGrace) graceDrum.setMinutes(state.graceMinutes);
+  /* ---------------- on/off switch — this feature is optional and off by default; the diagram is
+     hidden entirely (not just dimmed) until switched on, same convention used for
+     floorsense-nsnp-10.html's conditional grace-period block. ---------------- */
+  const idleEnableSwitch = document.getElementById('idleEnableSwitch');
+  const idleBody = document.getElementById('idleBody');
+
+  function applyEnabledState() {
+    idleEnableSwitch.classList.toggle('on', state.enabled);
+    idleEnableSwitch.setAttribute('aria-checked', String(state.enabled));
+    idleBody.classList.toggle('show', state.enabled);
+    // Re-sync the drum's scroll position whenever the body becomes visible: while display:none,
+    // scrollTop is clamped to 0 by the browser (no layout box), so a position set earlier while
+    // hidden is lost and must be re-applied now that it can actually scroll.
+    if (state.enabled) idleDrum.setMinutes(Math.round((parseFloat(state.idleHours) || 0) * 60));
   }
 
-  grid.querySelectorAll('.path-check-card').forEach(card => {
-    const mode = card.getAttribute('data-mode');
-    card.querySelector('input[type="radio"]').addEventListener('change', () => {
-      state.mode = mode;
-      setModeCards(mode);
-      queueSave();
-    });
+  idleEnableSwitch.addEventListener('click', () => {
+    state.enabled = !state.enabled;
+    applyEnabledState();
+    queueSave();
   });
 
-  otherNote.addEventListener('input', queueSave);
-
   function applyState() {
-    setModeCards(state.mode);
-    otherNote.value = state.otherNote;
-    graceDrum.setMinutes(state.graceMinutes);
-    updateGraceDiagram();
+    idleDrum.setMinutes(Math.round((parseFloat(state.idleHours) || 0) * 60));
+    updateDiagram();
+    applyEnabledState();
   }
   applyState();
 
@@ -797,19 +829,18 @@
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.mode = 'none';
-    state.otherNote = "";
-    state.graceMinutes = 60;
+    state.enabled = false;
+    state.idleHours = 3;
     applyState();
     queueSave();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('nsnp');
+    markModuleSaved('idle-release');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-fme-10.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-reservation-length-09.html'; }, 500);
   });
 })();
 </script>

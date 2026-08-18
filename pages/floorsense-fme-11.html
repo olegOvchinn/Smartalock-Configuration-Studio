@@ -123,7 +123,7 @@
   .section-head p:last-child { margin-bottom: 0; }
 
   /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
-     floorsense-nsnp-09.html ---------- */
+     floorsense-nsnp-10.html ---------- */
   .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
   .path-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
@@ -221,39 +221,43 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk &amp; User Groups</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-04.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-06.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-07.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
-        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-09.html">
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-10.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
-        <a class="progress-seg current" data-module="fme" href="floorsense-fme-10.html">
+        <a class="progress-seg current" data-module="fme" href="floorsense-fme-11.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-11.html">
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-12.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
         </a>
@@ -318,10 +322,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-nsnp-09.html">
+        <a class="page-nav-btn" href="floorsense-nsnp-10.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-anti-desk-hogging-11.html">
+        <a class="page-nav-btn next" href="floorsense-anti-desk-hogging-12.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -345,34 +349,34 @@
 
 <!--
   NOTE for Oleg: module 10 of the Floorsense wizard family, new — appended after
-  floorsense-nsnp-09.html per a request to add "Follow Me Ergonomics (FME)": lets end users save and
+  floorsense-nsnp-10.html per a request to add "Follow Me Ergonomics (FME)": lets end users save and
   apply a custom sit-stand desk height via the FS mobile app. This is the wizard's third optional
   module (after Auto-Release on Idle and NSNP), so it follows the same "Additional Features ·
   Optional" hero eyebrow and "(Optional)" progress-bar tooltip convention.
 
-  Structurally this is a simplified version of floorsense-nsnp-09.html: the same 3-column
+  Structurally this is a simplified version of floorsense-nsnp-10.html: the same 3-column
   .path-check-grid/.path-check-card radio pattern (ported from floorsense-setup-path-00.html), but
   with only 3 modes instead of 4 — "All sit-stand desks", "We will provide a list of desk types"
   (assumed supplied to Smartalock separately, same as NSNP's own list option — this page doesn't
   collect the list itself), and "We will not enable mobile app FME" (the default — off unless a
   client opts in). Unlike NSNP, there's no "Other" option and no supplementary numeric setting (no
   equivalent of NSNP's grace-period drum) since the brief didn't call for one, so the
-  .path-subfields/textarea and .timeline-card/.time-drum CSS suites used on floorsense-nsnp-09.html
+  .path-subfields/textarea and .timeline-card/.time-drum CSS suites used on floorsense-nsnp-10.html
   were left out entirely here rather than carried over unused.
 
   State lives at project.floorsense.wizard.fme = { mode } — a new top-level key. mode defaults to
   'none' (off), matching NSNP's own default-off convention. markModuleSaved key is 'fme'.
 
-  This is currently the last module in the wizard: back-arrow goes to floorsense-nsnp-09.html
+  This is currently the last module in the wizard: back-arrow goes to floorsense-nsnp-10.html
   (whose own previously-disabled next-arrow/Continue-redirect now point here — see that file's
   NOTE), and this page's own next-arrow is disabled with no Continue redirect. The progress bar
   above gained an eleventh "fme" segment at the end on all 11 Floorsense pages.
 
-  MOST RECENT CHANGE: a new module 11, floorsense-anti-desk-hogging-11.html ("Anti Desk Hogging"),
+  MOST RECENT CHANGE: a new module 11, floorsense-anti-desk-hogging-12.html ("Anti Desk Hogging"),
   was appended after this page — this is no longer the last module in the wizard. Its
-  previously-disabled next-arrow is now a live link to floorsense-anti-desk-hogging-11.html, and the
-  Continue button now redirects there too (same fix pattern applied to floorsense-nsnp-09.html when
-  this page was added after it). See floorsense-anti-desk-hogging-11.html's own NOTE for the new
+  previously-disabled next-arrow is now a live link to floorsense-anti-desk-hogging-12.html, and the
+  Continue button now redirects there too (same fix pattern applied to floorsense-nsnp-10.html when
+  this page was added after it). See floorsense-anti-desk-hogging-12.html's own NOTE for the new
   page's full details.
 -->
 
@@ -481,7 +485,7 @@
     markModuleSaved('fme');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-anti-desk-hogging-11.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-anti-desk-hogging-12.html'; }, 500);
   });
 })();
 </script>
