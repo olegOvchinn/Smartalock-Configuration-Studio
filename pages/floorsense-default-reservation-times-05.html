@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Default Reservation Times — Floorsense Configuration Studio (Template)</title>
+<title>Custom Reservation Times — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -420,8 +420,8 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Default Reservation Times</h1>
-        <p class="sub">Choose how a reservation's end time is worked out, and set the default start time.</p>
+        <h1 class="hero-title">Custom Reservation Times</h1>
+        <p class="sub">Choose how a reservation's end time is worked out, and set the custom start time.</p>
       </div>
     </div>
   </div>
@@ -446,10 +446,10 @@
               </p>
               <div class="timeline-card nested">
                 <div class="timeline-header">
-                  <p class="timeline-subtitle">Default start time: <strong id="card1StartLabel">8:30 AM</strong></p>
+                  <p class="timeline-subtitle">Custom start time: <strong id="card1StartLabel">8:30 AM</strong></p>
                 </div>
                 <div class="timeline-diagram-row">
-                  <div class="time-drum" id="card1StartDrum" tabindex="0" role="slider" aria-label="Default start time" aria-valuemin="0" aria-valuemax="1410">
+                  <div class="time-drum" id="card1StartDrum" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
                     <div class="time-drum-window"></div>
                     <div class="time-drum-scroll" id="card1StartDrumScroll"></div>
                   </div>
@@ -458,7 +458,7 @@
                     <div class="timeline-node center-node" id="card1StartNode">
                       <div class="anchor-pin"></div>
                       <div class="label-time primary" id="card1StartTime">8:30 AM</div>
-                      <div class="label-desc">Default start</div>
+                      <div class="label-desc">Custom start</div>
                     </div>
                   </div>
                 </div>
@@ -508,7 +508,7 @@
                       </div>
                     </div>
                   </div>
-                  <p class="policy-hint" id="durationHint">A booking made without a chosen time lasts 9h, starting from the default start time above.</p>
+                  <p class="policy-hint" id="durationHint">A booking made without a chosen time lasts 9h, starting from the custom start time above.</p>
                 </div>
               </div>
             </label>
@@ -808,6 +808,20 @@
   floorsense-prebooking-advance-03.html (was floorsense-business-hours-04.html); its next-arrow is
   unchanged (floorsense-checkin-window-06.html, itself renamed from -05). See
   floorsense-prebooking-advance-03.html's own NOTE for the full reorder.
+
+  MOST RECENT CHANGE: per a follow-up request ("let's use word 'custom' instead of 'default'"),
+  every user-facing occurrence of "default" on this page's own copy was reworded to "custom": the
+  browser <title>, the hero title ("Custom Reservation Times"), the sub line, card 1's "Custom start
+  time"/"Custom start" timeline labels and drum aria-label, and the duration card's hint sentence
+  ("...starting from the custom start time above.", both the static HTML and the JS string
+  updateDurationDiagram() overwrites it with). This was scoped to page copy only, per the request —
+  the progress-bar tooltip ("Default Reservation Times", shown on every page's nav, including this
+  one's own), the file name, the data-module key ("default-reservation-times"), and the state shape
+  (project.floorsense.wizard.defaultReservationTimes = { defaultStartTime, defaultEndTime,
+  defaultDurationHours }) are all unchanged — so this page's own nav segment still reads "Default
+  Reservation Times" even though its hero now says "Custom Reservation Times". All the historical
+  NOTE paragraphs above still say "default" throughout since they document past design decisions,
+  not current copy.
 -->
 
 <script>
@@ -983,7 +997,7 @@
     durationEndTime.textContent = formatMinutesAs12Hour(startMinutes + durationMinutes);
     durationLabel.textContent = formatDurationMinutes(durationMinutes);
     durationHint.textContent = 'A booking made without a chosen time lasts ' + formatDurationMinutes(durationMinutes) +
-      ', starting from the default start time above.';
+      ', starting from the custom start time above.';
   }
 
   function updateFixedEndDiagram() {
