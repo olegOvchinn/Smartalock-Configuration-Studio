@@ -262,6 +262,10 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-09.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">NSNP (Optional)</span>
+        </a>
         </nav>
       </div>
     </div>
@@ -348,9 +352,9 @@
         <a class="page-nav-btn" href="floorsense-idle-release-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <span class="page-nav-btn disabled">
+        <a class="page-nav-btn next" href="floorsense-nsnp-09.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </span>
+        </a>
       </div>
 
     </div>
@@ -413,6 +417,13 @@
   floorsense-idle-release-07.html (was floorsense-prebooking-advance-03.html, itself renamed from
   -07.html) since Auto-Release on Idle now immediately precedes it instead of Prebooking. See
   floorsense-prebooking-advance-03.html's own NOTE for the full reorder.
+
+  MOST RECENT CHANGE: a new module 09, floorsense-nsnp-09.html ("No Swipe No Power"), was appended
+  after this page — this is no longer the last module in the wizard. Its previously-disabled
+  next-arrow is now a live link to floorsense-nsnp-09.html, and the Continue button's missing
+  redirect (noted above as a fix applied to every other page but skipped here since there was
+  nothing to redirect to) now points there too. The progress bar above gained a tenth "nsnp"
+  segment at the end. See floorsense-nsnp-09.html's own NOTE for the new page's full details.
 -->
 
 <script>
@@ -564,6 +575,7 @@
     markModuleSaved('reservation-length');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-nsnp-09.html'; }, 500);
   });
 })();
 </script>
