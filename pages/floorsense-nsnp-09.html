@@ -352,6 +352,10 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
+        <a class="progress-seg" data-module="fme" href="floorsense-fme-10.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
+        </a>
         </nav>
       </div>
     </div>
@@ -462,9 +466,9 @@
         <a class="page-nav-btn" href="floorsense-reservation-length-08.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <span class="page-nav-btn disabled">
+        <a class="page-nav-btn next" href="floorsense-fme-10.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </span>
+        </a>
       </div>
 
     </div>
@@ -527,6 +531,12 @@
   now point here — see that file's NOTE), and this page's own next-arrow is disabled with no
   Continue redirect, matching the "last page" pattern used by -08.html before this page existed.
   The progress bar above gained a tenth "nsnp" segment at the end on all 10 Floorsense pages.
+
+  MOST RECENT CHANGE: a new module 10, floorsense-fme-10.html ("Follow Me Ergonomics"), was appended
+  after this page — this is no longer the last module in the wizard. Its previously-disabled
+  next-arrow is now a live link to floorsense-fme-10.html, and the Continue button now redirects
+  there too (same fix pattern applied to floorsense-reservation-length-08.html when this page was
+  added after it). See floorsense-fme-10.html's own NOTE for the new page's full details.
 -->
 
 <script>
@@ -795,6 +805,7 @@
     markModuleSaved('nsnp');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-fme-10.html'; }, 500);
   });
 })();
 </script>

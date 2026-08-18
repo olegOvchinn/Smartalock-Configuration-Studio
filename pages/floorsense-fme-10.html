@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prebooking — How Far In Advance — Floorsense Configuration Studio (Template)</title>
+<title>Follow Me Ergonomics (FME) — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -122,29 +122,32 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
-  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
-  @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
-  .policy-grid.single { grid-template-columns: 1fr; }
-  .policy-card {
+  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
+     floorsense-nsnp-09.html ---------- */
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  .path-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px;
+    padding: 18px 20px; transition: border-color .15s, background .15s;
   }
-  .policy-row { display: flex; align-items: flex-start; gap: 14px; }
-  .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
-  .policy-card-body { min-width: 0; flex: 1; }
-  .policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
-  .policy-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
-
-  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
-  .minute-input {
-    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
-    text-align: center; color: var(--ink);
+  .path-check-card:hover { border-color: var(--accent); }
+  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .path-tick {
+    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
   }
-  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
-  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
+  .path-check-card.checked .path-tick { border-color: var(--accent); }
+  .path-tick::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+    opacity: 0; transition: opacity .15s;
+  }
+  .path-check-card.checked .path-tick::after { opacity: 1; }
+  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .path-card-body { min-width: 0; flex: 1; }
+  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -218,7 +221,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
         </a>
@@ -246,7 +249,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-10.html">
+        <a class="progress-seg current" data-module="fme" href="floorsense-fme-10.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
@@ -256,9 +259,9 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Prebooking — How Far In Advance</h1>
-        <p class="sub">Set how many days ahead of time a user can reserve a desk.</p>
+        <span class="eyebrow">Additional Features · Optional</span>
+        <h1 class="hero-title">Follow Me Ergonomics</h1>
+        <p class="sub">Let end users save and apply their custom sit-stand desk height via the FS mobile app.</p>
       </div>
     </div>
   </div>
@@ -268,33 +271,55 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Prebooking Window</h2>
-        <p>If prebooking desks is allowed via the App or a kiosk, how far out can a user make a prebooking? Some customers restrict this to up to 3 days ahead, while others allow up to 9 days in advance.</p>
+        <h2 class="section-title">Would you like to allow Follow Me Ergonomics (FME)?</h2>
+        <p>FME allows end users to save and apply a custom sit and stand desk height via the FS mobile app. Choose how you'd like to roll this out, or skip it if you won't be using it.</p>
       </div>
 
-      <div class="policy-grid single">
-        <div class="policy-card">
-          <div class="policy-row">
-            <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <div class="policy-card-body">
-              <h3 class="policy-title">Prebooking window</h3>
-              <p class="policy-desc">How many days in advance can a user make a prebooking? The default is 8 days; the maximum allowed is 15 days.</p>
-              <div class="minute-field">
-                <input type="number" min="1" max="15" step="1" value="8" class="minute-input" id="prebookingAdvanceDays" aria-label="Prebooking window, days in advance">
-                <span class="minute-suffix">days in advance (max 15)</span>
-              </div>
+      <div class="path-check-grid" id="fmeGrid">
+        <div class="path-check-card" data-mode="all">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="all">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">All sit-stand desks</h3>
+              <p class="path-desc">Every desk is a sit-stand desk, so FME can be used anywhere.</p>
             </div>
-          </div>
+          </label>
+        </div>
+
+        <div class="path-check-card" data-mode="list">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="list">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">We will provide a list of desk types</h3>
+              <p class="path-desc">Not all desks are sit-stand — we'll send Smartalock a list of which desk types support FME.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="path-check-card" data-mode="none">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="none">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">We will not enable mobile app FME</h3>
+              <p class="path-desc">Skip this feature — end users won't be able to save or apply a custom sit-stand height via the mobile app.</p>
+            </div>
+          </label>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn" href="floorsense-nsnp-09.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-business-hours-04.html">
+        <span class="page-nav-btn disabled">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </a>
+        </span>
       </div>
 
     </div>
@@ -315,61 +340,29 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 06 of the Floorsense wizard family (renamed twice — see below) — follows
-  floorsense-idle-release-07.html and continues to floorsense-reservation-length-08.html. This page
-  was split out of the original Check-in Policy page per a later request, so it only covers the
-  prebooking advance-window field (default 8 days, clamped to a max of 15 in both the input's max
-  attribute and in JS on input/blur). State lives at project.floorsense.wizard.prebookingAdvance =
-  { prebookingAdvanceDays } in the same "configurationProject" localStorage key as the other
-  Floorsense modules.
+  NOTE for Oleg: module 10 of the Floorsense wizard family, new — appended after
+  floorsense-nsnp-09.html per a request to add "Follow Me Ergonomics (FME)": lets end users save and
+  apply a custom sit-stand desk height via the FS mobile app. This is the wizard's third optional
+  module (after Auto-Release on Idle and NSNP), so it follows the same "Additional Features ·
+  Optional" hero eyebrow and "(Optional)" progress-bar tooltip convention.
 
-  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-07.html) was
-  inserted into the wizard immediately before this one, so this file was renamed from
-  floorsense-prebooking-advance-03.html to -05.html to make room (a straight filesystem rename —
-  the field ids, state shape, and everything else below are unchanged). This page's back-arrow
-  changed from floorsense-checkin-window-06.html to floorsense-idle-release-07.html accordingly,
-  and its progress bar gained a 7th "idle-release" segment between "Check-in Policy" and
-  "Prebooking Window".
+  Structurally this is a simplified version of floorsense-nsnp-09.html: the same 3-column
+  .path-check-grid/.path-check-card radio pattern (ported from floorsense-setup-path-00.html), but
+  with only 3 modes instead of 4 — "All sit-stand desks", "We will provide a list of desk types"
+  (assumed supplied to Smartalock separately, same as NSNP's own list option — this page doesn't
+  collect the list itself), and "We will not enable mobile app FME" (the default — off unless a
+  client opts in). Unlike NSNP, there's no "Other" option and no supplementary numeric setting (no
+  equivalent of NSNP's grace-period drum) since the brief didn't call for one, so the
+  .path-subfields/textarea and .timeline-card/.time-drum CSS suites used on floorsense-nsnp-09.html
+  were left out entirely here rather than carried over unused.
 
-  RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
-  its own page before Check-in Window, this file was renamed AGAIN, from
-  floorsense-prebooking-advance-05.html to -06.html, to make room for
-  floorsense-default-reservation-times-05.html taking the "03" slot and pushing everything after
-  it up by one. This page's back-arrow (floorsense-idle-release-07.html, itself renamed from -04)
-  and next-arrow (floorsense-reservation-length-08.html, renamed from -06) were both updated
-  accordingly; the field ids and state shape are unchanged. The progress bar above gained an
-  eighth segment ("Default Reservation Times") inserted before "Check-in Window" — see
-  floorsense-checkin-window-06.html's and floorsense-default-reservation-times-05.html's own NOTEs
-  for the full story of that split.
+  State lives at project.floorsense.wizard.fme = { mode } — a new top-level key. mode defaults to
+  'none' (off), matching NSNP's own default-off convention. markModuleSaved key is 'fme'.
 
-  FIX: continueBtn saved state and marked the progress segment but never navigated anywhere —
-  added the missing `setTimeout(() => window.location.href = ..., 500)` redirect, matching the
-  pattern used on floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
-  floorsense-checkin-methods-02.html. Same bug found and fixed at the same time on
-  floorsense-default-reservation-times-05.html, floorsense-checkin-window-06.html and
-  floorsense-idle-release-07.html.
-
-  MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), this page
-  (previously module 07, immediately after Auto-Release on Idle) was relocated to immediately follow
-  Business Hours (module 03), taking over module number 04 — the number and click-slot Default
-  Reservation Times previously held. Default Reservation Times, Check-in Window and Auto-Release on
-  Idle all shifted up one number in turn (05/06/07 respectively) to close the gap this page left
-  behind; Reservation Length stayed 08 since it was already last. This page's own back-arrow now
-  points to floorsense-business-hours-04.html (was floorsense-idle-release-07.html) and its
-  next-arrow/Continue-redirect now point to floorsense-default-reservation-times-05.html (was
-  floorsense-reservation-length-08.html) — both superseding the paragraphs above, which describe an
-  earlier renumbering and are kept only for history. Only navigation changed; the field ids, state
-  shape (project.floorsense.wizard.prebookingAdvance), and progress-bar module order elsewhere were
-  otherwise just filename-renumbered, not restructured.
-
-  MOST RECENT CHANGE: per a further follow-up request ("put page 04 after 02"), this page swapped
-  numbers with Business Hours — this page is now module 03 (renamed from
-  floorsense-prebooking-advance-04.html), immediately after Check-in Methods/Setup Path in both the
-  numeric progress-bar order and the click-through chain, and Business Hours became module 04,
-  superseding the paragraph above. This page's back-arrow now points to floorsense-setup-path-00.html
-  (was floorsense-business-hours-04.html) and its next-arrow/Continue redirect now point to
-  floorsense-business-hours-04.html (was floorsense-default-reservation-times-05.html). Nothing about
-  this page's own content or state changed, only its number and neighbors.
+  This is currently the last module in the wizard: back-arrow goes to floorsense-nsnp-09.html
+  (whose own previously-disabled next-arrow/Continue-redirect now point here — see that file's
+  NOTE), and this page's own next-arrow is disabled with no Continue redirect. The progress bar
+  above gained an eleventh "fme" segment at the end on all 11 Floorsense pages.
 -->
 
 <script>
@@ -400,9 +393,9 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.floorsense.wizard.prebookingAdvance || {};
+  const saved = project.floorsense.wizard.fme || {};
   const state = {
-    prebookingAdvanceDays: Number.isFinite(saved.prebookingAdvanceDays) ? saved.prebookingAdvanceDays : 8
+    mode: saved.mode || 'none'
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -428,23 +421,12 @@
   });
 
   /* ---------------- fields ---------------- */
-  const prebookingAdvanceDays = document.getElementById('prebookingAdvanceDays');
+  const grid = document.getElementById('fmeGrid');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
-  const PREBOOKING_MAX_DAYS = 15;
-
-  function clampPrebookingDays() {
-    let value = parseInt(prebookingAdvanceDays.value, 10);
-    if (!Number.isFinite(value) || value < 1) value = 1;
-    if (value > PREBOOKING_MAX_DAYS) value = PREBOOKING_MAX_DAYS;
-    prebookingAdvanceDays.value = value;
-    return value;
-  }
-
   function save() {
-    state.prebookingAdvanceDays = clampPrebookingDays();
-    project.floorsense.wizard.prebookingAdvance = state;
+    project.floorsense.wizard.fme = state;
     saveProject(project);
   }
 
@@ -454,28 +436,40 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
+  /* ---------------- mode grid ---------------- */
+  function setModeCards(mode) {
+    grid.querySelectorAll('.path-check-card').forEach(card => {
+      const isMatch = card.getAttribute('data-mode') === mode;
+      card.classList.toggle('checked', isMatch);
+      card.querySelector('input[type="radio"]').checked = isMatch;
+    });
+  }
+
+  grid.querySelectorAll('.path-check-card').forEach(card => {
+    const mode = card.getAttribute('data-mode');
+    card.querySelector('input[type="radio"]').addEventListener('change', () => {
+      state.mode = mode;
+      setModeCards(mode);
+      queueSave();
+    });
+  });
+
   function applyState() {
-    prebookingAdvanceDays.value = state.prebookingAdvanceDays;
+    setModeCards(state.mode);
   }
   applyState();
 
-  prebookingAdvanceDays.addEventListener('input', () => {
-    clampPrebookingDays();
-    queueSave();
-  });
-
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.prebookingAdvanceDays = 8;
+    state.mode = 'none';
     applyState();
     queueSave();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('prebooking-advance');
+    markModuleSaved('fme');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-business-hours-04.html'; }, 500);
   });
 })();
 </script>
