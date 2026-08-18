@@ -122,9 +122,11 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- explainer card (icon+desc, live example, footer) — shared pattern, first introduced on floorsense-checkin-window-06.html ---------- */
+  /* ---------- explainer card (icon+desc, live diagram, footer) — shared pattern, first introduced
+     on floorsense-checkin-window-06.html; widened from 640px to 760px and centered to match that
+     page's own card sizing ---------- */
   .checkin-card {
-    max-width: 640px; background: var(--paper); border: 1.5px solid var(--line);
+    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
   .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
@@ -134,23 +136,111 @@
   }
   .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
-  .checkin-inline-field {
-    display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
-    background: var(--accent-wash); border-radius: 8px; padding: 2px 4px 2px 8px; margin: 0 1px;
-  }
-  .checkin-inline-input {
-    width: 42px; border: none; background: transparent; font-family: var(--font-text);
-    font-size: 14.76px; font-weight: 700; color: var(--accent-deep); text-align: right; padding: 2px 0;
-  }
-  .checkin-inline-input:focus { outline: none; }
-  .checkin-inline-suffix { font-size: 13.5px; font-weight: 600; color: var(--accent-deep); padding-right: 4px; }
 
-  .checkin-example { background: var(--paper-soft); padding: 20px 22px 24px; }
-  .checkin-example-label {
-    font-family: var(--font-text); font-size: 9.43px; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--accent-deep); display: block; text-align: center; margin-bottom: 6px;
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  .timeline-header { margin-bottom: 4px; }
+  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
+  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+
+  /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, ported from
+     floorsense-checkin-window-06.html's earliest/latest drums — but idle release has only one real
+     value (how long a desk may sit idle before release), not two independent times, so there's a
+     single drum here instead of one on each side. Neither pin is an absolute clock time (idle
+     release isn't tied to any time of day), so both label-times show elapsed hours instead. ---------- */
+  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
+  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
+  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+
+  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node .anchor-pin {
+    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   }
-  .checkin-example svg { width: 100%; height: auto; display: block; }
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
+    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+  }
+  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+  /* ---------- "Released" is the value the drum actually controls, so it gets the enlarged pin/
+     label treatment (same 66px sizing as the other reservation-time diagrams' emphasized pin),
+     positioned via JS rather than fixed at center since "Reserved" sits at a fixed left-edge spot
+     on the same rail. ---------- */
+  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
+  .big-anchor .label-time.primary {
+    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
+
+  /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
+     from floorsense-checkin-window-06.html, including its white/3D body treatment. ---------- */
+  .time-drum {
+    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
+  }
+  .time-drum::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
+    background: linear-gradient(to bottom,
+      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
+      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
+  }
+  .time-drum-window {
+    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
+    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
+    background: rgba(16,42,67,0.03);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
+  }
+  .time-drum-scroll {
+    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
+    border-radius: 12px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+  }
+  .time-drum-scroll::-webkit-scrollbar { display: none; }
+  .time-drum-pad { height: 60px; }
+  .time-drum-row {
+    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
+  }
+  .time-drum-row.selected {
+    font-size: 15px; font-weight: 700; color: #102A43;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
+     scaleX are animated on elements that don't rely on `transform` for their own centering, since
+     .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
+     (same constraint as floorsense-checkin-window-06.html's diagram). ---------- */
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-pop-handle {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .timeline-card.animate-in .anchor-pin {
+    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .timeline-card.animate-in .label-time,
+  .timeline-card.animate-in .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .15s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
+  }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
   .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
@@ -275,47 +365,38 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
           </div>
           <p class="checkin-card-desc">
-            If a desk sits unclaimed or unused for
-            <span class="checkin-inline-field">
-              <input type="number" min="0" step="0.5" value="3" class="checkin-inline-input" id="idleHours" aria-label="Auto-release on idle, hours">
-              <span class="checkin-inline-suffix">hours</span>
-            </span>
-            it's automatically released back to general availability.
+            If a desk sits unclaimed or unused for long enough, it's automatically released back to
+            general availability. Use the drum below to set how long a desk may sit idle before that
+            happens.
           </p>
         </div>
 
-        <div class="checkin-example">
-          <span class="checkin-example-label">Example</span>
-          <svg viewBox="0 0 900 90" role="img">
-            <title>Auto-release on idle, independent of the day's schedule</title>
-            <desc>A three-step flow: a desk is reserved with no check-in yet, three hours pass with no activity (which can happen at any time on any day, not tied to any particular reservation window), then the desk is released back to general use.</desc>
-            <style>
-              .ir-lbl { font-family: 'Inter', -apple-system, sans-serif; }
-              .ir-title { font-size: 13px; font-weight: 600; fill: #1D1D1F; }
-              .ir-sub { font-size: 10.5px; fill: #6E6E73; }
-            </style>
-            <rect x="30" y="15" width="230" height="58" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
-            <text x="145" y="40" class="ir-lbl ir-title" text-anchor="middle">Desk reserved</text>
-            <text x="145" y="58" class="ir-lbl ir-sub" text-anchor="middle">no check-in yet</text>
-
-            <path d="M266 44 L300 44" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#irArrow)"/>
-
-            <rect x="306" y="15" width="290" height="58" rx="12" fill="#E6F7ED" stroke="#1FAA59" stroke-width="1.5"/>
-            <text x="451" y="40" class="ir-lbl ir-title" text-anchor="middle" fill="#178A48" id="irMiddleTitle">3 hours pass, idle</text>
-            <text x="451" y="58" class="ir-lbl ir-sub" text-anchor="middle" fill="#178A48">can happen any time, any day</text>
-
-            <path d="M602 44 L636 44" stroke="#AEAEB2" stroke-width="1.5" marker-end="url(#irArrow)"/>
-
-            <rect x="642" y="15" width="228" height="58" rx="12" fill="#F5F5F7" stroke="#D2D2D7" stroke-width="1.5"/>
-            <text x="756" y="40" class="ir-lbl ir-title" text-anchor="middle">Desk released</text>
-            <text x="756" y="58" class="ir-lbl ir-sub" text-anchor="middle">back to general use</text>
-
-            <defs>
-              <marker id="irArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-                <path d="M0,0 L8,4 L0,8 Z" fill="#AEAEB2"/>
-              </marker>
-            </defs>
-          </svg>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <p class="timeline-subtitle">Auto-release after: <strong id="idleHoursLabel">3h</strong></p>
+          </div>
+          <div class="timeline-diagram-row">
+            <div class="time-drum" id="idleDrum" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
+              <div class="time-drum-window"></div>
+              <div class="time-drum-scroll" id="idleDrumScroll"></div>
+            </div>
+            <div class="timeline-track-wrapper">
+              <div class="timeline-rail">
+                <div class="timeline-zone" id="idleZone"></div>
+              </div>
+              <div class="timeline-node" id="idleStartNode">
+                <div class="anchor-pin"></div>
+                <div class="label-time">0h</div>
+                <div class="label-desc">Reserved</div>
+              </div>
+              <div class="timeline-node big-anchor" id="idleEndNode">
+                <div class="anchor-pin"></div>
+                <div class="label-time primary" id="idleEndTime">3h</div>
+                <div class="label-desc">Released</div>
+              </div>
+            </div>
+          </div>
+          <p class="policy-hint" id="idleHint">If a desk sits unclaimed or unused for 3 hours, it's automatically released back to general availability — this can happen at any time of day, on any day.</p>
         </div>
 
         <div class="checkin-footer">
@@ -408,6 +489,27 @@
   floorsense-prebooking-advance-03.html, which this page used to precede); its back-arrow is
   unchanged (floorsense-checkin-window-06.html, itself renamed from -05). See
   floorsense-prebooking-advance-03.html's own NOTE for the full reorder.
+
+  MOST RECENT CHANGE: per a request to restyle this card and diagram to match
+  floorsense-checkin-window-06.html, removed the old static SVG 3-step flowchart
+  (.checkin-example/#irMiddleTitle) and the inline <input id="idleHours"> number field
+  (.checkin-inline-field/-input/-suffix) — all now dead and deleted from the CSS. In their place,
+  the card body now uses a .timeline-card with one Apple Clock-style time drum (30-min steps, 30min
+  to 24h, labelled via formatDurationMinutes) driving a two-pin timeline: a small fixed "Reserved"
+  pin at the rail's left edge (0h, always) and an enlarged "Released" pin (.big-anchor) whose
+  position and label track the drum, joined by a single shaded .timeline-zone. This reuses the
+  fixed-left-anchor + duration-driven-end geometry model from
+  floorsense-default-reservation-times-05.html's duration card (ROW_EDGE_PERCENT=10,
+  endPercentForOffset()) rather than checkin-window-06's offset-from-center model, since idle
+  release has only one real value (an elapsed duration), not two independent clock times needing a
+  shared center reference. buildDrumRows()/createTimeDrum() were ported verbatim from that page.
+  Also widened/centered .checkin-card from max-width:640px to 760px/margin:0 auto and added the
+  page05-style .timeline-card/.timeline-diagram-row/.timeline-track-wrapper/.timeline-node/
+  .anchor-pin/.label-time/.label-desc/.big-anchor/.time-drum/.policy-hint CSS suite plus a
+  single-zone (non-split) reveal animation, all copied and adapted from those two reference pages.
+  The card-desc text no longer references an inline field; it now just points at the drum below.
+  state.idleHours (project.floorsense.wizard.idleRelease.idleHours) is unchanged — this was a
+  styling/graphics change only, not a data-model change — default remains 3.
 -->
 
 <script>
@@ -466,13 +568,10 @@
   });
 
   /* ---------------- fields ---------------- */
-  const idleHours = document.getElementById('idleHours');
-  const irMiddleTitle = document.getElementById('irMiddleTitle');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
   function save() {
-    state.idleHours = parseFloat(idleHours.value) || 0;
     project.floorsense.wizard.idleRelease = state;
     saveProject(project);
   }
@@ -483,26 +582,159 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
+  function formatDurationMinutes(mins) {
+    mins = Math.round(Math.abs(mins));
+    const h = Math.floor(mins / 60), m = mins % 60;
+    if (h === 0) return m + ' min';
+    if (m === 0) return h + 'h';
+    return h + 'h ' + m + 'm';
+  }
   function formatHours(h) {
     const rounded = Math.round(h * 100) / 100;
     return rounded === 1 ? '1 hour' : rounded + ' hours';
   }
 
-  function updateExample() {
-    irMiddleTitle.textContent = formatHours(state.idleHours) + ' pass, idle';
+  /* ---------------- diagram: a small fixed "Reserved" pin at the rail's left edge and a big
+     "Released" pin driven by the idle-duration drum, joined by a shaded zone — same
+     fixed-left-anchor + duration-driven-end geometry used by
+     floorsense-default-reservation-times-05.html's duration card, since idle release is a single
+     elapsed-time value rather than two independent clock times. ---------------- */
+  const ROW_EDGE_PERCENT = 10;
+  const DURATION_MAX_MINUTES = 24 * 60;
+  function endPercentForOffset(offsetMinutes) {
+    const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
+    return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
   }
 
+  const idleHoursLabel = document.getElementById('idleHoursLabel');
+  const idleStartNode = document.getElementById('idleStartNode');
+  const idleEndNode = document.getElementById('idleEndNode');
+  const idleEndTime = document.getElementById('idleEndTime');
+  const idleZone = document.getElementById('idleZone');
+  const idleHint = document.getElementById('idleHint');
+
+  function updateDiagram() {
+    const idleMinutes = Math.round((parseFloat(state.idleHours) || 0) * 60);
+    const endPercent = endPercentForOffset(idleMinutes);
+    idleStartNode.style.left = ROW_EDGE_PERCENT + '%';
+    idleEndNode.style.left = endPercent + '%';
+    idleZone.style.left = ROW_EDGE_PERCENT + '%';
+    idleZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    const durLabel = formatDurationMinutes(idleMinutes);
+    idleHoursLabel.textContent = durLabel;
+    idleEndTime.textContent = durLabel;
+    idleHint.textContent = 'If a desk sits unclaimed or unused for ' + formatHours(state.idleHours) +
+      ', it\'s automatically released back to general availability — this can happen at any time of day, on any day.';
+  }
+
+  /* ---------------- Apple Clock-style time drum, ported from
+     floorsense-default-reservation-times-05.html/floorsense-checkin-window-06.html ---------------- */
+  const DRUM_ROW_H = 30;
+  const idleDrumValues = [];
+  for (let m = 30; m <= 24 * 60; m += 30) idleDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
+
+  function buildDrumRows(scrollEl, values) {
+    let html = '<div class="time-drum-pad"></div>';
+    values.forEach((v, i) => {
+      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
+    });
+    html += '<div class="time-drum-pad"></div>';
+    scrollEl.innerHTML = html;
+    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  }
+
+  function createTimeDrum(scrollEl, values, opts) {
+    const rows = buildDrumRows(scrollEl, values);
+    let current = -1;
+    let settleTimer = null;
+
+    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
+    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
+    function highlight(index) {
+      if (index === current) return;
+      current = index;
+      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
+      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
+      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
+    }
+    function nearestIndexForMinutes(minutes) {
+      let best = 0, bestDiff = Infinity;
+      values.forEach((v, i) => {
+        const diff = Math.abs(v.minutes - minutes);
+        if (diff < bestDiff) { bestDiff = diff; best = i; }
+      });
+      return best;
+    }
+    function scrollToIndex(index, smooth) {
+      index = clampIndex(index);
+      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
+      highlight(index);
+    }
+
+    scrollEl.addEventListener('scroll', () => {
+      highlight(clampIndex(indexFromScroll()));
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const settled = clampIndex(indexFromScroll());
+        scrollToIndex(settled, true);
+        if (opts.onChange) opts.onChange(values[settled].minutes);
+      }, 120);
+    }, { passive: true });
+
+    scrollEl.parentElement.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const i = clampIndex(indexFromScroll() + 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const i = clampIndex(indexFromScroll() - 1);
+        scrollToIndex(i, true);
+        if (opts.onChange) opts.onChange(values[i].minutes);
+      }
+    });
+
+    scrollToIndex(nearestIndexForMinutes(opts.initialMinutes), false);
+
+    return {
+      setMinutes(minutes) { scrollToIndex(nearestIndexForMinutes(minutes), false); }
+    };
+  }
+
+  const idleDrum = createTimeDrum(document.getElementById('idleDrumScroll'), idleDrumValues, {
+    initialMinutes: Math.round((parseFloat(state.idleHours) || 0) * 60),
+    onChange: (minutes) => {
+      state.idleHours = minutes / 60;
+      updateDiagram();
+      queueSave();
+    }
+  });
+
   function applyState() {
-    idleHours.value = state.idleHours;
-    updateExample();
+    idleDrum.setMinutes(Math.round((parseFloat(state.idleHours) || 0) * 60));
+    updateDiagram();
   }
   applyState();
 
-  idleHours.addEventListener('input', () => {
-    state.idleHours = parseFloat(idleHours.value) || 0;
-    updateExample();
-    queueSave();
-  });
+  /* ---------------- reveal animation: plays once when the diagram scrolls into view ---------------- */
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timelineCard = document.querySelector('.timeline-card');
+  if (timelineCard && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      revealObserver.observe(timelineCard);
+    } else {
+      timelineCard.classList.add('animate-in');
+    }
+  }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.idleHours = 3;
