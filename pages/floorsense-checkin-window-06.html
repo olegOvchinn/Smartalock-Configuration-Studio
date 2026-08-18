@@ -400,13 +400,13 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-03.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Business Hours</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
         </a>
         <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
@@ -526,7 +526,7 @@
 
 <!--
   NOTE for Oleg: module 03 of the Floorsense wizard family — follows floorsense-checkin-
-  methods-02.html and continues to floorsense-prebooking-advance-04.html. Covers the Check-in
+  methods-02.html and continues to floorsense-prebooking-advance-03.html. Covers the Check-in
   Window (early/late minutes, both default 60) plus a second "Default Reservation Times" section
   added per a later request: Default Start Time (08:30) and Default End Time (17:00) as native
   <input type="time">, Auto-Release on Idle (3 hours) and Default Reservation Duration (9 hours)
@@ -616,7 +616,7 @@
   it moved to its own project.floorsense.wizard.idleRelease = { idleHours } key on the new page;
   the four remaining checkinPolicy fields (checkInEarlyMinutes, checkInLateMinutes,
   defaultStartTime, defaultEndTime, defaultDurationHours) are unchanged. This page's next-arrow/
-  Continue destination changed from floorsense-prebooking-advance-04.html to
+  Continue destination changed from floorsense-prebooking-advance-03.html to
   floorsense-idle-release-07.html accordingly. See floorsense-idle-release-07.html's own NOTE for
   the rest of that page's details.
 
@@ -776,7 +776,7 @@
   500)` redirect, matching the pattern used on floorsense-setup-path-00.html/
   floorsense-reservation-types-01.html/floorsense-checkin-methods-02.html. Same bug found and fixed
   at the same time on floorsense-default-reservation-times-05.html,
-  floorsense-idle-release-07.html and floorsense-prebooking-advance-04.html.
+  floorsense-idle-release-07.html and floorsense-prebooking-advance-03.html.
 
   MOST RECENT CHANGE: per a follow-up request, the on-rail drag handles (createTimelineHandle(),
   pointerdown/move/up on the .handle circles) were replaced with a pair of Apple Clock-style time

@@ -218,13 +218,13 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-03.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Business Hours</span>
-        </a>
-        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
         </a>
         <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
@@ -281,10 +281,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-business-hours-03.html">
+        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-default-reservation-times-05.html">
+        <a class="page-nav-btn next" href="floorsense-business-hours-04.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -317,7 +317,7 @@
 
   Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-07.html) was
   inserted into the wizard immediately before this one, so this file was renamed from
-  floorsense-prebooking-advance-04.html to -05.html to make room (a straight filesystem rename —
+  floorsense-prebooking-advance-03.html to -05.html to make room (a straight filesystem rename —
   the field ids, state shape, and everything else below are unchanged). This page's back-arrow
   changed from floorsense-checkin-window-06.html to floorsense-idle-release-07.html accordingly,
   and its progress bar gained a 7th "idle-release" segment between "Check-in Policy" and
@@ -347,12 +347,21 @@
   Reservation Times previously held. Default Reservation Times, Check-in Window and Auto-Release on
   Idle all shifted up one number in turn (05/06/07 respectively) to close the gap this page left
   behind; Reservation Length stayed 08 since it was already last. This page's own back-arrow now
-  points to floorsense-business-hours-03.html (was floorsense-idle-release-07.html) and its
+  points to floorsense-business-hours-04.html (was floorsense-idle-release-07.html) and its
   next-arrow/Continue-redirect now point to floorsense-default-reservation-times-05.html (was
   floorsense-reservation-length-08.html) — both superseding the paragraphs above, which describe an
   earlier renumbering and are kept only for history. Only navigation changed; the field ids, state
   shape (project.floorsense.wizard.prebookingAdvance), and progress-bar module order elsewhere were
   otherwise just filename-renumbered, not restructured.
+
+  MOST RECENT CHANGE: per a further follow-up request ("put page 04 after 02"), this page swapped
+  numbers with Business Hours — this page is now module 03 (renamed from
+  floorsense-prebooking-advance-04.html), immediately after Check-in Methods/Setup Path in both the
+  numeric progress-bar order and the click-through chain, and Business Hours became module 04,
+  superseding the paragraph above. This page's back-arrow now points to floorsense-setup-path-00.html
+  (was floorsense-business-hours-04.html) and its next-arrow/Continue redirect now point to
+  floorsense-business-hours-04.html (was floorsense-default-reservation-times-05.html). Nothing about
+  this page's own content or state changed, only its number and neighbors.
 -->
 
 <script>
@@ -458,7 +467,7 @@
     markModuleSaved('prebooking-advance');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-default-reservation-times-05.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-business-hours-04.html'; }, 500);
   });
 })();
 </script>

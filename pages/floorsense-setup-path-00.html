@@ -237,13 +237,13 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-03.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Business Hours</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
         </a>
         <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
@@ -344,7 +344,7 @@
         <a class="page-nav-btn" href="floorsense-checkin-methods-02.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-business-hours-03.html" id="pageNavNext">
+        <a class="page-nav-btn next" href="floorsense-prebooking-advance-03.html" id="pageNavNext">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -428,6 +428,15 @@
   eighth segment ("Default Reservation Times", inserted before "Check-in Window") — see
   floorsense-default-reservation-times-05.html's and floorsense-checkin-window-06.html's own NOTEs
   for the rest of that split.
+
+  MOST RECENT CHANGE: two further follow-up requests moved this page's "customise" destination
+  around. First, a new Business Hours page was inserted right after this one, becoming
+  PATH_DEST.customise/#pageNavNext's target instead of Default Reservation Times. Then, per "put
+  page 04 after 02," Business Hours and Prebooking swapped numbers, so Prebooking is now the page
+  immediately after this one — PATH_DEST.customise and #pageNavNext now both point to
+  floorsense-prebooking-advance-03.html (Business Hours, now module 04, follows Prebooking instead).
+  See floorsense-prebooking-advance-03.html's and floorsense-business-hours-04.html's own NOTEs for
+  the full history of both moves.
 -->
 
 <script>
@@ -497,7 +506,7 @@
     relaxed: 'floorsense-out-of-box-policy.html?preset=relaxed',
     preconfigured: 'floorsense-out-of-box-policy.html',
     strict: 'floorsense-out-of-box-policy.html?preset=strict',
-    customise: 'floorsense-business-hours-03.html'
+    customise: 'floorsense-prebooking-advance-03.html'
   };
 
   function save() {

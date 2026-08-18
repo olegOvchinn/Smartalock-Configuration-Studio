@@ -301,13 +301,13 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg current" data-module="business-hours" href="floorsense-business-hours-03.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Business Hours</span>
-        </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-03.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg current" data-module="business-hours" href="floorsense-business-hours-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
         </a>
         <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-05.html">
           <span class="progress-seg-fill"></span>
@@ -393,10 +393,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn" href="floorsense-prebooking-advance-03.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-prebooking-advance-04.html">
+        <a class="page-nav-btn next" href="floorsense-default-reservation-times-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -431,7 +431,7 @@
   became floorsense-default-reservation-times-05.html, floorsense-checkin-window-04.html became
   floorsense-checkin-window-06.html, floorsense-idle-release-05.html became
   floorsense-idle-release-07.html, floorsense-prebooking-advance-06.html became
-  floorsense-prebooking-advance-04.html, and floorsense-reservation-length-07.html became
+  floorsense-prebooking-advance-03.html, and floorsense-reservation-length-07.html became
   floorsense-reservation-length-08.html. Every Floorsense wizard page's progress-bar nav (including
   this one) was updated to the new 9-segment 00–08 list; floorsense-setup-path-00.html's
   PATH_DEST.customise and #pageNavNext fallback now point here instead of straight to Default
@@ -469,15 +469,24 @@
   modules. Nothing else in the wizard reads this value yet (no other page's diagram is wired to it);
   it's a standalone default for now. markModuleSaved('business-hours') marks this module's own
   progress-bar segment saved on Continue, which redirects to
-  floorsense-prebooking-advance-04.html.
+  floorsense-default-reservation-times-05.html.
 
-  MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking
-  (formerly module 07) was relocated to immediately follow this page, taking over module number 04
-  from Default Reservation Times — which, along with Check-in Window and Auto-Release on Idle,
-  shifted up one number to make room (05/06/07 respectively; Reservation Length stayed 08, already
-  last). This page's own next-arrow and Continue redirect were updated from Default Reservation
-  Times to Prebooking accordingly; nothing else about this page changed. See
-  floorsense-prebooking-advance-04.html's own NOTE for the rest of that reorder.
+  Per a follow-up request ("move page 07 forward to follow 03"), Prebooking (formerly module 07)
+  was relocated to immediately follow this page, taking over module number 04 from Default
+  Reservation Times — which, along with Check-in Window and Auto-Release on Idle, shifted up one
+  number to make room (05/06/07 respectively; Reservation Length stayed 08, already last). This
+  page's own next-arrow and Continue redirect were updated from Default Reservation Times to
+  Prebooking accordingly.
+
+  MOST RECENT CHANGE: per a further follow-up request ("put page 04 after 02"), Prebooking and this
+  page swapped numbers — Prebooking is now module 03 (immediately after Check-in Methods/Setup
+  Path) and this page became module 04 (renamed from floorsense-business-hours-03.html), superseding
+  the paragraph above. This page's back-arrow now points to floorsense-prebooking-advance-03.html
+  (was floorsense-setup-path-00.html) and its next-arrow/Continue redirect point to
+  floorsense-default-reservation-times-05.html (was floorsense-prebooking-advance-03.html/-04.html
+  across the two reorders). Only navigation and the filename changed; nothing about this page's own
+  content, state key (businessHours), or diagram logic did. See
+  floorsense-prebooking-advance-03.html's own NOTE for the rest of this swap.
 -->
 
 <script>
@@ -751,7 +760,7 @@
     markModuleSaved('business-hours');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-prebooking-advance-04.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-default-reservation-times-05.html'; }, 500);
   });
 })();
 </script>
