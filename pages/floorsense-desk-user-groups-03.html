@@ -25,7 +25,9 @@
     --radius-md: 14px;
     --radius-sm: 10px;
     --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
-    --panel-maxw: 1120px;
+    --panel-maxw: 1320px; /* wider than the usual 1120px so the new two-column Desk/User Groups
+      layout has enough room per column; the sticky top-frame/brand/progress-bar and action-bar
+      still share this same --panel-maxw so everything stays visually aligned on this page */
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -115,6 +117,29 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
+
+  /* ---------- two-column layout: Desk Groups and User Groups side by side rather than stacked,
+     since the two topics are independent and of similar length — each column keeps the exact same
+     section-head/grid/subfields/notice stack that used to run down the page sequentially. Falls
+     back to a single stacked column below 900px so the checkbox cards don't get too cramped. ---------- */
+  .groups-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 900px) {
+    .groups-columns { grid-template-columns: 1fr; gap: 28px; }
+  }
+  .groups-column .section-head,
+  .groups-column .group-check-grid,
+  .groups-column .group-subfields,
+  .groups-column .setup-notice { max-width: none; }
+
+  /* ---------- each column wrapped in its own bordered card, matching the .checkin-card/
+     .feature-card treatment every other Floorsense page uses for its main content block, so this
+     page's two-column layout still reads as "cards" consistent with the rest of the wizard. ---------- */
+  .groups-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 24px 24px 26px;
+  }
+  .groups-card .section-head:first-child { margin-top: 0; }
+
   .section-head { margin-bottom: 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
@@ -305,106 +330,114 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Desk Group Setup</h2>
-        <p>Often companies will allocate certain groups of workpoints on a floor to belong to a "neighbourhood". Floorsense calls these neighbourhoods "Desk Groups".</p>
-        <p>Configuring Desk Groups allows for both reporting granularity on reservations and occupancy for a group of desks rather than an entire floor, and also allows for different policy (booking rules) to be applied based on the Desk Group.</p>
-        <p>To setup Desk Groups we need a marked up floorplan identifying which desks/workpoints belong to which Desk Group, and the names of the Desk Groups to configure.</p>
-      </div>
+      <div class="groups-columns">
 
-      <div class="group-check-grid" id="deskGroupGrid">
-        <div class="group-check-card" data-mode="none">
-          <label class="group-row">
-            <input type="checkbox" name="deskGroupMode" value="none">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We will not use Desk Groups (can be setup later)</span>
+        <div class="groups-column groups-card">
+          <div class="section-head">
+            <span class="eyebrow">Configure</span>
+            <h2 class="section-title">Desk Group Setup</h2>
+            <p>Often companies will allocate certain groups of workpoints on a floor to belong to a "neighbourhood". Floorsense calls these neighbourhoods "Desk Groups".</p>
+            <p>Configuring Desk Groups allows for both reporting granularity on reservations and occupancy for a group of desks rather than an entire floor, and also allows for different policy (booking rules) to be applied based on the Desk Group.</p>
+            <p>To setup Desk Groups we need a marked up floorplan identifying which desks/workpoints belong to which Desk Group, and the names of the Desk Groups to configure.</p>
+          </div>
+
+          <div class="group-check-grid" id="deskGroupGrid">
+            <div class="group-check-card" data-mode="none">
+              <label class="group-row">
+                <input type="checkbox" name="deskGroupMode" value="none">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We will not use Desk Groups (can be setup later)</span>
+                </div>
+              </label>
             </div>
-          </label>
+
+            <div class="group-check-card" data-mode="provide">
+              <label class="group-row">
+                <input type="checkbox" name="deskGroupMode" value="provide">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We will provide a list of desk numbers and identify which desk belongs to which group on floorplan</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="group-check-card" data-mode="policy">
+              <label class="group-row">
+                <input type="checkbox" name="deskGroupMode" value="policy">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We would also like to apply different policy (booking rules) to different desk groups</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="group-subfields" id="deskGroupPolicySubfields">
+            <label for="deskGroupPolicyNotes" class="group-subfields-label">Desk Group Policy — if you ticked to apply different policy based on Desk Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
+            <textarea id="deskGroupPolicyNotes" placeholder='e.g. "We would like the Marketing Desk Group to not have auto-release on idle and allow for booking upto 15 days in advance."'></textarea>
+          </div>
+
+          <div class="setup-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+            <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
+          </div>
         </div>
 
-        <div class="group-check-card" data-mode="provide">
-          <label class="group-row">
-            <input type="checkbox" name="deskGroupMode" value="provide">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We will provide a list of desk numbers and identify which desk belongs to which group on floorplan</span>
+        <div class="groups-column groups-card">
+          <div class="section-head">
+            <span class="eyebrow">Configure</span>
+            <h2 class="section-title">User Group Setup</h2>
+            <p>User Groups allow for further granularity in setting desk policy (rules) for booking. The policy for a User Group overrides the policy for a Desk Group (or the default policy if no Desk Groups are configured).</p>
+            <p>A Floorsense user can only belong to a single User Group. Typically the User Group names can be imported from a source system via file upload, and each user record uploaded is tagged with which User Group it belongs to.</p>
+            <p>Alternatively, User Groups can be configured via the Admin portal and users added to these User Groups after the users themselves have been auto-created/imported via an independent import process.</p>
+            <p>User Groups cannot be imported automatically for Single Sign-On auto-created users, and also cannot be imported from Active Directory, unless the user only exists in a single group within Active Directory.</p>
+            <p>Tick 1 or more of the following options to describe your User Group requirements:</p>
+          </div>
+
+          <div class="group-check-grid" id="userGroupGrid">
+            <div class="group-check-card" data-mode="none">
+              <label class="group-row">
+                <input type="checkbox" name="userGroupMode" value="none">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We will not use User Groups feature initially (will rely on Desk Group and General policy)</span>
+                </div>
+              </label>
             </div>
-          </label>
+
+            <div class="group-check-card" data-mode="provide">
+              <label class="group-row">
+                <input type="checkbox" name="userGroupMode" value="provide">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We will provide a list of User Group names and advise which user belongs to which group via spreadsheet for upload</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="group-check-card" data-mode="policy">
+              <label class="group-row">
+                <input type="checkbox" name="userGroupMode" value="policy">
+                <span class="group-tick" aria-hidden="true"></span>
+                <div class="group-card-body">
+                  <span class="group-title">We want to apply different override policy for different User Groups to trump the Desk Group policy or default booking policy</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="group-subfields" id="userGroupPolicySubfields">
+            <label for="userGroupPolicyNotes" class="group-subfields-label">User Group Policy — if you ticked to apply different policy based on User Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
+            <textarea id="userGroupPolicyNotes" placeholder='e.g. "Only the &quot;Call Centre&quot; User Group is allowed to book desks in the Call Centre desk group area."'></textarea>
+          </div>
+
+          <div class="setup-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+            <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
+          </div>
         </div>
 
-        <div class="group-check-card" data-mode="policy">
-          <label class="group-row">
-            <input type="checkbox" name="deskGroupMode" value="policy">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We would also like to apply different policy (booking rules) to different desk groups</span>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="group-subfields" id="deskGroupPolicySubfields">
-        <label for="deskGroupPolicyNotes" class="group-subfields-label">Desk Group Policy — if you ticked to apply different policy based on Desk Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
-        <textarea id="deskGroupPolicyNotes" placeholder='e.g. "We would like the Marketing Desk Group to not have auto-release on idle and allow for booking upto 15 days in advance."'></textarea>
-      </div>
-
-      <div class="setup-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-        <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
-      </div>
-
-      <div class="section-head" style="margin-top:36px;">
-        <span class="eyebrow">Configure</span>
-        <h2 class="section-title">User Group Setup</h2>
-        <p>User Groups allow for further granularity in setting desk policy (rules) for booking. The policy for a User Group overrides the policy for a Desk Group (or the default policy if no Desk Groups are configured).</p>
-        <p>A Floorsense user can only belong to a single User Group. Typically the User Group names can be imported from a source system via file upload, and each user record uploaded is tagged with which User Group it belongs to.</p>
-        <p>Alternatively, User Groups can be configured via the Admin portal and users added to these User Groups after the users themselves have been auto-created/imported via an independent import process.</p>
-        <p>User Groups cannot be imported automatically for Single Sign-On auto-created users, and also cannot be imported from Active Directory, unless the user only exists in a single group within Active Directory.</p>
-        <p>Tick 1 or more of the following options to describe your User Group requirements:</p>
-      </div>
-
-      <div class="group-check-grid" id="userGroupGrid">
-        <div class="group-check-card" data-mode="none">
-          <label class="group-row">
-            <input type="checkbox" name="userGroupMode" value="none">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We will not use User Groups feature initially (will rely on Desk Group and General policy)</span>
-            </div>
-          </label>
-        </div>
-
-        <div class="group-check-card" data-mode="provide">
-          <label class="group-row">
-            <input type="checkbox" name="userGroupMode" value="provide">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We will provide a list of User Group names and advise which user belongs to which group via spreadsheet for upload</span>
-            </div>
-          </label>
-        </div>
-
-        <div class="group-check-card" data-mode="policy">
-          <label class="group-row">
-            <input type="checkbox" name="userGroupMode" value="policy">
-            <span class="group-tick" aria-hidden="true"></span>
-            <div class="group-card-body">
-              <span class="group-title">We want to apply different override policy for different User Groups to trump the Desk Group policy or default booking policy</span>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="group-subfields" id="userGroupPolicySubfields">
-        <label for="userGroupPolicyNotes" class="group-subfields-label">User Group Policy — if you ticked to apply different policy based on User Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
-        <textarea id="userGroupPolicyNotes" placeholder='e.g. "Only the &quot;Call Centre&quot; User Group is allowed to book desks in the Call Centre desk group area."'></textarea>
-      </div>
-
-      <div class="setup-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-        <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
       </div>
 
       <div class="page-nav">
@@ -486,6 +519,28 @@
   floorsense-checkin-methods-02.html — see that file's NOTE). The progress bar above gained a 13th
   "desk-user-groups" segment, inserted right after "Check-in Methods" and before "Prebooking
   Window", on all 13 Floorsense pages.
+
+  MOST RECENT CHANGE: per a request to remove any image placeholder and lay the page out as two
+  columns (Desk Groups / User Groups) instead of stacked sections. There was no image placeholder
+  anywhere on this page to begin with (only the brand logo in the top bar, which isn't a
+  placeholder), so no removal was needed there. The two previously-sequential blocks — each
+  already a self-contained section-head + group-check-grid + group-subfields + setup-notice stack —
+  are now wrapped in a new `.groups-columns` CSS grid (two equal-width `.groups-column` tracks, 44px
+  gap) instead of running one after the other down the page; nothing about either block's own
+  markup, ids, state, or JS wiring changed, only their container. The per-element `max-width: 640px`
+  each block's inner pieces used when stacked full-width is overridden back to `none` inside
+  `.groups-column` so each column fills its grid track instead of clamping to the old single-column
+  width. `--panel-maxw` was widened from the usual 1120px to 1320px on this page only, so each
+  column has reasonable breathing room; the sticky top-frame/progress-bar and action-bar share the
+  same variable so they still line up with the wider content below. Below 900px the grid collapses
+  back to a single stacked column (`.groups-columns` media query) since two ~250px-wide columns of
+  checkbox cards would be too cramped on narrower viewports.
+
+  Follow-up in the same request: each `.groups-column` also got a `.groups-card` treatment (border,
+  radius, padding — same visual language as `.checkin-card`/`.feature-card` on every other
+  Floorsense page's main content block) so the two columns read as proper cards rather than bare
+  text blocks, for visual consistency with the rest of the wizard. Nothing inside changed other than
+  the wrapping card padding/border; ids, state, and JS wiring are untouched.
 -->
 
 <script>
