@@ -137,6 +137,32 @@
   .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
+  /* ---------- on/off switch, ported from smartalock-kiosk-customisation-07.html's .switch —
+     this is the wizard's second optional feature (after floorsense-nsnp-09.html), so it needs its
+     own enable/disable control; unlike NSNP's 4-way mode grid, a single-topic explainer page like
+     this one only needs a plain on/off toggle. ---------- */
+  .idle-toggle-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .idle-toggle-label { font-size: 13.12px; font-weight: 600; color: var(--ink); }
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+
+  /* ---------- body wrapper: the diagram + footer are hidden entirely until the feature is
+     switched on, same show/hide convention (rather than opacity/pointer-events dimming) used for
+     floorsense-nsnp-09.html's conditional grace-period block. ---------- */
+  .idle-body { display: none; }
+  .idle-body.show { display: block; }
+
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
   .timeline-header { margin-bottom: 4px; }
   .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
@@ -337,7 +363,7 @@
         </a>
         <a class="progress-seg current" data-module="idle-release" href="floorsense-idle-release-07.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Auto-Release on Idle</span>
+          <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
         </a>
         <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-08.html">
           <span class="progress-seg-fill"></span>
@@ -353,9 +379,9 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Configure</span>
+        <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">Auto-Release on Idle</h1>
-        <p class="sub">Free up desks that were reserved but never actually used.</p>
+        <p class="sub">Optionally free up desks that were reserved but never actually used — off by default.</p>
       </div>
     </div>
   </div>
@@ -368,13 +394,20 @@
           <div class="checkin-card-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
           </div>
-          <p class="checkin-card-desc">
-            If a desk sits unclaimed or unused for long enough, it's automatically released back to
-            general availability. Use the drum below to set how long a desk may sit idle before that
-            happens.
-          </p>
+          <div style="flex:1; min-width:0;">
+            <p class="checkin-card-desc">
+              This is an optional feature, off by default. If turned on, a desk that sits unclaimed
+              or unused for long enough is automatically released back to general availability — use
+              the drum below to set how long a desk may sit idle before that happens.
+            </p>
+            <div class="idle-toggle-row">
+              <span class="idle-toggle-label">Enable Auto-Release on Idle</span>
+              <button type="button" class="switch" id="idleEnableSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on Idle"></button>
+            </div>
+          </div>
         </div>
 
+        <div class="idle-body" id="idleBody">
         <div class="timeline-card">
           <div class="timeline-header">
             <p class="timeline-subtitle">Auto-release after: <strong id="idleHoursLabel">3h</strong></p>
@@ -408,6 +441,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           </div>
           <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
+        </div>
         </div>
       </div>
 
@@ -514,6 +548,24 @@
   The card-desc text no longer references an inline field; it now just points at the drum below.
   state.idleHours (project.floorsense.wizard.idleRelease.idleHours) is unchanged — this was a
   styling/graphics change only, not a data-model change — default remains 3.
+
+  MOST RECENT CHANGE: per a request to mark this as an optional function that's off by default,
+  Auto-Release on Idle is now the wizard's second opt-in module (after floorsense-nsnp-09.html).
+  Added an on/off .switch control (ported from smartalock-kiosk-customisation-07.html's toggle
+  pattern) inside .checkin-card-header, labelled "Enable Auto-Release on Idle". The .timeline-card
+  diagram and .checkin-footer are now wrapped in a new #idleBody element that's hidden entirely
+  (display:none, no "show" class) until the switch is turned on — the same show/hide convention
+  used for floorsense-nsnp-09.html's conditional grace-period block, rather than dimming via
+  opacity/pointer-events. State gained a new `enabled` boolean:
+  project.floorsense.wizard.idleRelease = { enabled, idleHours }, defaulting to enabled:false;
+  idleHours still defaults to 3 and is preserved even while disabled, so re-enabling doesn't lose a
+  previously-chosen duration. Reset now also sets enabled back to false. markModuleSaved still fires
+  on Continue regardless of the switch state, consistent with how floorsense-nsnp-09.html marks
+  itself saved regardless of which mode is chosen. The hero eyebrow changed from "Configure" to
+  "Additional Features · Optional" to match the NSNP page, and the progress-bar tooltip across all
+  10 Floorsense pages now reads "Auto-Release on Idle (Optional)". Reservation Length's own
+  section-head copy ("...if that feature is enabled...") already anticipated this and needed no
+  change.
 -->
 
 <script>
@@ -546,6 +598,7 @@
 
   const saved = project.floorsense.wizard.idleRelease || {};
   const state = {
+    enabled: !!saved.enabled,
     idleHours: Number.isFinite(saved.idleHours) ? saved.idleHours : 3
   };
 
@@ -715,9 +768,32 @@
     }
   });
 
+  /* ---------------- on/off switch — this feature is optional and off by default; the diagram is
+     hidden entirely (not just dimmed) until switched on, same convention used for
+     floorsense-nsnp-09.html's conditional grace-period block. ---------------- */
+  const idleEnableSwitch = document.getElementById('idleEnableSwitch');
+  const idleBody = document.getElementById('idleBody');
+
+  function applyEnabledState() {
+    idleEnableSwitch.classList.toggle('on', state.enabled);
+    idleEnableSwitch.setAttribute('aria-checked', String(state.enabled));
+    idleBody.classList.toggle('show', state.enabled);
+    // Re-sync the drum's scroll position whenever the body becomes visible: while display:none,
+    // scrollTop is clamped to 0 by the browser (no layout box), so a position set earlier while
+    // hidden is lost and must be re-applied now that it can actually scroll.
+    if (state.enabled) idleDrum.setMinutes(Math.round((parseFloat(state.idleHours) || 0) * 60));
+  }
+
+  idleEnableSwitch.addEventListener('click', () => {
+    state.enabled = !state.enabled;
+    applyEnabledState();
+    queueSave();
+  });
+
   function applyState() {
     idleDrum.setMinutes(Math.round((parseFloat(state.idleHours) || 0) * 60));
     updateDiagram();
+    applyEnabledState();
   }
   applyState();
 
@@ -741,6 +817,7 @@
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    state.enabled = false;
     state.idleHours = 3;
     applyState();
     queueSave();
