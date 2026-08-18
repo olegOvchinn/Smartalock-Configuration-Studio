@@ -136,10 +136,10 @@
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
   /* ---------- diagram row: an Apple-Clock-style time drum on each side of the rail, rolling
-     either drum moves that side's pin (and the connecting "open" zone between them) — same
-     mechanics as floorsense-checkin-window-06.html's earliest/latest drums, but here both ends
-     are independent (Opens/Closes) rather than offsets from a fixed center booking-start time,
-     so both pins are the same normal size and both move along a plain day-scale rail. ---------- */
+     either drum moves that side's pin (and the connecting arrival-to-departure zone between them)
+     — same mechanics as floorsense-checkin-window-06.html's earliest/latest drums, but here both
+     ends are independent (Arrival/Departure) rather than offsets from a fixed center booking-start
+     time, so both pins are the same normal size and both move along a plain day-scale rail. ---------- */
   .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
   .timeline-track-wrapper { position: relative; height: 3px; margin: 64px 20px 40px; flex: 1; min-width: 0; }
   .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
@@ -333,7 +333,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
         <h1 class="hero-title">Business Hours</h1>
-        <p class="sub">Set the standard opening and closing time used as the default for most users.</p>
+        <p class="sub">Set the standard arrival and departure time used as the default for most users.</p>
       </div>
     </div>
   </div>
@@ -348,8 +348,9 @@
           </div>
           <p class="checkin-card-desc">
             Most users share the same standard business hours — roll the time drums on either side
-            of the diagram below to set when the day opens and closes. These hours apply across the
-            floor by default; individual modules further on can still carve out exceptions.
+            of the diagram below to set when most people arrive and when they head out for the day.
+            These hours apply across the floor by default; individual modules further on can still
+            carve out exceptions.
           </p>
         </div>
 
@@ -358,28 +359,28 @@
             <p class="timeline-subtitle">Standard hours: <strong id="businessHoursRangeLabel">9:00 AM – 5:00 PM</strong></p>
           </div>
           <div class="timeline-diagram-row">
-            <div class="time-drum" id="openDrum" tabindex="0" role="slider" aria-label="Opening time" aria-valuemin="0" aria-valuemax="1410">
+            <div class="time-drum" id="arrivalDrum" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="0" aria-valuemax="1410">
               <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="openDrumScroll"></div>
+              <div class="time-drum-scroll" id="arrivalDrumScroll"></div>
             </div>
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
                 <div class="timeline-zone" id="businessHoursZone"></div>
               </div>
-              <div class="timeline-node" id="openNode">
+              <div class="timeline-node" id="arrivalNode">
                 <div class="anchor-pin"></div>
-                <div class="label-time" id="openTime">9:00 AM</div>
-                <div class="label-desc">Opens</div>
+                <div class="label-time" id="arrivalTime">9:00 AM</div>
+                <div class="label-desc">Arrives</div>
               </div>
-              <div class="timeline-node" id="closeNode">
+              <div class="timeline-node" id="departureNode">
                 <div class="anchor-pin"></div>
-                <div class="label-time primary" id="closeTime">5:00 PM</div>
-                <div class="label-desc">Closes</div>
+                <div class="label-time primary" id="departureTime">5:00 PM</div>
+                <div class="label-desc">Departs</div>
               </div>
             </div>
-            <div class="time-drum" id="closeDrum" tabindex="0" role="slider" aria-label="Closing time" aria-valuemin="0" aria-valuemax="1410">
+            <div class="time-drum" id="departureDrum" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="0" aria-valuemax="1410">
               <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="closeDrumScroll"></div>
+              <div class="time-drum-scroll" id="departureDrumScroll"></div>
             </div>
           </div>
         </div>
@@ -462,7 +463,7 @@
   the assumption that a single "standard business hours" default is meant for a typical same-day
   window — sites needing something more exotic can revisit this page later.
 
-  State lives at project.floorsense.wizard.businessHours = { openTime, closeTime } (24h "HH:MM"
+  State lives at project.floorsense.wizard.businessHours = { arrivalTime, departureTime } (24h "HH:MM"
   strings, defaulting to 09:00/17:00 — a classic "9 to 5", deliberately different from the 8:30
   example used elsewhere for a single booking's default start, since this is a distinct, more
   universal floor-wide concept) in the same "configurationProject" localStorage key as the other
@@ -487,6 +488,25 @@
   across the two reorders). Only navigation and the filename changed; nothing about this page's own
   content, state key (businessHours), or diagram logic did. See
   floorsense-prebooking-advance-03.html's own NOTE for the rest of this swap.
+
+  MOST RECENT CHANGE: per a follow-up request ("instead of terms open, opening, closing etc. let use
+  other that will rather describe arrival to the office or workstation and departure"), every
+  Open/Close-family term on this page was reworded to Arrival/Departure, both in visible copy and in
+  the underlying field names, since neither end is a fixed reference point the other is measured
+  against (unlike, say, booking-start elsewhere) — renaming the fields alongside the copy keeps the
+  code readable and was low-risk since nothing else in the wizard reads this state yet. Captions
+  "Opens"/"Closes" are now "Arrives"/"Departs"; drum aria-labels "Opening time"/"Closing time" are
+  now "Arrival time"/"Departure time"; the card description and sub line were reworded to say
+  "arrive"/"leave"/"departure" instead of "open"/"close". Element ids and JS identifiers were renamed
+  to match: openDrum(Scroll)/openNode/openTime/openMinutes/openPercent/openLabel became
+  arrivalDrum(Scroll)/arrivalNode/arrivalTime/arrivalMinutes/arrivalPercent/arrivalLabel, and the
+  close* equivalents became departure*. The state shape changed from
+  project.floorsense.wizard.businessHours = { openTime, closeTime } to { arrivalTime, departureTime }
+  — a breaking change to this module's own saved shape, but since (per the NOTE above) nothing else
+  reads it yet, no migration was needed. MIN_BUSINESS_HOURS_MINUTES, businessHoursZone and
+  businessHoursRangeLabel keep their existing names since they don't use the open/close terms this
+  request targeted. Historical NOTE paragraphs above still say "Opens"/"Closes" since they document
+  the page's original design, not current copy.
 -->
 
 <script>
@@ -519,8 +539,8 @@
 
   const saved = project.floorsense.wizard.businessHours || {};
   const state = {
-    openTime: saved.openTime || '09:00',
-    closeTime: saved.closeTime || '17:00'
+    arrivalTime: saved.arrivalTime || '09:00',
+    departureTime: saved.departureTime || '17:00'
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -574,28 +594,28 @@
     return Math.max(0, Math.min(100, ((minutes - RAIL_START_MIN) / (RAIL_END_MIN - RAIL_START_MIN)) * 100));
   }
 
-  /* ---------------- rail: Opens/Closes pins + connecting zone, driven by the drums below ---------------- */
-  const openNode = document.getElementById('openNode');
-  const closeNode = document.getElementById('closeNode');
+  /* ---------------- rail: Arrival/Departure pins + connecting zone, driven by the drums below ---------------- */
+  const arrivalNode = document.getElementById('arrivalNode');
+  const departureNode = document.getElementById('departureNode');
   const businessHoursZone = document.getElementById('businessHoursZone');
-  const openTimeEl = document.getElementById('openTime');
-  const closeTimeEl = document.getElementById('closeTime');
+  const arrivalTimeEl = document.getElementById('arrivalTime');
+  const departureTimeEl = document.getElementById('departureTime');
   const businessHoursRangeLabel = document.getElementById('businessHoursRangeLabel');
 
   function renderDiagram() {
-    const openMinutes = parseTimeToMinutes(state.openTime);
-    const closeMinutes = parseTimeToMinutes(state.closeTime);
-    const openPercent = minutesToPercent(openMinutes);
-    const closePercent = minutesToPercent(closeMinutes);
-    openNode.style.left = openPercent + '%';
-    closeNode.style.left = closePercent + '%';
-    businessHoursZone.style.left = openPercent + '%';
-    businessHoursZone.style.width = Math.max(0, closePercent - openPercent) + '%';
-    const openLabel = formatMinutesAs12Hour(openMinutes);
-    const closeLabel = formatMinutesAs12Hour(closeMinutes);
-    openTimeEl.textContent = openLabel;
-    closeTimeEl.textContent = closeLabel;
-    businessHoursRangeLabel.textContent = openLabel + ' – ' + closeLabel;
+    const arrivalMinutes = parseTimeToMinutes(state.arrivalTime);
+    const departureMinutes = parseTimeToMinutes(state.departureTime);
+    const arrivalPercent = minutesToPercent(arrivalMinutes);
+    const departurePercent = minutesToPercent(departureMinutes);
+    arrivalNode.style.left = arrivalPercent + '%';
+    departureNode.style.left = departurePercent + '%';
+    businessHoursZone.style.left = arrivalPercent + '%';
+    businessHoursZone.style.width = Math.max(0, departurePercent - arrivalPercent) + '%';
+    const arrivalLabel = formatMinutesAs12Hour(arrivalMinutes);
+    const departureLabel = formatMinutesAs12Hour(departureMinutes);
+    arrivalTimeEl.textContent = arrivalLabel;
+    departureTimeEl.textContent = departureLabel;
+    businessHoursRangeLabel.textContent = arrivalLabel + ' – ' + departureLabel;
   }
 
   /* ---------------- Apple Clock-style time drums (30-min steps, full 24h), ported from
@@ -687,20 +707,20 @@
   // since (unlike checkin-window's fixed booking-start reference) both ends here can move.
   const MIN_BUSINESS_HOURS_MINUTES = 60;
 
-  const openDrum = createTimeDrum(document.getElementById('openDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.openTime),
-    clampMinutes: (minutes) => Math.min(minutes, parseTimeToMinutes(state.closeTime) - MIN_BUSINESS_HOURS_MINUTES),
+  const arrivalDrum = createTimeDrum(document.getElementById('arrivalDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.arrivalTime),
+    clampMinutes: (minutes) => Math.min(minutes, parseTimeToMinutes(state.departureTime) - MIN_BUSINESS_HOURS_MINUTES),
     onChange: (minutes) => {
-      state.openTime = minutesToHHMM(minutes);
+      state.arrivalTime = minutesToHHMM(minutes);
       renderDiagram();
       queueSave();
     }
   });
-  const closeDrum = createTimeDrum(document.getElementById('closeDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.closeTime),
-    clampMinutes: (minutes) => Math.max(minutes, parseTimeToMinutes(state.openTime) + MIN_BUSINESS_HOURS_MINUTES),
+  const departureDrum = createTimeDrum(document.getElementById('departureDrumScroll'), timeDrumValues, {
+    initialMinutes: parseTimeToMinutes(state.departureTime),
+    clampMinutes: (minutes) => Math.max(minutes, parseTimeToMinutes(state.arrivalTime) + MIN_BUSINESS_HOURS_MINUTES),
     onChange: (minutes) => {
-      state.closeTime = minutesToHHMM(minutes);
+      state.departureTime = minutesToHHMM(minutes);
       renderDiagram();
       queueSave();
     }
@@ -722,8 +742,8 @@
   }
 
   function applyState() {
-    openDrum.setMinutes(parseTimeToMinutes(state.openTime));
-    closeDrum.setMinutes(parseTimeToMinutes(state.closeTime));
+    arrivalDrum.setMinutes(parseTimeToMinutes(state.arrivalTime));
+    departureDrum.setMinutes(parseTimeToMinutes(state.departureTime));
   }
 
   renderDiagram();
@@ -748,8 +768,8 @@
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.openTime = '09:00';
-    state.closeTime = '17:00';
+    state.arrivalTime = '09:00';
+    state.departureTime = '17:00';
     applyState();
     renderDiagram();
     queueSave();
