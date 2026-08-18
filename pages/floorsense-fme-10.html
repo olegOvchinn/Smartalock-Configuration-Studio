@@ -253,6 +253,10 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-11.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
+        </a>
         </nav>
       </div>
     </div>
@@ -317,9 +321,9 @@
         <a class="page-nav-btn" href="floorsense-nsnp-09.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <span class="page-nav-btn disabled">
+        <a class="page-nav-btn next" href="floorsense-anti-desk-hogging-11.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </span>
+        </a>
       </div>
 
     </div>
@@ -363,6 +367,13 @@
   (whose own previously-disabled next-arrow/Continue-redirect now point here — see that file's
   NOTE), and this page's own next-arrow is disabled with no Continue redirect. The progress bar
   above gained an eleventh "fme" segment at the end on all 11 Floorsense pages.
+
+  MOST RECENT CHANGE: a new module 11, floorsense-anti-desk-hogging-11.html ("Anti Desk Hogging"),
+  was appended after this page — this is no longer the last module in the wizard. Its
+  previously-disabled next-arrow is now a live link to floorsense-anti-desk-hogging-11.html, and the
+  Continue button now redirects there too (same fix pattern applied to floorsense-nsnp-09.html when
+  this page was added after it). See floorsense-anti-desk-hogging-11.html's own NOTE for the new
+  page's full details.
 -->
 
 <script>
@@ -470,6 +481,7 @@
     markModuleSaved('fme');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-anti-desk-hogging-11.html'; }, 500);
   });
 })();
 </script>

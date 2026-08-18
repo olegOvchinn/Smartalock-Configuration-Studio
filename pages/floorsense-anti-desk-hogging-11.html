@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>No Swipe No Power (NSNP) — Floorsense Configuration Studio (Template)</title>
+<title>Anti Desk Hogging — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -122,7 +122,8 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html ---------- */
+  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
+     floorsense-nsnp-09.html — here just 2 modes (enable / don't enable) ---------- */
   .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
   .path-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
@@ -147,55 +148,28 @@
   .path-card-body { min-width: 0; flex: 1; }
   .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .path-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .path-subfields.show { display: flex; }
-  .path-subfields-label { display: block; font-size: 12.1px; font-weight: 500; color: var(--ink); line-height: 1.55; margin: 0 0 6px; }
-  .path-subfields textarea {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; resize: vertical;
-    font-family: var(--font-text); font-size: 12.1px; background: var(--paper-soft); min-height: 64px;
-  }
-  .path-subfields textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
 
-  /* ---------- power grace period diagram — same explainer-diagram building blocks used on
-     floorsense-idle-release-07.html, but standalone (not nested inside a .checkin-card) since this
-     page's primary interaction is the mode grid above, not a single explainer card. ---------- */
-  .nsnp-grace-block { display: none; margin-top: 20px; max-width: 760px; }
-  .nsnp-grace-block.show { display: block; }
-  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  /* ---------- settings panel: two plain value drums (time window, max bookings) rather than the
+     rail/pin timeline diagram used elsewhere — "book the same desk N times in a window" doesn't
+     have a natural before/after moment to plot on a rail the way idle-release/NSNP's "duration
+     until X happens" or business-hours/check-in-window's "time of day" values do, so this reuses
+     just the Apple Clock time-drum mechanics (ported from floorsense-nsnp-09.html), not the
+     timeline-track-wrapper/anchor-pin/label-time suite. ---------- */
+  .adh-settings { display: none; margin-top: 20px; max-width: 760px; }
+  .adh-settings.show { display: block; }
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; }
   .timeline-card.standalone { border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
   .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
+  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; line-height: 1.5; }
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
-  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
+  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
 
-  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-
-  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
-  .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-  }
-  .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
-  }
-  .timeline-node .label-time.primary { color: #102A43; }
-  .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
-  }
-  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
-  .big-anchor .label-time.primary {
-    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
+  .adh-drum-row { display: flex; gap: 32px; justify-content: center; margin-top: 18px; }
+  .adh-drum-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .adh-drum-label { font-size: 11.48px; color: var(--ink-soft); text-align: center; margin: 0; max-width: 110px; }
 
   .time-drum {
-    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
+    position: relative; width: 100px; height: 150px; flex-shrink: 0;
     background: #fff; border-radius: 12px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
   }
@@ -226,30 +200,6 @@
   .time-drum-row.selected {
     font-size: 15px; font-weight: 700; color: #102A43;
     text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-  }
-
-  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes ci-grow {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
-  }
-  .timeline-card.animate-in .label-time,
-  .timeline-card.animate-in .label-desc {
-    animation: ci-fade .35s ease-out both;
-  }
-  .timeline-card.animate-in .timeline-zone {
-    transform-origin: left center;
-    animation: ci-grow .5s ease-out .15s both;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .timeline-card.animate-in * { animation: none !important; }
   }
 
   /* ---------- prev / next page nav ---------- */
@@ -348,7 +298,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
-        <a class="progress-seg current" data-module="nsnp" href="floorsense-nsnp-09.html">
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
@@ -356,7 +306,7 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-11.html">
+        <a class="progress-seg current" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-11.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
         </a>
@@ -367,8 +317,8 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Additional Features · Optional</span>
-        <h1 class="hero-title">No Swipe No Power</h1>
-        <p class="sub">Automatically cut power to a desk when it's occupied without a valid badge swipe.</p>
+        <h1 class="hero-title">Anti Desk Hogging</h1>
+        <p class="sub">Restrict users from booking the same desk on repeat, to encourage cross-team interaction.</p>
       </div>
     </div>
   </div>
@@ -378,101 +328,68 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>NSNP requires NSNP relay units installed at each desk to function — if a desk is occupied but nobody has swiped a valid badge, power to its outlets is cut until a valid swipe is detected. This is entirely optional. Choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+        <h2 class="section-title">Would you like to enable Anti Desk Hogging?</h2>
+        <p>Floorsense has a feature to restrict users from booking the same desk multiple days in a row. Some customers enable this to encourage cross-team interaction and to prevent a return to a quasi-fixed-desk way of working. It works by setting a time window — e.g. 2 days — and the number of times within that window a user can book the same desk.</p>
       </div>
 
-      <div class="path-check-grid" id="nsnpGrid">
-        <div class="path-check-card" data-mode="all">
+      <div class="path-check-grid" id="adhGrid">
+        <div class="path-check-card" data-mode="enable">
           <label class="path-row">
-            <input type="radio" name="nsnpMode" value="all">
+            <input type="radio" name="adhMode" value="enable">
             <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
             <div class="path-card-body">
-              <h3 class="path-title">All desks</h3>
-              <p class="path-desc">Every desk has an NSNP relay unit installed and enforces this power policy.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-mode="list">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="list">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">We will provide a list of NSNP enabled desks</h3>
-              <p class="path-desc">We'll send Smartalock a list of which desks have NSNP relay units installed and should enforce this policy.</p>
+              <h3 class="path-title">We will enable this feature</h3>
+              <p class="path-desc">Specify the size of the time window, and the number of times within that window the same desk can be booked, below.</p>
             </div>
           </label>
         </div>
 
         <div class="path-check-card" data-mode="none">
           <label class="path-row">
-            <input type="radio" name="nsnpMode" value="none">
+            <input type="radio" name="adhMode" value="none">
             <span class="path-tick" aria-hidden="true"></span>
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
             <div class="path-card-body">
-              <h3 class="path-title">We will not be using NSNP</h3>
-              <p class="path-desc">Skip this feature — desks won't have automatic power cutoff for missed badge swipes.</p>
+              <h3 class="path-title">We will NOT enable this feature</h3>
+              <p class="path-desc">Users can book the same desk as often as they like, with no restriction.</p>
             </div>
           </label>
-        </div>
-
-        <div class="path-check-card" data-mode="other">
-          <label class="path-row">
-            <input type="radio" name="nsnpMode" value="other">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Other</h3>
-              <p class="path-desc">Some other arrangement — describe it below.</p>
-            </div>
-          </label>
-          <div class="path-subfields" id="otherSubfields">
-            <label for="otherNote" class="path-subfields-label">Describe the arrangement</label>
-            <textarea id="otherNote" placeholder="e.g. NSNP on hot-desks only, standard desks excluded"></textarea>
-          </div>
         </div>
       </div>
 
-      <div class="nsnp-grace-block" id="graceBlock">
+      <div class="adh-settings" id="adhSettings">
         <div class="timeline-card standalone">
           <div class="timeline-header">
-            <p class="timeline-subtitle">Power grace period: <strong id="graceLabel">1h</strong></p>
+            <p class="timeline-subtitle">This would allow a user to book the same desk <strong id="adhTimesSummary">once</strong> every <strong id="adhWindowSummary">2 days</strong>.</p>
           </div>
-          <div class="timeline-diagram-row">
-            <div class="time-drum" id="graceDrum" tabindex="0" role="slider" aria-label="Power grace period" aria-valuemin="5" aria-valuemax="240">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="graceDrumScroll"></div>
+          <div class="adh-drum-row">
+            <div class="adh-drum-col">
+              <div class="time-drum" id="windowDrum" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
+                <div class="time-drum-window"></div>
+                <div class="time-drum-scroll" id="windowDrumScroll"></div>
+              </div>
+              <p class="adh-drum-label">Time Window</p>
             </div>
-            <div class="timeline-track-wrapper">
-              <div class="timeline-rail">
-                <div class="timeline-zone" id="graceZone"></div>
+            <div class="adh-drum-col">
+              <div class="time-drum" id="maxBookingsDrum" tabindex="0" role="slider" aria-label="Number of same-desk bookings within the window" aria-valuemin="1" aria-valuemax="7">
+                <div class="time-drum-window"></div>
+                <div class="time-drum-scroll" id="maxBookingsDrumScroll"></div>
               </div>
-              <div class="timeline-node" id="graceStartNode">
-                <div class="anchor-pin"></div>
-                <div class="label-time">0 min</div>
-                <div class="label-desc">Badge swipe</div>
-              </div>
-              <div class="timeline-node big-anchor" id="graceEndNode">
-                <div class="anchor-pin"></div>
-                <div class="label-time primary" id="graceEndTime">1h</div>
-                <div class="label-desc">Power cut</div>
-              </div>
+              <p class="adh-drum-label">Number of Same Desk Bookings</p>
             </div>
           </div>
-          <p class="policy-hint" id="graceHint">If no valid badge swipe is detected within 1h of a desk becoming occupied, power to its outlets is cut.</p>
+          <p class="policy-hint">This encourages cross-team interaction and helps prevent a return to a quasi-fixed-desk way of working.</p>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-reservation-length-08.html">
+        <a class="page-nav-btn" href="floorsense-fme-10.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-fme-10.html">
+        <span class="page-nav-btn disabled">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </a>
+        </span>
       </div>
 
     </div>
@@ -493,54 +410,39 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 09 of the Floorsense wizard family, new — appended after
-  floorsense-reservation-length-08.html per a request to add an "Additional Features (optional)"
-  page covering "No Swipe No Power (NSNP)": the desk power policy that requires NSNP relay units
-  installed at each desk to function (cutting power to a desk's outlets if it's occupied without a
-  valid badge swipe). This is the first genuinely optional module in the wizard — every other page
-  configures a setting that always applies, whereas NSNP is opt-in hardware-dependent behaviour, so
-  the hero/progress-bar tooltip both say "Optional" to flag that.
+  NOTE for Oleg: module 11 of the Floorsense wizard family, new — appended after
+  floorsense-fme-10.html per a request to add "Anti Desk Hogging": restricts users from booking the
+  same desk multiple days in a row, to encourage cross-team interaction and discourage a return to
+  quasi-fixed-desk working. This is the wizard's fourth optional module (after Auto-Release on Idle,
+  NSNP, and FME), following the same "Additional Features · Optional" hero eyebrow and "(Optional)"
+  progress-bar tooltip convention.
 
-  Structurally this page is a hybrid of the two templates used elsewhere: the main interaction is a
-  4-option mode grid (.path-check-grid/.path-check-card), ported verbatim from
-  floorsense-setup-path-00.html's radio-card pattern, rather than the single explainer-card pattern
-  used on floorsense-business-hours-04.html/floorsense-checkin-window-06.html/
-  floorsense-idle-release-07.html — because the primary question here ("how do you want to roll
-  this out, or not at all") is a multiple-choice pick, not a single time/duration value. The four
-  modes are: "All desks", "We will provide a list of NSNP enabled desks" (list assumed to be
-  supplied to Smartalock separately — this page doesn't collect the list itself), "We will not be
-  using NSNP" (the default — NSNP ships off unless a client opts in), and "Other" (reveals a
-  free-text textarea via the same .path-subfields show/hide pattern used for Setup Path's "Build
-  Your Own" card).
+  Structurally this is the simplest of the four opt-in pages: a 2-mode .path-check-grid (ported from
+  floorsense-setup-path-00.html/floorsense-nsnp-09.html) — "We will enable this feature" vs. "We will
+  NOT enable this feature" (the default, off) — matching the exact two options given in the brief.
+  Selecting "enable" reveals a settings panel with two independent value drums rather than the
+  rail/pin timeline diagram used on floorsense-idle-release-07.html/floorsense-nsnp-09.html: "how
+  many times may the same desk be booked" within "how many days" isn't a single before/after moment
+  you can plot on a timeline the way a duration-until-an-event is, so this reuses just the Apple
+  Clock time-drum mechanics (ported from floorsense-nsnp-09.html's createTimeDrum/buildDrumRows),
+  not the timeline-track-wrapper/anchor-pin/label-time/big-anchor suite — hence no reveal-animation
+  CSS either, since there are no pins/zones to animate. Two drums: "Time Window" (1-14 days,
+  default 2) and "Number of Same Desk Bookings" (1-7 times, default 1), with a live summary sentence
+  above them phrased to match the brief's own example exactly ("This would allow a user to book the
+  same desk twice every 5 days" — the brief's literal example of Time Window=5 days, Number of Same
+  Desk Bookings=2), rendered dynamically as "...book the same desk {once/twice/N times} every {1
+  day/N days}." via formatTimes()/formatDays().
 
-  Whenever the selected mode isn't "none", a second supplementary block appears below the grid: a
-  "Power grace period" diagram reusing the Apple Clock-style time-drum + fixed-start/duration-driven-
-  end timeline geometry built for floorsense-idle-release-07.html (small "Badge swipe" pin fixed at
-  the rail's left edge, enlarged "Power cut" pin driven by the drum, joined by a shaded zone) —
-  conceptually the same shape (an elapsed duration before an automatic action fires), just a
-  shorter range: 5-to-240-minute steps of 5 minutes (vs. idle release's 30-min-to-24h) since a power
-  grace period is realistically a matter of minutes, not hours, defaulting to 60 min (shown as
-  "1h"). Because this page has no single wrapping .checkin-card (unlike the explainer-card pages),
-  a `.timeline-card.standalone` modifier adds its own border/radius so the drum diagram still reads
-  as a self-contained card.
+  State lives at project.floorsense.wizard.antiDeskHogging = { mode, windowDays, maxBookings } — a
+  new top-level key. mode defaults to 'none' (off); windowDays defaults to 2 and maxBookings to 1
+  (a user can book the same desk once per 2-day window, i.e. can't rebook it the very next day) —
+  both values persist even while mode is 'none', so re-enabling doesn't lose a previously-chosen
+  setting. markModuleSaved key is 'anti-desk-hogging'.
 
-  State lives at project.floorsense.wizard.nsnp = { mode, otherNote, graceMinutes } — a new
-  top-level key. mode defaults to 'none' (off) per the brief ("default its turned off"); graceMinutes
-  defaults to 60 regardless of mode (it's only surfaced in the UI, and only saved as meaningful,
-  once mode !== 'none', but the value itself persists across mode toggles so flipping back and
-  forth doesn't lose a client's chosen grace period). markModuleSaved key is 'nsnp'.
-
-  This is currently the last module in the wizard: back-arrow goes to
-  floorsense-reservation-length-08.html (whose own previously-disabled next-arrow/Continue-redirect
-  now point here — see that file's NOTE), and this page's own next-arrow is disabled with no
-  Continue redirect, matching the "last page" pattern used by -08.html before this page existed.
-  The progress bar above gained a tenth "nsnp" segment at the end on all 10 Floorsense pages.
-
-  MOST RECENT CHANGE: a new module 10, floorsense-fme-10.html ("Follow Me Ergonomics"), was appended
-  after this page — this is no longer the last module in the wizard. Its previously-disabled
-  next-arrow is now a live link to floorsense-fme-10.html, and the Continue button now redirects
-  there too (same fix pattern applied to floorsense-reservation-length-08.html when this page was
-  added after it). See floorsense-fme-10.html's own NOTE for the new page's full details.
+  This is currently the last module in the wizard: back-arrow goes to floorsense-fme-10.html (whose
+  own previously-disabled next-arrow/Continue-redirect now point here — see that file's NOTE), and
+  this page's own next-arrow is disabled with no Continue redirect. The progress bar above gained a
+  twelfth "anti-desk-hogging" segment at the end on all 12 Floorsense pages.
 -->
 
 <script>
@@ -571,11 +473,11 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.floorsense.wizard.nsnp || {};
+  const saved = project.floorsense.wizard.antiDeskHogging || {};
   const state = {
     mode: saved.mode || 'none',
-    otherNote: saved.otherNote || "",
-    graceMinutes: Number.isFinite(saved.graceMinutes) ? saved.graceMinutes : 60
+    windowDays: Number.isFinite(saved.windowDays) ? saved.windowDays : 2,
+    maxBookings: Number.isFinite(saved.maxBookings) ? saved.maxBookings : 1
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -601,16 +503,15 @@
   });
 
   /* ---------------- fields ---------------- */
-  const grid = document.getElementById('nsnpGrid');
-  const otherSubfields = document.getElementById('otherSubfields');
-  const otherNote = document.getElementById('otherNote');
-  const graceBlock = document.getElementById('graceBlock');
+  const grid = document.getElementById('adhGrid');
+  const adhSettings = document.getElementById('adhSettings');
+  const adhTimesSummary = document.getElementById('adhTimesSummary');
+  const adhWindowSummary = document.getElementById('adhWindowSummary');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
   function save() {
-    state.otherNote = otherNote.value;
-    project.floorsense.wizard.nsnp = state;
+    project.floorsense.wizard.antiDeskHogging = state;
     saveProject(project);
   }
 
@@ -620,49 +521,27 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
-  function formatDurationMinutes(mins) {
-    mins = Math.round(Math.abs(mins));
-    const h = Math.floor(mins / 60), m = mins % 60;
-    if (h === 0) return m + ' min';
-    if (m === 0) return h + 'h';
-    return h + 'h ' + m + 'm';
+  function formatTimes(n) {
+    if (n === 1) return 'once';
+    if (n === 2) return 'twice';
+    return n + ' times';
+  }
+  function formatDays(d) {
+    return d === 1 ? '1 day' : d + ' days';
+  }
+  function updateSummary() {
+    adhTimesSummary.textContent = formatTimes(state.maxBookings);
+    adhWindowSummary.textContent = formatDays(state.windowDays);
   }
 
-  /* ---------------- power grace period diagram: fixed-left-anchor + duration-driven-end geometry,
-     same model used by floorsense-idle-release-07.html/floorsense-default-reservation-times-05.html ---------------- */
-  const ROW_EDGE_PERCENT = 10;
-  const DURATION_MAX_MINUTES = 240;
-  function endPercentForOffset(offsetMinutes) {
-    const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
-    return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
-  }
-
-  const graceLabel = document.getElementById('graceLabel');
-  const graceStartNode = document.getElementById('graceStartNode');
-  const graceEndNode = document.getElementById('graceEndNode');
-  const graceEndTime = document.getElementById('graceEndTime');
-  const graceZone = document.getElementById('graceZone');
-  const graceHint = document.getElementById('graceHint');
-
-  function updateGraceDiagram() {
-    const graceMinutes = Math.round(state.graceMinutes) || 0;
-    const endPercent = endPercentForOffset(graceMinutes);
-    graceStartNode.style.left = ROW_EDGE_PERCENT + '%';
-    graceEndNode.style.left = endPercent + '%';
-    graceZone.style.left = ROW_EDGE_PERCENT + '%';
-    graceZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
-    const durLabel = formatDurationMinutes(graceMinutes);
-    graceLabel.textContent = durLabel;
-    graceEndTime.textContent = durLabel;
-    graceHint.textContent = 'If no valid badge swipe is detected within ' + durLabel +
-      ' of a desk becoming occupied, power to its outlets is cut.';
-  }
-
-  /* ---------------- Apple Clock-style time drum, ported from
-     floorsense-idle-release-07.html/floorsense-default-reservation-times-05.html ---------------- */
+  /* ---------------- Apple Clock-style value drums, ported from
+     floorsense-nsnp-09.html/floorsense-idle-release-07.html (generic numeric values, not actual
+     times of day or elapsed durations) ---------------- */
   const DRUM_ROW_H = 30;
-  const graceDrumValues = [];
-  for (let m = 5; m <= 240; m += 5) graceDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
+  const windowDrumValues = [];
+  for (let d = 1; d <= 14; d++) windowDrumValues.push({ minutes: d, label: d === 1 ? '1 day' : d + ' days' });
+  const maxBookingsDrumValues = [];
+  for (let n = 1; n <= 7; n++) maxBookingsDrumValues.push({ minutes: n, label: n === 1 ? '1 time' : n + ' times' });
 
   function buildDrumRows(scrollEl, values) {
     let html = '<div class="time-drum-pad"></div>';
@@ -733,11 +612,19 @@
     };
   }
 
-  const graceDrum = createTimeDrum(document.getElementById('graceDrumScroll'), graceDrumValues, {
-    initialMinutes: state.graceMinutes,
-    onChange: (minutes) => {
-      state.graceMinutes = minutes;
-      updateGraceDiagram();
+  const windowDrum = createTimeDrum(document.getElementById('windowDrumScroll'), windowDrumValues, {
+    initialMinutes: state.windowDays,
+    onChange: (days) => {
+      state.windowDays = days;
+      updateSummary();
+      queueSave();
+    }
+  });
+  const maxBookingsDrum = createTimeDrum(document.getElementById('maxBookingsDrumScroll'), maxBookingsDrumValues, {
+    initialMinutes: state.maxBookings,
+    onChange: (times) => {
+      state.maxBookings = times;
+      updateSummary();
       queueSave();
     }
   });
@@ -749,13 +636,15 @@
       card.classList.toggle('checked', isMatch);
       card.querySelector('input[type="radio"]').checked = isMatch;
     });
-    otherSubfields.classList.toggle('show', mode === 'other');
-    const showGrace = mode !== 'none';
-    graceBlock.classList.toggle('show', showGrace);
-    // Re-sync the drum's scroll position whenever the block becomes visible: while
-    // display:none, scrollTop is clamped to 0 by the browser (the element has no layout box), so
-    // any position set earlier while hidden is lost and must be re-applied now that it can scroll.
-    if (showGrace) graceDrum.setMinutes(state.graceMinutes);
+    const showSettings = mode === 'enable';
+    adhSettings.classList.toggle('show', showSettings);
+    // Re-sync both drums' scroll positions whenever the panel becomes visible: while display:none,
+    // scrollTop is clamped to 0 by the browser (no layout box), so a position set earlier while
+    // hidden is lost and must be re-applied now that it can actually scroll.
+    if (showSettings) {
+      windowDrum.setMinutes(state.windowDays);
+      maxBookingsDrum.setMinutes(state.maxBookings);
+    }
   }
 
   grid.querySelectorAll('.path-check-card').forEach(card => {
@@ -767,49 +656,25 @@
     });
   });
 
-  otherNote.addEventListener('input', queueSave);
-
   function applyState() {
     setModeCards(state.mode);
-    otherNote.value = state.otherNote;
-    graceDrum.setMinutes(state.graceMinutes);
-    updateGraceDiagram();
+    updateSummary();
   }
   applyState();
 
-  /* ---------------- reveal animation: plays once when the diagram scrolls into view ---------------- */
-  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const timelineCard = document.querySelector('.timeline-card');
-  if (timelineCard && !reducedMotion) {
-    if ('IntersectionObserver' in window) {
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.35 });
-      revealObserver.observe(timelineCard);
-    } else {
-      timelineCard.classList.add('animate-in');
-    }
-  }
-
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.mode = 'none';
-    state.otherNote = "";
-    state.graceMinutes = 60;
+    state.windowDays = 2;
+    state.maxBookings = 1;
     applyState();
     queueSave();
   });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('nsnp');
+    markModuleSaved('anti-desk-hogging');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-fme-10.html'; }, 500);
   });
 })();
 </script>
