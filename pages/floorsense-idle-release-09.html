@@ -123,7 +123,7 @@
   .section-head p:last-child { margin-bottom: 0; }
 
   /* ---------- explainer card (icon+desc, live diagram, footer) — shared pattern, first introduced
-     on floorsense-checkin-window-07.html; widened from 640px to 760px and centered to match that
+     on floorsense-checkin-window-08.html; widened from 640px to 760px and centered to match that
      page's own card sizing ---------- */
   .checkin-card {
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
@@ -138,7 +138,7 @@
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   /* ---------- on/off switch, ported from smartalock-kiosk-customisation-07.html's .switch —
-     this is the wizard's second optional feature (after floorsense-nsnp-10.html), so it needs its
+     this is the wizard's second optional feature (after floorsense-nsnp-11.html), so it needs its
      own enable/disable control; unlike NSNP's 4-way mode grid, a single-topic explainer page like
      this one only needs a plain on/off toggle. ---------- */
   .idle-toggle-row {
@@ -159,7 +159,7 @@
 
   /* ---------- body wrapper: the diagram + footer are hidden entirely until the feature is
      switched on, same show/hide convention (rather than opacity/pointer-events dimming) used for
-     floorsense-nsnp-10.html's conditional grace-period block. ---------- */
+     floorsense-nsnp-11.html's conditional grace-period block. ---------- */
   .idle-body { display: none; }
   .idle-body.show { display: block; }
 
@@ -170,7 +170,7 @@
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
 
   /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, ported from
-     floorsense-checkin-window-07.html's earliest/latest drums — but idle release has only one real
+     floorsense-checkin-window-08.html's earliest/latest drums — but idle release has only one real
      value (how long a desk may sit idle before release), not two independent times, so there's a
      single drum here instead of one on each side. Neither pin is an absolute clock time (idle
      release isn't tied to any time of day), so both label-times show elapsed hours instead. ---------- */
@@ -205,7 +205,7 @@
   .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
   /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
-     from floorsense-checkin-window-07.html, including its white/3D body treatment. ---------- */
+     from floorsense-checkin-window-08.html, including its white/3D body treatment. ---------- */
   .time-drum {
     position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
     background: #fff; border-radius: 12px;
@@ -243,7 +243,7 @@
   /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
      .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
-     (same constraint as floorsense-checkin-window-07.html's diagram). ---------- */
+     (same constraint as floorsense-checkin-window-08.html's diagram). ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ci-pop-handle {
     from { opacity: 0; transform: scale(0.4); }
@@ -357,31 +357,35 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Optional Features</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-07.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg current" data-module="idle-release" href="floorsense-idle-release-08.html">
+        <a class="progress-seg current" data-module="idle-release" href="floorsense-idle-release-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-09.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-10.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
-        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-10.html">
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-11.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-11.html">
+        <a class="progress-seg" data-module="fme" href="floorsense-fme-12.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-12.html">
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-13.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
         </a>
@@ -458,10 +462,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-checkin-window-07.html">
+        <a class="page-nav-btn" href="floorsense-checkin-window-08.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-reservation-length-09.html">
+        <a class="page-nav-btn next" href="floorsense-reservation-length-10.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -485,7 +489,7 @@
 
 <!--
   NOTE for Oleg: module 04 of the Floorsense wizard family, new — split out of
-  floorsense-checkin-window-07.html per a request ("make it a separate page following 03"). Covers
+  floorsense-checkin-window-08.html per a request ("make it a separate page following 03"). Covers
   the single "Auto-Release on Idle" setting (idleHours, default 3) that used to live in
   checkin-policy-03's "Default Reservation Times" section. Built with the same .checkin-card
   explainer pattern established there (icon + description header with the idleHours number field
@@ -500,7 +504,7 @@
   timeline-* rules for that page's check-in-window example, which aren't used here and could be
   trimmed, but were left in for drop-in consistency with the source page's stylesheet).
 
-  Inserted into the click-through order immediately after floorsense-checkin-window-07.html and
+  Inserted into the click-through order immediately after floorsense-checkin-window-08.html and
   before floorsense-prebooking-advance-04.html: back-arrow goes to checkin-policy-03.html,
   next-arrow/Continue goes to prebooking-advance-05.html (renamed from -04.html to make room for
   this page taking the 04 slot — see that file's own NOTE). All 6 pre-existing Floorsense pages
@@ -515,11 +519,11 @@
 
   RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
   its own page before Check-in Window, this file itself was renamed from
-  floorsense-idle-release-04.html to floorsense-idle-release-08.html (it now takes the "05" slot,
-  vacated when floorsense-checkin-policy-03.html was renamed to floorsense-checkin-window-07.html
+  floorsense-idle-release-04.html to floorsense-idle-release-09.html (it now takes the "05" slot,
+  vacated when floorsense-checkin-policy-03.html was renamed to floorsense-checkin-window-08.html
   and split into two pages — see that file's and the new floorsense-default-reservation-times-
   03.html's own NOTEs for the full story). This page's back-arrow was updated to
-  floorsense-checkin-window-07.html and its next-arrow to floorsense-prebooking-advance-04.html
+  floorsense-checkin-window-08.html and its next-arrow to floorsense-prebooking-advance-04.html
   (renamed from -05.html in the same cascade). The progress bar above gained an eighth segment
   ("Default Reservation Times") inserted before "Check-in Window"; all references above to
   "checkin-policy-03.html" and "prebooking-advance-05.html" are historical and now stale filenames
@@ -529,19 +533,19 @@
   added the missing `setTimeout(() => window.location.href = ..., 500)` redirect, matching the
   pattern used on floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
   floorsense-checkin-methods-02.html. Same bug found and fixed at the same time on
-  floorsense-default-reservation-times-06.html, floorsense-checkin-window-07.html and
+  floorsense-default-reservation-times-07.html, floorsense-checkin-window-08.html and
   floorsense-prebooking-advance-04.html.
 
   MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking was
   relocated to immediately follow Business Hours (taking over module number 04), which pushed this
   page from module 06 to 07 — renamed from floorsense-idle-release-06.html. Its next-arrow and
-  Continue redirect now point to floorsense-reservation-length-09.html (was
+  Continue redirect now point to floorsense-reservation-length-10.html (was
   floorsense-prebooking-advance-04.html, which this page used to precede); its back-arrow is
-  unchanged (floorsense-checkin-window-07.html, itself renamed from -05). See
+  unchanged (floorsense-checkin-window-08.html, itself renamed from -05). See
   floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
 
   MOST RECENT CHANGE: per a request to restyle this card and diagram to match
-  floorsense-checkin-window-07.html, removed the old static SVG 3-step flowchart
+  floorsense-checkin-window-08.html, removed the old static SVG 3-step flowchart
   (.checkin-example/#irMiddleTitle) and the inline <input id="idleHours"> number field
   (.checkin-inline-field/-input/-suffix) — all now dead and deleted from the CSS. In their place,
   the card body now uses a .timeline-card with one Apple Clock-style time drum (30-min steps, 30min
@@ -549,7 +553,7 @@
   pin at the rail's left edge (0h, always) and an enlarged "Released" pin (.big-anchor) whose
   position and label track the drum, joined by a single shaded .timeline-zone. This reuses the
   fixed-left-anchor + duration-driven-end geometry model from
-  floorsense-default-reservation-times-06.html's duration card (ROW_EDGE_PERCENT=10,
+  floorsense-default-reservation-times-07.html's duration card (ROW_EDGE_PERCENT=10,
   endPercentForOffset()) rather than checkin-window-06's offset-from-center model, since idle
   release has only one real value (an elapsed duration), not two independent clock times needing a
   shared center reference. buildDrumRows()/createTimeDrum() were ported verbatim from that page.
@@ -562,17 +566,17 @@
   styling/graphics change only, not a data-model change — default remains 3.
 
   MOST RECENT CHANGE: per a request to mark this as an optional function that's off by default,
-  Auto-Release on Idle is now the wizard's second opt-in module (after floorsense-nsnp-10.html).
+  Auto-Release on Idle is now the wizard's second opt-in module (after floorsense-nsnp-11.html).
   Added an on/off .switch control (ported from smartalock-kiosk-customisation-07.html's toggle
   pattern) inside .checkin-card-header, labelled "Enable Auto-Release on Idle". The .timeline-card
   diagram and .checkin-footer are now wrapped in a new #idleBody element that's hidden entirely
   (display:none, no "show" class) until the switch is turned on — the same show/hide convention
-  used for floorsense-nsnp-10.html's conditional grace-period block, rather than dimming via
+  used for floorsense-nsnp-11.html's conditional grace-period block, rather than dimming via
   opacity/pointer-events. State gained a new `enabled` boolean:
   project.floorsense.wizard.idleRelease = { enabled, idleHours }, defaulting to enabled:false;
   idleHours still defaults to 3 and is preserved even while disabled, so re-enabling doesn't lose a
   previously-chosen duration. Reset now also sets enabled back to false. markModuleSaved still fires
-  on Continue regardless of the switch state, consistent with how floorsense-nsnp-10.html marks
+  on Continue regardless of the switch state, consistent with how floorsense-nsnp-11.html marks
   itself saved regardless of which mode is chosen. The hero eyebrow changed from "Configure" to
   "Additional Features · Optional" to match the NSNP page, and the progress-bar tooltip across all
   10 Floorsense pages now reads "Auto-Release on Idle (Optional)". Reservation Length's own
@@ -666,7 +670,7 @@
   /* ---------------- diagram: a small fixed "Reserved" pin at the rail's left edge and a big
      "Released" pin driven by the idle-duration drum, joined by a shaded zone — same
      fixed-left-anchor + duration-driven-end geometry used by
-     floorsense-default-reservation-times-06.html's duration card, since idle release is a single
+     floorsense-default-reservation-times-07.html's duration card, since idle release is a single
      elapsed-time value rather than two independent clock times. ---------------- */
   const ROW_EDGE_PERCENT = 10;
   const DURATION_MAX_MINUTES = 24 * 60;
@@ -697,7 +701,7 @@
   }
 
   /* ---------------- Apple Clock-style time drum, ported from
-     floorsense-default-reservation-times-06.html/floorsense-checkin-window-07.html ---------------- */
+     floorsense-default-reservation-times-07.html/floorsense-checkin-window-08.html ---------------- */
   const DRUM_ROW_H = 30;
   const idleDrumValues = [];
   for (let m = 30; m <= 24 * 60; m += 30) idleDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
@@ -782,7 +786,7 @@
 
   /* ---------------- on/off switch — this feature is optional and off by default; the diagram is
      hidden entirely (not just dimmed) until switched on, same convention used for
-     floorsense-nsnp-10.html's conditional grace-period block. ---------------- */
+     floorsense-nsnp-11.html's conditional grace-period block. ---------------- */
   const idleEnableSwitch = document.getElementById('idleEnableSwitch');
   const idleBody = document.getElementById('idleBody');
 
@@ -840,7 +844,7 @@
     markModuleSaved('idle-release');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-reservation-length-09.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-reservation-length-10.html'; }, 500);
   });
 })();
 </script>

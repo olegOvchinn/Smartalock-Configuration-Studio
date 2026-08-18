@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optional Features — Floorsense Configuration Studio (Template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --header-grey: #48484A;
+    --header-grey-light: #AEAEB2;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #1FAA59;
+    --accent-wash: #E6F7ED;
+    --accent-deep: #178A48;
+    --danger: #FF3B30;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 24px 48px -24px rgba(0,0,0,0.14);
+    --panel-maxw: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page shell (no hero/nav pane) ---------- */
+  .page-main { min-height: 100vh; display: flex; flex-direction: column; }
+  .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
+  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
+
+  /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
+  .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
+  .progress-seg {
+    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
+    text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .progress-seg-fill {
+    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
+    transition: background .18s, box-shadow .18s;
+  }
+  .progress-seg.saved .progress-seg-fill { background: #102A43; }
+  .progress-seg.current .progress-seg-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
+  .progress-seg:hover .progress-seg-fill, .progress-seg.tapped .progress-seg-fill { background: var(--accent-deep); }
+
+  .progress-seg-tip {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%) translateY(4px);
+    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
+    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
+  }
+  .progress-seg-tip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--ink);
+  }
+  .progress-seg:hover .progress-seg-tip,
+  .progress-seg:focus-visible .progress-seg-tip,
+  .progress-seg.tapped .progress-seg-tip {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .progress-seg:first-child .progress-seg-tip { left: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:first-child .progress-seg-tip::after { left: 14px; }
+  .progress-seg:first-child:hover .progress-seg-tip,
+  .progress-seg:first-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+  .progress-seg:last-child .progress-seg-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
+  .progress-seg:last-child .progress-seg-tip::after { left: auto; right: 14px; transform: none; }
+  .progress-seg:last-child:hover .progress-seg-tip,
+  .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
+
+  .eyebrow {
+    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+  }
+  .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
+  h1.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 76px;
+    font-weight: 200; /* Extra Light */
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #102A43;
+    margin: 0 0 24px;
+    white-space: nowrap;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
+
+  .panel-topbar { padding: 0; }
+  .top-frame {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    padding: 20px 0 16px; border-bottom: 1px solid var(--line);
+  }
+
+  .panel-scroll { flex: 1; padding: 28px 0 48px; }
+
+  /* ---------- feature list card: one .feature-row per optional module, each with an icon, a
+     title + one-line description, and a .switch on the right — same shell/card border treatment
+     as floorsense-business-hours-05.html's .checkin-card, but repeated rows instead of one diagram. ---------- */
+  .feature-card {
+    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .feature-row {
+    display: flex; align-items: center; gap: 16px; padding: 22px;
+  }
+  .feature-row + .feature-row { border-top: 1px solid var(--line); }
+  .feature-row-icon {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--accent-wash); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feature-row-icon svg { width: 22px; height: 22px; stroke: var(--accent-deep); }
+  .feature-row-body { flex: 1; min-width: 0; }
+  .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
+  .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+  .feature-row-status {
+    font-size: 11.48px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase;
+    letter-spacing: 0.04em; margin-top: 6px; display: block;
+  }
+  .feature-row-status.on { color: var(--accent-deep); }
+
+  /* ---------- on/off switch, ported verbatim from floorsense-idle-release-09.html (itself ported
+     from smartalock-kiosk-customisation-07.html) — same visual control used to enable/disable each
+     of the four optional modules from this single hub row list. ---------- */
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+
+  .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
+  .feature-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .feature-footer-icon svg { width: 34px; height: 34px; }
+  .feature-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+
+  /* ---------- prev / next page nav ---------- */
+  .page-nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+  }
+  .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
+  .page-nav-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color .18s, background .18s, transform .15s;
+  }
+  .page-nav-arrow svg { width: 17px; height: 17px; stroke: var(--ink); transition: stroke .18s; }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--accent); background: var(--accent-wash); transform: scale(1.06); }
+  .page-nav-btn:not(.disabled):hover .page-nav-arrow svg { stroke: var(--accent-deep); }
+  .page-nav-btn.next:not(.disabled):hover .page-nav-arrow { transform: scale(1.06) translateX(1px); }
+  .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
+
+  /* ---------- action bar ---------- */
+  .action-bar {
+    position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line); padding: 14px 0;
+  }
+  .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot.show { opacity: 1; }
+  button.primary {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: var(--accent); border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    transition: background .15s, transform .1s, opacity .15s;
+  }
+  button.primary:hover { background: var(--accent-deep); }
+  button.primary:active { transform: scale(0.98); }
+  button.ghost {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+  footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="page-main">
+
+  <div class="panel-topbar">
+    <div class="top-frame">
+      <div class="panel-inner">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+          <span class="brand-divider">×</span>
+          <span class="brand-logo-floorsense">Floorsense</span>
+          <span class="brand-tagline">Configuration Studio · Module Preview</span>
+        </div>
+
+        <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Setup Path</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Methods</span>
+        </a>
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Desk &amp; User Groups</span>
+        </a>
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Prebooking Window</span>
+        </a>
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Business Hours</span>
+        </a>
+        <a class="progress-seg current" data-module="optional-features" href="floorsense-optional-features-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Optional Features</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-07.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Default Reservation Times</span>
+        </a>
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-08.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Check-in Window</span>
+        </a>
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-09.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
+        </a>
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-10.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Reservation Length</span>
+        </a>
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-11.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">NSNP (Optional)</span>
+        </a>
+        <a class="progress-seg" data-module="fme" href="floorsense-fme-12.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
+        </a>
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-13.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
+        </a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="panel-inner">
+      <div class="panel-intro">
+        <span class="eyebrow">Additional Features · Optional</span>
+        <h1 class="hero-title">Optional Features</h1>
+        <p class="sub">Turn on any features you'd like to configure — everything here is off by default, and the wizard skips straight past any switched-off feature's page.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-scroll">
+    <div class="panel-inner">
+
+      <div class="feature-card">
+
+        <div class="feature-row">
+          <div class="feature-row-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          </div>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Auto-Release on Idle</p>
+            <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
+            <span class="feature-row-status" id="idleReleaseStatus">Off</span>
+          </div>
+          <button type="button" class="switch" id="idleReleaseSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on Idle"></button>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-row-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+          </div>
+          <div class="feature-row-body">
+            <p class="feature-row-title">No Swipe No Power (NSNP)</p>
+            <p class="feature-row-desc">Desk power policy requiring Floorsense NSNP relay units — desks only power on for an active, checked-in booking.</p>
+            <span class="feature-row-status" id="nsnpStatus">Off</span>
+          </div>
+          <button type="button" class="switch" id="nsnpSwitch" role="switch" aria-checked="false" aria-label="Enable No Swipe No Power"></button>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-row-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6"/><path d="M8 21h8"/><path d="M6 21c0-5 2.5-8 6-8s6 3 6 8"/></svg>
+          </div>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
+            <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app.</p>
+            <span class="feature-row-status" id="fmeStatus">Off</span>
+          </div>
+          <button type="button" class="switch" id="fmeSwitch" role="switch" aria-checked="false" aria-label="Enable Follow Me Ergonomics"></button>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-row-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 15l2 2 4-4"/></svg>
+          </div>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Anti Desk Hogging</p>
+            <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
+            <span class="feature-row-status" id="adhStatus">Off</span>
+          </div>
+          <button type="button" class="switch" id="adhSwitch" role="switch" aria-checked="false" aria-label="Enable Anti Desk Hogging"></button>
+        </div>
+
+        <div class="feature-footer">
+          <div class="feature-footer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <p class="feature-footer-text">Switch on any feature you'd like to configure, then use Continue to work through just those pages — anything left off is skipped entirely. Each feature's own page still has full detail and can be revisited any time from the progress bar above.</p>
+        </div>
+
+      </div>
+
+      <div class="page-nav">
+        <a class="page-nav-btn" href="floorsense-business-hours-05.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+        </a>
+        <a class="page-nav-btn next" href="floorsense-default-reservation-times-07.html">
+          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="panel-inner">
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
+      <div style="display:flex; gap:10px;">
+        <button class="ghost" id="resetBtn" type="button">Reset</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-foot">Smartalock Configuration Studio</footer>
+
+</main>
+
+<!--
+  NOTE for Oleg: brand-new module of the Floorsense wizard family, module 06, inserted per the
+  request ("create a new page between 05 and 06 that will contain a list of all optional functions.
+  with on/off toggle turned off by default. User will turn on any number from the list and that
+  will allow them to go through the turned on function pages, otherwise optional functions will be
+  skipped"). This is the wizard's fourth optional-feature-adjacent page but the first one that acts
+  purely as a control hub rather than configuring a feature itself — it exists solely to flip the
+  same four on/off switches that floorsense-idle-release-09.html, floorsense-nsnp-11.html,
+  floorsense-fme-12.html, and floorsense-anti-desk-hogging-13.html each already carry individually,
+  from one convenient list, and to make the click-through wizard skip straight past whichever of
+  those four pages are currently switched off.
+
+  Slotted in as module 06, immediately after Business Hours and before Default Reservation Times —
+  the two pages that used to be directly adjacent. Every module number from the old 06 (Default
+  Reservation Times) onward shifted up by one to make room: floorsense-default-reservation-times-06
+  became -07, floorsense-checkin-window-07 became -08, floorsense-idle-release-08 became -09,
+  floorsense-reservation-length-09 became -10, floorsense-nsnp-10 became -11, floorsense-fme-11
+  became -12, floorsense-anti-desk-hogging-12 became -13. Every Floorsense wizard page's
+  progress-bar nav (including this one) now lists all 14 modules 00–13; README.md's module table
+  and filename references were updated for the renumbering (see its own history for details).
+  floorsense-business-hours-05.html's next-arrow/Continue now point here instead of straight to
+  Default Reservation Times; this page's own back-arrow points to Business Hours and its own
+  next-arrow/Continue point to Default Reservation Times, both statically — this hub page itself is
+  never skippable, since it's the only place these four switches can all be seen at once.
+
+  Deliberately reuses a single .feature-card with four stacked .feature-row entries (icon + title +
+  one-line description + status text on the left, a .switch on the right) rather than four separate
+  cards, since the point of this page is a quick scannable list, not four full explainer treatments
+  — those already exist on each feature's own page. The .switch control itself is ported verbatim
+  from floorsense-idle-release-09.html (itself ported from
+  smartalock-kiosk-customisation-07.html), same on/off visual and CSS.
+
+  Critically, this page introduces NO new state key of its own — there is no
+  project.floorsense.wizard.optionalFeatures. Each switch reads and writes the SAME existing state
+  field its own dedicated page already uses: idleRelease.enabled (boolean), nsnp.mode, fme.mode, and
+  antiDeskHogging.mode (all three strings where 'none' means off). This was a deliberate choice to
+  keep a single source of truth — duplicating a parallel "is this on" flag here would risk it
+  drifting out of sync with what each feature's own page shows/saves. Flipping a switch ON here,
+  when the underlying value is currently the "off" value, sets it to a sensible non-off default so
+  the destination page has something reasonable pre-selected the first time it's visited:
+  idleRelease.enabled becomes true; nsnp.mode and fme.mode become 'all' (their "All desks" option);
+  antiDeskHogging.mode becomes 'enable'. Flipping a switch OFF sets that same field back to its off
+  value ('none'/false) without touching any of that feature's OTHER saved sub-fields (idleHours,
+  graceMinutes, otherNote, windowDays, maxBookings, etc. all persist untouched, so re-enabling a
+  feature later restores whatever was previously configured). Each row's status text ("Off"/"On")
+  and the switch's own visual/aria-checked state are re-rendered from these same underlying fields
+  on load and after every toggle, so this page always reflects the true current state even if it was
+  last changed from the feature's own page rather than from here.
+
+  Dynamic skip-navigation: a NAV_SEQUENCE array (duplicated identically across this page and the
+  five pages whose immediate neighbor(s) are conditionally skippable — floorsense-checkin-window-08,
+  floorsense-reservation-length-10, floorsense-nsnp-11, floorsense-fme-12, and
+  floorsense-anti-desk-hogging-13) lists the fixed sequence Check-in Window → Auto-Release on Idle →
+  Reservation Length → NSNP → FME → Anti Desk Hogging, each optional entry tagged with the same
+  flagPath/flagType this hub page's own switches read. seqResolve(currentKey, direction) walks that
+  array skipping any disabled optional entry, so Back/Next on those five pages always lands on the
+  nearest currently-enabled page (or the nearest non-optional "floor" page — Check-in Window and
+  Reservation Length are never themselves skippable). This hub page itself doesn't need that walker,
+  since its own Back/Next are static (Business Hours / Default Reservation Times) — flipping a
+  switch here only changes what those five other pages resolve to, not this page's own neighbors.
+
+  Explicit design decision: the progress bar above remains completely unaffected by any of this — it
+  always lists and links to all 14 modules regardless of which optional features are currently
+  switched on or off, exactly like every other page in the wizard. Only the linear Next/Back
+  click-through flow (via NAV_SEQUENCE/seqResolve) skips disabled optional pages; a feature's own
+  page, its state, and its progress-bar entry remain fully intact and directly reachable at all
+  times — turning a feature off here never erases anything already configured on that feature's own
+  page, it only changes whether Next/Back walks through it automatically.
+
+  markModuleSaved key is 'optional-features'.
+-->
+
+<script>
+(function(){
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: { customer:"", site:"", projectName:"", contact:"", email:"", phone:"" },
+      smartalock: { configured:false, templates:[], wizard:{} },
+      floorsense: { configured:false, templates:[], wizard:{} }
+    };
+  }
+
+  function saveProject(project) {
+    project.updated = new Date().toISOString();
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch(e) {}
+  }
+
+  let project = loadProject();
+  project.floorsense = project.floorsense || { configured:false, templates:[], wizard:{} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
+
+  /* ---------------- horizontal progress bar ---------------- */
+  function renderProgressBar() {
+    document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
+      const key = seg.getAttribute('data-module');
+      seg.classList.toggle('saved', !!project.floorsense.wizard.moduleStatus[key]);
+    });
+  }
+  function markModuleSaved(key) {
+    project.floorsense.wizard.moduleStatus[key] = true;
+    saveProject(project);
+    renderProgressBar();
+  }
+  renderProgressBar();
+
+  document.querySelectorAll('.progress-seg').forEach(seg => {
+    seg.addEventListener('pointerdown', () => {
+      document.querySelectorAll('.progress-seg.tapped').forEach(s => { if (s !== seg) s.classList.remove('tapped'); });
+      seg.classList.add('tapped');
+    });
+    seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
+  });
+
+  /* ---------------- feature toggles: each reads/writes the SAME state field its own dedicated
+     page already uses — no new duplicate state key is introduced by this hub. See the NOTE above
+     for the full single-source-of-truth rationale. ---------- */
+  const saveText = document.getElementById('saveText');
+  const saveDot = document.getElementById('saveDot');
+
+  function queueSave() {
+    saveProject(project);
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  const FEATURES = [
+    {
+      key: 'idleRelease', switchEl: 'idleReleaseSwitch', statusEl: 'idleReleaseStatus',
+      isOn: () => !!(project.floorsense.wizard.idleRelease && project.floorsense.wizard.idleRelease.enabled),
+      setOn: (on) => {
+        project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
+        project.floorsense.wizard.idleRelease.enabled = on;
+      }
+    },
+    {
+      key: 'nsnp', switchEl: 'nsnpSwitch', statusEl: 'nsnpStatus',
+      isOn: () => !!(project.floorsense.wizard.nsnp && project.floorsense.wizard.nsnp.mode && project.floorsense.wizard.nsnp.mode !== 'none'),
+      setOn: (on) => {
+        project.floorsense.wizard.nsnp = project.floorsense.wizard.nsnp || {};
+        project.floorsense.wizard.nsnp.mode = on ? 'all' : 'none';
+      }
+    },
+    {
+      key: 'fme', switchEl: 'fmeSwitch', statusEl: 'fmeStatus',
+      isOn: () => !!(project.floorsense.wizard.fme && project.floorsense.wizard.fme.mode && project.floorsense.wizard.fme.mode !== 'none'),
+      setOn: (on) => {
+        project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
+        project.floorsense.wizard.fme.mode = on ? 'all' : 'none';
+      }
+    },
+    {
+      key: 'antiDeskHogging', switchEl: 'adhSwitch', statusEl: 'adhStatus',
+      isOn: () => !!(project.floorsense.wizard.antiDeskHogging && project.floorsense.wizard.antiDeskHogging.mode && project.floorsense.wizard.antiDeskHogging.mode !== 'none'),
+      setOn: (on) => {
+        project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
+        project.floorsense.wizard.antiDeskHogging.mode = on ? 'enable' : 'none';
+      }
+    }
+  ];
+
+  function renderFeature(feature) {
+    const on = feature.isOn();
+    const switchBtn = document.getElementById(feature.switchEl);
+    const statusEl = document.getElementById(feature.statusEl);
+    switchBtn.classList.toggle('on', on);
+    switchBtn.setAttribute('aria-checked', on ? 'true' : 'false');
+    statusEl.textContent = on ? 'On' : 'Off';
+    statusEl.classList.toggle('on', on);
+  }
+
+  function renderAll() {
+    FEATURES.forEach(renderFeature);
+  }
+
+  FEATURES.forEach(feature => {
+    document.getElementById(feature.switchEl).addEventListener('click', () => {
+      feature.setOn(!feature.isOn());
+      renderFeature(feature);
+      queueSave();
+    });
+  });
+
+  renderAll();
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    FEATURES.forEach(feature => feature.setOn(false));
+    renderAll();
+    queueSave();
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    saveProject(project);
+    markModuleSaved('optional-features');
+    saveText.textContent = 'Saved to project configuration';
+    saveDot.classList.add('show');
+    setTimeout(() => { window.location.href = 'floorsense-default-reservation-times-07.html'; }, 500);
+  });
+})();
+</script>
+
+</body>
+</html>

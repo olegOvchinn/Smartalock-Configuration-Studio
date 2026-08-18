@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Default Reservation Length — Floorsense Configuration Studio (Template)</title>
+<title>Follow Me Ergonomics (FME) — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -122,49 +122,32 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- default reservation length: radio options + conditional fixed-period field ---------- */
-  .duration-options { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
-  .duration-option {
-    display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--line); border-radius: var(--radius-sm);
-    padding: 12px 14px; cursor: pointer; transition: border-color .15s, background .15s;
+  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
+     floorsense-nsnp-11.html ---------- */
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  .path-check-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 18px 20px; transition: border-color .15s, background .15s;
   }
-  .duration-option:hover { border-color: var(--ink); }
-  .duration-option.selected { border-color: var(--ink); background: var(--paper-soft); }
-  .duration-option input { accent-color: var(--ink); margin-top: 3px; flex-shrink: 0; }
-  .duration-option .title { font-weight: 600; font-size: 13.12px; color: var(--ink); display: block; }
-  .duration-option .sub { font-size: 11.48px; color: var(--ink-soft); margin-top: 2px; }
-
-  .duration-fields { display: none; flex-direction: column; gap: 8px; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); max-width: 640px; }
-  .duration-fields.show { display: flex; }
-  .duration-fields label { display: block; font-size: 10.82px; font-weight: 600; margin-bottom: 6px; color: var(--ink-soft); }
-  .duration-fields input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 12.1px; background: var(--paper-soft);
+  .path-check-card:hover { border-color: var(--accent); }
+  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .path-tick {
+    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
   }
-  .duration-fields input:focus { outline: none; border-color: var(--ink); background: #fff; }
-  .duration-fields .hint { font-size: 11.27px; color: var(--ink-soft); margin: 4px 0 0; }
-
-  /* ---------- max desks per user: toggle-style checkbox card (thick tick pattern) ---------- */
-  .toggle-card {
-    display: flex; align-items: flex-start; gap: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm);
-    padding: 13px 14px; cursor: pointer; max-width: 640px; margin-top: 14px;
-    transition: border-color .15s, background .15s;
+  .path-check-card.checked .path-tick { border-color: var(--accent); }
+  .path-tick::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+    opacity: 0; transition: opacity .15s;
   }
-  .toggle-card:hover { border-color: var(--accent); background: var(--accent-wash); }
-  .toggle-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .toggle-tick {
-    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); background: var(--paper);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;
-    transition: border-color .15s, background .15s; margin-top: 1px;
-  }
-  .toggle-tick::after {
-    content: ''; width: 10px; height: 7px; opacity: 0;
-    border-left: 2.5px solid #fff; border-bottom: 2.5px solid #fff;
-    transform: rotate(-45deg) translateY(-1px); transition: opacity .12s;
-  }
-  .toggle-card input:checked ~ .toggle-tick { background: var(--accent); border-color: var(--accent); }
-  .toggle-card input:checked ~ .toggle-tick::after { opacity: 1; }
-  .toggle-desc { font-size: 13.12px; color: var(--ink); line-height: 1.5; padding-top: 1px; }
+  .path-check-card.checked .path-tick::after { opacity: 1; }
+  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .path-card-body { min-width: 0; flex: 1; }
+  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -250,31 +233,35 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Optional Features</span>
+        </a>
+        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Default Reservation Times</span>
         </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-07.html">
+        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-08.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Window</span>
         </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-08.html">
+        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
         </a>
-        <a class="progress-seg current" data-module="reservation-length" href="floorsense-reservation-length-09.html">
+        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-10.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Length</span>
         </a>
-        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-10.html">
+        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-11.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">NSNP (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-11.html">
+        <a class="progress-seg current" data-module="fme" href="floorsense-fme-12.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
         </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-12.html">
+        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-13.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
         </a>
@@ -284,9 +271,9 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Default Reservation Length</h1>
-        <p class="sub">Decide how long a self-assigned desk stays reserved, and how many a user can hold at once.</p>
+        <span class="eyebrow">Additional Features · Optional</span>
+        <h1 class="hero-title">Follow Me Ergonomics</h1>
+        <p class="sub">Let end users save and apply their custom sit-stand desk height via the FS mobile app.</p>
       </div>
     </div>
   </div>
@@ -296,75 +283,53 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Default Reservation Length</h2>
-        <p>When a user self-assigns a desk, how long should they be able to keep it for? Note that Auto-release on Idle may release the reservation before this time if that feature is enabled, and that if prebooking is enabled the user can set the desired length of their booking to override this default.</p>
+        <h2 class="section-title">Would you like to allow Follow Me Ergonomics (FME)?</h2>
+        <p>FME allows end users to save and apply a custom sit and stand desk height via the FS mobile app. Choose how you'd like to roll this out, or skip it if you won't be using it.</p>
       </div>
 
-      <div class="duration-options" id="durationOptions">
-        <label class="duration-option" data-value="release">
-          <input type="radio" name="reservationLength" value="release">
-          <span>
-            <span class="title">Until the user releases the desk themselves</span>
-          </span>
-        </label>
-        <label class="duration-option" data-value="endOfDay">
-          <input type="radio" name="reservationLength" value="endOfDay">
-          <span>
-            <span class="title">Until the end of the day</span>
-          </span>
-        </label>
-        <label class="duration-option" data-value="fixed">
-          <input type="radio" name="reservationLength" value="fixed">
-          <span>
-            <span class="title">For a fixed period</span>
-            <span class="sub">e.g. 2 hours, 8 hours, 1 day, 1 month, 3 months, etc.</span>
-          </span>
-        </label>
-      </div>
+      <div class="path-check-grid" id="fmeGrid">
+        <div class="path-check-card" data-mode="all">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="all">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">All sit-stand desks</h3>
+              <p class="path-desc">Every desk is a sit-stand desk, so FME can be used anywhere.</p>
+            </div>
+          </label>
+        </div>
 
-      <div class="duration-fields" id="fixedPeriodFields">
-        <label for="fixedPeriodDescription">Describe the default reservation length</label>
-        <input type="text" id="fixedPeriodDescription" placeholder='e.g. "until the end of the week" or "for 3 hours since first reserved"'>
-        <p class="hint">Free text — this can be any fixed rule, not just a duration (e.g. "until the end of the week").</p>
-      </div>
+        <div class="path-check-card" data-mode="list">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="list">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">We will provide a list of desk types</h3>
+              <p class="path-desc">Not all desks are sit-stand — we'll send Smartalock a list of which desk types support FME.</p>
+            </div>
+          </label>
+        </div>
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Maximum Desks Per User</h2>
-        <p>Select the typical value for most users — normally this is 1 desk at a time. Note that the default actual max desks a user has may still be impacted by other features such as desk group override settings or the auto-release on idle setting.</p>
+        <div class="path-check-card" data-mode="none">
+          <label class="path-row">
+            <input type="radio" name="fmeMode" value="none">
+            <span class="path-tick" aria-hidden="true"></span>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
+            <div class="path-card-body">
+              <h3 class="path-title">We will not enable mobile app FME</h3>
+              <p class="path-desc">Skip this feature — end users won't be able to save or apply a custom sit-stand height via the mobile app.</p>
+            </div>
+          </label>
+        </div>
       </div>
-
-      <div class="duration-options" id="maxDesksOptions">
-        <label class="duration-option" data-value="1">
-          <input type="radio" name="maxDesksPerUser" value="1">
-          <span><span class="title">1</span></span>
-        </label>
-        <label class="duration-option" data-value="2">
-          <input type="radio" name="maxDesksPerUser" value="2">
-          <span><span class="title">2</span></span>
-        </label>
-        <label class="duration-option" data-value="other">
-          <input type="radio" name="maxDesksPerUser" value="other">
-          <span><span class="title">Other:</span></span>
-        </label>
-      </div>
-
-      <div class="duration-fields" id="maxDesksOtherFields">
-        <label for="maxDesksOtherValue">Specify the maximum number of desks</label>
-        <input type="number" min="1" step="1" id="maxDesksOtherValue" placeholder="e.g. 3">
-      </div>
-
-      <label class="toggle-card">
-        <input type="checkbox" id="allowMeetingSpaceTag">
-        <span class="toggle-tick" aria-hidden="true"></span>
-        <span class="toggle-desc">User can tag onto certain (non bookable) meeting space desks without losing existing workspace desk reservation.</span>
-      </label>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-idle-release-08.html">
+        <a class="page-nav-btn" href="floorsense-nsnp-11.html" id="pageNavPrev">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-nsnp-10.html">
+        <a class="page-nav-btn next" href="floorsense-anti-desk-hogging-13.html" id="pageNavNext">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -387,55 +352,46 @@
 </main>
 
 <!--
-  NOTE for Oleg: module 07 of the Floorsense wizard family (renamed twice — see below) — follows
-  floorsense-prebooking-advance-04.html. This page was split out of the original Check-in Policy
-  page per a later request, so it covers two related settings: Default Reservation Length: a radio group defaulting
-  to "Until the user releases the desk themselves" (no default was specified in the brief, so the
-  first/most permissive option was picked — flag if a different default is wanted); selecting
-  "For a fixed period" reveals a free-text field rather than a rigid duration picker, since the
-  brief's examples ("until the end of the week", "for 3 hours since first reserved") aren't all
-  expressible as a single number + unit. Maximum Desks Per User: a second radio group (1 / 2 /
-  Other, defaulting to 1) added per a follow-up request, with "Other" revealing a free numeric
-  field; plus a standalone toggle for "user can tag onto certain (non bookable) meeting space
-  desks without losing existing workspace desk reservation" — kept independent of the radio group
-  since it's a separate on/off feature, not a value for the same question. There's no module 07
-  yet, so the next-arrow is disabled; Continue just saves in place. State lives at
-  project.floorsense.wizard.reservationLength = { reservationLengthMode,
-  reservationLengthFixedDescription } and project.floorsense.wizard.maxDesksPerUser =
-  { mode, otherValue, allowMeetingSpaceTag } in the same "configurationProject" localStorage key
-  as the other Floorsense modules.
+  NOTE for Oleg: module 10 of the Floorsense wizard family, new — appended after
+  floorsense-nsnp-11.html per a request to add "Follow Me Ergonomics (FME)": lets end users save and
+  apply a custom sit-stand desk height via the FS mobile app. This is the wizard's third optional
+  module (after Auto-Release on Idle and NSNP), so it follows the same "Additional Features ·
+  Optional" hero eyebrow and "(Optional)" progress-bar tooltip convention.
 
-  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-08.html) was
-  inserted earlier in the wizard, which bumped floorsense-prebooking-advance-04.html to -05.html;
-  this file was renamed from floorsense-reservation-length-05.html to -06.html to keep the numbers
-  sequential (a straight filesystem rename — field ids, state shape, and everything else below are
-  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance-04.html
-  accordingly, and its progress bar gained a 7th "idle-release" segment between "Check-in Policy"
-  and "Prebooking Window".
+  Structurally this is a simplified version of floorsense-nsnp-11.html: the same 3-column
+  .path-check-grid/.path-check-card radio pattern (ported from floorsense-setup-path-00.html), but
+  with only 3 modes instead of 4 — "All sit-stand desks", "We will provide a list of desk types"
+  (assumed supplied to Smartalock separately, same as NSNP's own list option — this page doesn't
+  collect the list itself), and "We will not enable mobile app FME" (the default — off unless a
+  client opts in). Unlike NSNP, there's no "Other" option and no supplementary numeric setting (no
+  equivalent of NSNP's grace-period drum) since the brief didn't call for one, so the
+  .path-subfields/textarea and .timeline-card/.time-drum CSS suites used on floorsense-nsnp-11.html
+  were left out entirely here rather than carried over unused.
 
-  RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
-  its own page before Check-in Window, this file was renamed AGAIN, from
-  floorsense-reservation-length-06.html to -07.html, to keep numbers sequential after
-  floorsense-default-reservation-times-06.html was inserted earlier in the wizard (which bumped
-  every downstream file up by one). This page's back-arrow was updated to
-  floorsense-prebooking-advance-04.html (itself renamed from -05.html in the same cascade); field
-  ids and state shape are unchanged. The progress bar above gained an eighth segment ("Default
-  Reservation Times") inserted before "Check-in Window" — see floorsense-checkin-window-07.html's
-  and floorsense-default-reservation-times-06.html's own NOTEs for the full story of that split.
+  State lives at project.floorsense.wizard.fme = { mode } — a new top-level key. mode defaults to
+  'none' (off), matching NSNP's own default-off convention. markModuleSaved key is 'fme'.
 
-  MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking was
-  relocated from module 07 to immediately follow Business Hours (module 04 now); this page's own
-  file number (08) didn't change, since it was already last, but its back-arrow now points to
-  floorsense-idle-release-08.html (was floorsense-prebooking-advance-04.html, itself renamed from
-  -07.html) since Auto-Release on Idle now immediately precedes it instead of Prebooking. See
-  floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
+  This is currently the last module in the wizard: back-arrow goes to floorsense-nsnp-11.html
+  (whose own previously-disabled next-arrow/Continue-redirect now point here — see that file's
+  NOTE), and this page's own next-arrow is disabled with no Continue redirect. The progress bar
+  above gained an eleventh "fme" segment at the end on all 11 Floorsense pages.
 
-  MOST RECENT CHANGE: a new module 09, floorsense-nsnp-10.html ("No Swipe No Power"), was appended
-  after this page — this is no longer the last module in the wizard. Its previously-disabled
-  next-arrow is now a live link to floorsense-nsnp-10.html, and the Continue button's missing
-  redirect (noted above as a fix applied to every other page but skipped here since there was
-  nothing to redirect to) now points there too. The progress bar above gained a tenth "nsnp"
-  segment at the end. See floorsense-nsnp-10.html's own NOTE for the new page's full details.
+  MOST RECENT CHANGE: a new module 11, floorsense-anti-desk-hogging-13.html ("Anti Desk Hogging"),
+  was appended after this page — this is no longer the last module in the wizard. Its
+  previously-disabled next-arrow is now a live link to floorsense-anti-desk-hogging-13.html, and the
+  Continue button now redirects there too (same fix pattern applied to floorsense-nsnp-11.html when
+  this page was added after it). See floorsense-anti-desk-hogging-13.html's own NOTE for the new
+  page's full details.
+
+  MOST RECENT CHANGE: per a request for a new floorsense-optional-features-06.html hub page that
+  lets a client switch each optional module on/off (skipping disabled ones during click-through),
+  both of this page's page-nav arrows are now resolved dynamically at load time via a
+  NAV_SEQUENCE/seqResolve() walk: back-arrow lands on floorsense-nsnp-11.html if enabled
+  (project.floorsense.wizard.nsnp.mode !== 'none'), otherwise skips to
+  floorsense-reservation-length-10.html; next-arrow/Continue lands on
+  floorsense-anti-desk-hogging-13.html if enabled, otherwise this page becomes the dynamic "last
+  page" (disabled next-arrow, no Continue redirect). See floorsense-optional-features-06.html's own
+  NOTE for the full skip-navigation design.
 -->
 
 <script>
@@ -466,17 +422,9 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.floorsense.wizard.reservationLength || {};
+  const saved = project.floorsense.wizard.fme || {};
   const state = {
-    reservationLengthMode: saved.reservationLengthMode || 'release',
-    reservationLengthFixedDescription: saved.reservationLengthFixedDescription || ""
-  };
-
-  const savedMaxDesks = project.floorsense.wizard.maxDesksPerUser || {};
-  const maxDesksState = {
-    mode: savedMaxDesks.mode || '1',
-    otherValue: savedMaxDesks.otherValue || "",
-    allowMeetingSpaceTag: !!savedMaxDesks.allowMeetingSpaceTag
+    mode: saved.mode || 'none'
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -502,26 +450,12 @@
   });
 
   /* ---------------- fields ---------------- */
-  const durationOptions = document.getElementById('durationOptions');
-  const durationRadios = durationOptions.querySelectorAll('input[name="reservationLength"]');
-  const fixedPeriodFields = document.getElementById('fixedPeriodFields');
-  const fixedPeriodDescription = document.getElementById('fixedPeriodDescription');
-  const maxDesksOptions = document.getElementById('maxDesksOptions');
-  const maxDesksRadios = maxDesksOptions.querySelectorAll('input[name="maxDesksPerUser"]');
-  const maxDesksOtherFields = document.getElementById('maxDesksOtherFields');
-  const maxDesksOtherValue = document.getElementById('maxDesksOtherValue');
-  const allowMeetingSpaceTag = document.getElementById('allowMeetingSpaceTag');
+  const grid = document.getElementById('fmeGrid');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
   function save() {
-    state.reservationLengthFixedDescription = fixedPeriodDescription.value;
-    project.floorsense.wizard.reservationLength = state;
-
-    maxDesksState.otherValue = maxDesksOtherValue.value;
-    maxDesksState.allowMeetingSpaceTag = allowMeetingSpaceTag.checked;
-    project.floorsense.wizard.maxDesksPerUser = maxDesksState;
-
+    project.floorsense.wizard.fme = state;
     saveProject(project);
   }
 
@@ -531,63 +465,84 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
-  function applyState() {
-    durationRadios.forEach(radio => {
-      radio.checked = radio.value === state.reservationLengthMode;
-      radio.closest('.duration-option').classList.toggle('selected', radio.checked);
+  /* ---------------- mode grid ---------------- */
+  function setModeCards(mode) {
+    grid.querySelectorAll('.path-check-card').forEach(card => {
+      const isMatch = card.getAttribute('data-mode') === mode;
+      card.classList.toggle('checked', isMatch);
+      card.querySelector('input[type="radio"]').checked = isMatch;
     });
-    fixedPeriodFields.classList.toggle('show', state.reservationLengthMode === 'fixed');
-    fixedPeriodDescription.value = state.reservationLengthFixedDescription;
+  }
 
-    maxDesksRadios.forEach(radio => {
-      radio.checked = radio.value === maxDesksState.mode;
-      radio.closest('.duration-option').classList.toggle('selected', radio.checked);
+  grid.querySelectorAll('.path-check-card').forEach(card => {
+    const mode = card.getAttribute('data-mode');
+    card.querySelector('input[type="radio"]').addEventListener('change', () => {
+      state.mode = mode;
+      setModeCards(mode);
+      queueSave();
     });
-    maxDesksOtherFields.classList.toggle('show', maxDesksState.mode === 'other');
-    maxDesksOtherValue.value = maxDesksState.otherValue;
-    allowMeetingSpaceTag.checked = maxDesksState.allowMeetingSpaceTag;
+  });
+
+  function applyState() {
+    setModeCards(state.mode);
   }
   applyState();
 
-  durationRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      state.reservationLengthMode = radio.value;
-      durationRadios.forEach(r => r.closest('.duration-option').classList.toggle('selected', r.checked));
-      fixedPeriodFields.classList.toggle('show', state.reservationLengthMode === 'fixed');
-      queueSave();
-    });
-  });
-
-  fixedPeriodDescription.addEventListener('input', queueSave);
-
-  maxDesksRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      maxDesksState.mode = radio.value;
-      maxDesksRadios.forEach(r => r.closest('.duration-option').classList.toggle('selected', r.checked));
-      maxDesksOtherFields.classList.toggle('show', maxDesksState.mode === 'other');
-      queueSave();
-    });
-  });
-
-  maxDesksOtherValue.addEventListener('input', queueSave);
-  allowMeetingSpaceTag.addEventListener('change', queueSave);
-
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.reservationLengthMode = 'release';
-    state.reservationLengthFixedDescription = "";
-    maxDesksState.mode = '1';
-    maxDesksState.otherValue = "";
-    maxDesksState.allowMeetingSpaceTag = false;
+    state.mode = 'none';
     applyState();
     queueSave();
   });
 
+  /* ---------------- dynamic skip-navigation ----------------
+     Both neighbours of this page (NSNP before it, Anti Desk Hogging after it) are optional and may
+     be switched off from floorsense-optional-features-06.html — this page is only ever reached when
+     FME itself is enabled, but NSNP might not be, so back may need to skip past it too. See
+     floorsense-optional-features-06.html's own NOTE for the full design; NAV_SEQUENCE/seqResolve are
+     duplicated verbatim across every page in this affected zone. ---------------- */
+  const NAV_SEQUENCE = [
+    { key: 'checkin-window', href: 'floorsense-checkin-window-08.html' },
+    { key: 'idle-release', href: 'floorsense-idle-release-09.html', flagPath: ['idleRelease', 'enabled'], flagType: 'bool' },
+    { key: 'reservation-length', href: 'floorsense-reservation-length-10.html' },
+    { key: 'nsnp', href: 'floorsense-nsnp-11.html', flagPath: ['nsnp', 'mode'], flagType: 'mode' },
+    { key: 'fme', href: 'floorsense-fme-12.html', flagPath: ['fme', 'mode'], flagType: 'mode' },
+    { key: 'anti-desk-hogging', href: 'floorsense-anti-desk-hogging-13.html', flagPath: ['antiDeskHogging', 'mode'], flagType: 'mode' }
+  ];
+  function seqEnabled(entry) {
+    if (!entry.flagPath) return true;
+    const obj = project.floorsense.wizard[entry.flagPath[0]] || {};
+    const val = obj[entry.flagPath[1]];
+    return entry.flagType === 'bool' ? !!val : (!!val && val !== 'none');
+  }
+  function seqResolve(currentKey, direction) {
+    const idx = NAV_SEQUENCE.findIndex(e => e.key === currentKey);
+    if (idx === -1) return null;
+    for (let i = idx + direction; i >= 0 && i < NAV_SEQUENCE.length; i += direction) {
+      if (seqEnabled(NAV_SEQUENCE[i])) return NAV_SEQUENCE[i];
+    }
+    return null;
+  }
+
+  const prevEntry = seqResolve('fme', -1);
+  const pageNavPrev = document.getElementById('pageNavPrev');
+  if (prevEntry) pageNavPrev.href = prevEntry.href; // always resolves (reservation-length is the floor)
+
+  const nextEntry = seqResolve('fme', 1);
+  const pageNavNext = document.getElementById('pageNavNext');
+  if (nextEntry) {
+    pageNavNext.href = nextEntry.href;
+    pageNavNext.classList.remove('disabled');
+  } else {
+    pageNavNext.classList.add('disabled');
+    pageNavNext.removeAttribute('href');
+  }
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
-    markModuleSaved('reservation-length');
+    markModuleSaved('fme');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-nsnp-10.html'; }, 500);
+    if (nextEntry) setTimeout(() => { window.location.href = nextEntry.href; }, 500);
   });
 })();
 </script>
