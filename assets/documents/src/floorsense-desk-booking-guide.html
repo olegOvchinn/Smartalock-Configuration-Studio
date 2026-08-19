@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Floorsense Desk Booking Guide</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+    @bottom-left {
+      content: "FLOORSENSE · DESK BOOKING GUIDE";
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 0 26px 64px;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 64px 26px 0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0; color: #1D1D1F;
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: linear-gradient(135deg, #1FAA59 0%, #146B3A 100%);
+    padding: 52px 64px 46px; color: #fff;
+  }
+  .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+  .brand-pill {
+    display: inline-block; background: rgba(255,255,255,0.22); border-radius: 999px;
+    padding: 9px 24px; font-weight: 800; font-size: 19px; letter-spacing: -0.01em;
+  }
+  .brand-kicker { font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.92; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.16; margin: 0 0 16px; letter-spacing: -0.01em; }
+  .hero p.sub { font-size: 15px; line-height: 1.55; margin: 0 0 32px; max-width: 620px; opacity: 0.95; }
+  .hero-icons { display: flex; gap: 12px; }
+  .hero-icon-badge {
+    width: 52px; height: 52px; border-radius: 13px; background: rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .hero-icon-badge svg { width: 24px; height: 24px; }
+
+  /* ---------- body ---------- */
+  .body-content { padding: 6px 64px 8px; }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #1FAA59; margin: 34px 0 16px; page-break-after: avoid;
+  }
+  .row {
+    display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid #D2D2D7;
+    page-break-inside: avoid;
+  }
+  .row:last-of-type { border-bottom: none; }
+  .row-icon {
+    width: 52px; height: 52px; border-radius: 13px; background: #E6F7ED; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #178A48;
+  }
+  .row-icon.warm { background: #FCF1DE; color: #B36B00; }
+  .row-icon svg { width: 22px; height: 22px; }
+  .row-body h3 { font-size: 16px; font-weight: 800; margin: 2px 0 7px; color: #1D1D1F; }
+  .row-body p { font-size: 12.8px; line-height: 1.62; margin: 0; color: #48484A; }
+  .row-body p.example { margin-top: 6px; color: #1D1D1F; font-weight: 600; }
+
+  /* ---------- "not switched on yet" box ---------- */
+  .not-on-box {
+    border: 1.5px dashed #C7C7CC; border-radius: 16px; padding: 24px 28px; margin: 30px 0 26px;
+    page-break-inside: avoid;
+  }
+  .not-on-title {
+    font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #9A9A9E; margin: 0 0 14px;
+  }
+  .not-on-box ul { margin: 0 0 14px; padding-left: 18px; color: #6E6E73; font-size: 12.8px; line-height: 1.85; }
+  .not-on-box .note { color: #6E6E73; font-size: 12px; margin: 0; }
+
+  /* ---------- footer disclaimer ---------- */
+  .footer-note {
+    display: flex; gap: 12px; align-items: flex-start; background: #F5F5F7; border-radius: 14px;
+    padding: 20px 24px; margin: 6px 0 30px; page-break-inside: avoid;
+  }
+  .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
+  .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="brand-row">
+      <span class="brand-pill">Floorsense</span>
+      <span class="brand-kicker">Desk Booking Guide</span>
+    </div>
+    <h1>Everything you need to know about booking a desk</h1>
+    <p class="sub">A quick, plain-English guide to how check-in, booking and privacy work — no jargon, just the essentials.</p>
+    <div class="hero-icons">
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+    </div>
+  </div>
+
+  <div class="body-content">
+
+    <div class="section-eyebrow">Booking &amp; Check-in</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div class="row-body">
+        <h3>Check in any time within your window</h3>
+        <p>You can check in to your desk starting 1 hour before your booking begins, up to 1 hour after it starts. If you don't check in within that window, your desk becomes available to others.</p>
+        <p class="example">Example: 8:00 AM booking &nbsp;&rarr;&nbsp; check in between 7:00&ndash;9:00 AM</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="row-body">
+        <h3>Plan up to 8 days ahead</h3>
+        <p>Need to plan your week? You can book a desk as much as 8 days before you need it.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12M6 22h12M7 2c0 6.5 4.5 6.5 4.5 10s-4.5 3.5-4.5 10M17 2c0 6.5-4.5 6.5-4.5 10s4.5 3.5 4.5 10"/></svg></div>
+      <div class="row-body">
+        <h3>Your desk is yours for 9 hours</h3>
+        <p>Every booking lasts 9 hours by default &mdash; enough for a full working day, without needing to think about it.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 8 12 14 22 8 12 2"/><polyline points="2 14 12 20 22 14"/><polyline points="2 11 12 17 22 11"/></svg></div>
+      <div class="row-body">
+        <h3>One desk at a time, by default</h3>
+        <p>You can have one desk reserved at once. Some teams or workplaces raise this limit &mdash; if you're not sure how many desks you're able to book, check with your workplace team.</p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Tapping In &amp; Out</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg></div>
+      <div class="row-body">
+        <h3>Tap once to arrive, tap again to leave</h3>
+        <p>Your first tap of the day checks you in. When you're done, tap again at the same desk to check out. That's it.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></div>
+      <div class="row-body">
+        <h3>Sitting somewhere else? No problem</h3>
+        <p>If you booked one desk but end up checking in at a different one, we'll automatically release your original booking &mdash; so nobody else is left waiting on a desk you're not using.</p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Ways to Check In</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+      <div class="row-body">
+        <h3>Use whatever's easiest for you</h3>
+        <p>Check in with your building access card, the Floorsense mobile app, the desktop app, or a wallet pass on your phone. Wallet pass may not be available on every plan &mdash; ask your workplace team if you're not sure.</p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Your Privacy</div>
+
+    <div class="row">
+      <div class="row-icon warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div>
+      <div class="row-body">
+        <h3>Need quiet time? Turn on Do Not Disturb</h3>
+        <p>Set your status to Do Not Disturb whenever you need heads-down focus time &mdash; it lets colleagues know not to interrupt you.</p>
+      </div>
+    </div>
+
+    <div class="not-on-box">
+      <p class="not-on-title">Not switched on yet at your workplace</p>
+      <ul>
+        <li>Sit-stand desk controls</li>
+        <li>Recurring (repeating) bookings</li>
+        <li>Team bookings, booking on behalf of a colleague, and custom notifications</li>
+      </ul>
+      <p class="note">If your workplace turns any of these on, they'll arrange training so you know how it works.</p>
+    </div>
+
+    <div class="footer-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+      <p>This guide covers Floorsense's standard, best-practice setup. A few details can vary by workplace &mdash; if something here doesn't match what you see in the app, check with your workplace or IT team.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
