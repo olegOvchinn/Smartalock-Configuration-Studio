@@ -200,9 +200,9 @@
   }
   button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
 
-  /* ---------- post-submit guide links: shown once "Confirm & finish" is clicked, mirroring the
-     same pattern on the Floorsense Configuration Summary (floorsense-out-of-box-policy.html) —
-     the Smartalock admin guide is a different Notion page, the end-user guide link is the same. */
+  /* ---------- post-submit confirmation: shown once "Save & Email Me Summary" is clicked,
+     mirroring the same pattern on the Floorsense Configuration Summary
+     (floorsense-out-of-box-policy.html). ---------- */
   .submit-guides-panel {
     display: none; gap: 16px; align-items: flex-start; max-width: 640px; margin-top: 28px;
     background: var(--accent-wash); border: 1px solid var(--accent); border-radius: var(--radius-lg);
@@ -216,14 +216,6 @@
   .submit-guides-icon svg { width: 18px; height: 18px; }
   .submit-guides-body h3 { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--accent-deep); }
   .submit-guides-body > p { margin: 0 0 14px; font-size: 13.12px; color: var(--accent-deep); }
-  .submit-guides-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-  .submit-guide-link {
-    display: flex; align-items: center; gap: 8px; text-decoration: none; font-family: var(--font-text);
-    font-weight: 600; font-size: 12.9px; color: #fff; background: var(--accent); border-radius: 980px;
-    padding: 10px 18px; transition: background .15s;
-  }
-  .submit-guide-link:hover { background: var(--accent-deep); }
-  .submit-guide-link svg { width: 15px; height: 15px; flex-shrink: 0; }
   .submit-guides-continue {
     display: inline-block; font-family: var(--font-text); font-weight: 600; font-size: 12.5px;
     color: var(--accent-deep); text-decoration: underline;
@@ -422,18 +414,8 @@
       <div class="submit-guides-panel" id="submitGuidesPanel">
         <div class="submit-guides-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <div class="submit-guides-body">
-          <h3>Configuration saved</h3>
-          <p>Share these with your team before go-live:</p>
-          <div class="submit-guides-links">
-            <a class="submit-guide-link" href="https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              End User Guides
-            </a>
-            <a class="submit-guide-link" href="https://floorsense.notion.site/SMARTALOCK-FULL-ADMINISTRATION-GUIDE-f278cf8aa6e547579a1b9a8f231b931f" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Admin Portal Guide
-            </a>
-          </div>
+          <h3>Saved &amp; emailed</h3>
+          <p id="submitGuidesEmailNote">Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to you.</p>
           <a class="submit-guides-continue" href="project-home.html">Continue to Project Home &rarr;</a>
         </div>
       </div>
@@ -447,7 +429,7 @@
       <div style="display:flex; gap:10px;">
         <button class="ghost" id="printBtn" type="button">Print</button>
         <button class="ghost" id="downloadBtn" type="button">Download JSON</button>
-        <button class="primary" id="confirmBtn" type="button">Confirm &amp; finish</button>
+        <button class="primary" id="confirmBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
   </div>
@@ -482,6 +464,24 @@
   `configured`/`moduleStatus.summary`/the progress segment's `.saved` class all set correctly after
   clicking "Confirm & finish", and Print/Download JSON remain present and unaffected — zero runtime
   errors.
+
+  MOST RECENT CHANGE: mirrors the same change made to floorsense-out-of-box-policy.html — per a
+  request to email the summary and guide links to the person who completed the wizard rather than
+  showing them as clickable buttons, removed the two `.submit-guide-link` buttons from
+  `#submitGuidesPanel` and renamed "Confirm & finish" to "Save & Email Me Summary" (`#confirmBtn`,
+  same id). Added `buildSummaryText()`, which walks every `.summary-group`/`.summary-row` under
+  `.panel-scroll` (all plain `.label`/`.value` span pairs on this page — it has no toggles or number
+  inputs like the Floorsense core card does) into a plain-text bullet list grouped by heading, and
+  `buildSummaryMailtoHref()`, which wraps that text plus both guide links into a `mailto:` URL
+  addressed to `project.registration.email`. On click, the existing save logic
+  (`status.summary`/`moduleStatus`/`smartalock.configured`) runs unchanged, then
+  `window.location.href` is set to that mailto URL to open the client's email app, and the panel's
+  `#submitGuidesEmailNote` paragraph is updated to name the actual recipient (or note that "Your
+  Email" on Project Registration was never filled in). The now-unused `.submit-guides-links`/
+  `.submit-guide-link` CSS was removed. Verified via a new jsdom test: button label, panel show/hide,
+  `configured`/`moduleStatus.summary` persistence, and the dynamic recipient note text all behave
+  correctly with zero runtime errors; re-ran the prior jsdom test for this page (progress-segment
+  `.saved` class, Print/Download JSON still present) to confirm no regressions.
 -->
 
 <script>
@@ -772,11 +772,47 @@
     link.click();
   });
 
+  /* ---------------- summary email ----------------
+     Builds a plain-text version of the summary by walking every rendered .summary-group/.summary-row
+     under .panel-scroll (all of them are plain label+value spans on this page — no toggles or
+     number inputs like the Floorsense version has), so the emailed text always matches what's
+     actually on screen. */
+  function buildSummaryText() {
+    const lines = [];
+    document.querySelectorAll('.panel-scroll .summary-group').forEach(group => {
+      const heading = group.querySelector('.summary-group-head h3');
+      if (heading) lines.push(heading.textContent.trim().toUpperCase());
+      group.querySelectorAll('.summary-row').forEach(row => {
+        const label = row.querySelector('.label');
+        const valueEl = row.querySelector('.value');
+        if (!label) return;
+        lines.push('- ' + label.textContent.trim() + ': ' + (valueEl ? valueEl.textContent.trim() : ''));
+      });
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+
+  function buildSummaryMailtoHref(toEmail) {
+    const bodyLines = [
+      'Smartalock Configuration Summary',
+      '',
+      buildSummaryText(),
+      '---',
+      'End User Guides: https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link',
+      'Admin Portal Guide: https://floorsense.notion.site/SMARTALOCK-FULL-ADMINISTRATION-GUIDE-f278cf8aa6e547579a1b9a8f231b931f'
+    ];
+    const subject = encodeURIComponent('Smartalock Configuration Summary');
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    return 'mailto:' + (toEmail || '') + '?subject=' + subject + '&body=' + body;
+  }
+
   /* ---------------- confirm & finish ----------------
      This page was previously read-only (Print / Download JSON only, no completion action at all).
-     "Confirm & finish" marks the overall Smartalock configuration as done, then — mirroring
-     floorsense-out-of-box-policy.html's pattern — reveals guide links instead of auto-redirecting,
-     so there's time to actually open/share them before moving on. */
+     "Save & Email Me Summary" marks the overall Smartalock configuration as done, then — mirroring
+     floorsense-out-of-box-policy.html's pattern — opens the client's own email ("Your Email" from
+     Project Registration) with a plain-text summary and both guide links, instead of
+     auto-redirecting, so there's time to notice the email client opened before moving on. */
   const confirmBtn = document.getElementById('confirmBtn');
   confirmBtn.addEventListener('click', () => {
     status.summary = true;
@@ -786,6 +822,13 @@
     saveProject(project);
     renderProgressBar();
     document.getElementById('saveText').textContent = 'Saved to project configuration';
+
+    const toEmail = (project.registration && project.registration.email) || '';
+    window.location.href = buildSummaryMailtoHref(toEmail);
+    const emailNote = document.getElementById('submitGuidesEmailNote');
+    emailNote.textContent = toEmail
+      ? 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to ' + toEmail + '.'
+      : 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links. Add "Your Email" on Project Registration to have this addressed automatically next time.';
     confirmBtn.disabled = true;
     document.getElementById('submitGuidesPanel').classList.add('show');
   });

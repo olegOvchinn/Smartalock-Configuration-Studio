@@ -432,8 +432,8 @@
   .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
   .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
 
-  /* ---------- post-submit guide links: shown once "Confirm & finish" is clicked, in place of an
-     immediate auto-redirect, so there's time to actually open/share the two external Notion guides
+  /* ---------- post-submit confirmation: shown once "Save & Email Me Summary" is clicked, in
+     place of an immediate auto-redirect, so there's a moment to notice the email client opened
      before moving on to project-home.html. ---------- */
   .submit-guides-panel {
     display: none; gap: 16px; align-items: flex-start; max-width: 640px; margin-top: 28px;
@@ -448,14 +448,6 @@
   .submit-guides-icon svg { width: 18px; height: 18px; }
   .submit-guides-body h3 { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--accent-deep); }
   .submit-guides-body > p { margin: 0 0 14px; font-size: 13.12px; color: var(--accent-deep); }
-  .submit-guides-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-  .submit-guide-link {
-    display: flex; align-items: center; gap: 8px; text-decoration: none; font-family: var(--font-text);
-    font-weight: 600; font-size: 12.9px; color: #fff; background: var(--accent); border-radius: 980px;
-    padding: 10px 18px; transition: background .15s;
-  }
-  .submit-guide-link:hover { background: var(--accent-deep); }
-  .submit-guide-link svg { width: 15px; height: 15px; flex-shrink: 0; }
   .submit-guides-continue {
     display: inline-block; font-family: var(--font-text); font-weight: 600; font-size: 12.5px;
     color: var(--accent-deep); text-decoration: underline;
@@ -732,18 +724,8 @@
       <div class="submit-guides-panel" id="submitGuidesPanel">
         <div class="submit-guides-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <div class="submit-guides-body">
-          <h3>Configuration saved</h3>
-          <p>Share these with your team before go-live:</p>
-          <div class="submit-guides-links">
-            <a class="submit-guide-link" href="https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              End User Guides
-            </a>
-            <a class="submit-guide-link" href="https://app.notion.com/p/floorsense/FLOORSENSE-FULL-ADMINISTRATION-GUIDE-f557eaf471ca455a990324b36e5e693b?source=copy_link" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Admin Portal Guide
-            </a>
-          </div>
+          <h3>Saved &amp; emailed</h3>
+          <p id="submitGuidesEmailNote">Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to you.</p>
           <a class="submit-guides-continue" href="project-home.html">Continue to Project Home &rarr;</a>
         </div>
       </div>
@@ -755,7 +737,7 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to go — no changes needed</span></div>
       <div style="display:flex; gap:10px;">
-        <button class="primary" id="continueBtn" type="button">Confirm &amp; finish</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
   </div>
@@ -1079,6 +1061,35 @@
   via a new jsdom test: both toggles default on, clicking one persists `false` and flips the
   `on` class/`aria-checked` off, clicking twice returns it to on/`true`; re-ran every other jsdom
   test in this file — zero runtime errors, no regressions.
+
+  MOST RECENT CHANGE: per a request to email the summary, end-user PDF, and guide links to the
+  person who completed this wizard rather than just showing the two guide-link buttons, replaced
+  the `.submit-guide-link` buttons in `#submitGuidesPanel` with an automatic `mailto:` compose.
+  "Confirm & finish" was renamed to "Save & Email Me Summary" (`#continueBtn`, same id, only the
+  label text changed). On click it still saves `outOfBoxPolicy`/`floorsense.configured`/
+  `moduleStatus` exactly as before, then calls a new `buildSummaryText()` — which walks every
+  `.summary-row` under `#corePolicyBody` and reads its label plus whichever of a `.value` span, a
+  `.policy-switch`'s `on` class ("On"/"Off"), or a `.policy-number-input`'s current value (+ its
+  `.policy-field-unit`) is present — into a plain-text bullet list grouped by summary-group heading.
+  This means the emailed text always reflects the actual on-screen state, including the Check-in
+  Behaviour toggles and Maximum Desks Per User value a client may have changed before saving,
+  without hand-maintaining a second copy of the same content. `buildSummaryMailtoHref()` wraps that
+  text plus both guide links (same End User Guides/Admin Portal Guide URLs as before) and a note
+  that the PDF guide isn't attached automatically and needs downloading/attaching manually — mailto
+  links can't carry attachments — into a `mailto:` URL, addressed to `project.registration.email`
+  ("Your Email" from Project Registration; falls back to a blank recipient with a note in the panel
+  if it was never filled in). `window.location.href` is set to that URL to open the client's email
+  app; the confirmation panel's paragraph (`#submitGuidesEmailNote`) is then updated to name the
+  actual recipient (or explain why it's blank), the button disables itself, and the manual
+  "Continue to Project Home" link is unchanged. The now-unused `.submit-guides-links`/
+  `.submit-guide-link` CSS was removed. Verified: the row-walking logic was unit-tested in isolation
+  against a small fabricated DOM snippet covering all three value types (static span, switch,
+  number input) and produced the expected bullet list; a full-page jsdom test confirms the button
+  label, panel show/hide, `configured`/`moduleStatus` persistence, and the dynamic recipient note
+  text all behave correctly with zero runtime errors (jsdom logs an expected, harmless "Not
+  implemented: navigation to another Document" notice for the `mailto:` assignment itself, since
+  jsdom doesn't implement custom URL scheme navigation — real browsers open the OS mail client
+  instead of navigating away). Re-ran every other jsdom test in this file — no regressions.
 -->
 
 <script>
@@ -1507,6 +1518,54 @@
 
   renderPolicies();
 
+  /* ---------------- summary email ----------------
+     Builds a plain-text version of the core policy card by walking its own rendered DOM (label +
+     value/toggle/number for every .summary-row), so the emailed text always matches what's
+     actually on screen — including any Check-in Behaviour toggle or Maximum Desks Per User value
+     the client changed before saving — without hand-maintaining a second copy of the same content. */
+  function buildSummaryText() {
+    const lines = [];
+    document.querySelectorAll('#corePolicyBody .summary-group').forEach(group => {
+      const heading = group.querySelector('.summary-group-head h3');
+      if (heading) lines.push(heading.textContent.trim().toUpperCase());
+      group.querySelectorAll('.summary-row').forEach(row => {
+        const label = row.querySelector('.label');
+        if (!label) return;
+        let value = '';
+        const valueEl = row.querySelector('.value');
+        const switchEl = row.querySelector('.policy-switch');
+        const numberInput = row.querySelector('.policy-number-input');
+        if (valueEl) {
+          value = valueEl.textContent.trim();
+        } else if (switchEl) {
+          value = switchEl.classList.contains('on') ? 'On' : 'Off';
+        } else if (numberInput) {
+          const unit = row.querySelector('.policy-field-unit');
+          value = numberInput.value + (unit ? ' ' + unit.textContent.trim() : '');
+        }
+        lines.push('- ' + label.textContent.trim() + ': ' + value);
+      });
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+
+  function buildSummaryMailtoHref(toEmail) {
+    const bodyLines = [
+      'Floorsense Configuration Summary',
+      '',
+      buildSummaryText(),
+      '---',
+      'End User Guides: https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link',
+      'Admin Portal Guide: https://app.notion.com/p/floorsense/FLOORSENSE-FULL-ADMINISTRATION-GUIDE-f557eaf471ca455a990324b36e5e693b?source=copy_link',
+      '',
+      "The end-user PDF guide (\"Explain this policy to your end users\") isn't attached automatically — download it from the Configuration Summary page and attach it manually before sending."
+    ];
+    const subject = encodeURIComponent('Floorsense Configuration Summary');
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    return 'mailto:' + (toEmail || '') + '?subject=' + subject + '&body=' + body;
+  }
+
   const continueBtn = document.getElementById('continueBtn');
   continueBtn.addEventListener('click', () => {
     project.floorsense.wizard.outOfBoxPolicy = {
@@ -1522,8 +1581,17 @@
     markModuleSaved('out-of-box-policy');
     saveDot.classList.add('show');
     saveText.textContent = 'Saved to project configuration';
-    // Surface the end-user and admin guide links instead of auto-redirecting, so there's time to
-    // actually open/share them before moving on — the client continues manually when ready.
+
+    // Open the client's own email — "Your Email" from Project Registration — with a plain-text
+    // summary, the two guide links, and a note about attaching the PDF guide manually. Shown as a
+    // confirmation panel instead of auto-redirecting, so there's time to notice the email client
+    // opened before moving on — the client continues to project-home.html manually when ready.
+    const toEmail = (project.registration && project.registration.email) || '';
+    window.location.href = buildSummaryMailtoHref(toEmail);
+    const emailNote = document.getElementById('submitGuidesEmailNote');
+    emailNote.textContent = toEmail
+      ? 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to ' + toEmail + '.'
+      : 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links. Add "Your Email" on Project Registration to have this addressed automatically next time.';
     continueBtn.disabled = true;
     document.getElementById('submitGuidesPanel').classList.add('show');
   });
