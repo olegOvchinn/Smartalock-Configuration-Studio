@@ -561,17 +561,6 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Check-in Window</h3>
-          <a class="edit-link" href="floorsense-checkin-window-08.html">Edit</a>
-        </div>
-        <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Check-in window</span><span class="value">60 min before – 60 min after</span></div>
-          <p class="summary-desc">End users can confirm (check in to) a desk booking at the desk starting 60 minutes before the reservation's start time, and no later than 60 minutes after it. Example: for an 8:00 AM booking, check-in is available from 7:00 AM through to 9:00 AM.</p>
-        </div>
-      </div>
-
-      <div class="summary-group">
-        <div class="summary-group-head">
           <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prebooking &amp; Duration</h3>
         </div>
         <div class="summary-row">
@@ -587,6 +576,17 @@
             <span class="value-group"><span class="value">9 hours</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html">Edit</a></span>
           </div>
           <p class="summary-desc">A reservation lasts 9 hours by default.</p>
+        </div>
+      </div>
+
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Check-in Window</h3>
+          <a class="edit-link" href="floorsense-checkin-window-08.html">Edit</a>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Check-in window</span><span class="value">60 min before – 60 min after</span></div>
+          <p class="summary-desc">End users can confirm (check in to) a desk booking at the desk starting 60 minutes before the reservation's start time, and no later than 60 minutes after it. Example: for an 8:00 AM booking, check-in is available from 7:00 AM through to 9:00 AM.</p>
         </div>
       </div>
 
@@ -1045,6 +1045,20 @@
   points at `project-home.html` — zero runtime errors; re-ran every other jsdom test in this file
   (two-column layout, core policy card, Additional Policies, Maximum Desks Per User) to confirm no
   regressions from this change.
+
+  MOST RECENT CHANGE: per a request to move Check-in Window after Prebooking & Duration, swapped
+  the order of those two `.summary-group` blocks inside `#corePolicyBody` (now: Prebooking &
+  Duration, Check-in Window, Check-in Behaviour, Access Methods, Additional Options, Configured
+  Separately). For consistency, since the additional-policy cards are built to mirror this exact
+  set of groups, the corresponding `.policy-field-group` blocks in `policyCardHtml()` were reordered
+  to match (Prebooking & Duration now comes first, ahead of Check-in Window, in every additional
+  policy card too) — the request only named this page's core policy, but leaving the two card types
+  out of sync would have been a confusing inconsistency on the same page. No state shape, field
+  keys, or wiring changed — this is a pure display-order change; `CORE_POLICY_DEFAULTS`, autosave,
+  and every other behaviour are untouched. Verified with a new jsdom check confirming both the core
+  card and a newly created additional-policy card render their group headings in the new order, and
+  re-ran every existing jsdom test in this file (two-column layout, core policy card, Additional
+  Policies, Maximum Desks Per User, submit guides panel) — zero runtime errors, no regressions.
 -->
 
 <script>
@@ -1270,18 +1284,6 @@
         ${typePillsHtml(p)}
 
         <div class="policy-field-group">
-          <p class="policy-field-group-title">Check-in Window</p>
-          <div class="policy-field-row">
-            <span class="policy-field-label">Before booking start</span>
-            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinBeforeMin" value="${p.checkinBeforeMin}"><span class="policy-field-unit">min</span></span>
-          </div>
-          <div class="policy-field-row">
-            <span class="policy-field-label">After booking start</span>
-            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinAfterMin" value="${p.checkinAfterMin}"><span class="policy-field-unit">min</span></span>
-          </div>
-        </div>
-
-        <div class="policy-field-group">
           <p class="policy-field-group-title">Prebooking &amp; Duration</p>
           <div class="policy-field-row">
             <span class="policy-field-label">Prebooking window</span>
@@ -1290,6 +1292,18 @@
           <div class="policy-field-row">
             <span class="policy-field-label">Default reservation duration</span>
             <span class="policy-number-field"><input type="number" min="1" max="24" class="policy-number-input" data-field="reservationDurationHours" value="${p.reservationDurationHours}"><span class="policy-field-unit">hrs</span></span>
+          </div>
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Check-in Window</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Before booking start</span>
+            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinBeforeMin" value="${p.checkinBeforeMin}"><span class="policy-field-unit">min</span></span>
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">After booking start</span>
+            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinAfterMin" value="${p.checkinAfterMin}"><span class="policy-field-unit">min</span></span>
           </div>
         </div>
 
