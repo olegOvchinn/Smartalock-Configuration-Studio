@@ -195,6 +195,95 @@
   .training-check input:checked ~ .training-check-tick::after { opacity: 1; }
   .training-check-label { font-size: 11.8px; color: var(--accent-deep); font-weight: 600; line-height: 1.4; }
 
+  /* ---------- additional (neighbourhood-specific) policies: only shown once Desk Groups are in
+     use (project.floorsense.wizard.deskUserGroups.deskGroups isn't "none" — set on
+     floorsense-desk-user-groups-03.html). Lets a client duplicate the core policy above under a
+     custom name (e.g. "Finance", "CEO") and tweak exactly the settings that already carry an Edit
+     button on this page, up to 3 additional policies. ---------- */
+  .policies-section { display: none; margin-top: 8px; }
+  .policies-section.show { display: block; }
+  .policies-intro {
+    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 18px;
+    background: var(--accent-wash); border: 1px solid #B7E4C8; border-radius: var(--radius-md); padding: 14px 16px;
+  }
+  .policies-intro svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
+  .policies-intro p { margin: 0; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
+
+  .policy-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    padding: 20px 22px; margin-bottom: 16px; max-width: 640px;
+  }
+  .policy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .policy-name-input {
+    flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--paper-soft);
+  }
+  .policy-name-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .policy-remove-btn {
+    flex-shrink: 0; font-family: var(--font-text); font-weight: 600; font-size: 11.5px; color: var(--danger);
+    background: none; border: 1px solid var(--line); border-radius: 100px; padding: 7px 13px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .policy-remove-btn:hover { border-color: var(--danger); background: #FFF0EE; }
+
+  .policy-field-group { margin-bottom: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .policy-field-group:first-of-type { border-top: none; padding-top: 0; }
+  .policy-field-group-title { font-family: var(--font-text); font-size: 11.27px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); margin: 0 0 10px; }
+  .policy-field-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 0; }
+  .policy-field-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
+  .policy-number-field { display: flex; align-items: center; }
+  .policy-number-input {
+    width: 64px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
+    font-family: var(--font-text); font-size: 13px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
+  }
+  .policy-number-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .policy-field-unit { font-size: 11.5px; color: var(--ink-soft); margin-left: 6px; }
+  .policy-select {
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-family: var(--font-text);
+    font-size: 12.6px; font-weight: 600; background: var(--paper-soft); color: var(--ink); cursor: pointer;
+  }
+  .policy-select:focus { outline: none; border-color: var(--accent); background: #fff; }
+
+  /* on/off switch, ported verbatim from floorsense-optional-features-06.html */
+  .policy-switch {
+    position: relative; width: 36px; height: 21px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .policy-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .policy-switch.on { background: var(--accent); }
+  .policy-switch.on::after { transform: translateX(15px); }
+
+  /* checkbox rows, same visual language as .training-check above */
+  .policy-check-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; cursor: pointer; }
+  .policy-check-row input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .policy-check-tick {
+    width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--line); background: var(--paper);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;
+    transition: border-color .15s, background .15s;
+  }
+  .policy-check-tick::after {
+    content: ''; width: 7px; height: 5px; opacity: 0;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px); transition: opacity .12s;
+  }
+  .policy-check-row input:checked ~ .policy-check-tick { background: var(--accent); border-color: var(--accent); }
+  .policy-check-row input:checked ~ .policy-check-tick::after { opacity: 1; }
+  .policy-check-label { font-size: 12.6px; color: var(--ink); font-weight: 500; }
+
+  .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 640px; margin-top: 4px; flex-wrap: wrap; }
+  .add-policy-btn {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
+    background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .add-policy-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-wash); }
+  .add-policy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .policy-count-note { font-size: 11.48px; color: var(--ink-soft); }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -409,6 +498,26 @@
         </div>
       </div>
 
+      <div class="policies-section" id="policiesSection">
+        <div class="section-head" style="margin-top:36px;">
+          <span class="eyebrow">Neighbourhood Policies</span>
+          <h2 class="section-title">Additional Policies for Desk Groups</h2>
+          <p>You told us you're using Desk Groups. Duplicate the core policy above under a name like "Finance" or "CEO," then adjust it for that group — up to 3 additional policies.</p>
+        </div>
+
+        <div class="policies-intro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+          <p>Each additional policy starts as an exact copy of the core policy shown above. Changing a setting here only affects that named policy — the core policy and any other additional policies stay untouched.</p>
+        </div>
+
+        <div id="policiesList"></div>
+
+        <div class="add-policy-row">
+          <button class="add-policy-btn" id="addPolicyBtn" type="button">+ Duplicate Core Policy</button>
+          <span class="policy-count-note" id="policyCountNote">0 of 3 additional policies created</span>
+        </div>
+      </div>
+
       <div class="page-nav">
         <a class="page-nav-btn" href="floorsense-setup-path-00.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
@@ -521,6 +630,66 @@
   rename. Unrelated generic uses of the phrase "out of the box" elsewhere on this page (e.g. "cards
   and the mobile app are all available out of the box") were left alone, since they're describing
   Floorsense defaults, not this page's own title.
+
+  MOST RECENT CHANGE: per a request to let a client who's using Desk Groups duplicate the core
+  policy above under a custom name (e.g. "Finance", "CEO"), modify it, and save it as an additional
+  policy — up to 3 — this page gained a new conditional section, "Additional Policies for Desk
+  Groups" (`.policies-section`, `#policiesSection`), inserted after the Configured Separately group
+  and before the page-nav. It's hidden (`display:none`, no `.show` class) unless
+  project.floorsense.wizard.deskUserGroups.deskGroups.none is explicitly false — i.e. unless the
+  client actually ticked "provide" or "policy" for Desk Groups on
+  floorsense-desk-user-groups-03.html. If Desk Groups were never touched, or were left on their
+  "not use" default, this whole section stays hidden, since there's nothing to layer
+  neighbourhood-specific policies on top of.
+
+  When asked which settings should be duplicable/editable per additional policy, the answer was
+  "all the options that have edit button" — read literally against this page's own existing
+  Edit/row-edit-link pills, not as "every field in the entire wizard." That maps to exactly five
+  groups: Check-in Window, Prebooking & Duration, Check-in Behaviour, Access Methods, and
+  Additional Options (NSNP/sit-stand/recurring/DND) — the same five that already carry an Edit
+  pill above. Configured Separately was excluded, since (per an earlier NOTE on this page) its Edit
+  pill was deliberately removed in favour of per-row training tick boxes; it isn't part of the
+  duplicable "core policy" this feature clones.
+
+  CORE_POLICY_DEFAULTS in the script hardcodes the exact same values already shown as static text
+  in those five read-only groups above (60 min / 60 min check-in window, 8-day prebooking window,
+  9-hour default duration, "second swipe checks out" on, "auto-cancel on elsewhere" on, Cards/App/
+  Desktop on and Wallet Pass off, NSNP "Depends on policy", sit-stand off, recurring off, DND on) —
+  duplicating a policy clones these as the starting point, so the only fields a client needs to
+  touch are the ones that actually differ for that particular neighbourhood/desk group. Two fields
+  that don't have an obvious existing on/off precedent elsewhere in the wizard ("second swipe checks
+  out" and "auto-cancel booking when checking in elsewhere") were modelled as plain on/off switches
+  with the core's current behaviour as the "on" state, since no brief specifies alternate wording
+  for their "off" state — flag if more specific copy is needed once this is reviewed with Floorsense.
+
+  Each additional policy is a `.policy-card`: a text input for its name (placeholder "e.g. Finance,
+  CEO", starts blank — deliberately NOT pre-filled with "Policy 1"/"Policy 2", since the whole point
+  is the client's own naming), a Remove button, and the five field groups above rendered as actual
+  controls instead of static text — number inputs (Check-in Window/Prebooking/Duration, reusing the
+  `.minute-input`-style numeric-field look used elsewhere in the wizard but under a page-scoped
+  `.policy-number-input` class), `.policy-switch` on/off toggles (ported verbatim from
+  floorsense-optional-features-06.html's `.switch`) for the behavioural/optional-feature booleans, a
+  plain `<select>` for NSNP mode, and four `.policy-check-row` checkboxes for Access Methods (same
+  visual language as this page's own `.training-check`, given a distinct class name since these are
+  dynamically rendered per-card rather than fixed singleton ids). All fields autosave on
+  change/input, same convention as every other page in this wizard — there's no separate per-card
+  Save button.
+
+  State lives at project.floorsense.wizard.additionalPolicies — a new top-level array (not nested
+  under outOfBoxPolicy), each entry `{ id, name, checkinBeforeMin, checkinAfterMin, prebookingDays,
+  reservationDurationHours, swipeOutRequired, autoCancelOnElsewhere, accessCards, accessApp,
+  accessDesktop, accessWalletPass, nsnpMode, sitStandEnabled, recurringEnabled, dndEnabled }`, capped
+  at MAX_ADDITIONAL_POLICIES = 3 — the "+ Duplicate Core Policy" button disables itself and a counter
+  ("X of 3 additional policies created") reflects the current count. `id` is a simple
+  timestamp+random string (`'policy-' + Date.now() + '-' + random`), sufficient for a client-only
+  prototype with no concurrent-editing concerns. Removing a policy re-renders the list immediately;
+  there's no undo, matching every other Reset/remove action in this wizard.
+
+  This feature is deliberately NOT wired into "Confirm & finish," the PDF guide, or any other
+  page's Edit links yet — it only reads/writes its own additionalPolicies array. Surfacing these
+  named policies elsewhere (e.g. letting floorsense-desk-user-groups-03.html's Desk Group Policy
+  textarea reference them by name, or showing them in the end-user PDF) is a natural follow-up but
+  out of scope for this change.
 -->
 
 <script>
@@ -603,6 +772,203 @@
   /* ---------------- confirm & finish ---------------- */
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
+
+  /* ---------------- additional (neighbourhood-specific) policies ----------------
+     Only shown once Desk Groups are in use. Every field here mirrors a setting that already has an
+     Edit button on the core policy above: Check-in Window, Prebooking & Duration, Check-in
+     Behaviour, Access Methods, and Additional Options. CORE_POLICY_DEFAULTS matches the literal
+     fixed values shown in those read-only rows above (60/60 min, 8 days, 9 hrs, swipe-out required,
+     auto-cancel on elsewhere, Cards/App/Desktop on, Wallet Pass off, NSNP "depends", sit-stand off,
+     recurring off, DND on) — duplicating a policy starts from an exact copy of those, so the client
+     only needs to touch what's actually different for that group. */
+  const CORE_POLICY_DEFAULTS = {
+    checkinBeforeMin: 60, checkinAfterMin: 60,
+    prebookingDays: 8, reservationDurationHours: 9,
+    swipeOutRequired: true, autoCancelOnElsewhere: true,
+    accessCards: true, accessApp: true, accessDesktop: true, accessWalletPass: false,
+    nsnpMode: 'depends', sitStandEnabled: false, recurringEnabled: false, dndEnabled: true
+  };
+  const MAX_ADDITIONAL_POLICIES = 3;
+
+  let additionalPolicies = (Array.isArray(project.floorsense.wizard.additionalPolicies) ? project.floorsense.wizard.additionalPolicies : [])
+    .slice(0, MAX_ADDITIONAL_POLICIES)
+    .map(p => Object.assign({}, CORE_POLICY_DEFAULTS, p));
+
+  function savePolicies() {
+    project.floorsense.wizard.additionalPolicies = additionalPolicies;
+    saveProject(project);
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  function switchHtml(field, on) {
+    return `<button type="button" class="policy-switch${on ? ' on' : ''}" data-field="${field}" role="switch" aria-checked="${on}"></button>`;
+  }
+  function checkRowHtml(field, checked, label) {
+    return `<label class="policy-check-row">
+              <input type="checkbox" data-field="${field}"${checked ? ' checked' : ''}>
+              <span class="policy-check-tick" aria-hidden="true"></span>
+              <span class="policy-check-label">${label}</span>
+            </label>`;
+  }
+
+  function policyCardHtml(p) {
+    return `
+      <div class="policy-card" data-policy-id="${p.id}">
+        <div class="policy-card-header">
+          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, CEO" value="${escapeHtml(p.name)}">
+          <button type="button" class="policy-remove-btn" data-action="remove">Remove</button>
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Check-in Window</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Before booking start</span>
+            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinBeforeMin" value="${p.checkinBeforeMin}"><span class="policy-field-unit">min</span></span>
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">After booking start</span>
+            <span class="policy-number-field"><input type="number" min="0" max="240" class="policy-number-input" data-field="checkinAfterMin" value="${p.checkinAfterMin}"><span class="policy-field-unit">min</span></span>
+          </div>
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Prebooking &amp; Duration</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Prebooking window</span>
+            <span class="policy-number-field"><input type="number" min="1" max="60" class="policy-number-input" data-field="prebookingDays" value="${p.prebookingDays}"><span class="policy-field-unit">days</span></span>
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Default reservation duration</span>
+            <span class="policy-number-field"><input type="number" min="1" max="24" class="policy-number-input" data-field="reservationDurationHours" value="${p.reservationDurationHours}"><span class="policy-field-unit">hrs</span></span>
+          </div>
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Check-in Behaviour</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Second swipe checks out</span>
+            ${switchHtml('swipeOutRequired', p.swipeOutRequired)}
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Auto-cancel booking when checking in elsewhere</span>
+            ${switchHtml('autoCancelOnElsewhere', p.autoCancelOnElsewhere)}
+          </div>
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Access Methods</p>
+          ${checkRowHtml('accessCards', p.accessCards, 'Cards')}
+          ${checkRowHtml('accessApp', p.accessApp, 'Mobile app')}
+          ${checkRowHtml('accessDesktop', p.accessDesktop, 'Desktop app')}
+          ${checkRowHtml('accessWalletPass', p.accessWalletPass, 'Wallet pass')}
+        </div>
+
+        <div class="policy-field-group">
+          <p class="policy-field-group-title">Additional Options</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">NSNP</span>
+            <select class="policy-select" data-field="nsnpMode">
+              <option value="depends"${p.nsnpMode === 'depends' ? ' selected' : ''}>Depends on policy</option>
+              <option value="all"${p.nsnpMode === 'all' ? ' selected' : ''}>All desks</option>
+              <option value="none"${p.nsnpMode === 'none' ? ' selected' : ''}>Not used</option>
+            </select>
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Sit-stand desks</span>
+            ${switchHtml('sitStandEnabled', p.sitStandEnabled)}
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Recurring bookings</span>
+            ${switchHtml('recurringEnabled', p.recurringEnabled)}
+          </div>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Do Not Disturb available</span>
+            ${switchHtml('dndEnabled', p.dndEnabled)}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function wirePolicyCard(card) {
+    const id = card.getAttribute('data-policy-id');
+    const policy = additionalPolicies.find(p => p.id === id);
+    if (!policy) return;
+
+    card.querySelector('.policy-name-input').addEventListener('input', (e) => {
+      policy.name = e.target.value;
+      savePolicies();
+    });
+    card.querySelector('.policy-remove-btn').addEventListener('click', () => {
+      additionalPolicies = additionalPolicies.filter(p => p.id !== id);
+      savePolicies();
+      renderPolicies();
+    });
+    card.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const field = input.getAttribute('data-field');
+        const val = parseInt(input.value, 10);
+        policy[field] = Number.isFinite(val) ? val : CORE_POLICY_DEFAULTS[field];
+        input.value = policy[field];
+        savePolicies();
+      });
+    });
+    card.querySelectorAll('.policy-switch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const field = btn.getAttribute('data-field');
+        policy[field] = !policy[field];
+        btn.classList.toggle('on', policy[field]);
+        btn.setAttribute('aria-checked', policy[field] ? 'true' : 'false');
+        savePolicies();
+      });
+    });
+    card.querySelectorAll('select.policy-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        policy[sel.getAttribute('data-field')] = sel.value;
+        savePolicies();
+      });
+    });
+    card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        policy[cb.getAttribute('data-field')] = cb.checked;
+        savePolicies();
+      });
+    });
+  }
+
+  function renderPolicies() {
+    const list = document.getElementById('policiesList');
+    list.innerHTML = additionalPolicies.map(policyCardHtml).join('');
+    list.querySelectorAll('.policy-card').forEach(wirePolicyCard);
+
+    const addBtn = document.getElementById('addPolicyBtn');
+    addBtn.disabled = additionalPolicies.length >= MAX_ADDITIONAL_POLICIES;
+    document.getElementById('policyCountNote').textContent =
+      additionalPolicies.length + ' of ' + MAX_ADDITIONAL_POLICIES + ' additional policies created';
+  }
+
+  document.getElementById('addPolicyBtn').addEventListener('click', () => {
+    if (additionalPolicies.length >= MAX_ADDITIONAL_POLICIES) return;
+    additionalPolicies.push(Object.assign(
+      { id: 'policy-' + Date.now() + '-' + Math.floor(Math.random() * 1000), name: '' },
+      CORE_POLICY_DEFAULTS
+    ));
+    savePolicies();
+    renderPolicies();
+  });
+
+  // Only reveal this whole section once Desk Groups are actually in use — set on
+  // floorsense-desk-user-groups-03.html; "none" (or missing) means Desk Groups aren't in play, so
+  // there's nothing to layer neighbourhood-specific policies on top of.
+  const deskGroups = (project.floorsense.wizard.deskUserGroups || {}).deskGroups;
+  const deskGroupsEnabled = !!deskGroups && deskGroups.none === false;
+  document.getElementById('policiesSection').classList.toggle('show', deskGroupsEnabled);
+
+  renderPolicies();
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     project.floorsense.wizard.outOfBoxPolicy = {
