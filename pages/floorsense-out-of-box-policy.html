@@ -593,15 +593,20 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>Check-in Behaviour</h3>
-          <a class="edit-link" href="floorsense-checkin-methods-02.html">Edit</a>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Card swipe</span><span class="value">In, then out</span></div>
-          <p class="summary-desc">The first card swipe at a desk checks the user in; the second swipe checks them out.</p>
+          <div class="summary-row-top">
+            <span class="label">Second swipe checks out</span>
+            <button type="button" class="policy-switch on" id="coreSwipeOutToggle" role="switch" aria-checked="true"></button>
+          </div>
+          <p class="summary-desc">When on, the first card swipe at a desk checks the user in and a second swipe checks them out. When off, a single swipe checks the user in and the desk is released some other way.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Checking in elsewhere</span><span class="value">Auto-cancels old booking</span></div>
-          <p class="summary-desc">If a user already has a reservation for one desk but checks in at a different desk, their original reservation is automatically cancelled.</p>
+          <div class="summary-row-top">
+            <span class="label">Auto-cancel when checking in elsewhere</span>
+            <button type="button" class="policy-switch on" id="coreAutoCancelToggle" role="switch" aria-checked="true"></button>
+          </div>
+          <p class="summary-desc">When on, if a user already has a reservation for one desk but checks in at a different desk, their original reservation is automatically cancelled.</p>
         </div>
       </div>
 
@@ -1059,6 +1064,21 @@
   card and a newly created additional-policy card render their group headings in the new order, and
   re-ran every existing jsdom test in this file (two-column layout, core policy card, Additional
   Policies, Maximum Desks Per User, submit guides panel) — zero runtime errors, no regressions.
+
+  MOST RECENT CHANGE: per a request to replace the Check-in Behaviour group's Edit link with actual
+  controls, removed that `.edit-link` (it only ever pointed at floorsense-checkin-methods-02.html,
+  which has no dedicated fields for these two settings anyway — flagged in an earlier NOTE above)
+  and turned its two rows into real `.policy-switch` on/off toggles, on by default:
+  `#coreSwipeOutToggle` ("Second swipe checks out") and `#coreAutoCancelToggle` ("Auto-cancel when
+  checking in elsewhere"). Field names (`swipeOutRequired`, `autoCancelOnElsewhere`) intentionally
+  match `CORE_POLICY_DEFAULTS`' existing keys used by the additional-policy cards below, for
+  consistency. Autosaves on click to `project.floorsense.wizard.outOfBoxPolicy`, independent of
+  "Confirm & finish" — same convention as the Maximum Desks Per User field and training tick boxes
+  elsewhere on this page. Default is on for both (`savedOOB[field] !== false`, so a missing/absent
+  value reads as on, matching the CORE_POLICY_DEFAULTS default of `true` for both fields). Verified
+  via a new jsdom test: both toggles default on, clicking one persists `false` and flips the
+  `on` class/`aria-checked` off, clicking twice returns it to on/`true`; re-ran every other jsdom
+  test in this file — zero runtime errors, no regressions.
 -->
 
 <script>
@@ -1129,6 +1149,28 @@
     coreMaxDesksInput.value = maxDesksPerUser;
     project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { maxDesksPerUser });
     saveProject(project);
+  });
+
+  /* ---------------- core policy: Check-in Behaviour toggles ----------------
+     Replaces the group's old Edit link (which just pointed at floorsense-checkin-methods-02.html
+     without any dedicated controls there) with two actual on/off switches, on by default, matching
+     CORE_POLICY_DEFAULTS' swipeOutRequired/autoCancelOnElsewhere fields used on the additional
+     policy cards below. Autosaves on toggle, independent of "Confirm & finish". */
+  const coreBehaviourToggles = [
+    { field: 'swipeOutRequired', el: document.getElementById('coreSwipeOutToggle') },
+    { field: 'autoCancelOnElsewhere', el: document.getElementById('coreAutoCancelToggle') }
+  ];
+  coreBehaviourToggles.forEach(({ field, el }) => {
+    const on = savedOOB[field] !== false; // default on
+    el.classList.toggle('on', on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
+    el.addEventListener('click', () => {
+      const nowOn = !el.classList.contains('on');
+      el.classList.toggle('on', nowOn);
+      el.setAttribute('aria-checked', nowOn ? 'true' : 'false');
+      project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { [field]: nowOn });
+      saveProject(project);
+    });
   });
 
   /* ---------------- horizontal progress bar ---------------- */
