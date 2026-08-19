@@ -592,6 +592,13 @@
           <a class="edit-link" href="floorsense-reservation-length-10.html">Edit</a>
         </div>
         <div class="summary-row">
+          <div class="summary-row-top">
+            <span class="label">Maximum desks per user</span>
+            <span class="policy-number-field"><input type="number" min="1" max="20" class="policy-number-input" id="coreMaxDesksInput" value="1"><span class="policy-field-unit">desks</span></span>
+          </div>
+          <p class="summary-desc">The most desks a single user can have reserved at the same time. Applies to everyone by default — a Desk Group or User Group policy below can set its own, different limit, and a User Group's limit always wins if a user belongs to both.</p>
+        </div>
+        <div class="summary-row">
           <div class="summary-row-top"><span class="label">NSNP</span><span class="value">Depends on policy</span></div>
           <p class="summary-desc">Not part of the fixed defaults — whether this applies depends on your organisation's own policy. Confirm before go-live.</p>
         </div>
@@ -953,6 +960,23 @@
   correctly), toggling the header open and shut again afterward, and a reload starting from a
   previously saved+collapsed state — zero runtime errors in every case; re-ran the existing
   two-column and Additional Policies jsdom tests too, unaffected by this change.
+
+  MOST RECENT CHANGE: per a request to add a "Maximum Desks Per User" option to every policy card —
+  core, and each additional Desk Group / User Group policy — added a plain fill-in number field,
+  default 1 (matching the "1 desk per user" figure already used in the precedence-notice example
+  above), editable up to 20. On the core policy card it's a new first row in the Additional Options
+  summary-group (`#coreMaxDesksInput`, reusing the `.policy-number-field`/`.policy-number-input`/
+  `.policy-field-unit` classes already built for the additional-policy cards, rather than adding new
+  CSS), autosaving on change to `project.floorsense.wizard.outOfBoxPolicy.maxDesksPerUser` — same
+  autosave-independent-of-"Confirm & finish" convention already used for the training tick boxes
+  just above it in the script. On each additional policy card, `maxDesksPerUser` was added to
+  `CORE_POLICY_DEFAULTS` (default 1) and to the Additional Options `.policy-field-group` in
+  `policyCardHtml()` as a `data-field="maxDesksPerUser"` number input — no new wiring was needed in
+  `wirePolicyCard()`, since its existing generic `input[type="number"]` loop already picks up any
+  field by its `data-field` attribute. Verified via a new jsdom test: core field defaults to 1 and
+  persists a changed value (5) to `outOfBoxPolicy.maxDesksPerUser`; a newly created additional
+  policy also defaults to 1 and persists a changed value (15) to
+  `additionalPolicies[0].maxDesksPerUser` — zero runtime errors.
 -->
 
 <script>
@@ -1008,6 +1032,21 @@
       project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { trainingRequested });
       saveProject(project);
     });
+  });
+
+  /* ---------------- core policy: Maximum Desks Per User ----------------
+     A plain fill-in number field (default 1, matching the "1 desk per user" example already used
+     in the Additional Policies precedence notice above) applying to everyone unless overridden by
+     a Desk Group or User Group policy's own Maximum Desks Per User field. Autosaves on change,
+     independent of "Confirm & finish", same convention as the training tick boxes above. */
+  const coreMaxDesksInput = document.getElementById('coreMaxDesksInput');
+  coreMaxDesksInput.value = Number.isFinite(savedOOB.maxDesksPerUser) ? savedOOB.maxDesksPerUser : 1;
+  coreMaxDesksInput.addEventListener('change', () => {
+    const val = parseInt(coreMaxDesksInput.value, 10);
+    const maxDesksPerUser = Number.isFinite(val) && val > 0 ? val : 1;
+    coreMaxDesksInput.value = maxDesksPerUser;
+    project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { maxDesksPerUser });
+    saveProject(project);
   });
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -1086,7 +1125,8 @@
     prebookingDays: 8, reservationDurationHours: 9,
     swipeOutRequired: true, autoCancelOnElsewhere: true,
     accessCards: true, accessApp: true, accessDesktop: true, accessWalletPass: false,
-    nsnpMode: 'depends', sitStandEnabled: false, recurringEnabled: false, dndEnabled: true
+    nsnpMode: 'depends', sitStandEnabled: false, recurringEnabled: false, dndEnabled: true,
+    maxDesksPerUser: 1
   };
   const MAX_ADDITIONAL_POLICIES = 3;
 
@@ -1207,6 +1247,10 @@
 
         <div class="policy-field-group">
           <p class="policy-field-group-title">Additional Options</p>
+          <div class="policy-field-row">
+            <span class="policy-field-label">Maximum desks per user</span>
+            <span class="policy-number-field"><input type="number" min="1" max="20" class="policy-number-input" data-field="maxDesksPerUser" value="${p.maxDesksPerUser}"><span class="policy-field-unit">desks</span></span>
+          </div>
           <div class="policy-field-row">
             <span class="policy-field-label">NSNP</span>
             <select class="policy-select" data-field="nsnpMode">
