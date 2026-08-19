@@ -432,6 +432,35 @@
   .page-nav-btn.disabled { pointer-events: none; opacity: 0.4; }
   .page-nav-btn.disabled .page-nav-arrow { background: var(--paper-soft); }
 
+  /* ---------- post-submit guide links: shown once "Confirm & finish" is clicked, in place of an
+     immediate auto-redirect, so there's time to actually open/share the two external Notion guides
+     before moving on to project-home.html. ---------- */
+  .submit-guides-panel {
+    display: none; gap: 16px; align-items: flex-start; max-width: 640px; margin-top: 28px;
+    background: var(--accent-wash); border: 1px solid var(--accent); border-radius: var(--radius-lg);
+    padding: 24px 26px;
+  }
+  .submit-guides-panel.show { display: flex; }
+  .submit-guides-icon {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .submit-guides-icon svg { width: 18px; height: 18px; }
+  .submit-guides-body h3 { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--accent-deep); }
+  .submit-guides-body > p { margin: 0 0 14px; font-size: 13.12px; color: var(--accent-deep); }
+  .submit-guides-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .submit-guide-link {
+    display: flex; align-items: center; gap: 8px; text-decoration: none; font-family: var(--font-text);
+    font-weight: 600; font-size: 12.9px; color: #fff; background: var(--accent); border-radius: 980px;
+    padding: 10px 18px; transition: background .15s;
+  }
+  .submit-guide-link:hover { background: var(--accent-deep); }
+  .submit-guide-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .submit-guides-continue {
+    display: inline-block; font-family: var(--font-text); font-weight: 600; font-size: 12.5px;
+    color: var(--accent-deep); text-decoration: underline;
+  }
+
   /* ---------- action bar ---------- */
   .action-bar {
     position: sticky; bottom: 0; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px);
@@ -448,6 +477,7 @@
   }
   button.primary:hover { background: var(--accent-deep); }
   button.primary:active { transform: scale(0.98); }
+  button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
@@ -692,6 +722,25 @@
         <span class="page-nav-btn next disabled">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </span>
+      </div>
+
+      <div class="submit-guides-panel" id="submitGuidesPanel">
+        <div class="submit-guides-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="submit-guides-body">
+          <h3>Configuration saved</h3>
+          <p>Share these with your team before go-live:</p>
+          <div class="submit-guides-links">
+            <a class="submit-guide-link" href="https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              End User Guides
+            </a>
+            <a class="submit-guide-link" href="https://app.notion.com/p/floorsense/FLOORSENSE-FULL-ADMINISTRATION-GUIDE-f557eaf471ca455a990324b36e5e693b?source=copy_link" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Admin Portal Guide
+            </a>
+          </div>
+          <a class="submit-guides-continue" href="project-home.html">Continue to Project Home &rarr;</a>
+        </div>
       </div>
 
     </div>
@@ -977,6 +1026,25 @@
   persists a changed value (5) to `outOfBoxPolicy.maxDesksPerUser`; a newly created additional
   policy also defaults to 1 and persists a changed value (15) to
   `additionalPolicies[0].maxDesksPerUser` — zero runtime errors.
+
+  MOST RECENT CHANGE: per a request to surface links to the end-user and admin guides once this
+  page is submitted, "Confirm & finish" no longer auto-redirects to project-home.html after a
+  500ms timeout. Instead it disables itself and reveals a new `.submit-guides-panel`
+  (`#submitGuidesPanel`, inserted right after `.page-nav`, styled as an accent-wash confirmation
+  box matching `.ready-banner`'s visual language) containing two external link buttons — "End User
+  Guides" linking to the Notion "Floorsense App End User Guides" page, and "Admin Portal Guide"
+  linking to the Notion "FLOORSENSE FULL ADMINISTRATION GUIDE" page, both `target="_blank"
+  rel="noopener"` — plus a plain "Continue to Project Home →" text link to `project-home.html`
+  that the client clicks manually when ready, rather than being swept away from the page before
+  they have a chance to open or copy the guide links. `project.floorsense.wizard.outOfBoxPolicy`,
+  `project.floorsense.configured`, and `moduleStatus['out-of-box-policy']` are all still set/saved
+  exactly as before, synchronously, before the panel is shown — only the navigation timing changed.
+  Verified via a new jsdom test: the panel is hidden on load, both link hrefs are present and
+  correct before any click, clicking "Confirm & finish" shows the panel, disables the button, and
+  persists `configured`/`moduleStatus` correctly, and the "Continue to Project Home" link still
+  points at `project-home.html` — zero runtime errors; re-ran every other jsdom test in this file
+  (two-column layout, core policy card, Additional Policies, Maximum Desks Per User) to confirm no
+  regressions from this change.
 -->
 
 <script>
@@ -1383,7 +1451,8 @@
 
   renderPolicies();
 
-  document.getElementById('continueBtn').addEventListener('click', () => {
+  const continueBtn = document.getElementById('continueBtn');
+  continueBtn.addEventListener('click', () => {
     project.floorsense.wizard.outOfBoxPolicy = {
       acknowledged: true,
       preset: preset,
@@ -1397,7 +1466,10 @@
     markModuleSaved('out-of-box-policy');
     saveDot.classList.add('show');
     saveText.textContent = 'Saved to project configuration';
-    setTimeout(() => { window.location.href = 'project-home.html'; }, 500);
+    // Surface the end-user and admin guide links instead of auto-redirecting, so there's time to
+    // actually open/share them before moving on — the client continues manually when ready.
+    continueBtn.disabled = true;
+    document.getElementById('submitGuidesPanel').classList.add('show');
   });
 })();
 </script>
