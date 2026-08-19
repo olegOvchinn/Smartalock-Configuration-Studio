@@ -223,8 +223,12 @@
      once Desk/User Groups are in use, which is exactly when .centered never applies. ---------- */
   .core-settings-column.compact { max-width: 460px; }
   .core-settings-column.compact .ready-banner,
-  .core-settings-column.compact .download-card,
-  .core-settings-column.compact .summary-group { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
+  .core-settings-column.compact .download-card { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
+  .core-settings-column.compact .summary-group { padding: 14px 0; }
+  .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
+  .core-settings-column.compact .core-policy-title { font-size: 15px; }
+  .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
+  .core-settings-column.compact .core-policy-card.expanded .core-policy-body { padding-top: 16px; }
   .core-settings-column.compact .summary-group-head h3 { font-size: 16.5px; }
   .core-settings-column.compact .summary-group-head h3 .summary-icon { width: 23px; height: 23px; }
   .core-settings-column.compact .summary-row-top .label,
@@ -236,6 +240,40 @@
   .core-settings-column.compact .download-card-body h3 { font-size: 12.8px; }
   .core-settings-column.compact .edit-link,
   .core-settings-column.compact .row-edit-link { font-size: 9px; padding: 3px 10px; }
+
+  /* ---------- core policy as a single unified card ("canvas"), collapsible once saved: a
+     .core-policy-summary header bar (chevron, "Core Policy" title, saved/not-yet-saved status
+     pill) is always visible and tappable to toggle .core-policy-card.expanded; the
+     .core-policy-body (ready banner, PDF download card, all six summary-groups, and the Save
+     button at the bottom) is only shown while expanded. The six .summary-group blocks lose their
+     own individual border/background/max-width inside this card and instead become flush
+     sections separated by a top border, like .policy-field-group on the additional-policy cards. */
+  .core-policy-card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .core-policy-summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 24px; cursor: pointer;
+  }
+  .core-policy-summary-main { display: flex; align-items: center; gap: 10px; }
+  .core-policy-chevron { width: 16px; height: 16px; color: var(--ink-soft); transition: transform .18s; flex-shrink: 0; }
+  .core-policy-card.expanded .core-policy-chevron { transform: rotate(90deg); }
+  .core-policy-title { font-family: var(--font-display); font-weight: 600; font-size: 17px; color: var(--ink); }
+  .core-policy-status {
+    font-size: 10.2px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 10px; border-radius: 999px; background: var(--paper-soft); color: var(--ink-soft);
+  }
+  .core-policy-status.saved { background: var(--accent-wash); color: var(--accent-deep); }
+  .core-policy-body { display: none; padding: 0 24px 24px; border-top: 1px solid var(--line); }
+  .core-policy-card.expanded .core-policy-body { display: block; padding-top: 20px; }
+  .core-policy-body .ready-banner,
+  .core-policy-body .download-card { max-width: none; }
+  .core-policy-body .summary-group {
+    background: none; border: none; border-radius: 0; max-width: none; padding: 18px 0; margin-bottom: 0;
+    border-top: 1px solid var(--line);
+  }
+  .core-policy-save-row { display: flex; justify-content: flex-end; margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--line); }
 
   /* ---------- additional (neighbourhood-specific) policies: shown once Desk Groups and/or User
      Groups are in use (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups} aren't
@@ -462,6 +500,16 @@
 
       <div class="core-settings-column" id="coreSettingsColumn">
 
+      <div class="core-policy-card" id="corePolicyCard">
+        <div class="core-policy-summary" id="corePolicySummary">
+          <div class="core-policy-summary-main">
+            <svg class="core-policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="core-policy-title">Core Policy</span>
+            <span class="core-policy-status" id="corePolicyStatus">Not yet saved</span>
+          </div>
+        </div>
+        <div class="core-policy-body" id="corePolicyBody">
+
       <div class="ready-banner">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
         <p>These settings follow Floorsense's best practice and are ready to go as-is. Nothing below needs to be configured.</p>
@@ -591,6 +639,13 @@
             <span class="training-check-tick" aria-hidden="true"></span>
             <span class="training-check-label">Tick for training on how Notifications are set up</span>
           </label>
+        </div>
+      </div>
+
+      <div class="core-policy-save-row">
+        <button class="primary" id="coreSaveBtn" type="button">Save Core Policy</button>
+      </div>
+
         </div>
       </div>
 
@@ -868,6 +923,36 @@
   `#summaryColumns.two-col` assertion) across desk-only/user-only/both/neither — `.two-col`,
   `.centered`, and `.show` all track `anyGroupsEnabled` correctly with zero runtime errors in every
   scenario.
+
+  MOST RECENT CHANGE: per a request to turn the core policy into "one card canvas" with a Save
+  button that collapses it, the six `.summary-group` blocks plus the `.ready-banner` and
+  `.download-card` are now wrapped in a single `.core-policy-card` (inside `#coreSettingsColumn`,
+  unchanged) instead of each being its own separately-bordered box. The card has a
+  `.core-policy-summary` header bar (`#corePolicySummary`: chevron, "Core Policy" title, and a
+  status pill — "Not yet saved" by default, "Saved" with an accent-tinted background once the Save
+  button below has been clicked) that's always visible and clickable to toggle
+  `.core-policy-card.expanded` at any time; the `.core-policy-body` (`#corePolicyBody`, containing
+  everything that used to sit directly in the column: ready banner, download card, all six
+  summary-groups, and a new `.core-policy-save-row` with a "Save Core Policy" button
+  (`#coreSaveBtn`) at the very bottom) is `display:none` unless expanded. The six `.summary-group`
+  blocks lost their own border/background/max-width/margin-bottom inside this card — they're now
+  flush sections separated by a `border-top`, the same convention `.policy-field-group` already
+  uses on the additional-policy cards, rather than stacking as separate boxed cards.
+  Clicking "Save Core Policy" sets both `saved: true` and `collapsed: true` and immediately
+  collapses the card (tucking the read-only content away and flashing the shared `#saveDot`
+  indicator); clicking the header bar toggles expand/collapse freely at any other time, independent
+  of the saved flag — so a client can still re-open it to review after saving. State lives at
+  `project.floorsense.wizard.corePolicyCard = { saved, collapsed }`, a small object independent of
+  `outOfBoxPolicy` (which is still only fully written on "Confirm & finish" at the bottom of the
+  page) — reloading the page restores whatever expand/collapse state and saved status was last set.
+  `.core-settings-column`'s pre-existing `.centered`/`.compact` toggles are unaffected: they still
+  apply to the column as a whole (or, per the compact CSS's more specific rules, directly to the
+  card's own summary/body padding and title size) and continue to be driven by the same
+  `anyGroupsEnabled`/`additionalPolicies.length > 0` conditions as before. Verified with a new
+  jsdom test covering a fresh load (expanded, "Not yet saved"), Save (collapses, "Saved", persisted
+  correctly), toggling the header open and shut again afterward, and a reload starting from a
+  previously saved+collapsed state — zero runtime errors in every case; re-ran the existing
+  two-column and Additional Policies jsdom tests too, unaffected by this change.
 -->
 
 <script>
@@ -950,6 +1035,43 @@
   /* ---------------- confirm & finish ---------------- */
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
+
+  /* ---------------- core policy card: one collapsible canvas with its own Save button ----------------
+     Starts expanded (or restores whatever collapsed/expanded state was last saved). Tapping the
+     header bar toggles expanded/collapsed at any time; clicking "Save Core Policy" additionally
+     marks it saved (swaps the status pill to "Saved") and collapses it, tucking the read-only
+     content away once the client is done reviewing it. State persists independently of
+     "Confirm & finish" below, at project.floorsense.wizard.corePolicyCard = { saved, collapsed }. */
+  const corePolicyCard = document.getElementById('corePolicyCard');
+  const corePolicyStatus = document.getElementById('corePolicyStatus');
+  let corePolicyState = Object.assign({ saved: false, collapsed: false }, project.floorsense.wizard.corePolicyCard || {});
+
+  function renderCorePolicyCard() {
+    corePolicyCard.classList.toggle('expanded', !corePolicyState.collapsed);
+    corePolicyStatus.textContent = corePolicyState.saved ? 'Saved' : 'Not yet saved';
+    corePolicyStatus.classList.toggle('saved', corePolicyState.saved);
+  }
+  function saveCorePolicyState() {
+    project.floorsense.wizard.corePolicyCard = corePolicyState;
+    saveProject(project);
+  }
+  renderCorePolicyCard();
+
+  document.getElementById('corePolicySummary').addEventListener('click', () => {
+    corePolicyState.collapsed = !corePolicyState.collapsed;
+    saveCorePolicyState();
+    renderCorePolicyCard();
+  });
+
+  document.getElementById('coreSaveBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    corePolicyState.saved = true;
+    corePolicyState.collapsed = true;
+    saveCorePolicyState();
+    renderCorePolicyCard();
+    saveDot.classList.add('show');
+    setTimeout(() => saveDot.classList.remove('show'), 900);
+  });
 
   /* ---------------- additional (neighbourhood-specific) policies ----------------
      Only shown once Desk Groups are in use. Every field here mirrors a setting that already has an
