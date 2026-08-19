@@ -195,25 +195,102 @@
   .training-check input:checked ~ .training-check-tick::after { opacity: 1; }
   .training-check-label { font-size: 11.8px; color: var(--accent-deep); font-weight: 600; line-height: 1.4; }
 
-  /* ---------- additional (neighbourhood-specific) policies: only shown once Desk Groups are in
-     use (project.floorsense.wizard.deskUserGroups.deskGroups isn't "none" — set on
-     floorsense-desk-user-groups-03.html). Lets a client duplicate the core policy above under a
-     custom name (e.g. "Finance", "CEO") and tweak exactly the settings that already carry an Edit
-     button on this page, up to 3 additional policies. ---------- */
+  /* ---------- core policy column: the read-only summary-groups above, wrapped in one container so
+     it can be re-centred as a block once there's no Additional Policies content sitting below/
+     beside it to balance the page (see .centered below). Default (unwrapped visually) state is a
+     no-op — children keep their own max-width:640px flush-left, matching every other page. ---------- */
+  .core-settings-column.centered { max-width: 640px; margin: 0 auto; }
+
+  /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
+     has been created — the core policy becomes reference material sitting above the named
+     policies a client is now actively managing, so it's rendered smaller/denser rather than at
+     full size. Mutually exclusive with .centered in practice: additional policies can only exist
+     once Desk/User Groups are in use, which is exactly when .centered never applies. ---------- */
+  .core-settings-column.compact { max-width: 460px; }
+  .core-settings-column.compact .ready-banner,
+  .core-settings-column.compact .download-card,
+  .core-settings-column.compact .summary-group { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
+  .core-settings-column.compact .summary-group-head h3 { font-size: 16.5px; }
+  .core-settings-column.compact .summary-group-head h3 .summary-icon { width: 23px; height: 23px; }
+  .core-settings-column.compact .summary-row-top .label,
+  .core-settings-column.compact .summary-row-top .value { font-size: 10.8px; }
+  .core-settings-column.compact .summary-desc,
+  .core-settings-column.compact .summary-note { font-size: 11px; }
+  .core-settings-column.compact .ready-banner p,
+  .core-settings-column.compact .download-card-body p { font-size: 11px; }
+  .core-settings-column.compact .download-card-body h3 { font-size: 12.8px; }
+  .core-settings-column.compact .edit-link,
+  .core-settings-column.compact .row-edit-link { font-size: 9px; padding: 3px 10px; }
+
+  /* ---------- additional (neighbourhood-specific) policies: shown once Desk Groups and/or User
+     Groups are in use (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups} aren't
+     "none" — set on floorsense-desk-user-groups-03.html). Lets a client duplicate the core policy
+     above under a custom name (e.g. "Finance", "CEO"), mark it as a Desk Group or User Group
+     setting, and tweak exactly the settings that already carry an Edit button on this page, up to
+     3 additional policies. ---------- */
   .policies-section { display: none; margin-top: 8px; }
   .policies-section.show { display: block; }
   .policies-intro {
-    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 18px;
+    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 14px;
     background: var(--accent-wash); border: 1px solid #B7E4C8; border-radius: var(--radius-md); padding: 14px 16px;
   }
   .policies-intro svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
   .policies-intro p { margin: 0; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
+  .policies-intro + .policies-intro { margin-top: -2px; margin-bottom: 18px; }
 
+  /* ---------- two-column grid for policy cards once created, same idea as
+     floorsense-desk-user-groups-03.html's .groups-columns ---------- */
+  .policies-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
+    max-width: 1064px; margin: 0 0 4px;
+  }
+  @media (max-width: 900px) {
+    .policies-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- collapsed-by-default policy card: once a policy exists it shows as a compact row
+     (name + type badge + Remove), and a client taps it to expand and see/edit the actual fields —
+     rather than every card always showing its full form, which got noisy once several existed
+     side by side in the two-column grid below. ---------- */
   .policy-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 20px 22px; margin-bottom: 16px; max-width: 640px;
+    overflow: hidden;
   }
+  .policy-card-summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 16px 18px; cursor: pointer;
+  }
+  .policy-card-summary-main { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+  .policy-chevron { width: 15px; height: 15px; flex-shrink: 0; color: var(--ink-soft); transition: transform .18s; }
+  .policy-card.expanded .policy-chevron { transform: rotate(90deg); }
+  .policy-card-name {
+    font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  }
+  .policy-card-name.placeholder { color: var(--ink-soft); font-weight: 500; font-style: italic; }
+  .policy-type-badge {
+    flex-shrink: 0; font-size: 9.6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .policy-type-badge.desk { background: var(--accent-wash); color: var(--accent-deep); }
+  .policy-type-badge.user { background: #E8F0FE; color: #1A56DB; }
+  .policy-card-body { display: none; padding: 0 22px 20px; border-top: 1px solid var(--line); }
+  .policy-card.expanded .policy-card-body { display: block; }
+  .policy-card-body-inner { padding-top: 16px; }
   .policy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+
+  /* ---------- Desk Group / User Group type choice, a compact 2-way pill toggle at the top of
+     each policy card. Whichever type isn't currently in use is shown disabled — a client can only
+     pick between types that are actually enabled on floorsense-desk-user-groups-03.html. ---------- */
+  .policy-type-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .policy-type-pill {
+    flex: 1; text-align: center; font-family: var(--font-text); font-weight: 600; font-size: 11.8px;
+    padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer;
+    color: var(--ink-soft); background: var(--paper); transition: border-color .15s, background .15s, color .15s;
+  }
+  .policy-type-pill.selected { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-deep); }
+  .policy-type-pill.disabled-choice { opacity: 0.4; cursor: not-allowed; }
+  .policy-type-pill:not(.disabled-choice):hover { border-color: var(--accent); }
   .policy-name-input {
     flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; color: var(--ink);
     border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--paper-soft);
@@ -274,7 +351,7 @@
   .policy-check-row input:checked ~ .policy-check-tick::after { opacity: 1; }
   .policy-check-label { font-size: 12.6px; color: var(--ink); font-weight: 500; }
 
-  .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 640px; margin-top: 4px; flex-wrap: wrap; }
+  .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 1064px; margin-top: 4px; flex-wrap: wrap; }
   .add-policy-btn {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
     background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
@@ -365,6 +442,8 @@
       <div class="section-head">
         <span class="eyebrow">Review</span>
       </div>
+
+      <div class="core-settings-column" id="coreSettingsColumn">
 
       <div class="ready-banner">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
@@ -498,11 +577,13 @@
         </div>
       </div>
 
+      </div>
+
       <div class="policies-section" id="policiesSection">
         <div class="section-head" style="margin-top:36px;">
           <span class="eyebrow">Neighbourhood Policies</span>
-          <h2 class="section-title">Additional Policies for Desk Groups</h2>
-          <p>You told us you're using Desk Groups. Duplicate the core policy above under a name like "Finance" or "CEO," then adjust it for that group — up to 3 additional policies.</p>
+          <h2 class="section-title">Additional Policies</h2>
+          <p>You told us you're using Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "CEO," mark it as a Desk Group or User Group setting, then adjust it — up to 3 additional policies.</p>
         </div>
 
         <div class="policies-intro">
@@ -510,7 +591,12 @@
           <p>Each additional policy starts as an exact copy of the core policy shown above. Changing a setting here only affects that named policy — the core policy and any other additional policies stay untouched.</p>
         </div>
 
-        <div id="policiesList"></div>
+        <div class="policies-intro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+          <p><strong>User Group settings take precedence over Desk Group settings.</strong> For example, if a Desk Group's policy allows 1 desk per user but a User Group that person belongs to allows 15, that user will be able to book 15 desks — the User Group setting wins.</p>
+        </div>
+
+        <div id="policiesList" class="policies-grid"></div>
 
         <div class="add-policy-row">
           <button class="add-policy-btn" id="addPolicyBtn" type="button">+ Duplicate Core Policy</button>
@@ -690,6 +776,56 @@
   named policies elsewhere (e.g. letting floorsense-desk-user-groups-03.html's Desk Group Policy
   textarea reference them by name, or showing them in the end-user PDF) is a natural follow-up but
   out of scope for this change.
+
+  MOST RECENT CHANGE: superseded the Desk-Groups-only version of Additional Policies above with a
+  single unified design, per a follow-up request to also support User Groups with an explicit
+  precedence rule, and a further request to collapse each saved policy down to a compact named
+  card. Concretely:
+  (1) Section renamed from "Additional Policies for Desk Groups" back to plain "Additional
+  Policies" — it now shows if EITHER Desk Groups or User Groups is in use
+  (deskGroupsEnabled || userGroupsEnabled, both read from
+  project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups}.none === false), not just Desk
+  Groups. A second `.policies-intro` box was added spelling out that User Group settings take
+  precedence over Desk Group settings, using the client's own example verbatim ("if a Desk Group's
+  policy allows 1 desk per user but a User Group that person belongs to allows 15, that user will
+  be able to book 15 desks — the User Group setting wins").
+  (2) Each policy gained a `groupType: 'desk' | 'user'` field, set via a two-way `.policy-type-pill`
+  toggle ("Desk Group Setting" / "User Group Setting") inside the card. Whichever type isn't
+  currently enabled is rendered `disabled`/`.disabled-choice` — a client can only classify a policy
+  as a type that's actually in use. New policies default to 'desk' if Desk Groups are enabled,
+  otherwise 'user'. This field is shown as a small `.policy-type-badge` pill (green "Desk Group" /
+  blue "User Group") in the card's collapsed summary row too.
+  (3) Cards are now collapsed by default instead of always showing every field. Each `.policy-card`
+  renders a `.policy-card-summary` bar (chevron, the policy's name — or an italicised "Untitled
+  policy" placeholder until named — the type badge, and the Remove button) which is always visible;
+  tapping anywhere on it (except Remove, guarded via stopPropagation/closest) toggles a
+  `.policy-card.expanded` class that reveals the `.policy-card-body` (name input, type pills, and
+  the five field groups), display:none otherwise. Expand/collapse state lives in an in-memory-only
+  `expandedIds` Set (module-level `let`, not persisted to localStorage or the project object) —
+  policies loaded from a saved project always start collapsed; a newly-created policy (via
+  "+ Duplicate Core Policy") is added to `expandedIds` immediately so there's something to edit
+  right away without an extra tap. Editing the name field updates the collapsed summary's label
+  live via direct DOM text/class updates (not a full re-render, to avoid losing input focus/cursor
+  position mid-keystroke).
+  (4) Per a related request, `#coreSettingsColumn` now also gets a `.compact` class
+  (max-width 460px, smaller padding/type sizes on `.summary-group`/`.ready-banner`/`.download-card`)
+  whenever `additionalPolicies.length > 0` — recomputed on every `renderPolicies()` call, so it
+  shrinks the moment the first additional policy is created and reverts the instant the last one is
+  removed. This is a distinct, separately-toggled class from `.centered` (applied when neither Desk
+  nor User Groups are enabled) — the two conditions can't both be true at once, since additional
+  policies can only exist when at least one group type is enabled.
+  State shape for each entry is now `{ id, name, groupType, checkinBeforeMin, checkinAfterMin,
+  prebookingDays, reservationDurationHours, swipeOutRequired, autoCancelOnElsewhere, accessCards,
+  accessApp, accessDesktop, accessWalletPass, nsnpMode, sitStandEnabled, recurringEnabled,
+  dndEnabled }` — additive to the array shape described above (adds `groupType` only); existing
+  saved policies without a `groupType` are defaulted to 'desk' on load. Verified via a fresh jsdom
+  smoke-test script covering desk-only / user-only / both / neither gating, core-column
+  centered vs. compact toggling, type-pill enable/disable and selection, collapse/expand toggling
+  (including that a freshly created card opens expanded and a loaded one starts collapsed), the
+  live name-label update, and the existing add/remove/3-cap behaviour — zero runtime errors across
+  all four scenarios. The two-column `.policies-grid` layout, the "two separate sections" idea, and
+  the earlier Desk-Groups-only gating are all superseded by this design and are not present in the
+  current code.
 -->
 
 <script>
@@ -790,9 +926,22 @@
   };
   const MAX_ADDITIONAL_POLICIES = 3;
 
+  // Only reveal the Additional Policies section once Desk Groups and/or User Groups are actually
+  // in use — set on floorsense-desk-user-groups-03.html; "none" (or missing) means that kind of
+  // group isn't in play, so there's nothing to layer a same-type policy on top of. A policy card's
+  // Desk/User Group choice is disabled toward whichever type isn't currently enabled.
+  const deskUserGroupsState = project.floorsense.wizard.deskUserGroups || {};
+  const deskGroupsEnabled = !!deskUserGroupsState.deskGroups && deskUserGroupsState.deskGroups.none === false;
+  const userGroupsEnabled = !!deskUserGroupsState.userGroups && deskUserGroupsState.userGroups.none === false;
+  const anyGroupsEnabled = deskGroupsEnabled || userGroupsEnabled;
+
+  // in-memory only (not persisted) — tracks which policy cards are expanded. Existing/loaded
+  // policies start collapsed; newly-created ones are opened automatically (see addPolicyBtn below).
+  let expandedIds = new Set();
+
   let additionalPolicies = (Array.isArray(project.floorsense.wizard.additionalPolicies) ? project.floorsense.wizard.additionalPolicies : [])
     .slice(0, MAX_ADDITIONAL_POLICIES)
-    .map(p => Object.assign({}, CORE_POLICY_DEFAULTS, p));
+    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user' }, CORE_POLICY_DEFAULTS, p));
 
   function savePolicies() {
     project.floorsense.wizard.additionalPolicies = additionalPolicies;
@@ -816,13 +965,37 @@
             </label>`;
   }
 
-  function policyCardHtml(p) {
+  function typePillsHtml(p) {
+    const deskSelected = p.groupType === 'desk';
+    const userSelected = p.groupType === 'user';
     return `
-      <div class="policy-card" data-policy-id="${p.id}">
-        <div class="policy-card-header">
-          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, CEO" value="${escapeHtml(p.name)}">
+      <div class="policy-type-row">
+        <button type="button" class="policy-type-pill${deskSelected ? ' selected' : ''}${deskGroupsEnabled ? '' : ' disabled-choice'}" data-type="desk"${deskGroupsEnabled ? '' : ' disabled'}>Desk Group Setting</button>
+        <button type="button" class="policy-type-pill${userSelected ? ' selected' : ''}${userGroupsEnabled ? '' : ' disabled-choice'}" data-type="user"${userGroupsEnabled ? '' : ' disabled'}>User Group Setting</button>
+      </div>`;
+  }
+
+  function policyCardHtml(p) {
+    const expanded = expandedIds.has(p.id);
+    const trimmedName = String(p.name || '').trim();
+    const badgeType = p.groupType === 'user' ? 'user' : 'desk';
+    const badgeLabel = badgeType === 'user' ? 'User Group' : 'Desk Group';
+    return `
+      <div class="policy-card${expanded ? ' expanded' : ''}" data-policy-id="${p.id}">
+        <div class="policy-card-summary" data-action="toggle">
+          <div class="policy-card-summary-main">
+            <svg class="policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
+            <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
+          </div>
           <button type="button" class="policy-remove-btn" data-action="remove">Remove</button>
         </div>
+        <div class="policy-card-body">
+        <div class="policy-card-body-inner">
+        <div class="policy-card-header">
+          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, CEO" value="${escapeHtml(p.name)}">
+        </div>
+        ${typePillsHtml(p)}
 
         <div class="policy-field-group">
           <p class="policy-field-group-title">Check-in Window</p>
@@ -891,6 +1064,8 @@
             ${switchHtml('dndEnabled', p.dndEnabled)}
           </div>
         </div>
+        </div>
+        </div>
       </div>`;
   }
 
@@ -899,14 +1074,38 @@
     const policy = additionalPolicies.find(p => p.id === id);
     if (!policy) return;
 
+    card.querySelector('.policy-card-summary').addEventListener('click', (e) => {
+      if (e.target.closest('.policy-remove-btn')) return;
+      if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+      renderPolicies();
+    });
     card.querySelector('.policy-name-input').addEventListener('input', (e) => {
       policy.name = e.target.value;
       savePolicies();
+      const trimmed = policy.name.trim();
+      const nameEl = card.querySelector('.policy-card-name');
+      nameEl.textContent = trimmed || 'Untitled policy';
+      nameEl.classList.toggle('placeholder', !trimmed);
     });
-    card.querySelector('.policy-remove-btn').addEventListener('click', () => {
+    card.querySelector('.policy-remove-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      expandedIds.delete(id);
       additionalPolicies = additionalPolicies.filter(p => p.id !== id);
       savePolicies();
       renderPolicies();
+    });
+    card.querySelectorAll('.policy-type-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (btn.disabled) return;
+        const type = btn.getAttribute('data-type');
+        policy.groupType = type;
+        savePolicies();
+        card.querySelectorAll('.policy-type-pill').forEach(b => b.classList.toggle('selected', b.getAttribute('data-type') === type));
+        const badge = card.querySelector('.policy-type-badge');
+        badge.className = 'policy-type-badge ' + type;
+        badge.textContent = type === 'user' ? 'User Group' : 'Desk Group';
+      });
     });
     card.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('change', () => {
@@ -949,24 +1148,28 @@
     addBtn.disabled = additionalPolicies.length >= MAX_ADDITIONAL_POLICIES;
     document.getElementById('policyCountNote').textContent =
       additionalPolicies.length + ' of ' + MAX_ADDITIONAL_POLICIES + ' additional policies created';
+
+    // Shrink the core policy column to a denser secondary view once at least one additional
+    // policy exists — it becomes reference material once named policies are the active focus.
+    document.getElementById('coreSettingsColumn').classList.toggle('compact', additionalPolicies.length > 0);
   }
 
   document.getElementById('addPolicyBtn').addEventListener('click', () => {
     if (additionalPolicies.length >= MAX_ADDITIONAL_POLICIES) return;
+    const newId = 'policy-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     additionalPolicies.push(Object.assign(
-      { id: 'policy-' + Date.now() + '-' + Math.floor(Math.random() * 1000), name: '' },
+      { id: newId, name: '', groupType: deskGroupsEnabled ? 'desk' : 'user' },
       CORE_POLICY_DEFAULTS
     ));
+    expandedIds.add(newId); // new policies open expanded so there's something to edit right away
     savePolicies();
     renderPolicies();
   });
 
-  // Only reveal this whole section once Desk Groups are actually in use — set on
-  // floorsense-desk-user-groups-03.html; "none" (or missing) means Desk Groups aren't in play, so
-  // there's nothing to layer neighbourhood-specific policies on top of.
-  const deskGroups = (project.floorsense.wizard.deskUserGroups || {}).deskGroups;
-  const deskGroupsEnabled = !!deskGroups && deskGroups.none === false;
-  document.getElementById('policiesSection').classList.toggle('show', deskGroupsEnabled);
+  // Reveal the section once Desk Groups and/or User Groups are in use, and re-centre the core
+  // settings column when neither is (nothing to sit beside/below it in that case).
+  document.getElementById('policiesSection').classList.toggle('show', anyGroupsEnabled);
+  document.getElementById('coreSettingsColumn').classList.toggle('centered', !anyGroupsEnabled);
 
   renderPolicies();
 
