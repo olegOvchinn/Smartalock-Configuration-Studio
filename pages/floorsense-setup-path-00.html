@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setup Path — Floorsense Configuration Studio (Template)</title>
+<title>Core Setup Complete — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -115,54 +115,32 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
-  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
-  /* ---------- recommendation notice ---------- */
-  .setup-notice {
-    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 22px;
-    background: #FFF8E6; border: 1px solid #F0D793; border-radius: var(--radius-md); padding: 14px 16px;
+  /* ---------- completion card: replaces the old 4-mode path-select grid now that this page is a
+     card-free confirmation/transition step rather than a decision point — single explainer card,
+     same shell (.checkin-card-header-style icon+description) used elsewhere in the wizard. ---------- */
+  .complete-card {
+    max-width: 720px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg); padding: 26px 28px 28px;
   }
-  .setup-notice svg { width: 20px; height: 20px; flex-shrink: 0; color: #B36B00; margin-top: 1px; }
-  .setup-notice p { margin: 0; font-size: 13.12px; line-height: 1.55; color: #7A4B00; }
-
-  /* ---------- setup-path cards (single-select radio, same visual language as desk-check-card) ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
-  .path-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
-  }
-  .path-check-card:hover { border-color: var(--accent); }
-  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
-  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .path-tick {
-    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+  .complete-card-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+  .complete-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  .path-check-card.checked .path-tick { border-color: var(--accent); }
-  .path-tick::after {
-    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
-    opacity: 0; transition: opacity .15s;
-  }
-  .path-check-card.checked .path-tick::after { opacity: 1; }
-  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
-  .path-card-body { min-width: 0; flex: 1; }
-  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
-  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
-  .path-note { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
-  .path-tag {
-    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 9px; border-radius: 999px; vertical-align: middle;
-  }
+  .complete-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .complete-card-title { font-family: var(--font-display); font-weight: 500; font-size: 19.5px; color: var(--header-grey); margin: 4px 0 0; }
+  .complete-card p { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 0 0 14px; }
+  .complete-card p:last-of-type { margin-bottom: 0; }
 
-  /* ---------- customise consent sub-panel ---------- */
-  .path-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .path-subfields.show { display: flex; }
-  .path-subfields-label { font-size: 12.1px; font-weight: 500; color: var(--ink); line-height: 1.55; margin: 0; }
+  /* ---------- info notice: same shape as the amber .setup-notice used elsewhere for cautions, but
+     in the accent green tone since this is a positive/informational note, not a warning. ---------- */
+  .info-notice {
+    display: flex; gap: 12px; align-items: flex-start; margin: 20px 0 0;
+    background: var(--accent-wash); border: 1px solid #B7E4C8; border-radius: var(--radius-md); padding: 14px 16px;
+  }
+  .info-notice svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
+  .info-notice p { margin: 0 !important; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -227,7 +205,7 @@
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
         <a class="progress-seg current" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Setup Path</span>
+          <span class="progress-seg-tip">Core Complete</span>
         </a>
         <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
@@ -287,9 +265,9 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Setup Path</h1>
-        <p class="sub">Choose how you'd like to configure this Floorsense deployment.</p>
+        <span class="eyebrow">All Set</span>
+        <h1 class="hero-title">Core Setup Complete</h1>
+        <p class="sub">Everything that applies to everyone by default is now configured. Here's what happens next.</p>
       </div>
     </div>
   </div>
@@ -297,74 +275,26 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
-
-      <div class="setup-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-        <p>We recommend the <strong>Pre-Configured</strong> setup below — it's ready to go, follows Floorsense's best practice, and is far easier to maintain and explain to your end users.</p>
-      </div>
-
-      <div class="path-check-grid" id="pathGrid">
-        <div class="path-check-card" data-path="relaxed">
-          <label class="path-row">
-            <input type="radio" name="setupPath" value="relaxed">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M17 10V7a5 5 0 0 0-9.5-2.2"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Relaxed</h3>
-              <p class="path-desc">A lighter-touch preset with fewer restrictions and more flexibility for users. Good for workplaces that are still easing staff into structured desk booking.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-path="preconfigured">
-          <label class="path-row">
-            <input type="radio" name="setupPath" value="preconfigured">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Pre-Configured <span class="path-tag">Recommended</span></h3>
-              <p class="path-desc">Every setting is pre-set to Floorsense's best-practice defaults. It's ready to go immediately, and because it follows a standard pattern, it's much easier to maintain and explain to your end users.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-path="strict">
-          <label class="path-row">
-            <input type="radio" name="setupPath" value="strict">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Strict</h3>
-              <p class="path-desc">A tighter preset that enforces desk booking rules more firmly, with less room for exceptions. Best where it's important people actually use the workspace as intended.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-path="customise">
-          <label class="path-row">
-            <input type="radio" name="setupPath" value="customise">
-            <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3l3 3L7 20l-4 1 1-4z"/><path d="M13 8l3-3 3 3-3 3"/></svg>
-            <div class="path-card-body">
-              <h3 class="path-title">Build Your Own</h3>
-              <p class="path-desc">Step through every main configuration and set it up exactly as you'd like.</p>
-              <p class="path-note">Use carefully — over-customising can make the system harder to maintain and explain to end users, and is subject to Floorsense's approval.</p>
-            </div>
-          </label>
-          <div class="path-subfields" id="customiseSubfields">
-            <p class="path-subfields-label">Before you continue: any customisation beyond the recommended defaults needs to be reviewed and approved by Floorsense, and should be kept as simple as possible.</p>
+      <div class="complete-card">
+        <div class="complete-card-header">
+          <div class="complete-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
           </div>
+          <h2 class="complete-card-title">The core policy is ready</h2>
+        </div>
+        <p>You've now configured the core of the system that will apply to everyone by default — desk allocation, check-in methods, desk &amp; user groups, prebooking window, business hours, and any optional features you switched on.</p>
+        <p>Next, you'll be directed to the summary, where you can review everything and make edits.</p>
+        <div class="info-notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+          <p>From the summary you can also save this configuration as your <strong>General Policy</strong>, then create additional neighbourhood-specific policies for individual Desk Groups whenever you need exceptions.</p>
         </div>
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-desk-user-groups-03.html">
+        <a class="page-nav-btn" href="floorsense-optional-features-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-prebooking-advance-04.html" id="pageNavNext">
+        <a class="page-nav-btn next" href="floorsense-out-of-box-policy.html" id="pageNavNext">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -374,10 +304,9 @@
 
   <div class="action-bar">
     <div class="panel-inner">
-      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">No setup path selected yet</span></div>
+      <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to continue</span></div>
       <div style="display:flex; gap:10px;">
-        <button class="ghost" id="resetBtn" type="button">Reset</button>
-        <button class="primary" id="continueBtn" type="button" disabled>Save &amp; continue</button>
+        <button class="primary" id="continueBtn" type="button">Continue to Summary</button>
       </div>
     </div>
   </div>
@@ -468,6 +397,43 @@
   this page, not after it. Click-through order is now 01 -> 02 -> 03(new) -> 00 -> 04 -> 05 -> ....
   See floorsense-desk-user-groups-03.html's own NOTE for the full insertion. Every module number
   from the old 03 (Prebooking) onward shifted up by one to make room (old 03-11 are now 04-12).
+
+  MOST RECENT CHANGE: per a request to move this page later in the click-through order — to follow
+  floorsense-optional-features-06.html once every "applies to everyone" core setting has been
+  collected (desk allocation, check-in methods, desk &amp; user groups, prebooking window, business
+  hours, and optional features) — combined with a follow-up request to drop the whole
+  Relaxed/Pre-Configured/Strict/Build-Your-Own decision entirely, this page's role changed
+  fundamentally: it is no longer a branching setup-path chooser at all, it's now a card-free
+  confirmation/transition step. All four `.path-check-card` radio options, the `PATH_DEST` branching
+  object, the "customise" consent sub-panel, and the amber "we recommend Pre-Configured" notice were
+  removed — along with their JS wiring and the `state.selected` field entirely. In their place is a
+  single `.complete-card` (icon + "The core policy is ready" heading + two short paragraphs
+  restating, in the client's own words from the brief, that the core/default policy is done and the
+  next stop is the summary) plus a green `.info-notice` mentioning that the summary lets you save
+  this configuration as a General Policy and layer on neighbourhood-specific policies for individual
+  Desk Groups (a forward-looking pointer to the Desk Group Policy override concept from
+  floorsense-desk-user-groups-03.html — no new interactive control was added here for that, since
+  the request was explicitly to remove cards, not add new ones).
+
+  Back-arrow now points to floorsense-optional-features-06.html (was
+  floorsense-desk-user-groups-03.html). The next-arrow and Continue button are both now static,
+  pointing straight to floorsense-out-of-box-policy.html — with no more mode to branch on, that page
+  (previously a shortcut for the three preset paths only) is now this page's ONE destination for
+  everyone, reached with no `?preset=` query string (it already defaults to its "recommended" copy
+  when no preset param is present, so nothing else needed to change there). The Reset button was
+  removed from the action bar since there's no longer any field to reset — Continue just marks this
+  module saved (project.floorsense.wizard.setupPath = { acknowledged: true }, replacing the old
+  { selected } shape) and redirects.
+
+  Click-through order is now 01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 00(this page) ->
+  floorsense-out-of-box-policy.html. floorsense-default-reservation-times-07.html onward (07-13) are
+  no longer part of the enforced click-through path — they're fully built and still reachable
+  directly via the progress bar below (which, per the wizard's standing convention, always lists
+  every module in its fixed 00-13 numeric order regardless of click-through order), just no longer
+  auto-visited by Next/Continue from this point in the flow. The progress-bar tooltip for this
+  module changed from "Setup Path" to "Core Complete" across all 15 Floorsense pages to match the
+  new purpose; the underlying data-module="setup-path" key (used for moduleStatus tracking) is
+  unchanged, so nothing else needed updating for that rename to take effect.
 -->
 
 <script>
@@ -498,11 +464,6 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const saved = project.floorsense.wizard.setupPath || {};
-  const state = {
-    selected: saved.selected || ""
-  };
-
   /* ---------------- horizontal progress bar ---------------- */
   function renderProgressBar() {
     document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
@@ -525,85 +486,18 @@
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
 
-  /* ---------------- setup path grid ---------------- */
-  const grid = document.getElementById('pathGrid');
-  const customiseSubfields = document.getElementById('customiseSubfields');
+  /* ---------------- confirmation step: no fields to fill in, just acknowledge and continue ---------------- */
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
-  const continueBtn = document.getElementById('continueBtn');
-  const pageNavNext = document.getElementById('pageNavNext');
-
-  const PATH_DEST = {
-    relaxed: 'floorsense-out-of-box-policy.html?preset=relaxed',
-    preconfigured: 'floorsense-out-of-box-policy.html',
-    strict: 'floorsense-out-of-box-policy.html?preset=strict',
-    customise: 'floorsense-prebooking-advance-04.html'
-  };
-
-  function save() {
-    project.floorsense.wizard.setupPath = state;
-    saveProject(project);
-  }
-
-  function queueSave() {
-    save();
-    saveDot.classList.add('show');
-    setTimeout(() => saveDot.classList.remove('show'), 900);
-  }
-
-  function updateSummary() {
-    const labels = {
-      relaxed: 'Relaxed preset selected',
-      preconfigured: 'Pre-Configured selected',
-      strict: 'Strict preset selected',
-      customise: 'Build Your Own selected'
-    };
-    saveText.textContent = labels[state.selected] || 'No setup path selected yet';
-    continueBtn.disabled = !state.selected;
-    pageNavNext.href = PATH_DEST[state.selected] || PATH_DEST.customise;
-  }
-
-  grid.querySelectorAll('.path-check-card').forEach(card => {
-    const path = card.getAttribute('data-path');
-    const radio = card.querySelector('input[type="radio"]');
-    radio.checked = state.selected === path;
-    card.classList.toggle('checked', radio.checked);
-    if (path === 'customise') customiseSubfields.classList.toggle('show', radio.checked);
-
-    radio.addEventListener('change', () => {
-      state.selected = path;
-      grid.querySelectorAll('.path-check-card').forEach(c => {
-        const checked = c.getAttribute('data-path') === path;
-        c.classList.toggle('checked', checked);
-        if (c.getAttribute('data-path') === 'customise') customiseSubfields.classList.toggle('show', checked);
-      });
-      updateSummary();
-      queueSave();
-    });
-  });
-
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    state.selected = "";
-    grid.querySelectorAll('.path-check-card').forEach(card => {
-      card.classList.remove('checked');
-      card.querySelector('input[type="radio"]').checked = false;
-    });
-    customiseSubfields.classList.remove('show');
-    updateSummary();
-    queueSave();
-  });
 
   document.getElementById('continueBtn').addEventListener('click', () => {
-    if (!state.selected) return;
-    save();
+    project.floorsense.wizard.setupPath = { acknowledged: true };
+    saveProject(project);
     markModuleSaved('setup-path');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    const dest = PATH_DEST[state.selected] || PATH_DEST.customise;
-    setTimeout(() => { window.location.href = dest; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-out-of-box-policy.html'; }, 500);
   });
-
-  updateSummary();
 })();
 </script>
 

@@ -260,7 +260,7 @@
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
         <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Setup Path</span>
+          <span class="progress-seg-tip">Core Complete</span>
         </a>
         <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
@@ -444,7 +444,7 @@
         <a class="page-nav-btn" href="floorsense-checkin-methods-02.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn next" href="floorsense-prebooking-advance-04.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -541,6 +541,18 @@
   Floorsense page's main content block) so the two columns read as proper cards rather than bare
   text blocks, for visual consistency with the rest of the wizard. Nothing inside changed other than
   the wrapping card padding/border; ids, state, and JS wiring are untouched.
+
+  MOST RECENT CHANGE: per a request to move floorsense-setup-path-00.html later in the click-through
+  order (to follow floorsense-optional-features-06.html, once all the core "applies to everyone"
+  settings are collected — see that file's own NOTE for the full reasoning and its new purpose as a
+  card-free transition/confirmation page), this page's next-arrow/Continue redirect changed from
+  floorsense-setup-path-00.html to floorsense-prebooking-advance-04.html, since Prebooking is now the
+  page immediately after this one. Back-arrow is unaffected. Click-through order is now
+  01 -> 02 -> 03(this page) -> 04 -> 05 -> 06 -> 00 -> [out-of-box-policy summary]; modules 07-13 are
+  no longer part of the enforced click-through path from Setup Path onward (still reachable directly
+  via the progress bar, per the wizard's usual convention). See
+  floorsense-prebooking-advance-04.html's and floorsense-setup-path-00.html's own NOTEs for the rest
+  of this reorder.
 -->
 
 <script>
@@ -689,7 +701,7 @@
     markModuleSaved('desk-user-groups');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-setup-path-00.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-prebooking-advance-04.html'; }, 500);
   });
 })();
 </script>

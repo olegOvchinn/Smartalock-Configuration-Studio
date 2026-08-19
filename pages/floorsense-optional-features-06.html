@@ -221,7 +221,7 @@
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
         <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Setup Path</span>
+          <span class="progress-seg-tip">Core Complete</span>
         </a>
         <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
@@ -354,7 +354,7 @@
         <a class="page-nav-btn" href="floorsense-business-hours-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-default-reservation-times-07.html">
+        <a class="page-nav-btn next" href="floorsense-setup-path-00.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -446,6 +446,18 @@
   page, it only changes whether Next/Back walks through it automatically.
 
   markModuleSaved key is 'optional-features'.
+
+  MOST RECENT CHANGE: per a request to move floorsense-setup-path-00.html later in the click-through
+  order — to follow this page, once every "applies to everyone" core setting (desk allocation,
+  check-in methods, desk & user groups, prebooking window, business hours, and these optional
+  toggles) has been collected — this page's next-arrow/Continue redirect changed from
+  floorsense-default-reservation-times-07.html to floorsense-setup-path-00.html. Back-arrow is
+  unaffected (floorsense-business-hours-05.html). See floorsense-setup-path-00.html's own NOTE for
+  its new role as a card-free transition/confirmation page (it no longer offers a Relaxed/
+  Pre-Configured/Strict/Build-Your-Own choice) and for why floorsense-default-reservation-times-07.html
+  onward (07-13) are no longer part of the enforced click-through path from here — they're still
+  fully built and reachable directly via the progress bar above, just no longer auto-visited via
+  Next/Continue.
 -->
 
 <script>
@@ -580,7 +592,7 @@
     markModuleSaved('optional-features');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-default-reservation-times-07.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-setup-path-00.html'; }, 500);
   });
 })();
 </script>
