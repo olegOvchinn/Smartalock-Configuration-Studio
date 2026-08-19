@@ -219,10 +219,6 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
-        </a>
         <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
@@ -247,33 +243,9 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
-        <a class="progress-seg" data-module="default-reservation-times" href="floorsense-default-reservation-times-07.html">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Default Reservation Times</span>
-        </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-08.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Check-in Window</span>
-        </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-09.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-10.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Reservation Length</span>
-        </a>
-        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-11.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">NSNP (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-12.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-13.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
+          <span class="progress-seg-tip">Core Complete</span>
         </a>
         </nav>
       </div>
@@ -456,8 +428,16 @@
   its new role as a card-free transition/confirmation page (it no longer offers a Relaxed/
   Pre-Configured/Strict/Build-Your-Own choice) and for why floorsense-default-reservation-times-07.html
   onward (07-13) are no longer part of the enforced click-through path from here — they're still
-  fully built and reachable directly via the progress bar above, just no longer auto-visited via
-  Next/Continue.
+  fully built, just no longer auto-visited via Next/Continue.
+
+  MOST RECENT CHANGE: per a request to "fix the Core Complete segment" and remove every
+  progress-bar segment that follows this page, the bar above shrank from 14 segments (fixed 00-13
+  numeric order) to 7, in actual click-through order: Desk Allocation Method, Check-in Methods,
+  Desk & User Groups, Prebooking Window, Business Hours, this page, and Core Complete
+  (floorsense-setup-path-00.html). floorsense-default-reservation-times-07.html onward no longer
+  appear in the bar anywhere, on any page — see floorsense-setup-path-00.html's own NOTE for the
+  full reasoning (those 7 pages are meant to be reached only from the summary page going forward,
+  not from the main wizard nav).
 -->
 
 <script>

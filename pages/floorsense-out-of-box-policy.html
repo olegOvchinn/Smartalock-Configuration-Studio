@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Out of the Box Policy — Floorsense Configuration Studio (Template)</title>
+<title>Configuration Summary — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -255,7 +255,7 @@
         </a>
         <a class="progress-seg current" data-module="out-of-box-policy" href="floorsense-out-of-box-policy.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Out of the Box Policy</span>
+          <span class="progress-seg-tip">Configuration Summary</span>
         </a>
         </nav>
       </div>
@@ -264,7 +264,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title" id="pageHeroTitle">Out of the Box Policy</h1>
+        <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
         <p class="sub" id="pageHeroSub">Here's what's included by default — nothing to configure, just review and confirm.</p>
       </div>
     </div>
@@ -508,6 +508,19 @@
   specified distinct relaxed/strict values, so all three currently show the exact same defaults;
   only the heading changes. Revisit once real relaxed/strict numbers are provided, at which point
   the summary rows will need to branch on `preset` too.
+
+  MOST RECENT CHANGE: per a request to replace "Out of the Box Policy" with "Configuration Summary"
+  on this page, updated the visible <title>, the progress-bar tooltip, and the default #pageHeroTitle
+  text (shown whenever no recognised ?preset= is present, which is now effectively always, since
+  floorsense-setup-path-00.html no longer sends one — see that file's own NOTE). The filename
+  (floorsense-out-of-box-policy.html), the data-module="out-of-box-policy" key, and the
+  project.floorsense.wizard.outOfBoxPolicy state key are all unchanged — only the visible copy
+  changed, to avoid a filename-rename cascade for what is purely a display-text update. The
+  "Relaxed Preset" / "Strict Preset" hero swap (for the ?preset=relaxed/strict query strings, no
+  longer linked from anywhere in the wizard but still handled if hit directly) is unaffected by this
+  rename. Unrelated generic uses of the phrase "out of the box" elsewhere on this page (e.g. "cards
+  and the mobile app are all available out of the box") were left alone, since they're describing
+  Floorsense defaults, not this page's own title.
 -->
 
 <script>

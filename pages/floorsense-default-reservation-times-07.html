@@ -377,10 +377,6 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
-        </a>
         <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
@@ -405,33 +401,9 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
-        <a class="progress-seg current" data-module="default-reservation-times" href="floorsense-default-reservation-times-07.html">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Default Reservation Times</span>
-        </a>
-        <a class="progress-seg" data-module="checkin-window" href="floorsense-checkin-window-08.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Check-in Window</span>
-        </a>
-        <a class="progress-seg" data-module="idle-release" href="floorsense-idle-release-09.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Auto-Release on Idle (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="reservation-length" href="floorsense-reservation-length-10.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Reservation Length</span>
-        </a>
-        <a class="progress-seg" data-module="nsnp" href="floorsense-nsnp-11.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">NSNP (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="fme" href="floorsense-fme-12.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Follow Me Ergonomics (Optional)</span>
-        </a>
-        <a class="progress-seg" data-module="anti-desk-hogging" href="floorsense-anti-desk-hogging-13.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Anti Desk Hogging (Optional)</span>
+          <span class="progress-seg-tip">Core Complete</span>
         </a>
         </nav>
       </div>
@@ -851,6 +823,22 @@
   module number from the old 06 (this page) onward shifted up by one to make room (old 06-12 are now
   07-13). See floorsense-optional-features-06.html's own NOTE for the hub page and its skip-logic
   design.
+
+  MOST RECENT CHANGE: per a request to remove every progress-bar segment that follows Optional
+  Features, this page — along with floorsense-checkin-window-08.html, floorsense-idle-release-09.html,
+  floorsense-reservation-length-10.html, floorsense-nsnp-11.html, floorsense-fme-12.html, and
+  floorsense-anti-desk-hogging-13.html — is no longer part of the enforced click-through path (per
+  the earlier setup-path-00 reorder) AND no longer appears in the progress bar at all. The bar above
+  still has the same 7 segments every other Floorsense page now shows (Desk Allocation Method,
+  Check-in Methods, Desk & User Groups, Prebooking Window, Business Hours, Optional Features, Core
+  Complete), but since "default-reservation-times" isn't one of those 7, none of this page's own
+  segments show as "current" when viewed directly — that's expected, not a bug. This page's own
+  back/next arrows, state, and content are all unaffected; it's still fully functional, just no
+  longer reachable from the main wizard nav. Per the client's direction, this page (and the other 6
+  listed above) are meant to be reached only from the summary (floorsense-out-of-box-policy.html)
+  once a client wants to edit a specific setting after the fact — wiring up those edit entry points
+  is a separate follow-up task, not yet done. See floorsense-setup-path-00.html's own NOTE for the
+  full reasoning.
 -->
 
 <script>
