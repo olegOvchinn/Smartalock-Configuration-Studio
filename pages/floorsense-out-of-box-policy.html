@@ -195,6 +195,21 @@
   .training-check input:checked ~ .training-check-tick::after { opacity: 1; }
   .training-check-label { font-size: 11.8px; color: var(--accent-deep); font-weight: 600; line-height: 1.4; }
 
+  /* ---------- two-column layout: core policy on the left, Additional Policies on the right, once
+     the latter is actually shown (Desk and/or User Groups in use). Collapses back to a single
+     block wrapper (no grid) when Additional Policies is hidden, so the core column's own
+     .centered re-centering (below) still works unaffected. ---------- */
+  .summary-columns.two-col {
+    display: grid; grid-template-columns: minmax(280px, 460px) minmax(0, 1fr);
+    gap: 32px; align-items: start;
+  }
+  @media (max-width: 860px) {
+    .summary-columns.two-col { grid-template-columns: 1fr; }
+  }
+  .policies-section-head { margin-top: 36px; }
+  .summary-columns.two-col .policies-section-head { margin-top: 0; }
+  .summary-columns.two-col .policies-section.show { margin-top: 0; }
+
   /* ---------- core policy column: the read-only summary-groups above, wrapped in one container so
      it can be re-centred as a block once there's no Additional Policies content sitting below/
      beside it to balance the page (see .centered below). Default (unwrapped visually) state is a
@@ -443,6 +458,8 @@
         <span class="eyebrow">Review</span>
       </div>
 
+      <div class="summary-columns" id="summaryColumns">
+
       <div class="core-settings-column" id="coreSettingsColumn">
 
       <div class="ready-banner">
@@ -580,7 +597,7 @@
       </div>
 
       <div class="policies-section" id="policiesSection">
-        <div class="section-head" style="margin-top:36px;">
+        <div class="section-head policies-section-head">
           <span class="eyebrow">Neighbourhood Policies</span>
           <h2 class="section-title">Additional Policies</h2>
           <p>You told us you're using Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "CEO," mark it as a Desk Group or User Group setting, then adjust it — up to 3 additional policies.</p>
@@ -602,6 +619,8 @@
           <button class="add-policy-btn" id="addPolicyBtn" type="button">+ Duplicate Core Policy</button>
           <span class="policy-count-note" id="policyCountNote">0 of 3 additional policies created</span>
         </div>
+      </div>
+
       </div>
 
       <div class="page-nav">
@@ -826,6 +845,29 @@
   all four scenarios. The two-column `.policies-grid` layout, the "two separate sections" idea, and
   the earlier Desk-Groups-only gating are all superseded by this design and are not present in the
   current code.
+
+  MOST RECENT CHANGE: per a follow-up request, the core policy and Additional Policies now sit
+  side by side as two columns on the page itself, rather than Additional Policies stacking below
+  the core policy. Both `#coreSettingsColumn` and `#policiesSection` are now wrapped in a new
+  `.summary-columns` div (`#summaryColumns`), inserted right after the "Review" section-head and
+  closed right before `.page-nav`. A `.two-col` class (grid-template-columns:
+  minmax(280px,460px) minmax(0,1fr), 32px gap), toggled by the same `anyGroupsEnabled` flag that
+  already drives `#policiesSection`'s `.show` and `#coreSettingsColumn`'s `.centered`, switches the
+  wrapper into a two-column grid whenever Additional Policies is visible; when it's hidden
+  (`anyGroupsEnabled` false) `.summary-columns` stays a plain block wrapper so the pre-existing
+  `.centered` single-column behaviour is unaffected. Collapses to a single column below 860px via a
+  `@media` query, since ~460px + ~400px of content plus the 32px gap doesn't have room to breathe on
+  narrow viewports. The Additional Policies section's own heading block lost its old inline
+  `style="margin-top:36px"` (used only to create vertical space when the section sat below the core
+  column) in favour of a `.policies-section-head` class carrying that same 36px by default, overridden
+  to 0 by `.summary-columns.two-col .policies-section-head` so the two columns' content starts flush
+  at the same height once they're side by side. Because the right-hand track is well under the
+  `.policies-grid`'s own 900px breakpoint, policy cards created here naturally stack in a single
+  column inside that column — the two-column card grid only has room to reassert itself if a future
+  change widens `--panel-maxw` substantially. Re-ran the jsdom smoke test (extended with a
+  `#summaryColumns.two-col` assertion) across desk-only/user-only/both/neither — `.two-col`,
+  `.centered`, and `.show` all track `anyGroupsEnabled` correctly with zero runtime errors in every
+  scenario.
 -->
 
 <script>
@@ -1166,10 +1208,12 @@
     renderPolicies();
   });
 
-  // Reveal the section once Desk Groups and/or User Groups are in use, and re-centre the core
-  // settings column when neither is (nothing to sit beside/below it in that case).
+  // Reveal the section once Desk Groups and/or User Groups are in use, lay it out as a second
+  // column beside the core policy in that case, and re-centre the core settings column on its own
+  // when neither is in use (nothing to sit beside it in that case).
   document.getElementById('policiesSection').classList.toggle('show', anyGroupsEnabled);
   document.getElementById('coreSettingsColumn').classList.toggle('centered', !anyGroupsEnabled);
+  document.getElementById('summaryColumns').classList.toggle('two-col', anyGroupsEnabled);
 
   renderPolicies();
 
