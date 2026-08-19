@@ -116,6 +116,12 @@
     font-family: var(--font-text); font-size: 12.3px; background: var(--paper);
   }
   .form-field input:focus { outline: none; border-color: var(--ink); }
+  .form-field textarea {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 12.3px; background: var(--paper);
+    min-height: 64px; resize: vertical;
+  }
+  .form-field textarea:focus { outline: none; border-color: var(--ink); }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -227,6 +233,10 @@
             <label>IT Contact</label>
             <input type="text" id="regIT" placeholder="If different...">
           </div>
+          <div class="form-field" style="grid-column: 1 / -1;">
+            <label>Please provide the names and email addresses of individuals who require access to the Floorsight Administering Web Portal (1-2 people).</label>
+            <textarea id="regPortalAccess" placeholder="e.g. Jane Doe - jane@company.com&#10;John Smith - john@company.com"></textarea>
+          </div>
           <div class="form-field">
             <label>Training Contact</label>
             <input type="text" id="regTraining" placeholder="If any...">
@@ -320,6 +330,22 @@
   href="../smartalock-templates-00.html" to match its new location. The site's old root index.html
   was renamed to pages/pick-a-product.html (still the Smartalock/Floorsense picker, just relocated
   and no longer the first page opened) — see its own NOTE for details.
+
+  MOST RECENT CHANGE: per a request, added a new field to the Contacts card, right after IT
+  Contact: "Please provide the names and email addresses of individuals who require access to the
+  Floorsight Administering Web Portal (1-2 people)." — the label is the request's own wording
+  verbatim, since it's really an instruction rather than a short field name like its siblings. Uses
+  a `<textarea>` (`#regPortalAccess`, full-width via `grid-column: 1 / -1`, same as "Your Email"
+  above) rather than a single-line `<input>`, since it's meant to hold 1-2 names+emails across
+  multiple lines (placeholder shows the expected "Name - email" format, one per line). Added a new
+  `.form-field textarea` CSS rule mirroring `.form-field input`'s existing look, plus a min-height
+  and vertical resize handle. State: added `portalAccess` to both the `state` object (reading
+  `saved.portalAccess`) and `fieldEls` (mapping to `#regPortalAccess`) — no other JS changes were
+  needed, since load/autosave-on-input/reset are already fully generic over
+  `Object.keys(fieldEls)` in this file's script; the new field is handled automatically by that
+  existing loop as `project.registration.portalAccess`. Verified via a jsdom test: the field loads
+  a previously-saved value, an edit autosaves after the existing 450ms debounce, and Reset clears
+  both the field and the persisted value — zero runtime errors.
 -->
 
 <script>
@@ -358,6 +384,7 @@
     email: saved.email || "",
     policy: saved.policy || "",
     it: saved.it || "",
+    portalAccess: saved.portalAccess || "",
     training: saved.training || "",
     support: saved.support || "",
     facilities: saved.facilities || "",
@@ -378,6 +405,7 @@
     email: document.getElementById('regEmail'),
     policy: document.getElementById('regPolicy'),
     it: document.getElementById('regIT'),
+    portalAccess: document.getElementById('regPortalAccess'),
     training: document.getElementById('regTraining'),
     support: document.getElementById('regSupport'),
     facilities: document.getElementById('regFacilities'),

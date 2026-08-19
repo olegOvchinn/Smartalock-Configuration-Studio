@@ -4,7 +4,7 @@ A static HTML/CSS/JS prototype for designing, configuring and documenting Smarta
 
 ## Start here
 
-Open `smartalock-templates-00.html` (**Project Registration**) — this is the site's actual starting page, and it now lives at the project **root**, not under `pages/`. It has no back-arrow at all (nothing comes before it, and rather than disabling the arrow it's removed outright).
+Open `smartalock-templates-00.html` (**Project Registration**) — this is the site's actual starting page, and it now lives at the project **root**, not under `pages/`. It has no back-arrow at all (nothing comes before it, and rather than disabling the arrow it's removed outright). Its Contacts card includes a full-width textarea right after IT Contact — "Please provide the names and email addresses of individuals who require access to the Floorsight Administering Web Portal (1-2 people)" — saved as `project.registration.portalAccess`, autosaving on the same debounce as every other field on this page.
 
 From there the flow is:
 
