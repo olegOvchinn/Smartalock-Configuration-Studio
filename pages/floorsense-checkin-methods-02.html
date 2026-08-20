@@ -301,7 +301,6 @@
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
               <p class="desk-desc">Book and check in via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal.</p>
-              <p class="desk-note">Not available for anonymous users.</p>
             </div>
           </label>
         </div>
@@ -499,6 +498,12 @@
   handler, reset handler) — easier to add or remove a per-method notice from one place going
   forward. Verified via jsdom: notice hidden by default (card unchecked), shows when card is
   checked, hides when unchecked, and stays hidden after Reset (since card isn't a default).
+
+  MOST RECENT CHANGE: per a request to remove the "Not available for anonymous users." note from
+  the Booking card, that `<p class="desk-note">` line was deleted. An earlier NOTE above justified
+  dropping "Known users" from this same card's own description by pointing at this note as the
+  place that already covered it — that's no longer the case now that both are gone, but no other
+  page copy referenced anonymous-user availability for this method, so nothing else needed updating.
 -->
 
 
