@@ -561,6 +561,16 @@
   (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
+
+  MOST RECENT CHANGE: per a request to fix "Save & continue" on this and the other 6 orphaned pages
+  (07-13) so they return to the Configuration Summary rather than continuing through the old
+  numeric sequence, `#continueBtn`'s redirect changed from the hardcoded
+  `'floorsense-reservation-length-10.html'` to `'floorsense-out-of-box-policy.html'`. The static
+  forward page-nav arrow (which still points at floorsense-reservation-length-10.html) was
+  deliberately left unchanged — it's a separate manual "browse the next orphaned page" affordance,
+  distinct from the primary Save & continue action. Verified via jsdom (with a `scrollTo` shim,
+  since this page's own time drum otherwise throws in jsdom) that clicking Continue still saves
+  `moduleStatus` and triggers navigation to the new target with no runtime errors.
 -->
 
 <script>
@@ -823,7 +833,7 @@
     markModuleSaved('idle-release');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-reservation-length-10.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-out-of-box-policy.html'; }, 500);
   });
 })();
 </script>

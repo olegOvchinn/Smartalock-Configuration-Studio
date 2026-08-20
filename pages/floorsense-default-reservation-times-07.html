@@ -839,6 +839,16 @@
   once a client wants to edit a specific setting after the fact — wiring up those edit entry points
   is a separate follow-up task, not yet done. See floorsense-setup-path-00.html's own NOTE for the
   full reasoning.
+
+  MOST RECENT CHANGE: per a request to fix "Save & continue" on this and the other 6 orphaned pages
+  (07-13) so they return to the Configuration Summary rather than continuing through the old
+  numeric sequence, `#continueBtn`'s redirect changed from the hardcoded
+  `'floorsense-checkin-window-08.html'` to `'floorsense-out-of-box-policy.html'`. The static
+  forward page-nav arrow (which still points at floorsense-checkin-window-08.html) was deliberately
+  left unchanged — it's a separate manual "browse the next orphaned page" affordance, distinct from
+  the primary Save & continue action. Verified via jsdom (with a `scrollTo` shim, since this page's
+  own time-drum otherwise throws in jsdom) that clicking Continue still saves `moduleStatus` and
+  triggers navigation to the new target with no runtime errors.
 -->
 
 <script>
@@ -1186,7 +1196,7 @@
     markModuleSaved('default-reservation-times');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-checkin-window-08.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-out-of-box-policy.html'; }, 500);
   });
 })();
 </script>
