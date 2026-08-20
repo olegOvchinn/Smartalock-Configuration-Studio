@@ -506,7 +506,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
         <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
-        <p class="sub" id="pageHeroSub">Here's what's included by default — nothing to configure, just review and confirm.</p>
+        <p class="sub" id="pageHeroSub">Here's what's included by default — review it below and adjust anything that needs to change for your workplace.</p>
       </div>
     </div>
   </div>
@@ -1165,6 +1165,13 @@
   `other`) that the value/description render correctly in every case, and that
   `buildSummaryText()`'s existing `.value`-reading logic picks up the dynamic text with zero code
   changes there.
+
+  MOST RECENT CHANGE: per a request that this page now has real editable content (the Recurring/
+  Privacy toggles, plus row-level Edit links into Idle/NSNP/Sit-stand), the hero sub (`#pageHeroSub`)
+  no longer claims "nothing to configure, just review and confirm" — both the default text and the
+  preset-param variant now read "Here's what's included by default — review it below and adjust
+  anything that needs to change for your workplace." (preset variant: "...included in the
+  {preset} preset — review it below...").
 -->
 
 <script>
@@ -1202,7 +1209,7 @@
   if (PRESET_LABELS[preset]) {
     document.getElementById('pageHeroTitle').textContent = PRESET_LABELS[preset] + ' Preset';
     document.getElementById('pageHeroSub').textContent =
-      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset — nothing to configure, just review and confirm.";
+      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset — review it below and adjust anything that needs to change for your workplace.";
   }
 
   const savedOOB = project.floorsense.wizard.outOfBoxPolicy || {};
