@@ -294,7 +294,7 @@
             <span class="desk-tick" aria-hidden="true"></span>
             <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
             <div class="desk-card-body">
-              <h3 class="desk-title">Mobile App or Desktop Browser Prebooking <span class="desk-tag">Default</span></h3>
+              <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
               <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal. A pre-booked desk must still be physically checked into via the app or a swipe card within a set time, or it's released back to general availability.</p>
               <p class="desk-note">Not available for anonymous users.</p>
             </div>
@@ -432,7 +432,15 @@
   MOST RECENT CHANGE: per a request to remove the "fob" mention, "Building Access Cards at Desk"'s
   description now reads "Users swipe their existing building access card at any desk to reserve it
   for their session." (dropped "or fob").
+
+  MOST RECENT CHANGE: per a request to remove the "Prebooking" mention from the other card's
+  heading, then a follow-up clarifying it should say "Book" instead of being dropped outright, the
+  heading is now "Mobile App or Desktop Browser Booking" (was "Mobile App or Desktop Browser
+  Prebooking"). Only the heading changed — the card's own description, its data-method="prebooking"
+  value, and #prebookingSubfields note are untouched, so nothing about the underlying wizard state
+  or the prebooking-gated pages downstream (e.g. floorsense-prebooking-advance-04.html) is affected.
 -->
+
 
 <script>
 (function(){
