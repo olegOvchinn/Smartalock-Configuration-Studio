@@ -282,7 +282,7 @@
             <span class="desk-tick" aria-hidden="true"></span>
             <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>
             <div class="desk-card-body">
-              <h3 class="desk-title">Building Access Cards at Desk <span class="desk-tag">Default</span></h3>
+              <h3 class="desk-title">Building Access Cards at Desk</h3>
               <p class="desk-desc">Users swipe their existing building access card at any desk to reserve it for their session.</p>
             </div>
           </label>
@@ -465,6 +465,19 @@
   data-method="prebooking" value and its role gating floorsense-prebooking-advance-04.html are
   unaffected; only this sub-block and its wiring were removed. Verified via jsdom that the element
   no longer exists and that checking/unchecking the Booking card no longer throws.
+
+  MOST RECENT CHANGE: per a request that "Building Access Cards at Desk" should no longer be a
+  default, its "Default" tag was removed from the heading and DEFAULT_SELECTED changed from
+  ['card', 'prebooking'] to ['prebooking'] — Booking remains the sole default now. Fixing this
+  exposed a pre-existing aliasing bug: `state.selected` was initialised as a direct reference to
+  DEFAULT_SELECTED (not a copy) whenever there was no saved state, so checking a non-default card
+  mutated DEFAULT_SELECTED itself via the change handler's `.push()`, permanently corrupting what
+  "Reset" restored for the rest of that page load. This was invisible before because 'card' was
+  always already in DEFAULT_SELECTED (push's own `!includes()` guard skipped it), but became
+  visible the moment 'card' was removed from the defaults. Fixed by `.slice()`-ing both branches of
+  `state.selected`'s initial assignment so it's always its own array. Verified via jsdom: card
+  unchecked by default, Booking still checked by default, no "Default" tag on the card heading, and
+  Reset correctly restores card to unchecked after it had been manually checked and unchecked again.
 -->
 
 
@@ -496,10 +509,10 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const DEFAULT_SELECTED = ['card', 'prebooking'];
+  const DEFAULT_SELECTED = ['prebooking'];
   const saved = project.floorsense.wizard.checkinMethods || {};
   const state = {
-    selected: Array.isArray(saved.selected) ? saved.selected : DEFAULT_SELECTED
+    selected: Array.isArray(saved.selected) ? saved.selected.slice() : DEFAULT_SELECTED.slice()
   };
 
   /* ---------------- horizontal progress bar ---------------- */
