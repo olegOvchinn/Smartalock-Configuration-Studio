@@ -170,6 +170,28 @@
   .policy-number-input:focus { outline: none; border-color: var(--accent); background: #fff; }
   .policy-field-unit { font-size: 11.5px; color: var(--ink-soft); margin-left: 6px; }
 
+  /* ---------- FME's own inline acknowledgment checkbox, shown only once that feature's switch is
+     on — reuses the .relay-confirm-row/.relay-confirm-tick/.relay-confirm-label checkbox look
+     already established on floorsense-nsnp-11.html for its own relay-confirmation gate. Unlike
+     that one, this doesn't gate anything below it (there's nothing else to gate on this hub row) —
+     it's just a plain acknowledgment, recorded but not blocking. ---------- */
+  .feature-row-ack { display: none; margin-top: 10px; }
+  .feature-row-ack.show { display: block; }
+  .relay-confirm-row { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .relay-confirm-row input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .relay-confirm-tick {
+    width: 16px; height: 16px; border-radius: 5px; border: 2px solid var(--line); background: #fff;
+    flex-shrink: 0; margin-top: 1px; position: relative; transition: background .15s, border-color .15s;
+  }
+  .relay-confirm-tick::after {
+    content: ''; position: absolute; top: 3px; left: 2px; width: 8px; height: 4px; opacity: 0;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg);
+    transition: opacity .1s;
+  }
+  .relay-confirm-row input:checked ~ .relay-confirm-tick { background: var(--accent); border-color: var(--accent); }
+  .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
+  .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
+
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   .feature-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
   .feature-footer-icon svg { width: 34px; height: 34px; }
@@ -316,6 +338,13 @@
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
             <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app or handset. Requires motor integration with a Floorsense handset.</p>
             <span class="feature-row-status" id="fmeStatus">Off</span>
+            <div class="feature-row-ack" id="fmeAckField">
+              <label class="relay-confirm-row">
+                <input type="checkbox" id="fmeAckCheckbox">
+                <span class="relay-confirm-tick" aria-hidden="true"></span>
+                <span class="relay-confirm-label">We understand we'll need to provide desk motor details for FME setup</span>
+              </label>
+            </div>
           </div>
           <button type="button" class="switch" id="fmeSwitch" role="switch" aria-checked="false" aria-label="Enable Follow Me Ergonomics"></button>
         </div>
@@ -478,6 +507,20 @@
   description was updated to mention that it works via the mobile app or handset and requires motor
   integration with a Floorsense handset — previously it only mentioned the mobile app. Matching
   copy was added to floorsense-fme-12.html's own hero/explainer text and to README.md.
+
+  MOST RECENT CHANGE: per a request that enabling FME here should have the client acknowledge
+  they'll need to provide desk motor details, the FME row gained its own inline acknowledgment
+  checkbox (`#fmeAckField`/`#fmeAckCheckbox`, CSS ported from floorsense-nsnp-11.html's
+  `.relay-confirm-row`/`.relay-confirm-tick`/`.relay-confirm-label` checkbox), shown only while the
+  FME switch is on, matching the show/hide pattern already used for Auto-Release on Idle's inline
+  hours field (`renderFmeAckField()` wired to the FME switch's click handler the same way
+  `renderIdleHoursField()` is wired to Idle's). Unlike NSNP's own relay-confirm checkbox, this one
+  doesn't gate anything else on the row — there's nothing further to configure for FME here — so
+  it's a plain acknowledgment recorded at `project.floorsense.wizard.fme.motorDetailsAck`
+  (unchecked by default) rather than a blocking requirement. Reset now also unchecks it and resets
+  the saved value to `false` alongside its existing idleHours reset. Verified via jsdom: hidden
+  while FME is off, shown once enabled, the checked state saves and survives toggling FME off and
+  back on, and Reset clears it.
 -->
 
 <script>
@@ -626,13 +669,40 @@
 
   document.getElementById(FEATURES[0].switchEl).addEventListener('click', renderIdleHoursField);
 
+  /* ---------------- FME's own inline acknowledgment checkbox: recorded at
+     project.floorsense.wizard.fme.motorDetailsAck, shown only while the FME switch itself is on.
+     Unlike NSNP's relay-confirm checkbox on floorsense-nsnp-11.html, this doesn't gate anything
+     below it — there's nothing else to configure for FME on this hub row — so it's a plain
+     acknowledgment, recorded but not blocking Continue. ---------- */
+  const fmeAckField = document.getElementById('fmeAckField');
+  const fmeAckCheckbox = document.getElementById('fmeAckCheckbox');
+
+  function renderFmeAckField() {
+    fmeAckField.classList.toggle('show', FEATURES[2].isOn());
+  }
+
+  fmeAckCheckbox.checked = !!(project.floorsense.wizard.fme && project.floorsense.wizard.fme.motorDetailsAck);
+  renderFmeAckField();
+
+  fmeAckCheckbox.addEventListener('change', () => {
+    project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
+    project.floorsense.wizard.fme.motorDetailsAck = fmeAckCheckbox.checked;
+    queueSave();
+  });
+
+  document.getElementById(FEATURES[2].switchEl).addEventListener('click', renderFmeAckField);
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
     project.floorsense.wizard.idleRelease.idleHours = 0.5;
     idleHoursInput.value = 0.5;
+    project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
+    project.floorsense.wizard.fme.motorDetailsAck = false;
+    fmeAckCheckbox.checked = false;
     renderAll();
     renderIdleHoursField();
+    renderFmeAckField();
     queueSave();
   });
 
