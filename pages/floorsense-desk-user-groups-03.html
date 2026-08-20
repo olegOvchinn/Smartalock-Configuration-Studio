@@ -157,6 +157,11 @@
   .setup-notice svg { width: 20px; height: 20px; flex-shrink: 0; color: #B36B00; margin-top: 1px; }
   .setup-notice p { margin: 0; font-size: 13.12px; line-height: 1.55; color: #7A4B00; }
 
+  /* ---------- page-top-notice: the single amber caution now shown once at the top of the page
+     instead of repeated at the bottom of each column — full page width rather than the 640px cap
+     used when it sat inside a column/section. ---------- */
+  .page-top-notice { max-width: none; margin: 0 0 28px; }
+
   /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods-02.html's
      .desk-check-card — reused here (renamed .group-check-card) for both the Desk Group and User
      Group checkbox groups, since both need independently-tickable options rather than a
@@ -302,6 +307,11 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
+      <div class="setup-notice page-top-notice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+        <p>A note on overrides: extra restrictions and policy overrides add complexity for administrators to maintain, so keep them as simple as possible below.</p>
+      </div>
+
       <div class="groups-columns">
 
         <div class="groups-column groups-card">
@@ -348,11 +358,6 @@
           <div class="group-subfields" id="deskGroupPolicySubfields">
             <label for="deskGroupPolicyNotes" class="group-subfields-label">Desk Group Policy — if you ticked to apply different policy based on Desk Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
             <textarea id="deskGroupPolicyNotes" placeholder='e.g. "We would like the Marketing Desk Group to not have auto-release on idle and allow for booking upto 15 days in advance."'></textarea>
-          </div>
-
-          <div class="setup-notice">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-            <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
           </div>
         </div>
 
@@ -402,11 +407,6 @@
           <div class="group-subfields" id="userGroupPolicySubfields">
             <label for="userGroupPolicyNotes" class="group-subfields-label">User Group Policy — if you ticked to apply different policy based on User Groups, please describe the required override policy below, otherwise skip. There is a further notes space at the end of this form if you need more room.</label>
             <textarea id="userGroupPolicyNotes" placeholder='e.g. "Only the &quot;Call Centre&quot; User Group is allowed to book desks in the Call Centre desk group area."'></textarea>
-          </div>
-
-          <div class="setup-notice">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-            <p>Please be careful with extra restrictions and policy overrides — they add complexity and can make the system harder to set up and maintain for administrators. Keep overrides as simple as possible.</p>
           </div>
         </div>
 
@@ -532,6 +532,19 @@
   (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
+
+  MOST RECENT CHANGE: per a request to stop repeating the amber overrides-caution notice at the
+  bottom of each column, the two separate `.setup-notice` blocks (one under Desk Group Setup, one
+  under User Group Setup — each with identical copy) were removed and replaced with a single
+  `.setup-notice.page-top-notice` shown once at the very top of the page, right after the hero
+  intro and before `.groups-columns`. Its copy was also tightened per the same request — dropped the
+  "and can make the system harder to set up" clause and reworded the rest for clarity: "A note on
+  overrides: extra restrictions and policy overrides add complexity for administrators to maintain,
+  so keep them as simple as possible below." The new `.page-top-notice` class overrides the
+  notice's usual 640px max-width back to `none` so it spans the full page width rather than
+  clamping to column width. Nothing else on the page (grids, subfields, state, JS wiring) changed.
+  Verified via jsdom: exactly one `.setup-notice` exists, sitting immediately before
+  `.groups-columns`, and the Desk/User Group checkbox and policy-subfields behavior is unaffected.
 -->
 
 <script>
