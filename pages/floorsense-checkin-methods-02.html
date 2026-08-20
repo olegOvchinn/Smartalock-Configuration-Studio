@@ -294,8 +294,8 @@
             <span class="desk-tick" aria-hidden="true"></span>
             <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
             <div class="desk-card-body">
-              <h3 class="desk-title">Floorsense App or Web Portal Prebooking</h3>
-              <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense App, the my.floorsense.com.au web portal, or a kiosk with a swipe card reader. A pre-booked desk must still be physically checked into via App or swipe card within a set time, or it's released back to general availability.</p>
+              <h3 class="desk-title">Mobile App or Desktop Browser Prebooking <span class="desk-tag">Default</span></h3>
+              <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal. A pre-booked desk must still be physically checked into via the app or a swipe card within a set time, or it's released back to general availability.</p>
               <p class="desk-note">Not available for anonymous users.</p>
             </div>
           </label>
@@ -416,6 +416,18 @@
   floorsense-checkin-window-08.html reads this same state dynamically via a label map and was left
   unmodified since dropping the "app" entry from the saved-state array doesn't require removing its
   (now simply unused) label-map entry.
+
+  MOST RECENT CHANGE: per a request to also mark the Prebooking card as a default option and clean
+  up its copy, the card gained its own "Default" tag (matching Building Access Cards' existing
+  tag/styling) and DEFAULT_SELECTED changed from ['card'] to ['card', 'prebooking'] so both are
+  checked out of the box on a fresh/reset state — the #prebookingSubfields note is therefore visible
+  by default too, same show/hide logic as before. The card's heading was reworded from "Floorsense
+  App or Web Portal Prebooking" to "Mobile App or Desktop Browser Prebooking" to read more plainly,
+  and its description now matches that language ("Floorsense mobile app or the my.floorsense.com.au
+  desktop browser portal") and drops the "or a kiosk with a swipe card reader" clause, since kiosks
+  aren't otherwise mentioned as an access method on this page. Verified via jsdom that both "card"
+  and "prebooking" are checked by default, with the subfields note shown, and that resetting the
+  form restores both to checked.
 -->
 
 <script>
@@ -446,7 +458,7 @@
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
-  const DEFAULT_SELECTED = ['card'];
+  const DEFAULT_SELECTED = ['card', 'prebooking'];
   const saved = project.floorsense.wizard.checkinMethods || {};
   const state = {
     selected: Array.isArray(saved.selected) ? saved.selected : DEFAULT_SELECTED
