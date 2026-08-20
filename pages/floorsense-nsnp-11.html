@@ -325,9 +325,9 @@
         <label class="relay-confirm-row">
           <input type="checkbox" id="relayConfirm">
           <span class="relay-confirm-tick" aria-hidden="true"></span>
-          <span class="relay-confirm-label">We confirm NSNP relay units are installed at each desk</span>
+          <span class="relay-confirm-label">We confirm the NSNP relay units are installed</span>
         </label>
-        <p class="relay-confirm-hint">NSNP needs a relay unit at every desk it applies to. Tick this once they're installed to choose how you'd like to roll it out below — until then, NSNP stays off.</p>
+        <p class="relay-confirm-hint">Without the relay units in place, NSNP won't work. Tick this once they're installed to choose how you'd like to roll it out below — until then, NSNP stays off.</p>
       </div>
 
       <div class="path-check-grid" id="nsnpGrid">
@@ -338,7 +338,7 @@
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">All desks</h3>
-              <p class="path-desc">Every desk has an NSNP relay unit installed and stays powered off until someone checks in — except permanently assigned desks, which stay powered on.</p>
+              <p class="path-desc">Desks stay powered off until someone checks in — except permanently assigned desks, which stay powered on.</p>
             </div>
           </label>
         </div>
@@ -566,6 +566,20 @@
   unticking afterward forces the mode back to 'none' and re-disables the grid; the grace-period
   switch/field and the Save & continue button both continue to work correctly once a mode is
   actually selected; Reset clears `relayConfirmed`, `mode`, and re-locks the grid.
+
+  MOST RECENT CHANGE: per a request to avoid "installed at each desk"/"every desk" phrasing in the
+  page's visible copy — the point of the relay-confirmation checkbox is just to make sure the client
+  knows NSNP won't function at all without the relay units, not to make a claim about coverage per
+  desk — reworded every user-facing string that used either phrase. The checkbox label is now "We
+  confirm the NSNP relay units are installed" and its hint reads "Without the relay units in place,
+  NSNP won't work. Tick this once they're installed to choose how you'd like to roll it out below —
+  until then, NSNP stays off." The "All desks" mode card's description dropped its restatement of
+  the hardware requirement entirely (the checkbox above already covers that) and now just says
+  "Desks stay powered off until someone checks in — except permanently assigned desks, which stay
+  powered on." Internal code comments/NOTE prose still use "each desk" where useful for developer
+  clarity — only visible page copy was in scope for this change. Verified via jsdom that none of the
+  four rendered strings (checkbox label, hint, and the "All desks"/"list" mode-card descriptions)
+  contain either phrase, and that the relay-gate behavior itself is unchanged.
 -->
 
 <script>
