@@ -324,7 +324,7 @@
             <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="15" rx="2"/><line x1="3" y1="9" x2="17" y2="9"/><line x1="7" y1="3" x2="7" y2="7"/><line x1="13" y1="3" x2="13" y2="7"/><circle cx="19" cy="16" r="3.2"/><path d="M15.7 21.5a3.6 3.6 0 0 1 6.6 0"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
-              <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk for one named person at a time. Slower than Team Leader Allocated for booking several desks at once, but useful when a specific person needs the seat. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
+              <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has allocated them to book for. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
             </div>
           </label>
         </div>
@@ -443,6 +443,15 @@
   behalf of a named person, but that's time-consuming to do desk by desk, so isn't meant for
   frequent use." The rest of the description (the no-named-recipient batch booking mechanic, and
   the checked-in/claimed-or-expires rule) is unchanged.
+
+  MOST RECENT CHANGE: per a follow-up request, "Booked on Behalf"'s description was reworked to
+  drop its own comparison to Team Leader Allocated ("Slower than Team Leader Allocated for booking
+  several desks at once, but useful when a specific person needs the seat") and instead state the
+  actual access-control mechanic: the authorised person can only book on behalf of names an admin
+  has allocated them to book for, rather than for anyone. Now reads: "Lets an authorised person —
+  an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has
+  allocated them to book for. The desk still has to be checked in or claimed by that person, or the
+  booking expires." Neither card now references the other by name.
 -->
 
 <script>
