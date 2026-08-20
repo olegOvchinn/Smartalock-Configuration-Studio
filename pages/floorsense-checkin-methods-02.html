@@ -288,17 +288,20 @@
           </label>
         </div>
 
-        <div class="desk-check-card" data-method="app">
+        <div class="desk-check-card" data-method="prebooking">
           <label class="desk-row">
-            <input type="checkbox" value="app">
+            <input type="checkbox" value="prebooking">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>
+            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
             <div class="desk-card-body">
-              <h3 class="desk-title">Floorsense App at Desk</h3>
-              <p class="desk-desc">Known users open the Floorsense App and tap to reserve the desk they're sitting at.</p>
+              <h3 class="desk-title">Floorsense App or Web Portal Prebooking</h3>
+              <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense App, the my.floorsense.com.au web portal, or a kiosk with a swipe card reader. A pre-booked desk must still be physically checked into via App or swipe card within a set time, or it's released back to general availability.</p>
               <p class="desk-note">Not available for anonymous users.</p>
             </div>
           </label>
+          <div class="desk-subfields" id="prebookingSubfields">
+            <div class="desk-subfields-label">Pre-booking rules will be configured in a follow-up step <span class="desk-subfields-tag">If enabled for all users</span></div>
+          </div>
         </div>
 
         <div class="desk-check-card" data-method="qr">
@@ -324,22 +327,6 @@
               <p class="desk-note">Not available for anonymous users.</p>
             </div>
           </label>
-        </div>
-
-        <div class="desk-check-card" data-method="prebooking">
-          <label class="desk-row">
-            <input type="checkbox" value="prebooking">
-            <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
-            <div class="desk-card-body">
-              <h3 class="desk-title">Floorsense App or Web Portal Prebooking</h3>
-              <p class="desk-desc">Known users can pre-book a desk ahead of time via the Floorsense App, the my.floorsense.com.au web portal, or a kiosk with a swipe card reader. A pre-booked desk must still be physically checked into via App or swipe card within a set time, or it's released back to general availability.</p>
-              <p class="desk-note">Not available for anonymous users.</p>
-            </div>
-          </label>
-          <div class="desk-subfields" id="prebookingSubfields">
-            <div class="desk-subfields-label">Pre-booking rules will be configured in a follow-up step <span class="desk-subfields-tag">If enabled for all users</span></div>
-          </div>
         </div>
       </div>
 
@@ -413,6 +400,22 @@
   (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
+
+  MOST RECENT CHANGE: per a request to remove the "Floorsense App at Desk" card and put "Floorsense
+  App or Web Portal Prebooking" in its place, the card grid dropped from 5 options to 4: Building
+  Access Cards (card, default), Floorsense App or Web Portal Prebooking (prebooking, now 2nd
+  instead of 5th), QR Code (qr), and Wallet Pass (wallet). The Prebooking card's markup (including
+  its #prebookingSubfields sub-block) was moved verbatim into the old "app" card's slot rather than
+  duplicated, so there is still exactly one #prebookingSubfields element in the DOM. No JS changes
+  were needed: the card-wiring loop, save/reset logic, and the DEFAULT_SELECTED = ['card'] default
+  are all fully generic over .desk-check-card / data-method, with the only method-specific branch
+  (method === 'prebooking' toggling #prebookingSubfields) unaffected by the reorder. Verified via
+  jsdom: 4 cards render in the new order with no duplicate ids, default selection is still just
+  "card", checking/unchecking the relocated Prebooking card still shows/hides its subfields note,
+  and other checkboxes still save correctly to project.floorsense.wizard.checkinMethods.selected.
+  floorsense-checkin-window-08.html reads this same state dynamically via a label map and was left
+  unmodified since dropping the "app" entry from the saved-state array doesn't require removing its
+  (now simply unused) label-map entry.
 -->
 
 <script>
