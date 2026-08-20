@@ -314,7 +314,7 @@
           </div>
           <div class="feature-row-body">
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
-            <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app.</p>
+            <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app or handset. Requires motor integration with a Floorsense handset.</p>
             <span class="feature-row-status" id="fmeStatus">Off</span>
           </div>
           <button type="button" class="switch" id="fmeSwitch" role="switch" aria-checked="false" aria-label="Enable Follow Me Ergonomics"></button>
@@ -473,6 +473,11 @@
   features off. Verified via jsdom: the field is hidden until Idle is switched on, defaults to 0.5,
   saves a changed value to the shared state key, and Reset restores it to 0.5 and hides the field
   again.
+
+  MOST RECENT CHANGE: per a request to clarify FME's hardware requirement, the FME row's one-line
+  description was updated to mention that it works via the mobile app or handset and requires motor
+  integration with a Floorsense handset — previously it only mentioned the mobile app. Matching
+  copy was added to floorsense-fme-12.html's own hero/explainer text and to README.md.
 -->
 
 <script>
