@@ -616,7 +616,6 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-13a2 2 0 0 1 2-2h3v15"/><path d="M15 21v-9a2 2 0 0 1 2-2h3v11"/><line x1="2" y1="21" x2="22" y2="21"/></svg>Additional Options</h3>
-          <a class="edit-link" href="floorsense-optional-features-06.html">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -626,24 +625,39 @@
           <p class="summary-desc">The most desks a single user can have reserved at the same time. Applies to everyone by default — a Desk Group or User Group policy below can set its own, different limit, and a User Group's limit always wins if a user belongs to both.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Auto-Release on Idle</span><span class="value">Off by default</span></div>
+          <div class="summary-row-top">
+            <span class="label">Auto-Release on Idle</span>
+            <span class="value-group"><span class="value">Off by default</span><a class="row-edit-link" href="floorsense-idle-release-09.html">Edit</a></span>
+          </div>
           <p class="summary-desc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn't checked into in time. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">NSNP</span><span class="value">Depends on policy</span></div>
+          <div class="summary-row-top">
+            <span class="label">NSNP</span>
+            <span class="value-group"><span class="value">Depends on policy</span><a class="row-edit-link" href="floorsense-nsnp-11.html">Edit</a></span>
+          </div>
           <p class="summary-desc">Not part of the fixed defaults — whether this applies depends on your organisation's own policy. Confirm before go-live.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Sit-stand desks</span><span class="value">Off</span></div>
+          <div class="summary-row-top">
+            <span class="label">Sit-stand desks</span>
+            <span class="value-group"><span class="value">Off</span><a class="row-edit-link" href="floorsense-fme-12.html">Edit</a></span>
+          </div>
           <p class="summary-desc">Sit-stand desk integration is disabled by default.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Recurring bookings</span><span class="value">Disabled</span></div>
-          <p class="summary-desc">Users can't set up repeating reservations by default.</p>
+          <div class="summary-row-top">
+            <span class="label">Recurring bookings</span>
+            <button type="button" class="policy-switch" id="coreRecurringToggle" role="switch" aria-checked="false"></button>
+          </div>
+          <p class="summary-desc">When on, users can set up repeating reservations that book the same desk on a regular schedule. Off by default.</p>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Privacy</span><span class="value">Do Not Disturb available</span></div>
-          <p class="summary-desc">Users can set a Do Not Disturb status to limit interruptions.</p>
+          <div class="summary-row-top">
+            <span class="label">Privacy</span>
+            <button type="button" class="policy-switch on" id="coreDndToggle" role="switch" aria-checked="true"></button>
+          </div>
+          <p class="summary-desc">When on, users can set a Do Not Disturb status to limit interruptions. On by default.</p>
         </div>
       </div>
 
@@ -1105,6 +1119,24 @@
   all switched on from that hub page. Verified via jsdom: the Additional Options group's Edit link
   href and its row order (Maximum desks per user, Auto-Release on Idle, NSNP, Sit-stand desks,
   Recurring bookings, Privacy) are both correct.
+
+  MOST RECENT CHANGE: per a follow-up request, the Additional Options group's single group-level
+  Edit link (pointing at the Optional Features hub) was removed entirely and replaced with three
+  precise, row-level `.row-edit-link` pills — the same pattern Prebooking & Duration already uses
+  for its two rows — since Idle, NSNP, and Sit-stand each live on a different dedicated page: Idle →
+  floorsense-idle-release-09.html, NSNP → floorsense-nsnp-11.html, Sit-stand → floorsense-fme-12.html
+  (Follow Me Ergonomics being the only feature that configures sit/stand desk height). Separately,
+  Recurring bookings and Privacy — previously static text ("Disabled" / "Do Not Disturb available")
+  — became real `.policy-switch` on/off toggles (`#coreRecurringToggle`, `#coreDndToggle`), matching
+  CORE_POLICY_DEFAULTS' existing `recurringEnabled` (default off) and `dndEnabled` (default on)
+  fields already used by the additional-policy cards below, autosaving to
+  `project.floorsense.wizard.outOfBoxPolicy` the same way the Check-in Behaviour toggles do. Their
+  descriptions were reworded to the same "When on, ... Off/On by default." two-state style used
+  elsewhere on this card. Verified via jsdom: no group-level Edit link remains; the three row-edit
+  links point at the correct dedicated pages; both new toggles default correctly (recurring off, DND
+  on), persist on click, and `buildSummaryText()`'s existing row-walking logic (which already
+  understood `.value`, `.policy-switch`, and `.policy-number-input` rows) picks up their On/Off
+  state with no code changes needed there.
 -->
 
 <script>
@@ -1188,6 +1220,28 @@
   ];
   coreBehaviourToggles.forEach(({ field, el }) => {
     const on = savedOOB[field] !== false; // default on
+    el.classList.toggle('on', on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
+    el.addEventListener('click', () => {
+      const nowOn = !el.classList.contains('on');
+      el.classList.toggle('on', nowOn);
+      el.setAttribute('aria-checked', nowOn ? 'true' : 'false');
+      project.floorsense.wizard.outOfBoxPolicy = Object.assign({}, project.floorsense.wizard.outOfBoxPolicy, { [field]: nowOn });
+      saveProject(project);
+    });
+  });
+
+  /* ---------------- core policy: Recurring bookings / Privacy toggles ----------------
+     Replaces the two previously-static rows with real on/off switches, matching
+     CORE_POLICY_DEFAULTS' recurringEnabled (default off) and dndEnabled (default on) fields
+     already used by the additional-policy cards below. Autosaves on click, independent of
+     "Confirm & finish", same convention as every other toggle/field on this card. */
+  const coreAdditionalToggles = [
+    { field: 'recurringEnabled', el: document.getElementById('coreRecurringToggle'), defaultOn: false },
+    { field: 'dndEnabled', el: document.getElementById('coreDndToggle'), defaultOn: true }
+  ];
+  coreAdditionalToggles.forEach(({ field, el, defaultOn }) => {
+    const on = typeof savedOOB[field] === 'boolean' ? savedOOB[field] : defaultOn;
     el.classList.toggle('on', on);
     el.setAttribute('aria-checked', on ? 'true' : 'false');
     el.addEventListener('click', () => {
