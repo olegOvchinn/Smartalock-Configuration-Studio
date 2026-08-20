@@ -282,7 +282,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">No Swipe No Power</h1>
-        <p class="sub">Automatically cut power to a desk when it's occupied without a valid badge swipe.</p>
+        <p class="sub">Keep desks powered off until someone checks in — permanently assigned desks stay powered on all the time.</p>
       </div>
     </div>
   </div>
@@ -293,7 +293,7 @@
       <div class="section-head">
         <span class="eyebrow">Configure</span>
         <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>NSNP requires NSNP relay units installed at each desk. Desks without a valid badge swipe don't get power, and power turns off as soon as a reservation ends. Below, you can turn on a short grace period to keep power on a bit longer after that. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+        <p>NSNP requires NSNP relay units installed at each desk. With it on, a desk stays powered off until someone checks in with a valid badge swipe, then powered off again once their reservation ends — you can turn on a short grace period below to keep it on a little longer after that. Permanently assigned desks stay powered on all the time and aren't affected by NSNP. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
       </div>
 
       <div class="path-check-grid" id="nsnpGrid">
@@ -304,7 +304,7 @@
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">All desks</h3>
-              <p class="path-desc">Every desk has an NSNP relay unit installed and enforces this power policy.</p>
+              <p class="path-desc">Every desk has an NSNP relay unit installed and stays powered off until someone checks in — except permanently assigned desks, which stay powered on.</p>
             </div>
           </label>
         </div>
@@ -316,7 +316,7 @@
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">We will provide a list of NSNP enabled desks</h3>
-              <p class="path-desc">We'll send Smartalock a list of which desks have NSNP relay units installed and should enforce this policy.</p>
+              <p class="path-desc">We'll send Smartalock a list of which desks have NSNP relay units installed and should stay powered off until checked in.</p>
             </div>
           </label>
         </div>
@@ -328,7 +328,7 @@
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">We will not be using NSNP</h3>
-              <p class="path-desc">Skip this feature — desks won't have automatic power cutoff for missed badge swipes.</p>
+              <p class="path-desc">Skip this feature — desks stay powered on all the time, whether or not anyone has checked in.</p>
             </div>
           </label>
         </div>
@@ -345,7 +345,7 @@
           </label>
           <div class="path-subfields" id="otherSubfields">
             <label for="otherNote" class="path-subfields-label">Describe the arrangement</label>
-            <textarea id="otherNote" placeholder="e.g. NSNP on hot-desks only, standard desks excluded"></textarea>
+            <textarea id="otherNote" placeholder="e.g. NSNP on hot-desks only, permanently assigned desks excluded"></textarea>
           </div>
         </div>
       </div>
@@ -489,6 +489,21 @@
   15-minute default, changing the value and toggling the switch both persist to
   `project.floorsense.wizard.nsnp`, and Reset restores `graceEnabled: false, graceMinutes: 15`
   alongside `mode: 'none'`.
+
+  MOST RECENT CHANGE: per a request to make sure every piece of copy on the page follows one
+  consistent logic — a desk stays powered off by default and only powers on once someone checks in
+  (badge swipe), going back off once their reservation ends (subject to the grace period above);
+  permanently assigned desks are the one exception and stay powered on all the time — every piece of
+  text on the page was reviewed and rewritten to match. This replaced an older, slightly different
+  framing ("power is cut if a desk is occupied without a valid swipe") that didn't mention
+  permanently assigned desks at all. Updated: the hero sub, the main NSNP description paragraph, all
+  three non-"Other" mode-card descriptions ("All desks", "We will provide a list...", "We will not
+  be using NSNP"), and the "Other" textarea's placeholder example (now says "permanently assigned
+  desks excluded" instead of "standard desks excluded"). The Power grace period copy underneath was
+  reviewed too and left as-is — "power turns off the moment a reservation ends" already matches this
+  logic regardless of how power was turned on. No state, field names, or behaviour changed, copy
+  only. Verified via jsdom that all of the above render the updated text and that the existing
+  grace-switch/mode-grid/reset behavior is unaffected.
 -->
 
 <script>
