@@ -305,7 +305,7 @@
           </label>
         </div>
 
-        <div class="desk-check-card" data-template="team-leader">
+        <div class="desk-check-card" data-template="team-leader" hidden>
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
             <span class="desk-tick" aria-hidden="true"></span>
@@ -317,7 +317,7 @@
           </label>
         </div>
 
-        <div class="desk-check-card" data-template="booked-on-behalf">
+        <div class="desk-check-card" data-template="booked-on-behalf" hidden>
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
             <span class="desk-tick" aria-hidden="true"></span>
@@ -459,6 +459,16 @@
 
   MOST RECENT CHANGE: per a further wording follow-up, "a named person" became "their team
   members" — now reads "A team leader can optionally also book on behalf of their team members...".
+
+  MOST RECENT CHANGE: per a request to temporarily hide "Team Leader Allocated" and "Booked on
+  Behalf" until asked to bring them back, both `.desk-check-card` divs (data-template="team-leader"
+  and "booked-on-behalf") gained a plain `hidden` attribute. This is a pure display change — no CSS
+  rule on this page overrides `[hidden]`'s native `display:none`, so nothing else needed touching:
+  the cards stay in the DOM with all their markup intact (just add `hidden` back off to unhide),
+  the generic `.desk-check-card` checkbox-wiring loop still runs over them harmlessly since hidden
+  checkboxes can't be focused/clicked, and `.desk-check-grid`'s plain flex-column layout just closes
+  the gap where they used to sit. Verified via jsdom: both computed `display: none`, while "fixed"
+  and "ai-agent" (the two adjacent still-visible cards) remain unaffected.
 -->
 
 <script>
