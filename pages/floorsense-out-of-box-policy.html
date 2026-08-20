@@ -506,7 +506,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
         <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
-        <p class="sub" id="pageHeroSub">Here's what's included by default — review it below and adjust anything that needs to change for your workplace.</p>
+        <p class="sub" id="pageHeroSub">Here's what's included so far — review it below and adjust anything that needs to change for your workplace.</p>
       </div>
     </div>
   </div>
@@ -1169,9 +1169,10 @@
   MOST RECENT CHANGE: per a request that this page now has real editable content (the Recurring/
   Privacy toggles, plus row-level Edit links into Idle/NSNP/Sit-stand), the hero sub (`#pageHeroSub`)
   no longer claims "nothing to configure, just review and confirm" — both the default text and the
-  preset-param variant now read "Here's what's included by default — review it below and adjust
+  preset-param variant now read "Here's what's included so far — review it below and adjust
   anything that needs to change for your workplace." (preset variant: "...included in the
-  {preset} preset — review it below...").
+  {preset} preset so far — review it below..."). "So far" was used instead of "by default" per a
+  follow-up request, since these rows aren't all fixed defaults any more.
 -->
 
 <script>
@@ -1209,7 +1210,7 @@
   if (PRESET_LABELS[preset]) {
     document.getElementById('pageHeroTitle').textContent = PRESET_LABELS[preset] + ' Preset';
     document.getElementById('pageHeroSub').textContent =
-      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset — review it below and adjust anything that needs to change for your workplace.";
+      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset so far — review it below and adjust anything that needs to change for your workplace.";
   }
 
   const savedOOB = project.floorsense.wizard.outOfBoxPolicy || {};
