@@ -299,9 +299,6 @@
               <p class="desk-note">Not available for anonymous users.</p>
             </div>
           </label>
-          <div class="desk-subfields" id="prebookingSubfields">
-            <div class="desk-subfields-label">Pre-booking rules will be configured in a follow-up step <span class="desk-subfields-tag">If enabled for all users</span></div>
-          </div>
         </div>
 
         <div class="desk-check-card" data-method="qr">
@@ -458,6 +455,16 @@
   browser portal." — dropping the second sentence about the booked desk needing to be physically
   checked into within a set time or being released; that mechanic is still true (and still covered
   by the Check-in Window module elsewhere in the wizard) but wasn't needed on this card.
+
+  MOST RECENT CHANGE: per a request to also remove the "Pre-booking rules will be configured in a
+  follow-up step / If enabled for all users" note, the entire #prebookingSubfields sub-block was
+  deleted from the Booking card, along with its 3 JS references (the `const prebookingSubfields =
+  ...` lookup and the `if (method === 'prebooking') prebookingSubfields.classList.toggle(...)` calls
+  in the initial render, the checkbox's change handler, and the reset handler) — leaving a dangling
+  reference to a removed element would have thrown on every checkbox toggle. The card's
+  data-method="prebooking" value and its role gating floorsense-prebooking-advance-04.html are
+  unaffected; only this sub-block and its wiring were removed. Verified via jsdom that the element
+  no longer exists and that checking/unchecking the Booking card no longer throws.
 -->
 
 
@@ -519,7 +526,6 @@
 
   /* ---------------- reservation-method grid ---------------- */
   const grid = document.getElementById('methodGrid');
-  const prebookingSubfields = document.getElementById('prebookingSubfields');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
@@ -539,7 +545,6 @@
     const checkbox = card.querySelector('input[type="checkbox"]');
     checkbox.checked = state.selected.includes(method);
     card.classList.toggle('checked', checkbox.checked);
-    if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
 
     checkbox.addEventListener('change', () => {
       card.classList.toggle('checked', checkbox.checked);
@@ -548,8 +553,7 @@
       } else {
         state.selected = state.selected.filter(m => m !== method);
       }
-      if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
-      queueSave();
+        queueSave();
     });
   });
 
@@ -560,8 +564,7 @@
       const checkbox = card.querySelector('input[type="checkbox"]');
       checkbox.checked = state.selected.includes(method);
       card.classList.toggle('checked', checkbox.checked);
-      if (method === 'prebooking') prebookingSubfields.classList.toggle('show', checkbox.checked);
-    });
+      });
     queueSave();
   });
 
