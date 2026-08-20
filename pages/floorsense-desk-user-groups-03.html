@@ -309,7 +309,7 @@
 
       <div class="setup-notice page-top-notice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-        <p>A note on overrides: extra restrictions and policy overrides add complexity for administrators to maintain, so keep them as simple as possible below.</p>
+        <p>You don't need to set up Desk Groups unless you want different booking rules for a specific area. Likewise, extra User Groups are optional — only add them if your policy really needs different rules for different groups of users, as each one adds a bit more setup complexity.</p>
       </div>
 
       <div class="groups-columns">
@@ -545,6 +545,14 @@
   clamping to column width. Nothing else on the page (grids, subfields, state, JS wiring) changed.
   Verified via jsdom: exactly one `.setup-notice` exists, sitting immediately before
   `.groups-columns`, and the Desk/User Group checkbox and policy-subfields behavior is unaffected.
+
+  MOST RECENT CHANGE: per a follow-up request that a client reading the page wouldn't understand
+  the original admin-facing "administrators to maintain" phrasing, the top notice's copy was
+  rewritten in plainer, client-facing language: "You don't need to set up Desk Groups unless you
+  want different booking rules for a specific area. Likewise, extra User Groups are optional — only
+  add them if your policy really needs different rules for different groups of users, as each one
+  adds a bit more setup complexity." This explains the "why" (when Desk/User Groups are actually
+  needed) rather than just warning about complexity in the abstract.
 -->
 
 <script>
