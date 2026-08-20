@@ -155,6 +155,21 @@
   .switch.on { background: var(--accent); }
   .switch.on::after { transform: translateX(16px); }
 
+  /* ---------- Auto-Release on Idle's own inline hours field, shown only once that feature's
+     switch is on — reuses the .policy-number-field/.policy-number-input/.policy-field-unit look
+     already established on floorsense-out-of-box-policy.html for small inline numeric fields. ---------- */
+  .feature-row-hours { display: none; align-items: center; gap: 8px; margin-top: 10px; }
+  .feature-row-hours.show { display: flex; }
+  .feature-row-hours label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
+  .policy-number-field { display: flex; align-items: center; }
+  .policy-number-input {
+    width: 64px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
+    font-family: var(--font-text); font-size: 13px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
+  }
+  .policy-number-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .policy-field-unit { font-size: 11.5px; color: var(--ink-soft); margin-left: 6px; }
+
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   .feature-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
   .feature-footer-icon svg { width: 34px; height: 34px; }
@@ -273,6 +288,10 @@
             <p class="feature-row-title">Auto-Release on Idle</p>
             <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
             <span class="feature-row-status" id="idleReleaseStatus">Off</span>
+            <div class="feature-row-hours" id="idleHoursField">
+              <label for="idleHoursInput">Auto-release after</label>
+              <span class="policy-number-field"><input type="number" min="0.5" max="24" step="0.5" class="policy-number-input" id="idleHoursInput" value="0.5"><span class="policy-field-unit">hours</span></span>
+            </div>
           </div>
           <button type="button" class="switch" id="idleReleaseSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on Idle"></button>
         </div>
@@ -438,6 +457,22 @@
   appear in the bar anywhere, on any page — see floorsense-setup-path-00.html's own NOTE for the
   full reasoning (those 7 pages are meant to be reached only from the summary page going forward,
   not from the main wizard nav).
+
+  MOST RECENT CHANGE: per a request that the Auto-Release on Idle row here should let someone enter
+  the number of hours directly, rather than only offering the on/off switch, it gained its own
+  inline `#idleHoursField` (a `.policy-number-field`/`.policy-number-input`/`.policy-field-unit`
+  number input, styling ported from floorsense-out-of-box-policy.html's inline numeric fields),
+  shown only once the Idle switch itself is on — hidden/shown the same way
+  floorsense-checkin-methods-02.html's `#prebookingSubfields` is. It defaults to 0.5 hours (30
+  minutes) rather than floorsense-idle-release-09.html's own 3-hour default, since this hub is meant
+  to offer a fast, minimal setting rather than that page's full explainer treatment; both read/write
+  the same shared `project.floorsense.wizard.idleRelease.idleHours` field, so whichever page is
+  visited (and saved) first "wins" for a given project — there's no conflict in practice since the
+  field is simply left at whatever the most recent visit set it to. Reset on this page now also
+  restores idleHours to 0.5 (matching this page's own default) in addition to switching all four
+  features off. Verified via jsdom: the field is hidden until Idle is switched on, defaults to 0.5,
+  saves a changed value to the shared state key, and Reset restores it to 0.5 and hides the field
+  again.
 -->
 
 <script>
@@ -561,9 +596,38 @@
 
   renderAll();
 
+  /* ---------------- Auto-Release on Idle's inline hours field: shares
+     project.floorsense.wizard.idleRelease.idleHours with floorsense-idle-release-09.html's own
+     drum, but defaults to 0.5 (30 min) here rather than that page's 3-hour default, since this
+     hub is meant to be a quick minimum-viable setting rather than the full explainer. Only shown
+     while the Auto-Release switch itself is on. ---------- */
+  const idleHoursField = document.getElementById('idleHoursField');
+  const idleHoursInput = document.getElementById('idleHoursInput');
+
+  function renderIdleHoursField() {
+    idleHoursField.classList.toggle('show', FEATURES[0].isOn());
+  }
+
+  const savedIdleHours = project.floorsense.wizard.idleRelease && project.floorsense.wizard.idleRelease.idleHours;
+  idleHoursInput.value = Number.isFinite(savedIdleHours) ? savedIdleHours : 0.5;
+  renderIdleHoursField();
+
+  idleHoursInput.addEventListener('input', () => {
+    const hours = parseFloat(idleHoursInput.value);
+    project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
+    project.floorsense.wizard.idleRelease.idleHours = Number.isFinite(hours) ? hours : 0.5;
+    queueSave();
+  });
+
+  document.getElementById(FEATURES[0].switchEl).addEventListener('click', renderIdleHoursField);
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
+    project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
+    project.floorsense.wizard.idleRelease.idleHours = 0.5;
+    idleHoursInput.value = 0.5;
     renderAll();
+    renderIdleHoursField();
     queueSave();
   });
 

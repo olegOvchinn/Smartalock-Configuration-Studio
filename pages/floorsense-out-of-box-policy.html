@@ -616,7 +616,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-13a2 2 0 0 1 2-2h3v15"/><path d="M15 21v-9a2 2 0 0 1 2-2h3v11"/><line x1="2" y1="21" x2="22" y2="21"/></svg>Additional Options</h3>
-          <a class="edit-link" href="floorsense-reservation-length-10.html">Edit</a>
+          <a class="edit-link" href="floorsense-optional-features-06.html">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -624,6 +624,10 @@
             <span class="policy-number-field"><input type="number" min="1" max="20" class="policy-number-input" id="coreMaxDesksInput" value="1"><span class="policy-field-unit">desks</span></span>
           </div>
           <p class="summary-desc">The most desks a single user can have reserved at the same time. Applies to everyone by default — a Desk Group or User Group policy below can set its own, different limit, and a User Group's limit always wins if a user belongs to both.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top"><span class="label">Auto-Release on Idle</span><span class="value">Off by default</span></div>
+          <p class="summary-desc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn't checked into in time. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">NSNP</span><span class="value">Depends on policy</span></div>
@@ -1090,6 +1094,17 @@
   implemented: navigation to another Document" notice for the `mailto:` assignment itself, since
   jsdom doesn't implement custom URL scheme navigation — real browsers open the OS mail client
   instead of navigating away). Re-ran every other jsdom test in this file — no regressions.
+
+  MOST RECENT CHANGE: per a request that the summary was missing an Auto-Release on Idle row, a new
+  static row ("Auto-Release on Idle" / "Off by default") was added to the Additional Options group,
+  positioned directly above the existing NSNP row, describing it the same way NSNP is described
+  (an optional feature not part of the fixed defaults, configured separately). The same request also
+  fixed the Additional Options group's Edit link, which had been pointing at
+  floorsense-reservation-length-10.html (a leftover from before the Optional Features hub existed) —
+  it now points at floorsense-optional-features-06.html, since Idle/NSNP/Sit-stand/Recurring/DND are
+  all switched on from that hub page. Verified via jsdom: the Additional Options group's Edit link
+  href and its row order (Maximum desks per user, Auto-Release on Idle, NSNP, Sit-stand desks,
+  Recurring bookings, Privacy) are both correct.
 -->
 
 <script>
