@@ -312,7 +312,7 @@
             <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4v4"/><circle cx="6" cy="17" r="2.4"/><circle cx="18" cy="17" r="2.4"/><path d="M12 11.4L6 14.6M12 11.4l6 3.2"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
-              <p class="desk-desc">A team leader mostly reserves desks in advance on behalf of their allocated team members, and can also create ad-hoc bookings for them as needed. Members can then choose to claim the desk reserved for them, ignore it, or book a different desk instead.</p>
+              <p class="desk-desc">A team leader can reserve a number of desks in one go without specifying who each one belongs to — the desks simply show as reserved for the team by name. This saves time compared to Booked on Behalf, where each desk has to be booked separately for a named person, which is more relevant for an EA booking on someone's behalf. Either way, the desks still need to be checked in or claimed by the actual user, or the reservation expires.</p>
             </div>
           </label>
         </div>
@@ -415,6 +415,18 @@
   (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
+
+  MOST RECENT CHANGE: per a request to clarify how "Team Leader Allocated" actually differs from
+  "Booked on Behalf" (the client wouldn't otherwise know why they're separate options), its
+  description was rewritten from "A team leader mostly reserves desks in advance on behalf of
+  their allocated team members, and can also create ad-hoc bookings for them as needed. Members can
+  then choose to claim the desk reserved for them, ignore it, or book a different desk instead." to
+  explain the actual mechanic: a team leader books a batch of desks in one action without naming
+  who each one is for (desks just show reserved for the team), which is faster than Booked on
+  Behalf's one-named-person-per-booking flow — the latter suiting an EA booking for a specific
+  person. Also notes that, either way, the desks still need to be checked in/claimed by the actual
+  user or the reservation expires (true of both cards, but only stated here since only this card
+  was in scope for the change).
 -->
 
 <script>
