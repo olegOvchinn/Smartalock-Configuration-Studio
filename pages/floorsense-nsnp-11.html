@@ -307,7 +307,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">No Swipe No Power</h1>
-        <p class="sub">Keep desks powered off until someone checks in — permanently assigned desks stay powered on all the time.</p>
+        <p class="sub">Automatically power a desk off until someone checks in.</p>
       </div>
     </div>
   </div>
@@ -318,7 +318,7 @@
       <div class="section-head">
         <span class="eyebrow">Configure</span>
         <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>With NSNP on, a desk stays powered off until someone checks in with a valid badge swipe, then powered off again once their reservation ends — you can turn on a short grace period below to keep it on a little longer after that. Permanently assigned desks stay powered on all the time and aren't affected by NSNP. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+        <p>Power turns off again once the reservation ends — turn on a short grace period below to keep it on a little longer. Permanently assigned desks are the exception and stay powered on. This is entirely optional; choose how you'd like to roll it out, or skip it if you won't be using it.</p>
       </div>
 
       <div class="nsnp-relay-confirm">
@@ -580,6 +580,16 @@
   clarity — only visible page copy was in scope for this change. Verified via jsdom that none of the
   four rendered strings (checkbox label, hint, and the "All desks"/"list" mode-card descriptions)
   contain either phrase, and that the relay-gate behavior itself is unchanged.
+
+  MOST RECENT CHANGE: per a request to shorten the hero sub and main description and stop them
+  repeating each other, split the content so each paragraph says its own thing once. The hero sub
+  is now a single short sentence with just the core behaviour: "Automatically power a desk off until
+  someone checks in." The description paragraph no longer restates that (it used to open with
+  almost the same sentence, plus repeat the "permanently assigned desks stay powered on all the
+  time" line that was also in the hero) — it now covers only what the hero doesn't: power-off at
+  reservation end plus the grace period below, the permanently-assigned exception (stated once,
+  here rather than in both places), and the "this is optional" framing. Verified via jsdom that both
+  strings render as expected and nothing else on the page changed.
 -->
 
 <script>
