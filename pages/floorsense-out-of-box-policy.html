@@ -633,10 +633,10 @@
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
-            <span class="label">NSNP</span>
-            <span class="value-group"><span class="value">Depends on policy</span><a class="row-edit-link" href="floorsense-nsnp-11.html">Edit</a></span>
+            <span class="label">No Swipe No Power (NSNP)</span>
+            <span class="value-group"><span class="value">Off by default</span><a class="row-edit-link" href="floorsense-nsnp-11.html">Edit</a></span>
           </div>
-          <p class="summary-desc">Not part of the fixed defaults — whether this applies depends on your organisation's own policy. Confirm before go-live.</p>
+          <p class="summary-desc">Requires an NSNP relay unit to function. Powers a desk off until someone checks in.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -1137,6 +1137,18 @@
   on), persist on click, and `buildSummaryText()`'s existing row-walking logic (which already
   understood `.value`, `.policy-switch`, and `.policy-number-input` rows) picks up their On/Off
   state with no code changes needed there.
+
+  MOST RECENT CHANGE: per a request to make the NSNP row's title more descriptive and drop its
+  "policy" framing, the label changed from the bare acronym "NSNP" to "No Swipe No Power (NSNP)"
+  (matching the hero/section titles on floorsense-nsnp-11.html itself), the value changed from
+  "Depends on policy" to "Off by default" (matching the other optional-feature rows' style, and no
+  longer implying this is something an organisation's own policy governs), and the description was
+  shortened and rewritten from "Not part of the fixed defaults — whether this applies depends on
+  your organisation's own policy. Confirm before go-live." to "Requires an NSNP relay unit to
+  function. Powers a desk off until someone checks in." — dropping every "policy" mention and
+  instead naming the actual hardware requirement, matching floorsense-nsnp-11.html's own relay-
+  confirmation gate and hero copy. Verified via jsdom that the row renders the new label/value/desc
+  and that `buildSummaryText()` still picks up "Off by default" for this row with no code changes.
 -->
 
 <script>
