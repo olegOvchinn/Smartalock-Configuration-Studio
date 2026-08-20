@@ -156,101 +156,35 @@
   }
   .path-subfields textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
 
-  /* ---------- power grace period diagram — same explainer-diagram building blocks used on
-     floorsense-idle-release-09.html, but standalone (not nested inside a .checkin-card) since this
-     page's primary interaction is the mode grid above, not a single explainer card. ---------- */
-  .nsnp-grace-block { display: none; margin-top: 20px; max-width: 760px; }
+  /* ---------- power grace period: a short toggle + fill-in field, folded into the NSNP
+     explainer rather than its own diagram card. Replaces an earlier Apple Clock-style time-drum
+     treatment per a request to simplify it — a plain number field is all that's needed here. ---------- */
+  .nsnp-grace-block { display: none; margin-top: 20px; max-width: 640px; background: var(--paper-soft); border: 1.5px solid var(--line); border-radius: var(--radius-lg); padding: 20px 22px; }
   .nsnp-grace-block.show { display: block; }
-  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
-  .timeline-card.standalone { border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
-  .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
-  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
-  .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
-
-  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-
-  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
-  .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  .grace-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .grace-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+  .grace-row-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s; margin-top: 2px;
   }
-  .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
   }
-  .timeline-node .label-time.primary { color: #102A43; }
-  .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+  .grace-field { display: none; align-items: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .grace-field.show { display: flex; }
+  .grace-field label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
+  .policy-number-field { display: flex; align-items: center; }
+  .policy-number-input {
+    width: 64px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
+    font-family: var(--font-text); font-size: 13px; font-weight: 600; background: #fff;
+    text-align: center; color: var(--ink);
   }
-  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
-  .big-anchor .label-time.primary {
-    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
-
-  .time-drum {
-    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
-  }
-  .time-drum::before {
-    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom,
-      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
-      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
-  }
-  .time-drum-window {
-    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
-    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
-    background: rgba(16,42,67,0.03);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
-  }
-  .time-drum-scroll {
-    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-    border-radius: 12px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-  }
-  .time-drum-scroll::-webkit-scrollbar { display: none; }
-  .time-drum-pad { height: 60px; }
-  .time-drum-row {
-    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
-  }
-  .time-drum-row.selected {
-    font-size: 15px; font-weight: 700; color: #102A43;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-  }
-
-  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes ci-grow {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
-  }
-  .timeline-card.animate-in .label-time,
-  .timeline-card.animate-in .label-desc {
-    animation: ci-fade .35s ease-out both;
-  }
-  .timeline-card.animate-in .timeline-zone {
-    transform-origin: left center;
-    animation: ci-grow .5s ease-out .15s both;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .timeline-card.animate-in * { animation: none !important; }
-  }
+  .policy-number-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .policy-field-unit { font-size: 11.5px; color: var(--ink-soft); margin-left: 6px; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -359,7 +293,7 @@
       <div class="section-head">
         <span class="eyebrow">Configure</span>
         <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>NSNP requires NSNP relay units installed at each desk to function — if a desk is occupied but nobody has swiped a valid badge, power to its outlets is cut until a valid swipe is detected. This is entirely optional. Choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+        <p>NSNP requires NSNP relay units installed at each desk. Desks without a valid badge swipe don't get power, and power turns off as soon as a reservation ends. Below, you can turn on a short grace period to keep power on a bit longer after that. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
       </div>
 
       <div class="path-check-grid" id="nsnpGrid">
@@ -417,32 +351,16 @@
       </div>
 
       <div class="nsnp-grace-block" id="graceBlock">
-        <div class="timeline-card standalone">
-          <div class="timeline-header">
-            <p class="timeline-subtitle">Power grace period: <strong id="graceLabel">1h</strong></p>
+        <div class="grace-row">
+          <div class="grace-row-text">
+            <p class="grace-row-title">Power grace period</p>
+            <p class="grace-row-desc">By default, power turns off the moment a reservation ends. Turn this on to keep power on for a few extra minutes after that — handy for a desktop that needs time to save and shut down properly, unlike a laptop running on its own battery.</p>
           </div>
-          <div class="timeline-diagram-row">
-            <div class="time-drum" id="graceDrum" tabindex="0" role="slider" aria-label="Power grace period" aria-valuemin="5" aria-valuemax="240">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="graceDrumScroll"></div>
-            </div>
-            <div class="timeline-track-wrapper">
-              <div class="timeline-rail">
-                <div class="timeline-zone" id="graceZone"></div>
-              </div>
-              <div class="timeline-node" id="graceStartNode">
-                <div class="anchor-pin"></div>
-                <div class="label-time">0 min</div>
-                <div class="label-desc">Badge swipe</div>
-              </div>
-              <div class="timeline-node big-anchor" id="graceEndNode">
-                <div class="anchor-pin"></div>
-                <div class="label-time primary" id="graceEndTime">1h</div>
-                <div class="label-desc">Power cut</div>
-              </div>
-            </div>
-          </div>
-          <p class="policy-hint" id="graceHint">If no valid badge swipe is detected within 1h of a desk becoming occupied, power to its outlets is cut.</p>
+          <button type="button" class="switch" id="graceSwitch" role="switch" aria-checked="false" aria-label="Enable power grace period"></button>
+        </div>
+        <div class="grace-field" id="graceField">
+          <label for="graceMinutesInput">Keep power on for</label>
+          <span class="policy-number-field"><input type="number" min="1" max="240" class="policy-number-input" id="graceMinutesInput" value="15"><span class="policy-field-unit">min after expiry</span></span>
         </div>
       </div>
 
@@ -549,6 +467,28 @@
   orphaned page in sequence" affordance, distinct from the primary Save & continue action. Verified
   via jsdom that clicking Continue still saves `moduleStatus` and triggers navigation to the new
   target with no runtime errors.
+
+  MOST RECENT CHANGE: per a request to review the "Power grace period" card, fold it into the NSNP
+  description in short, plain language, and swap its Apple Clock-style time-drum for a simple
+  fill-in field, the whole block was rebuilt. The main NSNP paragraph now says plainly that power
+  turns off as soon as a reservation ends, and that a grace period can be turned on to keep it on a
+  bit longer. The supplementary block below the mode grid — still shown only once a mode other than
+  "none" is picked — dropped the timeline diagram/drum entirely in favour of one on/off switch
+  (`#graceSwitch`, off by default, matching the "off = power cuts exactly at expiry" default) and,
+  once switched on, one plain number field (`#graceMinutesInput`, 1-240 minutes, default 15) with a
+  short explanation: turning grace on keeps power on for those extra minutes past expiry, which is
+  called out as useful for a desktop that needs time to save and shut down, unlike a battery-powered
+  laptop. State gained a new `graceEnabled` boolean (default false); `graceMinutes`' own default
+  changed from 60 to 15, since a short "time to save and shut down" buffer reads more sensibly than
+  a full hour now that the feature is framed around reservation expiry rather than the old "no
+  badge swipe within N minutes of occupancy" framing. All of the drum-specific CSS/JS
+  (`.timeline-card`, `.time-drum`, `createTimeDrum()`, `formatDurationMinutes()`, the reveal-animation
+  IntersectionObserver, etc.) was removed as dead code along with it — nothing else on this page
+  referenced any of it. Verified via jsdom: the grace block still only appears once NSNP itself is
+  enabled, the switch defaults off with the field hidden, turning it on reveals the field with its
+  15-minute default, changing the value and toggling the switch both persist to
+  `project.floorsense.wizard.nsnp`, and Reset restores `graceEnabled: false, graceMinutes: 15`
+  alongside `mode: 'none'`.
 -->
 
 <script>
@@ -583,7 +523,8 @@
   const state = {
     mode: saved.mode || 'none',
     otherNote: saved.otherNote || "",
-    graceMinutes: Number.isFinite(saved.graceMinutes) ? saved.graceMinutes : 60
+    graceEnabled: !!saved.graceEnabled,
+    graceMinutes: Number.isFinite(saved.graceMinutes) ? saved.graceMinutes : 15
   };
 
   /* ---------------- horizontal progress bar ---------------- */
@@ -628,126 +569,31 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
-  function formatDurationMinutes(mins) {
-    mins = Math.round(Math.abs(mins));
-    const h = Math.floor(mins / 60), m = mins % 60;
-    if (h === 0) return m + ' min';
-    if (m === 0) return h + 'h';
-    return h + 'h ' + m + 'm';
+  /* ---------------- power grace period: a plain on/off switch plus a fill-in minutes field,
+     shown once NSNP itself is enabled (any mode other than "none"). Replaces an earlier Apple
+     Clock-style time-drum diagram per a request to simplify it. ---------------- */
+  const graceSwitch = document.getElementById('graceSwitch');
+  const graceField = document.getElementById('graceField');
+  const graceMinutesInput = document.getElementById('graceMinutesInput');
+
+  function renderGraceControls() {
+    graceSwitch.classList.toggle('on', state.graceEnabled);
+    graceSwitch.setAttribute('aria-checked', state.graceEnabled ? 'true' : 'false');
+    graceField.classList.toggle('show', state.graceEnabled);
+    graceMinutesInput.value = state.graceMinutes;
   }
 
-  /* ---------------- power grace period diagram: fixed-left-anchor + duration-driven-end geometry,
-     same model used by floorsense-idle-release-09.html/floorsense-default-reservation-times-07.html ---------------- */
-  const ROW_EDGE_PERCENT = 10;
-  const DURATION_MAX_MINUTES = 240;
-  function endPercentForOffset(offsetMinutes) {
-    const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
-    return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
-  }
+  graceSwitch.addEventListener('click', () => {
+    state.graceEnabled = !state.graceEnabled;
+    renderGraceControls();
+    queueSave();
+  });
 
-  const graceLabel = document.getElementById('graceLabel');
-  const graceStartNode = document.getElementById('graceStartNode');
-  const graceEndNode = document.getElementById('graceEndNode');
-  const graceEndTime = document.getElementById('graceEndTime');
-  const graceZone = document.getElementById('graceZone');
-  const graceHint = document.getElementById('graceHint');
-
-  function updateGraceDiagram() {
-    const graceMinutes = Math.round(state.graceMinutes) || 0;
-    const endPercent = endPercentForOffset(graceMinutes);
-    graceStartNode.style.left = ROW_EDGE_PERCENT + '%';
-    graceEndNode.style.left = endPercent + '%';
-    graceZone.style.left = ROW_EDGE_PERCENT + '%';
-    graceZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
-    const durLabel = formatDurationMinutes(graceMinutes);
-    graceLabel.textContent = durLabel;
-    graceEndTime.textContent = durLabel;
-    graceHint.textContent = 'If no valid badge swipe is detected within ' + durLabel +
-      ' of a desk becoming occupied, power to its outlets is cut.';
-  }
-
-  /* ---------------- Apple Clock-style time drum, ported from
-     floorsense-idle-release-09.html/floorsense-default-reservation-times-07.html ---------------- */
-  const DRUM_ROW_H = 30;
-  const graceDrumValues = [];
-  for (let m = 5; m <= 240; m += 5) graceDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
-
-  function buildDrumRows(scrollEl, values) {
-    let html = '<div class="time-drum-pad"></div>';
-    values.forEach((v, i) => {
-      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
-    });
-    html += '<div class="time-drum-pad"></div>';
-    scrollEl.innerHTML = html;
-    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
-  }
-
-  function createTimeDrum(scrollEl, values, opts) {
-    const rows = buildDrumRows(scrollEl, values);
-    let current = -1;
-    let settleTimer = null;
-
-    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
-    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
-    function highlight(index) {
-      if (index === current) return;
-      current = index;
-      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
-      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
-      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
-    }
-    function nearestIndexForMinutes(minutes) {
-      let best = 0, bestDiff = Infinity;
-      values.forEach((v, i) => {
-        const diff = Math.abs(v.minutes - minutes);
-        if (diff < bestDiff) { bestDiff = diff; best = i; }
-      });
-      return best;
-    }
-    function scrollToIndex(index, smooth) {
-      index = clampIndex(index);
-      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
-      highlight(index);
-    }
-
-    scrollEl.addEventListener('scroll', () => {
-      highlight(clampIndex(indexFromScroll()));
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const settled = clampIndex(indexFromScroll());
-        scrollToIndex(settled, true);
-        if (opts.onChange) opts.onChange(values[settled].minutes);
-      }, 120);
-    }, { passive: true });
-
-    scrollEl.parentElement.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const i = clampIndex(indexFromScroll() + 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const i = clampIndex(indexFromScroll() - 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      }
-    });
-
-    scrollToIndex(nearestIndexForMinutes(opts.initialMinutes), false);
-
-    return {
-      setMinutes(minutes) { scrollToIndex(nearestIndexForMinutes(minutes), false); }
-    };
-  }
-
-  const graceDrum = createTimeDrum(document.getElementById('graceDrumScroll'), graceDrumValues, {
-    initialMinutes: state.graceMinutes,
-    onChange: (minutes) => {
-      state.graceMinutes = minutes;
-      updateGraceDiagram();
-      queueSave();
-    }
+  graceMinutesInput.addEventListener('change', () => {
+    const val = parseInt(graceMinutesInput.value, 10);
+    state.graceMinutes = Number.isFinite(val) && val > 0 ? val : 15;
+    graceMinutesInput.value = state.graceMinutes;
+    queueSave();
   });
 
   /* ---------------- mode grid ---------------- */
@@ -758,12 +604,7 @@
       card.querySelector('input[type="radio"]').checked = isMatch;
     });
     otherSubfields.classList.toggle('show', mode === 'other');
-    const showGrace = mode !== 'none';
-    graceBlock.classList.toggle('show', showGrace);
-    // Re-sync the drum's scroll position whenever the block becomes visible: while
-    // display:none, scrollTop is clamped to 0 by the browser (the element has no layout box), so
-    // any position set earlier while hidden is lost and must be re-applied now that it can scroll.
-    if (showGrace) graceDrum.setMinutes(state.graceMinutes);
+    graceBlock.classList.toggle('show', mode !== 'none');
   }
 
   grid.querySelectorAll('.path-check-card').forEach(card => {
@@ -780,34 +621,15 @@
   function applyState() {
     setModeCards(state.mode);
     otherNote.value = state.otherNote;
-    graceDrum.setMinutes(state.graceMinutes);
-    updateGraceDiagram();
+    renderGraceControls();
   }
   applyState();
-
-  /* ---------------- reveal animation: plays once when the diagram scrolls into view ---------------- */
-  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const timelineCard = document.querySelector('.timeline-card');
-  if (timelineCard && !reducedMotion) {
-    if ('IntersectionObserver' in window) {
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.35 });
-      revealObserver.observe(timelineCard);
-    } else {
-      timelineCard.classList.add('animate-in');
-    }
-  }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.mode = 'none';
     state.otherNote = "";
-    state.graceMinutes = 60;
+    state.graceEnabled = false;
+    state.graceMinutes = 15;
     applyState();
     queueSave();
   });
