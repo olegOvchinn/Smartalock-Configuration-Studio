@@ -1,0 +1,475 @@
+<!--
+  MOST RECENT CHANGE: new file. Per a request that "the user PDF also has to dynamically change to
+  indicate the choices made," this page is a live, JS-populated twin of
+  assets/documents/src/floorsense-desk-booking-guide.html (the source the static
+  assets/documents/floorsense-desk-booking-guide.pdf was built from via WeasyPrint). That static
+  file has no generation pipeline at all — it's a one-time hand-authored HTML file rendered to PDF
+  once and committed as a binary asset, so it can't reflect what a given client actually configured
+  in the wizard. Rather than bolt on a client-side PDF-generation library (a much larger rebuild,
+  see MOST RECENT CHANGE note in floorsense-out-of-box-policy.html for the options considered and
+  the one picked), this page reuses the exact same visual design/CSS as the static source
+  (including its @page print rules) and reads project.floorsense.wizard.* from the shared
+  "configurationProject" localStorage key on load to fill in the parts that vary. A small on-screen
+  toolbar (hidden via @media print) has a "Print / Save as PDF" button that calls window.print() —
+  the visitor's browser print dialog is what actually produces the PDF, using this page's own print
+  CSS, so there's no new PDF-rendering dependency to maintain. This page is opened from the
+  Configuration Summary page's "Explain this policy to your end users" download-card (see that
+  file's own NOTE) instead of the static PDF link.
+
+  Rows made dynamic here, and their source keys:
+  - Check-in window (title/paragraph/worked example) <- project.floorsense.wizard.checkinWindow
+    { checkInEarlyMinutes, checkInLateMinutes }, defaults 30/60.
+  - Plan-ahead days <- project.floorsense.wizard.prebookingAdvance { prebookingAdvanceDays },
+    default 8.
+  - Booking duration <- project.floorsense.wizard.reservationLength { reservationLengthMode,
+    reservationLengthFixedDescription }, default mode 'release'.
+  - Desks-per-user <- project.floorsense.wizard.maxDesksPerUser { mode, otherValue,
+    allowMeetingSpaceTag }, default mode '1'.
+  - Ways to check in <- project.floorsense.wizard.checkinMethods { selected }, default
+    ['card','prebooking']; builds a plain-language list instead of the static "card, app, or QR"
+    sentence, and only mentions the wallet-pass caveat when wallet is actually selected.
+  - Privacy (Do Not Disturb) <- project.floorsense.wizard.outOfBoxPolicy.dndEnabled, default true;
+    row is hidden and "Do Not Disturb status" moves into the not-on-box when off.
+  - Desk power / NSNP (new row, not on the static guide) <- project.floorsense.wizard.nsnp
+    { mode, graceEnabled, graceMinutes }; only shown when mode isn't 'none'. NSNP was deliberately
+    left out of the original static guide as "not end-user-relevant" back when it was a vague
+    organisation-policy toggle — now that it's a concrete relay-driven behaviour a desk user would
+    directly notice (power off until check-in), it's genuinely end-user-relevant when turned on, so
+    it's included here conditionally rather than left out altogether.
+  - Sit-stand / FME (new row) <- project.floorsense.wizard.fme { mode }; only shown when mode isn't
+    'none'; moves into the not-on-box when off, same as the static guide already did.
+  - Recurring bookings <- project.floorsense.wizard.outOfBoxPolicy.recurringEnabled, default false;
+    same pattern (row when on, not-on-box entry when off).
+  - Not-on-box: rebuilt from whichever of the above are off, plus "Team bookings, booking on behalf
+    of a colleague, and custom notifications" which always stays in the list since there's no wizard
+    module backing those yet.
+  Auto-Release on Idle was deliberately left out of this page — its effect (a reservation being
+  freed if you don't tap in fast enough) is already covered by the check-in-window row above from an
+  end-user's point of view, and it reads as an admin-facing safety-net setting rather than a
+  distinct thing an end user needs to be told about; flag if it should get its own row.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Floorsense Desk Booking Guide (Live Preview)</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+    @bottom-left {
+      content: "FLOORSENSE · DESK BOOKING GUIDE";
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 0 26px 64px;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 64px 26px 0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: #E5E5EA; }
+  body {
+    margin: 0; padding: 0; color: #1D1D1F;
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+
+  /* ---------- on-screen toolbar (hidden on print) ---------- */
+  .toolbar {
+    position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; padding: 14px 24px;
+    background: #1D1D1F; color: #fff;
+  }
+  .toolbar-note { font-size: 12.5px; color: #C7C7CC; line-height: 1.4; }
+  .toolbar-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .toolbar-btn {
+    display: inline-flex; align-items: center; gap: 7px; border: none; cursor: pointer;
+    font-family: inherit; font-weight: 600; font-size: 12.8px; border-radius: 980px;
+    padding: 9px 18px; white-space: nowrap; text-decoration: none;
+  }
+  .toolbar-btn.primary { background: #1FAA59; color: #fff; }
+  .toolbar-btn.secondary { background: rgba(255,255,255,0.14); color: #fff; }
+  .toolbar-btn svg { width: 15px; height: 15px; }
+  .page-sheet { max-width: 850px; margin: 26px auto 48px; background: #fff; box-shadow: 0 6px 28px rgba(0,0,0,0.16); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: linear-gradient(135deg, #1FAA59 0%, #146B3A 100%);
+    padding: 52px 64px 46px; color: #fff;
+  }
+  .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+  .brand-pill {
+    display: inline-block; background: rgba(255,255,255,0.22); border-radius: 999px;
+    padding: 9px 24px; font-weight: 800; font-size: 19px; letter-spacing: -0.01em;
+  }
+  .brand-kicker { font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.92; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.16; margin: 0 0 16px; letter-spacing: -0.01em; }
+  .hero p.sub { font-size: 15px; line-height: 1.55; margin: 0 0 32px; max-width: 620px; opacity: 0.95; }
+  .hero-icons { display: flex; gap: 12px; }
+  .hero-icon-badge {
+    width: 52px; height: 52px; border-radius: 13px; background: rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .hero-icon-badge svg { width: 24px; height: 24px; }
+
+  /* ---------- body ---------- */
+  .body-content { padding: 6px 64px 8px; }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #1FAA59; margin: 34px 0 16px; page-break-after: avoid;
+  }
+  .row {
+    display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid #D2D2D7;
+    page-break-inside: avoid;
+  }
+  .row:last-of-type { border-bottom: none; }
+  .row[hidden] { display: none; }
+  .row-icon {
+    width: 52px; height: 52px; border-radius: 13px; background: #E6F7ED; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #178A48;
+  }
+  .row-icon.warm { background: #FCF1DE; color: #B36B00; }
+  .row-icon svg { width: 22px; height: 22px; }
+  .row-body h3 { font-size: 16px; font-weight: 800; margin: 2px 0 7px; color: #1D1D1F; }
+  .row-body p { font-size: 12.8px; line-height: 1.62; margin: 0; color: #48484A; }
+  .row-body p.example { margin-top: 6px; color: #1D1D1F; font-weight: 600; }
+
+  /* ---------- "not switched on yet" box ---------- */
+  .not-on-box {
+    border: 1.5px dashed #C7C7CC; border-radius: 16px; padding: 24px 28px; margin: 30px 0 26px;
+    page-break-inside: avoid;
+  }
+  .not-on-title {
+    font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #9A9A9E; margin: 0 0 14px;
+  }
+  .not-on-box ul { margin: 0 0 14px; padding-left: 18px; color: #6E6E73; font-size: 12.8px; line-height: 1.85; }
+  .not-on-box .note { color: #6E6E73; font-size: 12px; margin: 0; }
+
+  /* ---------- footer disclaimer ---------- */
+  .footer-note {
+    display: flex; gap: 12px; align-items: flex-start; background: #F5F5F7; border-radius: 14px;
+    padding: 20px 24px; margin: 6px 0 30px; page-break-inside: avoid;
+  }
+  .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
+  .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
+
+  @media print {
+    html, body { background: #fff; }
+    .toolbar { display: none; }
+    .page-sheet { max-width: none; margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <p class="toolbar-note">Live preview — reflects the settings currently saved for this project. Use Print to save it as a PDF.</p>
+    <div class="toolbar-actions">
+      <a class="toolbar-btn secondary" href="floorsense-out-of-box-policy.html">Back to Summary</a>
+      <button type="button" class="toolbar-btn primary" id="printBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="page-sheet">
+
+  <div class="hero">
+    <div class="brand-row">
+      <span class="brand-pill">Floorsense</span>
+      <span class="brand-kicker">Desk Booking Guide</span>
+    </div>
+    <h1>Everything you need to know about booking a desk</h1>
+    <p class="sub">A quick, plain-English guide to how check-in, booking and privacy work — no jargon, just the essentials.</p>
+    <div class="hero-icons">
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+    </div>
+  </div>
+
+  <div class="body-content">
+
+    <div class="section-eyebrow">Booking &amp; Check-in</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div class="row-body">
+        <h3>Check in any time within your window</h3>
+        <p id="checkinWindowText"></p>
+        <p class="example" id="checkinWindowExample"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="row-body">
+        <h3 id="planAheadTitle">Plan ahead</h3>
+        <p id="planAheadText"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12M6 22h12M7 2c0 6.5 4.5 6.5 4.5 10s-4.5 3.5-4.5 10M17 2c0 6.5-4.5 6.5-4.5 10s4.5 3.5 4.5 10"/></svg></div>
+      <div class="row-body">
+        <h3 id="durationTitle">How long you keep your desk</h3>
+        <p id="durationText"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 8 12 14 22 8 12 2"/><polyline points="2 14 12 20 22 14"/><polyline points="2 11 12 17 22 11"/></svg></div>
+      <div class="row-body">
+        <h3 id="maxDesksTitle">One desk at a time, by default</h3>
+        <p id="maxDesksText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Tapping In &amp; Out</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg></div>
+      <div class="row-body">
+        <h3>Tap once to arrive, tap again to leave</h3>
+        <p>Your first tap of the day checks you in. When you're done, tap again at the same desk to check out. That's it.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></div>
+      <div class="row-body">
+        <h3>Sitting somewhere else? No problem</h3>
+        <p>If you booked one desk but end up checking in at a different one, we'll automatically release your original booking &mdash; so nobody else is left waiting on a desk you're not using.</p>
+      </div>
+    </div>
+
+    <div class="row" id="row-nsnp" hidden>
+      <div class="row-icon warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></div>
+      <div class="row-body">
+        <h3>Some desks power off until you check in</h3>
+        <p id="nsnpText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Ways to Check In</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+      <div class="row-body">
+        <h3>Use whatever's easiest for you</h3>
+        <p id="checkinMethodsText"></p>
+      </div>
+    </div>
+
+    <div class="row" id="row-sitstand" hidden>
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg></div>
+      <div class="row-body">
+        <h3>Save your ideal sit-stand height</h3>
+        <p id="sitstandText"></p>
+      </div>
+    </div>
+
+    <div class="row" id="row-recurring" hidden>
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></div>
+      <div class="row-body">
+        <h3>Set up repeating bookings</h3>
+        <p>Need the same desk on a regular schedule? You can set up a recurring booking that reserves it automatically, so you don't have to book it fresh every time.</p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Your Privacy</div>
+
+    <div class="row" id="row-dnd" hidden>
+      <div class="row-icon warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div>
+      <div class="row-body">
+        <h3>Need quiet time? Turn on Do Not Disturb</h3>
+        <p>Set your status to Do Not Disturb whenever you need heads-down focus time &mdash; it lets colleagues know not to interrupt you.</p>
+      </div>
+    </div>
+
+    <div class="not-on-box">
+      <p class="not-on-title">Not switched on yet at your workplace</p>
+      <ul id="notOnList"></ul>
+      <p class="note">If your workplace turns any of these on, they'll arrange training so you know how it works.</p>
+    </div>
+
+    <div class="footer-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+      <p>This guide reflects your workplace's current Floorsense configuration as of today. If something here doesn't match what you see in the app, check with your workplace or IT team.</p>
+    </div>
+
+  </div>
+
+  </div>
+
+<script>
+(function () {
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return { floorsense: { wizard: {} } };
+  }
+
+  const project = loadProject();
+  project.floorsense = project.floorsense || { wizard: {} };
+  const wizard = project.floorsense.wizard || {};
+
+  function formatMinutes(m) {
+    if (!Number.isFinite(m) || m <= 0) return '0 minutes';
+    if (m % 60 === 0) {
+      const h = m / 60;
+      return h + (h === 1 ? ' hour' : ' hours');
+    }
+    return m + ' minutes';
+  }
+
+  function formatClock(totalMinutesFromMidnight) {
+    let m = ((totalMinutesFromMidnight % 1440) + 1440) % 1440;
+    let hour24 = Math.floor(m / 60);
+    const minute = m % 60;
+    const suffix = hour24 >= 12 ? 'PM' : 'AM';
+    let hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12;
+    return hour12 + (minute === 0 ? '' : ':' + String(minute).padStart(2, '0')) + ' ' + suffix;
+  }
+
+  /* ---------------- check-in window ---------------- */
+  const checkinWindow = wizard.checkinWindow || {};
+  const earlyMin = Number.isFinite(checkinWindow.checkInEarlyMinutes) ? checkinWindow.checkInEarlyMinutes : 30;
+  const lateMin = Number.isFinite(checkinWindow.checkInLateMinutes) ? checkinWindow.checkInLateMinutes : 60;
+  document.getElementById('checkinWindowText').textContent =
+    'You can check in to your desk starting ' + formatMinutes(earlyMin) + ' before your booking begins, up to ' +
+    formatMinutes(lateMin) + ' after it starts. If you don\'t check in within that window, your desk becomes available to others.';
+  const exampleStartTotalMin = 8 * 60;
+  document.getElementById('checkinWindowExample').textContent =
+    'Example: 8:00 AM booking → check in between ' + formatClock(exampleStartTotalMin - earlyMin) + '–' + formatClock(exampleStartTotalMin + lateMin);
+
+  /* ---------------- plan ahead ---------------- */
+  const prebookingAdvance = wizard.prebookingAdvance || {};
+  const advanceDays = Number.isFinite(prebookingAdvance.prebookingAdvanceDays) ? prebookingAdvance.prebookingAdvanceDays : 8;
+  document.getElementById('planAheadTitle').textContent = 'Plan up to ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') + ' ahead';
+  document.getElementById('planAheadText').textContent =
+    'Need to plan your week? You can book a desk as much as ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') + ' before you need it.';
+
+  /* ---------------- duration ---------------- */
+  const reservationLength = wizard.reservationLength || {};
+  const durationMode = reservationLength.reservationLengthMode || 'release';
+  let durationTitle, durationText;
+  if (durationMode === 'endOfDay') {
+    durationTitle = 'Your desk is yours for the day';
+    durationText = 'Every booking runs until the end of the day, however long you actually need it for.';
+  } else if (durationMode === 'fixed') {
+    const desc = (reservationLength.reservationLengthFixedDescription || '').trim() || 'a fixed period set by your workplace';
+    durationTitle = 'Your desk is yours for a set period';
+    durationText = 'Every booking lasts ' + desc + '.';
+  } else {
+    durationTitle = 'Your desk is yours until you release it';
+    durationText = 'When you book a desk, it stays reserved until you check out or release it yourself — no need to watch the clock.';
+  }
+  document.getElementById('durationTitle').textContent = durationTitle;
+  document.getElementById('durationText').textContent = durationText;
+
+  /* ---------------- max desks per user ---------------- */
+  const maxDesks = wizard.maxDesksPerUser || {};
+  const maxDesksMode = maxDesks.mode || '1';
+  let deskCountLabel;
+  if (maxDesksMode === '2') deskCountLabel = 'two';
+  else if (maxDesksMode === 'other') deskCountLabel = String(maxDesks.otherValue || '1');
+  else deskCountLabel = 'one';
+  const deskCountIsPlural = !(deskCountLabel === 'one' || deskCountLabel === '1');
+  document.getElementById('maxDesksTitle').textContent =
+    (deskCountLabel === 'one' ? 'One desk' : 'Up to ' + deskCountLabel + ' desks') + ' at a time, by default';
+  let maxDesksText = deskCountLabel === 'one'
+    ? 'You can have one desk reserved at once.'
+    : 'You can have up to ' + deskCountLabel + ' desks reserved at once.';
+  if (maxDesks.allowMeetingSpaceTag) {
+    maxDesksText += ' You can also tag onto certain meeting-space desks without losing your existing desk booking.';
+  } else {
+    maxDesksText += ' Some teams or workplaces raise this limit — if you\'re not sure how many desks you\'re able to book, check with your workplace team.';
+  }
+  document.getElementById('maxDesksText').textContent = maxDesksText;
+
+  /* ---------------- ways to check in ---------------- */
+  const checkinMethods = wizard.checkinMethods || {};
+  const selectedMethods = Array.isArray(checkinMethods.selected) && checkinMethods.selected.length
+    ? checkinMethods.selected : ['card', 'prebooking'];
+  const METHOD_PHRASES = {
+    card: 'your building access card',
+    prebooking: 'the Floorsense mobile app or the desktop browser portal',
+    qr: 'a QR code at the desk',
+    wallet: 'a wallet pass on your phone'
+  };
+  const methodPhrases = selectedMethods.map(m => METHOD_PHRASES[m]).filter(Boolean);
+  let methodsSentence;
+  if (methodPhrases.length === 0) {
+    methodsSentence = 'Check in with your building access card.';
+  } else if (methodPhrases.length === 1) {
+    methodsSentence = 'Check in with ' + methodPhrases[0] + '.';
+  } else {
+    const last = methodPhrases[methodPhrases.length - 1];
+    const rest = methodPhrases.slice(0, -1);
+    methodsSentence = 'Check in with ' + rest.join(', ') + ', or ' + last + '.';
+  }
+  if (selectedMethods.indexOf('wallet') !== -1) {
+    methodsSentence += ' Wallet pass may not be available on every plan — ask your workplace team if you\'re not sure.';
+  }
+  document.getElementById('checkinMethodsText').textContent = methodsSentence;
+
+  /* ---------------- NSNP (only shown when actually enabled) ---------------- */
+  const nsnp = wizard.nsnp || {};
+  const nsnpOn = !!nsnp.mode && nsnp.mode !== 'none';
+  if (nsnpOn) {
+    let nsnpText = 'Some desks power off automatically at the end of your reservation unless you check in — tap in as soon as you arrive to keep the power on. Permanently assigned desks stay powered on all the time.';
+    if (nsnp.graceEnabled) {
+      const graceMinutes = Number.isFinite(nsnp.graceMinutes) ? nsnp.graceMinutes : 15;
+      nsnpText += ' Power stays on for a further ' + graceMinutes + ' minutes after your reservation ends before switching off.';
+    }
+    document.getElementById('nsnpText').textContent = nsnpText;
+    document.getElementById('row-nsnp').hidden = false;
+  }
+
+  /* ---------------- sit-stand / FME ---------------- */
+  const fme = wizard.fme || {};
+  const sitStandOn = fme.mode === 'all' || fme.mode === 'list';
+  if (sitStandOn) {
+    document.getElementById('sitstandText').textContent = fme.mode === 'all'
+      ? 'Every desk here is a sit-stand desk — save and apply your preferred height right from the Floorsense mobile app or the desk\'s handset.'
+      : 'Some desks support sit-stand height presets via the Floorsense mobile app or handset — look for signage or ask your workplace team which desks support it.';
+    document.getElementById('row-sitstand').hidden = false;
+  }
+
+  /* ---------------- recurring bookings ---------------- */
+  const outOfBoxPolicy = wizard.outOfBoxPolicy || {};
+  const recurringOn = outOfBoxPolicy.recurringEnabled === true;
+  if (recurringOn) document.getElementById('row-recurring').hidden = false;
+
+  /* ---------------- privacy / DND ---------------- */
+  const dndOn = outOfBoxPolicy.dndEnabled !== false;
+  if (dndOn) document.getElementById('row-dnd').hidden = false;
+
+  /* ---------------- not-switched-on-yet box ---------------- */
+  const notOnItems = [];
+  if (!sitStandOn) notOnItems.push('Sit-stand desk controls');
+  if (!recurringOn) notOnItems.push('Recurring (repeating) bookings');
+  if (!dndOn) notOnItems.push('Do Not Disturb status');
+  notOnItems.push('Team bookings, booking on behalf of a colleague, and custom notifications');
+  document.getElementById('notOnList').innerHTML = notOnItems.map(item => '<li>' + item + '</li>').join('');
+
+  /* ---------------- toolbar ---------------- */
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+})();
+</script>
+
+</body>
+</html>

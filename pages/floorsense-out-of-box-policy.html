@@ -543,11 +543,11 @@
         </div>
         <div class="download-card-body">
           <h3>Explain this policy to your end users</h3>
-          <p>A short, plain-English guide with illustrations covering check-in, booking and privacy — ready to share with staff as-is.</p>
+          <p>A short, plain-English guide covering check-in, booking and privacy — automatically updated to match what's configured below, ready to print or save as a PDF.</p>
         </div>
-        <a class="download-btn" href="../assets/documents/floorsense-desk-booking-guide.pdf" download>
+        <a class="download-btn" href="floorsense-desk-booking-guide-live.html" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
+          View / Print Guide
         </a>
       </div>
 
@@ -1173,6 +1173,19 @@
   anything that needs to change for your workplace." (preset variant: "...included in the
   {preset} preset so far — review it below..."). "So far" was used instead of "by default" per a
   follow-up request, since these rows aren't all fixed defaults any more.
+
+  MOST RECENT CHANGE: per a request that "the user PDF also has to dynamically change to indicate
+  the choices made," the "Explain this policy to your end users" download-card no longer links to
+  the static assets/documents/floorsense-desk-booking-guide.pdf (a one-time hand-authored,
+  WeasyPrint-built binary with no generation pipeline). It now opens the new
+  floorsense-desk-booking-guide-live.html in a new tab — a live, JS-populated twin of the same
+  design that reads project.floorsense.wizard.* on load and fills in the check-in window, advance
+  days, duration, desks-per-user, check-in methods, and (only when actually turned on) NSNP and
+  sit-stand/FME rows, plus a dynamically rebuilt "not switched on yet" box. Its own toolbar has a
+  "Print / Save as PDF" button; see that file's own NOTE for the full field-by-field mapping. The
+  download-card's copy and icon-button label were updated accordingly ("View / Print Guide"), and
+  the end-of-flow mailto note about attaching the guide manually was reworded to mention
+  printing/saving it as a PDF first rather than just "downloading" it.
 -->
 
 <script>
@@ -1685,7 +1698,7 @@
       'End User Guides: https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link',
       'Admin Portal Guide: https://app.notion.com/p/floorsense/FLOORSENSE-FULL-ADMINISTRATION-GUIDE-f557eaf471ca455a990324b36e5e693b?source=copy_link',
       '',
-      "The end-user PDF guide (\"Explain this policy to your end users\") isn't attached automatically — download it from the Configuration Summary page and attach it manually before sending."
+      "The end-user guide (\"Explain this policy to your end users\") isn't attached automatically — open it from the Configuration Summary page, then print or save it as a PDF and attach it manually before sending."
     ];
     const subject = encodeURIComponent('Floorsense Configuration Summary');
     const body = encodeURIComponent(bodyLines.join('\n'));
