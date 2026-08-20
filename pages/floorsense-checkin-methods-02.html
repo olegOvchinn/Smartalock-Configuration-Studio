@@ -159,7 +159,9 @@
   /* ---------- pre-booking follow-up notice (matches access-subfields pattern) ---------- */
   .desk-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
   .desk-subfields.show { display: flex; }
-  .desk-subfields-label { display: flex; align-items: center; gap: 8px; font-size: 12.1px; font-weight: 500; color: var(--ink); margin: 0; }
+  .desk-subfields-label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.1px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.5; }
+  .desk-subfields-label a { color: var(--accent-deep); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent-wash); white-space: nowrap; }
+  .desk-subfields-label a:hover { border-bottom-color: var(--accent-deep); }
   .desk-subfields-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
@@ -286,6 +288,9 @@
               <p class="desk-desc">Users swipe their existing building access card at any desk to reserve it for their session.</p>
             </div>
           </label>
+          <div class="desk-subfields" id="cardCompatSubfields">
+            <div class="desk-subfields-label">Confirm your existing cards are compatible with Floorsense and provide a list of card CSNs. <a href="https://floorsense.notion.site/Smartalock-Floorsense-card-readers-and-compatible-cards-technology-31b6a5dea03c806181d3e3dd0f4de7b5" target="_blank" rel="noopener">View card requirements</a></div>
+          </div>
         </div>
 
         <div class="desk-check-card" data-method="prebooking">
@@ -478,6 +483,22 @@
   `state.selected`'s initial assignment so it's always its own array. Verified via jsdom: card
   unchecked by default, Booking still checked by default, no "Default" tag on the card heading, and
   Reset correctly restores card to unchecked after it had been manually checked and unchecked again.
+
+  MOST RECENT CHANGE: per a request that selecting "Building Access Cards at Desk" should prompt
+  the client to confirm card compatibility and supply CSNs, the card gained its own follow-up
+  notice (id="cardCompatSubfields", reusing the .desk-subfields/.desk-subfields-label pattern
+  previously used for the now-removed prebooking-rules note): "Confirm your existing cards are
+  compatible with Floorsense and provide a list of card CSNs." plus a "View card requirements" link
+  to https://floorsense.notion.site/Smartalock-Floorsense-card-readers-and-compatible-cards-technology-31b6a5dea03c806181d3e3dd0f4de7b5
+  (new tab). Added `.desk-subfields-label a` styling (matches `.section-head p a`'s underline-on-
+  hover link treatment) and `flex-wrap: wrap` on `.desk-subfields-label` since this sentence is
+  longer than the short "If enabled for all users" tag it previously wrapped. Rather than repeating
+  three inline `if (method === 'card') ...` branches (the pattern removed last time, which had to
+  be found and deleted in three places), this uses a small `SUBFIELDS_BY_METHOD` lookup + a
+  `syncSubfields(method, checked)` helper called from all three sites (initial render, change
+  handler, reset handler) — easier to add or remove a per-method notice from one place going
+  forward. Verified via jsdom: notice hidden by default (card unchecked), shows when card is
+  checked, hides when unchecked, and stays hidden after Reset (since card isn't a default).
 -->
 
 
@@ -553,14 +574,25 @@
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
+  /* Per-method follow-up notices shown only while that card is checked — currently just the
+     card-compatibility/CSN notice on "card", but kept as a lookup so more can be added the same
+     way without repeating the show/hide wiring three times. */
+  const SUBFIELDS_BY_METHOD = { card: document.getElementById('cardCompatSubfields') };
+  function syncSubfields(method, checked) {
+    const el = SUBFIELDS_BY_METHOD[method];
+    if (el) el.classList.toggle('show', checked);
+  }
+
   grid.querySelectorAll('.desk-check-card').forEach(card => {
     const method = card.getAttribute('data-method');
     const checkbox = card.querySelector('input[type="checkbox"]');
     checkbox.checked = state.selected.includes(method);
     card.classList.toggle('checked', checkbox.checked);
+    syncSubfields(method, checkbox.checked);
 
     checkbox.addEventListener('change', () => {
       card.classList.toggle('checked', checkbox.checked);
+      syncSubfields(method, checkbox.checked);
       if (checkbox.checked) {
         if (!state.selected.includes(method)) state.selected.push(method);
       } else {
@@ -577,6 +609,7 @@
       const checkbox = card.querySelector('input[type="checkbox"]');
       checkbox.checked = state.selected.includes(method);
       card.classList.toggle('checked', checkbox.checked);
+      syncSubfields(method, checkbox.checked);
       });
     queueSave();
   });
