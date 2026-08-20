@@ -156,6 +156,31 @@
   }
   .path-subfields textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
 
+  /* ---------- relay confirmation gate: NSNP requires a physical relay unit at each desk it
+     applies to, so the mode grid below stays locked to "We will not be using NSNP" until this is
+     ticked — replaces an earlier plain-text mention of the hardware requirement in the hero. ---------- */
+  .nsnp-relay-confirm {
+    max-width: 640px; margin: 0 0 22px; padding: 16px 18px; background: var(--paper-soft);
+    border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+  }
+  .relay-confirm-row { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .relay-confirm-row input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .relay-confirm-tick {
+    width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--line); background: #fff;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;
+    transition: border-color .15s, background .15s; margin-top: 1px;
+  }
+  .relay-confirm-tick::after {
+    content: ''; width: 8px; height: 5px; opacity: 0;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px); transition: opacity .12s;
+  }
+  .relay-confirm-row input:checked ~ .relay-confirm-tick { background: var(--accent); border-color: var(--accent); }
+  .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
+  .relay-confirm-label { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .relay-confirm-hint { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin: 8px 0 0 28px; }
+  .path-check-grid.disabled { opacity: 0.45; pointer-events: none; }
+
   /* ---------- power grace period: a short toggle + fill-in field, folded into the NSNP
      explainer rather than its own diagram card. Replaces an earlier Apple Clock-style time-drum
      treatment per a request to simplify it — a plain number field is all that's needed here. ---------- */
@@ -282,7 +307,7 @@
       <div class="panel-intro">
         <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">No Swipe No Power</h1>
-        <p class="sub">Keep desks powered off until someone checks in — permanently assigned desks stay powered on all the time. Requires NSNP relay units installed at each desk.</p>
+        <p class="sub">Keep desks powered off until someone checks in — permanently assigned desks stay powered on all the time.</p>
       </div>
     </div>
   </div>
@@ -293,7 +318,16 @@
       <div class="section-head">
         <span class="eyebrow">Configure</span>
         <h2 class="section-title">No Swipe No Power (NSNP)</h2>
-        <p>NSNP requires NSNP relay units installed at each desk. With it on, a desk stays powered off until someone checks in with a valid badge swipe, then powered off again once their reservation ends — you can turn on a short grace period below to keep it on a little longer after that. Permanently assigned desks stay powered on all the time and aren't affected by NSNP. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+        <p>With NSNP on, a desk stays powered off until someone checks in with a valid badge swipe, then powered off again once their reservation ends — you can turn on a short grace period below to keep it on a little longer after that. Permanently assigned desks stay powered on all the time and aren't affected by NSNP. This is entirely optional — choose how you'd like to roll it out, or skip it if you won't be using it.</p>
+      </div>
+
+      <div class="nsnp-relay-confirm">
+        <label class="relay-confirm-row">
+          <input type="checkbox" id="relayConfirm">
+          <span class="relay-confirm-tick" aria-hidden="true"></span>
+          <span class="relay-confirm-label">We confirm NSNP relay units are installed at each desk</span>
+        </label>
+        <p class="relay-confirm-hint">NSNP needs a relay unit at every desk it applies to. Tick this once they're installed to choose how you'd like to roll it out below — until then, NSNP stays off.</p>
       </div>
 
       <div class="path-check-grid" id="nsnpGrid">
@@ -509,6 +543,29 @@
   requirement — "Requires NSNP relay units installed at each desk." — matching the phrasing already
   used in the main description paragraph below it, since that requirement wasn't otherwise visible
   until scrolling down.
+
+  MOST RECENT CHANGE: per a request to replace that hero-sub hardware mention with an actual
+  requirement rather than just a line of text, added a relay-confirmation checkbox
+  (`.nsnp-relay-confirm`/`#relayConfirm`, unticked by default) directly above the mode grid: "We
+  confirm NSNP relay units are installed at each desk." The hero sub reverted to its previous
+  wording (no hardware mention) and the main description's own hardware sentence was dropped too,
+  since the confirmation checkbox now carries that requirement instead of prose. While unticked, the
+  mode grid (`#nsnpGrid`) is visually dimmed (`.disabled`, 45% opacity, `pointer-events: none`) and
+  every radio input gets `disabled` set directly (belt-and-suspenders alongside the CSS, and matters
+  for keyboard/assistive-tech users who wouldn't be stopped by `pointer-events` alone); `state.mode`
+  is force-set to `'none'` ("We will not be using NSNP" — already the existing default) any time the
+  checkbox is unticked, including if it's unticked *after* another mode was already chosen, so an
+  unconfirmed setup can never silently keep a stale "all desks"/"list"/"other" selection active.
+  Ticking the checkbox re-enables the grid and lets any of the four modes be picked normally; the
+  mode-card `change` listeners also short-circuit via `if (!state.relayConfirmed) return;` as a
+  second guard against programmatic/synthetic events reaching a "disabled" radio. New state field:
+  `relayConfirmed` (boolean, default false) on `project.floorsense.wizard.nsnp`; Reset now also
+  clears it back to false (in addition to `mode: 'none'` etc.), re-locking the grid. Verified via
+  jsdom: grid/radios disabled and mode forced to 'none' by default; selecting a mode while unticked
+  has no effect; ticking the checkbox enables the grid and lets a mode be chosen and saved;
+  unticking afterward forces the mode back to 'none' and re-disables the grid; the grace-period
+  switch/field and the Save & continue button both continue to work correctly once a mode is
+  actually selected; Reset clears `relayConfirmed`, `mode`, and re-locks the grid.
 -->
 
 <script>
@@ -541,7 +598,8 @@
 
   const saved = project.floorsense.wizard.nsnp || {};
   const state = {
-    mode: saved.mode || 'none',
+    relayConfirmed: !!saved.relayConfirmed,
+    mode: saved.relayConfirmed ? (saved.mode || 'none') : 'none',
     otherNote: saved.otherNote || "",
     graceEnabled: !!saved.graceEnabled,
     graceMinutes: Number.isFinite(saved.graceMinutes) ? saved.graceMinutes : 15
@@ -616,6 +674,30 @@
     queueSave();
   });
 
+  /* ---------------- relay confirmation gate ----------------
+     NSNP needs a physical relay unit at each desk it applies to, so the mode grid stays locked to
+     "We will not be using NSNP" until this is ticked — replaces an earlier plain-text mention of
+     the hardware requirement in the hero. Unticking after a mode was already chosen resets the
+     mode back to 'none' rather than just hiding the (disabled) selection, since an unconfirmed
+     setup shouldn't silently keep a stale "all desks"/"list"/"other" choice active. ---------------- */
+  const relayConfirm = document.getElementById('relayConfirm');
+
+  function applyRelayGate() {
+    relayConfirm.checked = state.relayConfirmed;
+    grid.classList.toggle('disabled', !state.relayConfirmed);
+    grid.querySelectorAll('input[type="radio"]').forEach(r => { r.disabled = !state.relayConfirmed; });
+    if (!state.relayConfirmed && state.mode !== 'none') {
+      state.mode = 'none';
+      setModeCards('none');
+    }
+  }
+
+  relayConfirm.addEventListener('change', () => {
+    state.relayConfirmed = relayConfirm.checked;
+    applyRelayGate();
+    queueSave();
+  });
+
   /* ---------------- mode grid ---------------- */
   function setModeCards(mode) {
     grid.querySelectorAll('.path-check-card').forEach(card => {
@@ -630,6 +712,7 @@
   grid.querySelectorAll('.path-check-card').forEach(card => {
     const mode = card.getAttribute('data-mode');
     card.querySelector('input[type="radio"]').addEventListener('change', () => {
+      if (!state.relayConfirmed) return;
       state.mode = mode;
       setModeCards(mode);
       queueSave();
@@ -641,11 +724,13 @@
   function applyState() {
     setModeCards(state.mode);
     otherNote.value = state.otherNote;
+    applyRelayGate();
     renderGraceControls();
   }
   applyState();
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    state.relayConfirmed = false;
     state.mode = 'none';
     state.otherNote = "";
     state.graceEnabled = false;
