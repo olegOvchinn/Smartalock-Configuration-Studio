@@ -634,9 +634,9 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">No Swipe No Power (NSNP)</span>
-            <span class="value-group"><span class="value">Off by default</span><a class="row-edit-link" href="floorsense-nsnp-11.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="nsnpSummaryValue">Off</span><a class="row-edit-link" href="floorsense-nsnp-11.html">Edit</a></span>
           </div>
-          <p class="summary-desc">Requires an NSNP relay unit to function. Powers a desk off until someone checks in.</p>
+          <p class="summary-desc" id="nsnpSummaryDesc">Requires an NSNP relay unit to function. Powers a desk off until someone checks in.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -1149,6 +1149,22 @@
   instead naming the actual hardware requirement, matching floorsense-nsnp-11.html's own relay-
   confirmation gate and hero copy. Verified via jsdom that the row renders the new label/value/desc
   and that `buildSummaryText()` still picks up "Off by default" for this row with no code changes.
+
+  MOST RECENT CHANGE: per a request that the summary should indicate what was actually configured
+  on floorsense-nsnp-11.html rather than always showing a fixed "Off by default" placeholder, the
+  NSNP row's value and description now render dynamically from
+  `project.floorsense.wizard.nsnp` on load (`renderNsnpSummary()`, called once alongside the other
+  Additional Options wiring — read-only here, since NSNP is only ever configured on its own page via
+  the row's Edit link). `#nsnpSummaryValue` shows "Off" when `mode` is `'none'`/unset, or
+  "On — all desks" / "On — selected desks" / "On — custom setup" for the `all`/`list`/`other` modes
+  (`NSNP_MODE_LABELS` lookup). `#nsnpSummaryDesc` keeps the same base sentence ("Requires an NSNP
+  relay unit to function. Powers a desk off until someone checks in.") and, only when a mode is
+  active AND its grace period is switched on, appends a second sentence naming the actual grace
+  duration ("Grace period on: stays powered N min after the reservation ends."). Verified via jsdom
+  across six state combinations (no saved state, `mode:'none'`, `all` with and without grace, `list`,
+  `other`) that the value/description render correctly in every case, and that
+  `buildSummaryText()`'s existing `.value`-reading logic picks up the dynamic text with zero code
+  changes there.
 -->
 
 <script>
@@ -1264,6 +1280,27 @@
       saveProject(project);
     });
   });
+
+  /* ---------------- NSNP row: reflect what was actually configured on floorsense-nsnp-11.html
+     (project.floorsense.wizard.nsnp), rather than a fixed "Off by default" placeholder. Read-only
+     here — NSNP itself is only ever configured on its own page, reached via the Edit link. ---------------- */
+  const NSNP_MODE_LABELS = {
+    all: 'On — all desks',
+    list: 'On — selected desks',
+    other: 'On — custom setup',
+    none: 'Off'
+  };
+  (function renderNsnpSummary() {
+    const savedNsnp = project.floorsense.wizard.nsnp || {};
+    const mode = savedNsnp.mode || 'none';
+    document.getElementById('nsnpSummaryValue').textContent = NSNP_MODE_LABELS[mode] || 'Off';
+    let desc = 'Requires an NSNP relay unit to function. Powers a desk off until someone checks in.';
+    if (mode !== 'none' && savedNsnp.graceEnabled) {
+      const graceMinutes = Number.isFinite(savedNsnp.graceMinutes) ? savedNsnp.graceMinutes : 15;
+      desc += ' Grace period on: stays powered ' + graceMinutes + ' min after the reservation ends.';
+    }
+    document.getElementById('nsnpSummaryDesc').textContent = desc;
+  })();
 
   /* ---------------- horizontal progress bar ---------------- */
   function renderProgressBar() {
