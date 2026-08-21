@@ -203,7 +203,7 @@
      of its own and its already-640px-capped children rendered flush left instead of centered — a
      visible "jump to the left" the moment a group override was selected. .centered is kept as a
      harmless no-op class (the JS still toggles it) now that the base rule already covers it. ---------- */
-  .core-settings-column { max-width: 640px; margin: 0 auto; }
+  .core-settings-column { max-width: 832px; margin: 0 auto; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
@@ -215,8 +215,8 @@
      as noticeably smaller than every other page the moment a client had a group policy override
      and at least one additional policy. Compact mode now only tightens max-width/padding/icon
      size; headings and paragraph text keep their full base size in both states. ---------- */
-  .core-settings-column.compact { max-width: 460px; }
-  .core-settings-column.compact .download-card { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
+  .core-settings-column.compact { max-width: 598px; }
+  .core-settings-column.compact .download-card { max-width: 598px; padding: 14px 16px; margin-bottom: 12px; }
   .core-settings-column.compact .summary-group { padding: 14px 0; }
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
   .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
@@ -1697,6 +1697,27 @@ buttons, not paragraph/header text. Verified via a jsdom script comparing comput
 non-compact and a compact (group override + 2 saved additional policies) load — all four now
 resolve identically (21.32px/14.76px/21.32px/14.76px) in both states. Also re-ran
 python3 /tmp/validate.py and node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to make the core policy card 30% wider, changed
+.core-settings-column's max-width from 640px to 832px, and its .compact variant (applied once at
+least one additional policy exists) from 460px to 598px — both a clean 30% increase, still
+centred via the existing base margin: 0 auto rule. Also found and reverted two edits that would
+have been dead code: the base (non-.core-policy-body-scoped) .download-card and .summary-group
+max-width rules don't actually constrain anything on this page, since every .download-card and
+.summary-group element lives inside .core-policy-body, which has its own higher-specificity
+".core-policy-body .download-card { max-width: none; }" / ".core-policy-body .summary-group {
+..., max-width: none, ... }" rules that always win and let those elements fill the width of
+whichever ancestor (.core-settings-column, or its .compact variant) actually controls the card's
+width — confirmed via jsdom that all 6 .summary-group elements and the 1 .download-card resolve
+to max-width: none in the non-compact case, so widening the two dead-code base rules would have
+had no visible effect and was reverted to avoid misleading future edits. The compact-mode
+".core-settings-column.compact .download-card" override does need its own value (higher
+specificity than the .core-policy-body rule), so that one was updated to 598px alongside the
+column itself. Verified via a jsdom script comparing computed max-width on #coreSettingsColumn and
+its .download-card in both non-compact (832px card) and compact (598px card, group override + 2
+saved policies) states, plus confirming every .summary-group/.download-card element still resolves
+to max-width: none (i.e. correctly fills the new wider card) — and re-ran
+python3 /tmp/validate.py plus node --check on the extracted script block.
 
 -->
 
