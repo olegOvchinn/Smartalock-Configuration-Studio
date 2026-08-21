@@ -121,14 +121,15 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
   .download-card {
-    display: flex; align-items: center; gap: 16px; max-width: 640px; margin: 0 0 22px;
+    display: flex; align-items: center; gap: 18px; max-width: 640px; margin: 0 0 22px;
     background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
   }
-  .download-card-icon {
-    width: 40px; height: 40px; border-radius: 50%; background: var(--accent-wash);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent-deep);
-  }
-  .download-card-icon svg { width: 20px; height: 20px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 40px pale-green
+     circle badge with a 20px accent-deep icon inside. Left the Smartalock branch's identical
+     download-card component (smartalock-configuration-summary-08.html) untouched, since this
+     icon pass is scoped to the Floorsense branch only. ---------- */
+  .download-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .download-card-body { flex: 1; min-width: 0; }
   .download-card-body h3 { margin: 0 0 3px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--ink); }
   .download-card-body p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
@@ -147,8 +148,14 @@
     padding: 20px 22px; margin-bottom: 18px; max-width: 640px;
   }
   .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
-  .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
-  .summary-group-head h3 .summary-icon { width: 32px; height: 32px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- icon moved out of the h3 into its own heading wrapper so it can be a big bare
+     56x56px icon (matching floorsense-reservation-types-01.html's .desk-icon-img) rather than a
+     small 32px glyph squeezed inline before the title text — was previously also shrunk further
+     to 23px in .compact mode, which this drops entirely (icons keep full size in both states, same
+     principle already applied to this page's heading/paragraph text). ---------- */
+  .summary-group-heading { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .summary-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); }
   .edit-link {
     font-family: var(--font-text); font-size: 10.25px; font-weight: 600; color: var(--accent-deep);
     text-decoration: none; border: 1px solid var(--line); border-radius: 100px; padding: 5px 13px;
@@ -221,7 +228,6 @@
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
   .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
   .core-settings-column.compact .core-policy-card.expanded .core-policy-body { padding-top: 16px; }
-  .core-settings-column.compact .summary-group-head h3 .summary-icon { width: 23px; height: 23px; }
   .core-settings-column.compact .edit-link,
   .core-settings-column.compact .row-edit-link { font-size: 9px; padding: 3px 10px; }
 
@@ -540,9 +546,7 @@
         <div class="core-policy-body" id="corePolicyBody">
 
       <div class="download-card">
-        <div class="download-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </div>
+        <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <div class="download-card-body">
           <h3>Explain this policy to your end users</h3>
           <p>A short, plain-English guide covering check-in, booking and privacy — automatically updated to match what's configured below, ready to print or save as a PDF.</p>
@@ -555,7 +559,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prebooking &amp; Duration</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <h3>Prebooking &amp; Duration</h3>
+          </div>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -575,7 +582,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Check-in Window</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <h3>Check-in Window</h3>
+          </div>
           <a class="edit-link" href="floorsense-checkin-window-08.html">Edit</a>
         </div>
         <div class="summary-row">
@@ -586,7 +596,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>Check-in Behaviour</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>
+            <h3>Check-in Behaviour</h3>
+          </div>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -606,7 +619,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>Access Methods</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>
+            <h3>Access Methods</h3>
+          </div>
           <a class="edit-link" href="floorsense-checkin-methods-02.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
@@ -617,7 +633,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-13a2 2 0 0 1 2-2h3v15"/><path d="M15 21v-9a2 2 0 0 1 2-2h3v11"/><line x1="2" y1="21" x2="22" y2="21"/></svg>Additional Options</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11.5" cy="18" r="2.2" fill="currentColor" stroke="none"/></svg>
+            <h3>Additional Options</h3>
+          </div>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -665,7 +684,10 @@
 
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M14.7 20a5 5 0 0 1 8.3-3.7"/></svg>Configured Separately</h3>
+          <div class="summary-group-heading">
+            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M14.7 20a5 5 0 0 1 8.3-3.7"/></svg>
+            <h3>Configured Separately</h3>
+          </div>
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">Teams</span><span class="value">Subject to creation</span></div>
@@ -1737,6 +1759,37 @@ Verified via jsdom that #coreSettingsColumn resolves to max-width: 915.2px (non-
 657.8px (.compact, group override + 2 saved policies), and that .core-policy-desc's text content
 matches the new copy exactly. Also re-ran python3 /tmp/validate.py and node --check on the
 extracted script block.
+
+MOST RECENT CHANGE: per the site-wide icon-size unification request, converted this page's
+content icons to the same bare 56x56px style as floorsense-reservation-types-01.html's
+.desk-icon-img: .download-card-icon (was a 40px pale-green circle badge, 20px inner icon) and
+.summary-icon (was 32px, further shrunk to 23px in .compact mode, sitting inline inside each
+summary-group's <h3> before the title text). Since a 56px icon inline before a line of heading
+text would have looked cramped, each summary-group-head's markup was restructured: the icon and
+its <h3> now sit inside a new .summary-group-heading flex wrapper (icon left, title beside it),
+matching the icon-beside-heading-block pattern already used elsewhere on this page (e.g.
+.core-policy-summary-main). The .compact-mode icon-shrink override was removed entirely, consistent
+with this page's existing "no font/icon shrinking in compact mode" convention. Also redesigned the
+"Additional Options" section's generic bar-chart icon (unrelated to what the section actually
+contains) as a sliders/toggles glyph — three horizontal tracks each with a filled handle at a
+different position — a literal match for a section that's entirely a list of on/off features
+(Idle Release, NSNP, FME, Anti Desk Hogging, Recurring, DND). The other five summary-icons
+(calendar for Prebooking & Duration, clock for Check-in Window, card-reader for Check-in
+Behaviour, phone/pass for Access Methods, two people for Configured Separately) were already good
+matches and only resized. .submit-guides-icon (a plain checkmark in the small post-submit
+confirmation panel) was deliberately left alone, along with every warning/info/status glyph on
+this page (.info-notice, .policies-intro, .policies-precedence-notice, chevrons, switches,
+checkboxes) — these are UI chrome/status indicators, not card- or section-identifying content
+icons, so forcing them to 56px would look absurd inside their small aside boxes. The Smartalock
+branch's identical download-card component (smartalock-configuration-summary-08.html) was left
+untouched, since this icon pass is scoped to the Floorsense branch only.
+
+Verified via a jsdom script (loading the page with runScripts: "outside-only", then eval-ing the
+extracted script after seeding localStorage) that the script still runs without throwing, that all
+6 summary-group-head <h3> elements still contain exactly their expected heading text (confirming
+the markup restructure didn't disturb the "Save & Email" summary-text builder that reads
+.summary-group-head h3), and that every .summary-icon and the .download-card-icon resolve to
+56x56px. Also re-ran python3 /tmp/validate.py and node --check on the extracted script block.
 
 -->
 

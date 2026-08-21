@@ -317,7 +317,7 @@
           <label class="path-row">
             <input type="radio" name="adhMode" value="enable">
             <span class="path-tick" aria-hidden="true"></span>
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><line x1="2" y1="22" x2="22" y2="2"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">We will enable this feature</h3>
               <p class="path-desc">Specify the size of the time window, and the number of times within that window the same desk can be booked, below.</p>
@@ -456,6 +456,8 @@
   Verified via jsdom that clicking Continue still saves `moduleStatus` and triggers navigation to
   the new target with no runtime errors.
 MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head and .path-check-grid (max-width: 640px) gained margin: 0 auto, and .adh-settings (max-width: 760px, the time-drum settings block shown once a path is selected) gained margin: 20px auto 0, so the heading, option grid, and settings block are all horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
+MOST RECENT CHANGE: per the site-wide icon-size unification and semantic review, this page's icons were already bare 56x56px (matching floorsense-reservation-types-01.html's .desk-icon-img), so only the 'We will enable this feature' icon needed a redesign — it previously used a generic circle-with-checkmark glyph shared with several other 'confirmed/on' states across the site. Replaced it with the same circular repeat-arrow-with-a-slash-through-it glyph now used for Anti Desk Hogging on floorsense-optional-features-06.html, directly depicting 'repeated same-desk bookings are blocked' rather than a generic on/confirmed signal. The 'We will NOT enable this feature' icon (a circle with a diagonal slash, a clear and already-consistent 'off' glyph) was left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 -->
 

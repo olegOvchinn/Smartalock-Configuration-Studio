@@ -175,7 +175,11 @@
     opacity: 0; transition: opacity .15s;
   }
   .path-check-card.checked .path-tick::after { opacity: 1; }
-  .path-icon-img { width: 38px; height: 38px; flex-shrink: 0; color: var(--accent); margin-top: 2px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px) — this page locally redefined the shared .path-icon-img class down
+     to 38px, out of step with every other page using the same class name (nsnp-11, fme-12,
+     anti-desk-hogging-13, all at 56px). ---------- */
+  .path-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .path-card-body { min-width: 0; flex: 1; }
   .path-title { font-family: var(--font-display); font-weight: 500; font-size: 17.5px; color: var(--header-grey); margin: 0 0 6px; }
   .path-desc { font-size: 13.5px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
@@ -430,7 +434,7 @@
              "Booking start" pin (.center-node, 66px). -->
         <div class="info-card">
           <div class="info-row">
-            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
+            <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">Start time if booked in advance</h3>
               <p class="path-desc">
@@ -514,7 +518,7 @@
             <label class="path-row">
               <input type="radio" name="endMode" value="fixed-end">
               <span class="path-tick" aria-hidden="true"></span>
-              <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/><path d="M12 2.3v1.4M12 20.3v1.4M2.3 12h1.4M20.3 12h1.4"/></svg>
+              <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="18" x2="22" y2="18"/><path d="M6 18a6 6 0 0 1 12 0"/><path d="M12 9v2M7.5 12l1.4 1.4M16.5 12l-1.4 1.4"/></svg>
               <div class="path-card-body">
                 <h3 class="path-title">Reservation ends at close of business hours</h3>
                 <p class="path-desc">Every booking ends at the same time each day, no matter when it starts — book early for a longer reservation, book late for a shorter one.</p>
@@ -849,6 +853,8 @@
   the primary Save & continue action. Verified via jsdom (with a `scrollTo` shim, since this page's
   own time-drum otherwise throws in jsdom) that clicking Continue still saves `moduleStatus` and
   triggers navigation to the new target with no runtime errors.
+MOST RECENT CHANGE: per the site-wide icon-size unification, found this page had locally redefined the shared .path-icon-img class down to 38px — out of step with every other page using that same class name (nsnp-11, fme-12, anti-desk-hogging-13, all at 56px, matching floorsense-reservation-types-01.html's .desk-icon-img). Bumped it back to 56px. Also redesigned the third card's icon ('reservation ends at close of business hours'), which reused the exact same clock-with-tick-marks glyph as the second card ('ends after a fixed number of hours') with only cosmetic tick marks added — the two options weren't visually distinguishable at a glance. Replaced it with a sunset glyph (a horizon line with a dome/sun shape and rays), a more literal and distinct depiction of 'end of the business day' versus a plain duration clock. Also normalized the first card's icon to stroke-width 1.6 (was 1.8) to match the site's established icon stroke convention. Left .footer-hint-icon (a small aside/notice icon, not a card-level content icon) at its existing size. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 <script>

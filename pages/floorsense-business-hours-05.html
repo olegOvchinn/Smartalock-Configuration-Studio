@@ -122,12 +122,11 @@
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
-  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
-  .checkin-card-icon {
-    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
+     circle badge with a 24px white icon inside. ---------- */
+  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
@@ -226,8 +225,9 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
-  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
+     the page (was a 40px wrapper around a 34px svg). ---------- */
+  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -335,9 +335,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <div class="checkin-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-          </div>
+          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
           <p class="checkin-card-desc">
             Most users share the same standard business hours — roll the time drums on either side
             of the diagram below to set when most people arrive and when they head out for the day.
@@ -378,9 +376,7 @@
         </div>
 
         <div class="checkin-footer">
-          <div class="checkin-footer-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
-          </div>
+          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
           <p class="checkin-footer-text">These hours are used across the rest of this wizard as the standard, floor-wide default.</p>
         </div>
       </div>
@@ -516,6 +512,8 @@
   (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
+MOST RECENT CHANGE: per the site-wide icon-size unification, converted .checkin-card-icon (was a 48px accent-green circle badge with a 24px white clock icon) and .checkin-footer-icon (was a 40px wrapper around a 34px svg) to bare 56x56px icons directly on their svg elements, matching floorsense-reservation-types-01.html's .desk-icon-img exactly. Both icons already used a clock face — a good semantic match for a time-of-day setting — so only size/markup changed, not the icon design. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 

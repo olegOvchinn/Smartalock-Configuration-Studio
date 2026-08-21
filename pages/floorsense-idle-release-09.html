@@ -129,12 +129,13 @@
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
-  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
-  .checkin-card-icon {
-    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
+     circle badge with a plain X ("cancel") glyph that didn't evoke idle/release at all; redesigned
+     as a clock with an arrow breaking away from it, depicting a reservation exiting once idle time
+     elapses. ---------- */
+  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   /* ---------- on/off switch, ported from smartalock-kiosk-customisation-07.html's .switch —
@@ -269,8 +270,9 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
-  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
+     the page (was a 40px wrapper around a 34px svg). ---------- */
+  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -379,9 +381,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <div class="checkin-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
-          </div>
+          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="12" r="7"/><path d="M10 8v4l2.2 1.4"/><path d="M17 15l4.5 4.5M21.5 15.5v4h-4"/></svg>
           <div style="flex:1; min-width:0;">
             <p class="checkin-card-desc">
               This is an optional feature, off by default. If turned on, a desk that sits unclaimed
@@ -425,9 +425,7 @@
         </div>
 
         <div class="checkin-footer">
-          <div class="checkin-footer-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          </div>
+          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
         </div>
         </div>
@@ -571,6 +569,8 @@
   distinct from the primary Save & continue action. Verified via jsdom (with a `scrollTo` shim,
   since this page's own time drum otherwise throws in jsdom) that clicking Continue still saves
   `moduleStatus` and triggers navigation to the new target with no runtime errors.
+MOST RECENT CHANGE: per the site-wide icon-size unification, converted .checkin-card-icon (was a 48px accent-green circle badge, 24px white icon) and .checkin-footer-icon (was a 40px wrapper, 34px inner svg) to bare 56x56px icons matching floorsense-reservation-types-01.html's .desk-icon-img. The header icon's plain X/cancel glyph — which read as a generic 'disable' icon rather than anything specific to idle release — was redesigned as a small clock with an arrow breaking away from it, depicting a reservation exiting once idle time elapses. The footer icon (a clock, a good fit for 'any time of day') was left as-is aside from the resize. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 <script>

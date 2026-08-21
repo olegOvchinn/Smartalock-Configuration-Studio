@@ -158,12 +158,12 @@
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
-  .checkin-card-header { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 20px; }
-  .checkin-card-icon {
-    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .checkin-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
+     circle badge with a 24px white checkmark inside; redesigned as a clock face with a highlighted
+     wedge to depict a specific window/range of time rather than a generic checkmark. ---------- */
+  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
   .checkin-inline-field {
     display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
@@ -313,8 +313,9 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  .checkin-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
-  .checkin-footer-icon svg { width: 34px; height: 34px; }
+  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
+     the page (was a 40px wrapper around a 34px svg). ---------- */
+  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
@@ -434,9 +435,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <div class="checkin-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
-          </div>
+          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg>
           <p class="checkin-card-desc">
             Users can confirm (check in) their desk booking at the desk within a window before and
             after the booking start time — roll the time drums on either side of the diagram below
@@ -483,9 +482,7 @@
         </div>
 
         <div class="checkin-footer">
-          <div class="checkin-footer-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg>
-          </div>
+          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg>
           <p class="checkin-footer-text">Check in using <span id="checkinMethodsList">any of the methods enabled</span>.</p>
         </div>
       </div>
@@ -903,6 +900,8 @@
   via jsdom (with a `scrollTo` shim, since this page's own time drums otherwise throw in jsdom) that
   clicking Continue still saves `moduleStatus` and triggers navigation to the new target with no
   runtime errors.
+MOST RECENT CHANGE: per the site-wide icon-size unification, converted .checkin-card-icon (was a 48px accent-green circle badge, 24px white checkmark) and .checkin-footer-icon (was a 40px wrapper, 34px inner svg) to bare 56x56px icons matching floorsense-reservation-types-01.html's .desk-icon-img. The header icon's generic checkmark-in-circle was also redesigned as a clock face with a highlighted pie-wedge, depicting a specific window/range of time rather than a generic 'confirmed' glyph — a stronger match for 'Check-in Window' specifically. The footer icon (an ID badge with a checkmark, fitting 'confirmed check-in method') was left as-is aside from the resize. The unused, dead .policy-icon-img CSS rule (already 56px, no matching element on this page) was left untouched. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 <script>

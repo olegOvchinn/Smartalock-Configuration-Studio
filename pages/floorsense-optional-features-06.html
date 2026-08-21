@@ -124,14 +124,13 @@
     border-radius: var(--radius-lg); overflow: hidden;
   }
   .feature-row {
-    display: flex; align-items: center; gap: 16px; padding: 22px;
+    display: flex; align-items: center; gap: 18px; padding: 22px;
   }
   .feature-row + .feature-row { border-top: 1px solid var(--line); }
-  .feature-row-icon {
-    width: 44px; height: 44px; border-radius: 50%; background: var(--accent-wash); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .feature-row-icon svg { width: 22px; height: 22px; stroke: var(--accent-deep); }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 44px pale-green
+     circle badge with a 22px accent-deep icon inside. ---------- */
+  .feature-row-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .feature-row-body { flex: 1; min-width: 0; }
   .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
   .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
@@ -193,8 +192,9 @@
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
-  .feature-footer-icon { width: 40px; height: 40px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
-  .feature-footer-icon svg { width: 34px; height: 34px; }
+  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
+     the page (was a 40px wrapper around a 34px svg). ---------- */
+  .feature-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .feature-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -303,9 +303,7 @@
       <div class="feature-card">
 
         <div class="feature-row">
-          <div class="feature-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-          </div>
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
             <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
@@ -319,9 +317,7 @@
         </div>
 
         <div class="feature-row">
-          <div class="feature-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
-          </div>
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">No Swipe No Power (NSNP)</p>
             <p class="feature-row-desc">Desk power policy requiring Floorsense NSNP relay units — desks only power on for an active, checked-in booking.</p>
@@ -331,9 +327,7 @@
         </div>
 
         <div class="feature-row">
-          <div class="feature-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6"/><path d="M8 21h8"/><path d="M6 21c0-5 2.5-8 6-8s6 3 6 8"/></svg>
-          </div>
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
             <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app or handset. Requires motor integration with a Floorsense handset.</p>
@@ -350,9 +344,7 @@
         </div>
 
         <div class="feature-row">
-          <div class="feature-row-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 15l2 2 4-4"/></svg>
-          </div>
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><line x1="2" y1="22" x2="22" y2="2"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Anti Desk Hogging</p>
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
@@ -362,9 +354,7 @@
         </div>
 
         <div class="feature-footer">
-          <div class="feature-footer-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
-          </div>
+          <svg class="feature-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="8" rx="4"/><circle cx="16" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>
           <p class="feature-footer-text">Switch on any feature you'd like to configure, then use Continue to work through just those pages — anything left off is skipped entirely. Each feature's own page still has full detail and can be revisited any time from the progress bar above.</p>
         </div>
 
@@ -521,6 +511,8 @@
   the saved value to `false` alongside its existing idleHours reset. Verified via jsdom: hidden
   while FME is off, shown once enabled, the checked state saves and survives toggling FME off and
   back on, and Reset clears it.
+MOST RECENT CHANGE: per the site-wide icon-size unification, converted .feature-row-icon (was a 44px pale-green circle badge, 22px inner icon) and .feature-footer-icon (was a 40px wrapper, 34px inner svg) to bare 56x56px icons matching floorsense-reservation-types-01.html's .desk-icon-img. Also redesigned three of the four feature-row icons that didn't clearly reflect their feature: NSNP's padlock (evoked security, not power) became the same power-button glyph (vertical line + near-full arc) already used for NSNP on floorsense-desk-booking-guide-live.html; FME's ambiguous umbrella/lamp shape became the same up-arrow-on-a-pole glyph already used for sit-stand height on floorsense-fme-12.html/the live guide; Anti Desk Hogging's calendar-with-checkmark (which duplicated the 'booking' glyph used elsewhere) became a circular repeat/cycle arrow with a diagonal slash through it, depicting 'repeated booking blocked'. Auto-Release on Idle's clock was left unchanged (already a good fit). The footer icon was also changed from a clock to a toggle-switch glyph (pill + filled circle), a more literal match for 'switch on any feature you'd like to configure'. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 <script>

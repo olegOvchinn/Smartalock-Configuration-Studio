@@ -123,12 +123,13 @@
     max-width: 720px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); padding: 26px 28px 28px;
   }
-  .complete-card-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
-  .complete-card-icon {
-    width: 48px; height: 48px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .complete-card-icon svg { width: 24px; height: 24px; stroke: #fff; }
+  .complete-card-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
+  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — this used to be a 48px
+     accent-green circle badge with a 24px white checkmark inside, which read as a generic
+     "success" glyph rather than something specific to a policy being ready. Redesigned as a
+     clipboard-with-checkmark (a completed policy document) instead. ---------- */
+  .complete-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .complete-card-title { font-family: var(--font-display); font-weight: 500; font-size: 19.5px; color: var(--header-grey); margin: 4px 0 0; }
   .complete-card p { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 0 0 14px; }
   .complete-card p:last-of-type { margin-bottom: 0; }
@@ -249,9 +250,7 @@
 
       <div class="complete-card">
         <div class="complete-card-header">
-          <div class="complete-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-          </div>
+          <svg class="complete-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="9" y="1" width="6" height="3" rx="1"/><path d="M8.3 12.6l2.3 2.3L15.8 9.8"/></svg>
           <h2 class="complete-card-title">The core policy is ready</h2>
         </div>
         <p>You've now configured the core of the system that will apply to everyone by default — desk allocation, check-in methods, desk &amp; user groups, prebooking window, business hours, and any optional features you switched on.</p>
@@ -420,6 +419,8 @@
   chooses to edit a specific setting after the fact; wiring up those edit entry points from the
   summary is a separate follow-up task, not yet done. See
   floorsense-default-reservation-times-07.html's own NOTE for how an orphaned page's bar now reads.
+MOST RECENT CHANGE: per a site-wide request to make every Floorsense icon the same big size as floorsense-reservation-types-01.html's .desk-icon-img (56x56px, bare/unbadged, accent-coloured stroke) and to better match each icon to its purpose, .complete-card-icon was converted from a 48px accent-green circle badge (with a 24px white checkmark inside) to a bare 56px icon directly on the svg element (no wrapper div, matching page01's markup pattern exactly). The generic checkmark-in-circle was also redesigned as a clipboard with a checkmark, depicting a completed policy document rather than a generic 'success' glyph. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
 -->
 
 <script>
