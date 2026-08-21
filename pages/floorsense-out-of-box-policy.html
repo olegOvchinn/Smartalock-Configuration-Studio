@@ -210,7 +210,7 @@
   .core-settings-column.compact .summary-group { padding: 14px 0; }
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
   .core-settings-column.compact .core-policy-title { font-size: 15px; }
-  .core-settings-column.compact .core-policy-desc { display: none; }
+  .core-settings-column.compact .core-policy-desc { font-size: 11px; }
   .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
   .core-settings-column.compact .core-policy-card.expanded .core-policy-body { padding-top: 16px; }
   .core-settings-column.compact .summary-group-head h3 { font-size: 16.5px; }
@@ -304,11 +304,16 @@
   .policy-card-summary-main { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
   .policy-chevron { width: 15px; height: 15px; flex-shrink: 0; color: var(--ink-soft); transition: transform .18s; }
   .policy-card.expanded .policy-chevron { transform: rotate(90deg); }
+  .policy-card-heading { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .policy-card-name {
     font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--ink);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
   }
   .policy-card-name.placeholder { color: var(--ink-soft); font-weight: 500; font-style: italic; }
+  .policy-card-desc {
+    margin: 0; font-size: 11.3px; font-weight: 400; color: var(--ink-soft); line-height: 1.4;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  }
   .policy-type-badge {
     flex-shrink: 0; font-size: 9.6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
     padding: 3px 9px; border-radius: 999px; white-space: nowrap;
@@ -1518,6 +1523,55 @@
   Policies exist. Verified via jsdom: the description renders with the expected text, the title and
   status pill are still present and correctly wired, and expand/collapse plus Save Core Policy
   (collapsing the card, flipping the status to "Saved") all still work, zero runtime errors.
+
+  MOST RECENT CHANGE: per a request that collapsing an unsaved additional policy should warn and
+  discard rather than silently tuck away half-finished data (autosave already persists every field
+  edit as it happens, even without clicking "Save Policy"), the `.policy-card-summary` click handler
+  now intercepts any attempt to collapse a card while `policy.saved` is false. Two outcomes,
+  depending on whether the policy has ever been saved before:
+  - Never saved (no `policy._savedSnapshot` yet — a brand-new "+ Create New Policy" the client
+    decided not to finish): `window.confirm("This policy hasn't been saved yet. Collapsing it now
+    will remove it. Continue?")` — confirming removes it from `additionalPolicies` entirely (same
+    outcome as the X button); cancelling leaves it open and untouched.
+  - Previously saved, now edited (has a `_savedSnapshot`): `window.confirm("This policy has unsaved
+    changes. Collapsing it now will discard those changes and revert to the last saved version.
+    Continue?")` — confirming runs `Object.assign(policy, policy._savedSnapshot)`, restoring every
+    field to exactly what it was at the last successful save, then collapses; cancelling leaves it
+    open with the in-progress edits intact.
+  New `snapshotPolicyFields(policy)` helper returns a shallow copy of every policy field except `id`
+  and `_savedSnapshot` itself; the "Save Policy" click handler now calls it right after setting
+  `policy.saved = true`, so `_savedSnapshot` always reflects the most recent save. Policies loaded
+  from a project saved before this feature existed get a snapshot backfilled from their own current
+  (already-saved) values on load, so they're correctly treated as "previously saved" rather than
+  wrongly triggering the destructive "never saved" removal path the first time they're edited this
+  session. Collapsing a saved-and-untouched card (the common case) is completely unaffected — no
+  confirm dialog, just a normal collapse, since `policy.saved` is still true in that case. Verified
+  via jsdom across four scenarios: a never-saved policy gets removed on confirm and stays put on
+  cancel; a previously-saved-then-edited policy reverts its edited field back to the saved value on
+  confirm (verified by re-opening the card and reading the input back); and collapsing an untouched
+  saved card never triggers `confirm()` at all. Zero runtime errors in all four.
+
+  MOST RECENT CHANGE: per a follow-up request, the Core Policy card's description now stays visible
+  in the dense `.compact` mode too (previously `.core-settings-column.compact .core-policy-desc`
+  was `display: none`, hiding it once Additional Policies existed — right when the card is most
+  likely to actually be collapsed-and-saved) — that rule now just shrinks its font to 11px, matching
+  the treatment already used for `.summary-desc`/`.summary-note` in compact mode, instead of hiding
+  it outright. The same "always-visible description under the title" treatment was extended to each
+  additional policy card: `policyCardHtml()`'s summary row now wraps the name in a new
+  `.policy-card-heading` column alongside a `<p class="policy-card-desc">A custom policy override
+  for this ${badgeLabel}.</p>` (reading "Desk Group" or "User Group" from the same badge label
+  already computed for that card) — static per card since it only depends on `groupType`, no new
+  JS wiring needed beyond the template itself. Fixed a stale regression test
+  (`test_expand_collapse_pill.js`) whose old scenario — repeatedly toggling collapse/expand on a
+  brand-new, never-saved policy via header clicks — no longer reaches a "collapsed + unsaved" state
+  that way now that collapsing an unsaved card warns and removes/reverts it instead; the test now
+  reaches that state realistically via a policy loaded from storage already collapsed and unsaved.
+  Verified via jsdom: the Core Policy description's computed `display` stays `block` (not `none`)
+  once the core column is in compact mode; a collapsed, unsaved, loaded-from-storage additional
+  policy shows its description text ("A custom policy override for this Desk Group.") alongside the
+  expected "Expand" pill, and the description persists through expand, save, and re-edit. Re-ran the
+  full existing test suite (saved-pinned sort, type-visibility filter, collapse-unsaved warn/revert)
+  to confirm nothing else broke — zero runtime errors throughout.
 -->
 
 
@@ -1948,7 +2002,12 @@
 
   let additionalPolicies = (Array.isArray(project.floorsense.wizard.additionalPolicies) ? project.floorsense.wizard.additionalPolicies : [])
     .slice(0, MAX_ADDITIONAL_POLICIES)
-    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false }, getCorePolicySnapshot(), p));
+    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false }, getCorePolicySnapshot(), p))
+    // Backfill a snapshot for any already-saved policy loaded from a project saved before this
+    // revert-on-collapse feature existed, so it's treated as "previously saved" (revert on
+    // unsaved-collapse) rather than "never saved" (remove on unsaved-collapse) the first time it's
+    // edited in this session.
+    .map(p => (p.saved && !p._savedSnapshot) ? Object.assign(p, { _savedSnapshot: snapshotPolicyFields(p) }) : p);
 
   function savePolicies() {
     project.floorsense.wizard.additionalPolicies = additionalPolicies;
@@ -1982,7 +2041,10 @@
         <div class="policy-card-summary" data-action="toggle">
           <div class="policy-card-summary-main">
             <svg class="policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
+            <div class="policy-card-heading">
+              <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
+              <p class="policy-card-desc">A custom policy override for this ${badgeLabel}.</p>
+            </div>
             <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
             <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : (expanded ? 'Collapse' : 'Expand')}</span>
           </div>
@@ -2076,6 +2138,19 @@
       </div>`;
   }
 
+  // A shallow copy of every editable field on a policy (everything except its id and the snapshot
+  // itself), captured at the moment "Save Policy" is clicked — this is what an edited-but-unsaved
+  // policy reverts back to if the client collapses it without saving again (see the
+  // policy-card-summary click handler below), rather than losing the last confirmed version.
+  function snapshotPolicyFields(policy) {
+    const snap = {};
+    Object.keys(policy).forEach(key => {
+      if (key === 'id' || key === '_savedSnapshot') return;
+      snap[key] = policy[key];
+    });
+    return snap;
+  }
+
   // Marks a policy as not-yet-saved again if it's edited after having been saved (the Save Policy
   // button collapses the card and flips it to "Saved" — touching a field afterward means that
   // confirmation is stale until the client saves again). Updates the status pill directly rather
@@ -2100,7 +2175,32 @@
 
     card.querySelector('.policy-card-summary').addEventListener('click', (e) => {
       if (e.target.closest('.policy-remove-btn')) return;
-      if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+      const isExpanded = expandedIds.has(id);
+      // Collapsing an unsaved policy would otherwise silently leave half-finished/stale data
+      // sitting in the list (autosave already persists every field edit as they happen, even
+      // without clicking Save Policy) — so instead of a plain collapse, warn first. A policy that's
+      // never been saved (no _savedSnapshot yet) gets removed entirely if confirmed, since there's
+      // no earlier confirmed version to fall back to. A policy that WAS saved before but has since
+      // been edited reverts to that last-saved snapshot instead of being deleted outright.
+      if (isExpanded && !policy.saved) {
+        if (policy._savedSnapshot) {
+          const ok = window.confirm('This policy has unsaved changes. Collapsing it now will discard those changes and revert to the last saved version. Continue?');
+          if (!ok) return;
+          Object.assign(policy, policy._savedSnapshot);
+          expandedIds.delete(id);
+          savePolicies();
+          renderPolicies();
+          return;
+        }
+        const ok = window.confirm('This policy hasn\'t been saved yet. Collapsing it now will remove it. Continue?');
+        if (!ok) return;
+        additionalPolicies = additionalPolicies.filter(p => p.id !== id);
+        expandedIds.delete(id);
+        savePolicies();
+        renderPolicies();
+        return;
+      }
+      if (isExpanded) expandedIds.delete(id); else expandedIds.add(id);
       renderPolicies();
     });
     card.querySelector('.policy-name-input').addEventListener('input', (e) => {
@@ -2142,6 +2242,10 @@
         return;
       }
       policy.saved = true;
+      // Remember this exact confirmed state — if the client later edits a field then tries to
+      // collapse the card without saving again, it reverts here instead of being discarded outright
+      // (see the policy-card-summary click handler below).
+      policy._savedSnapshot = snapshotPolicyFields(policy);
       expandedIds.delete(id);
       savePolicies();
       renderPolicies();
