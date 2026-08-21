@@ -167,7 +167,7 @@
     white-space: nowrap; transition: border-color .15s, background .15s;
   }
   .row-edit-link:hover { border-color: var(--accent); background: var(--accent-wash); }
-  .summary-desc { font-size: 12.9px; font-weight: 400; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.55; }
+  .summary-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.55; }
   .summary-note { font-size: 11.48px; font-weight: 500; color: #B36B00; margin: 8px 0 0; line-height: 1.5; }
 
   /* ---------- per-row training request tick box (Configured Separately card) ---------- */
@@ -207,24 +207,21 @@
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
-     policies a client is now actively managing, so it's rendered smaller/denser rather than at
-     full size. Still centred via the base rule above, just narrower. ---------- */
+     policies a client is now actively managing, so it's rendered narrower/denser rather than at
+     full size. Still centred via the base rule above. This used to also shrink every heading and
+     paragraph's font-size quite aggressively (card titles down to 15/16.5px, descriptions down to
+     11px) — well below floorsense-setup-path-00.html's own card typography (19.5px title, 14.76px
+     paragraph) that the rest of the wizard is styled to match, making every card on this page read
+     as noticeably smaller than every other page the moment a client had a group policy override
+     and at least one additional policy. Compact mode now only tightens max-width/padding/icon
+     size; headings and paragraph text keep their full base size in both states. ---------- */
   .core-settings-column.compact { max-width: 460px; }
   .core-settings-column.compact .download-card { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
   .core-settings-column.compact .summary-group { padding: 14px 0; }
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
-  .core-settings-column.compact .core-policy-title { font-size: 15px; }
-  .core-settings-column.compact .core-policy-desc { font-size: 11px; }
   .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
   .core-settings-column.compact .core-policy-card.expanded .core-policy-body { padding-top: 16px; }
-  .core-settings-column.compact .summary-group-head h3 { font-size: 16.5px; }
   .core-settings-column.compact .summary-group-head h3 .summary-icon { width: 23px; height: 23px; }
-  .core-settings-column.compact .summary-row-top .label,
-  .core-settings-column.compact .summary-row-top .value { font-size: 10.8px; }
-  .core-settings-column.compact .summary-desc,
-  .core-settings-column.compact .summary-note { font-size: 11px; }
-  .core-settings-column.compact .download-card-body p { font-size: 11px; }
-  .core-settings-column.compact .download-card-body h3 { font-size: 12.8px; }
   .core-settings-column.compact .edit-link,
   .core-settings-column.compact .row-edit-link { font-size: 9px; padding: 3px 10px; }
 
@@ -1676,6 +1673,30 @@ Also fixed a copy-paste slip in the previous change's own NOTE, which had litera
 script-tag substring in its prose — inside an HTML comment this is harmless to the browser, but it
 confused /tmp/extract_js.py's regex-based script extraction into misreading part of that NOTE as
 if it were JS; reworded to "script block" without the angle brackets.
+
+MOST RECENT CHANGE: per a report that all card paragraphs and headers on this page looked
+too small, compared this page's card typography against floorsense-setup-path-00.html's
+.complete-card (title 19.5px, paragraph 14.76px — the wizard's reference card scale). Two issues
+found: (1) .summary-desc (the read-only description text under each summary-group row's
+label/value line) was set to 12.9px, below the 14.76px paragraph baseline used everywhere else on
+this page (.core-policy-desc, .section-head p) and on page 00 — bumped to 14.76px. (2) far more
+significantly, .core-settings-column.compact (applied once at least one additional policy exists)
+was shrinking headings and paragraphs quite aggressively on top of their already-normal base
+size — .core-policy-title 21.32px to 15px, .core-policy-desc 14.76px to 11px,
+.summary-group-head h3 21.32px to 16.5px, .summary-row-top .label/.value 12.1px to 10.8px,
+.summary-desc/.summary-note to 11px, .download-card-body p to 11px and h3 to 12.8px — meaning any
+client using a Desk/User Group policy override with even one additional policy created (a common,
+not edge-case state) saw every card on the page rendered noticeably smaller than every other
+wizard page, including page 00. Removed all of compact mode's font-size overrides for headings and
+paragraph/description text; compact mode now only tightens max-width (460px), padding, and the
+summary-group icon size — the "denser, secondary" visual weight it was designed to convey still
+comes through via those, without shrinking any text below the established site-wide scale.
+.edit-link/.row-edit-link's compact size reduction (9px) was left alone since those are small pill
+buttons, not paragraph/header text. Verified via a jsdom script comparing computed font-size on
+.core-policy-title, .core-policy-desc, .summary-group-head h3, and .summary-desc between a
+non-compact and a compact (group override + 2 saved additional policies) load — all four now
+resolve identically (21.32px/14.76px/21.32px/14.76px) in both states. Also re-ran
+python3 /tmp/validate.py and node --check on the extracted script block.
 
 -->
 
