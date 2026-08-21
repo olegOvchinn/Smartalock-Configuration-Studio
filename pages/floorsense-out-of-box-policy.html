@@ -1453,6 +1453,50 @@
   and clicking Save Core Policy live-revealing the section while collapsing the core card — plus a
   render-order check confirming Desk Group cards sort ahead of User Group cards while preserving
   each type's own relative creation order; zero runtime errors, `two-col` class never applied.
+
+  MOST RECENT CHANGE: per a follow-up request that saved, collapsed policies stick to the top,
+  `renderPolicies()`'s sort comparator now checks `saved` status before `groupType`: all saved
+  (collapsed) policies sort as one block ahead of all unsaved (still-being-edited) policies, and
+  within each of those two blocks Desk Group cards still sort ahead of User Group cards as before.
+  The sort remains stable and display-only — clicking "Save Policy" on a card moves it into the
+  saved block on the very next render (right where its groupType places it within that block,
+  preserving the array's original relative order among same-status-and-type cards), but the
+  underlying `additionalPolicies` array/storage order, editing, and removal are all unaffected.
+  Verified via jsdom: a 3-card scenario with mixed saved/unsaved and desk/user types renders in the
+  expected saved-then-unsaved, desk-then-user order; saving a previously-unsaved desk-type card
+  moves it into the saved block immediately below the desk-type card that was already saved (since
+  it was created earlier in the underlying array), still ahead of the saved user-type card.
+
+  MOST RECENT CHANGE: per a follow-up request, a Desk Group policy card now only renders while page
+  03's "We would also like to apply different policy (booking rules) to different desk groups"
+  checkbox is currently ticked (`deskGroupsEnabled`), and a User Group policy card only while its own
+  "We want to apply different override policy for different User Groups to trump the Desk Group
+  policy or default booking policy" checkbox is ticked (`userGroupsEnabled`) — matching the same two
+  checkboxes that already gate whether the whole Additional Policies section can appear at all.
+  `renderPolicies()` filters the (already saved-then-type sorted) display list with
+  `sortedPolicies.filter(p => p.groupType === 'desk' ? deskGroupsEnabled : userGroupsEnabled)` before
+  rendering — nothing is deleted from `additionalPolicies`/storage, a policy just stops rendering
+  when its type's checkbox is unticked and reappears if it's re-ticked later. The 3-policy cap and
+  the "X of 3 additional policies created" count deliberately still count ALL stored policies
+  (not just the currently visible ones), so a client can't work around the limit by toggling a
+  checkbox off, creating more, then toggling it back on. Verified via jsdom across three checkbox
+  states with the same 3 stored policies (2 desk, 1 user): both enabled shows all 3 in the expected
+  saved/type order, desk-only-enabled shows just the 2 desk cards, user-only-enabled shows just the
+  1 user card — the count note reads "3 of 3" in every case since nothing was actually removed.
+
+  MOST RECENT CHANGE: per a follow-up request, the top-of-card status pill's un-saved text changed
+  from the generic "Save" to "Collapse"/"Expand" depending on whether the card is currently expanded
+  — this pill sits in `.policy-card-summary`, and clicking that whole bar only ever toggles
+  expand/collapse (the actual save happens via the separate "Save Policy" button inside the expanded
+  body), so "Save" was misleading about what tapping the bar does. `policyCardHtml()` now renders
+  `p.saved ? 'Saved' : (expanded ? 'Collapse' : 'Expand')`; `markPolicyUnsaved()` (called from every
+  field-edit handler, which can only fire while the card's body is visible, i.e. already expanded)
+  sets the same pill to `'Collapse'` directly rather than a generic `'Save'`, matching. The "Saved"
+  text/green styling for an actually-saved policy is unchanged — only the un-saved wording changed.
+  Verified via jsdom: a freshly-added (expanded, unsaved) card reads "Collapse"; clicking the header
+  to collapse it flips to "Expand"; expanding it again flips back to "Collapse"; naming and saving it
+  collapses the card and reads "Saved"; re-expanding that saved card and editing a field flips the
+  pill straight to "Collapse" (never "Save"), zero runtime errors.
 -->
 
 
@@ -1919,7 +1963,7 @@
             <svg class="policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
             <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
-            <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : 'Save'}</span>
+            <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : (expanded ? 'Collapse' : 'Expand')}</span>
           </div>
           <button type="button" class="policy-remove-btn" data-action="remove" aria-label="Remove policy" title="Remove policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
@@ -2020,7 +2064,10 @@
     policy.saved = false;
     const statusEl = card.querySelector('.policy-card-status');
     if (statusEl) {
-      statusEl.textContent = 'Save';
+      // Every field this is called from only responds to input while the card's body is visible,
+      // i.e. the card is already expanded at this point — so the pill's un-saved text is always
+      // "Collapse" here, matching what clicking the header bar actually does right now.
+      statusEl.textContent = 'Collapse';
       statusEl.classList.remove('saved');
     }
   }
@@ -2116,17 +2163,30 @@
 
   function renderPolicies() {
     const list = document.getElementById('policiesList');
-    // Display Desk Group policies before User Group policies (a stable sort of a copy, so creation
-    // order within each type is preserved and the underlying additionalPolicies array/order used
-    // for storage is untouched) — this mirrors the precedence notice's own Desk-then-User framing,
-    // reading top to bottom as "base" policies followed by the ones that override them.
+    // Display order (a stable sort of a copy, so creation order within each bucket is preserved and
+    // the underlying additionalPolicies array/storage order is untouched): saved (collapsed)
+    // policies are pinned to the top as one block, out of the way once confirmed, and unsaved
+    // (still-being-edited) policies sit below — within each of those two blocks, Desk Group
+    // policies come before User Group policies, mirroring the precedence notice's own
+    // Desk-then-User framing.
     const sortedPolicies = additionalPolicies.slice().sort((a, b) => {
+      if (!!a.saved !== !!b.saved) return a.saved ? -1 : 1;
       if (a.groupType === b.groupType) return 0;
       return a.groupType === 'desk' ? -1 : 1;
     });
-    list.innerHTML = sortedPolicies.map(policyCardHtml).join('');
+    // A Desk Group policy only renders while page 03's "apply different policy...to different desk
+    // groups" checkbox is currently ticked (deskGroupsEnabled), and a User Group policy only while
+    // its own "apply different override policy for different User Groups" checkbox is ticked
+    // (userGroupsEnabled) — a policy created while its type was enabled doesn't just vanish once
+    // that checkbox is later unticked (nothing is deleted here), it's simply hidden from the list
+    // again until re-enabled, same as the section itself already being gated on anyGroupsEnabled.
+    const visiblePolicies = sortedPolicies.filter(p => p.groupType === 'desk' ? deskGroupsEnabled : userGroupsEnabled);
+    list.innerHTML = visiblePolicies.map(policyCardHtml).join('');
     list.querySelectorAll('.policy-card').forEach(wirePolicyCard);
 
+    // The 3-policy cap and count intentionally count ALL stored policies, not just the currently
+    // visible ones — otherwise a client could hide policies by unticking a checkbox and create more
+    // than 3 total by working around the limit.
     const addBtn = document.getElementById('addPolicyBtn');
     addBtn.disabled = additionalPolicies.length >= MAX_ADDITIONAL_POLICIES;
     document.getElementById('policyCountNote').textContent =
