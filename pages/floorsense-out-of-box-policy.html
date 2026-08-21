@@ -357,11 +357,12 @@
   }
   .policy-name-input:focus { outline: none; border-color: var(--accent); background: #fff; }
   .policy-remove-btn {
-    flex-shrink: 0; font-family: var(--font-text); font-weight: 600; font-size: 11.5px; color: var(--danger);
-    background: none; border: 1px solid var(--line); border-radius: 100px; padding: 7px 13px; cursor: pointer;
-    transition: border-color .15s, background .15s;
+    flex-shrink: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 50%; padding: 0; cursor: pointer;
+    transition: border-color .15s, background .15s, color .15s;
   }
-  .policy-remove-btn:hover { border-color: var(--danger); background: #FFF0EE; }
+  .policy-remove-btn svg { width: 13px; height: 13px; }
+  .policy-remove-btn:hover { border-color: var(--danger); background: #FFF0EE; color: var(--danger); }
 
   .policy-field-group { margin-bottom: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
   .policy-field-group:first-of-type { border-top: none; padding-top: 0; }
@@ -1278,6 +1279,19 @@
   showing "Saved" (18 assertions). A separate regression pass re-exercised type-pill switching,
   number/switch field edits, and Remove after the new Save flow — all still behave correctly with
   zero runtime errors (8 assertions).
+
+  MOST RECENT CHANGE: per a request to use an "X" button instead of the text "Remove" button on
+  policy cards, `.policy-remove-btn` became a small circular icon-only button (26px, no text) with
+  an inline SVG X (two crossed `<line>`s) instead of the word "Remove," matching the visual weight
+  of an icon-button rather than a full pill. Since the visible label is gone, the button gained
+  `aria-label="Remove policy"` and a matching `title` attribute for accessibility/hover tooltip. The
+  hover state now also tints the icon color to the danger red, not just the border/background. No
+  JS changes were needed — the existing `.policy-remove-btn`/`data-action="remove"` selectors and
+  the `e.target.closest('.policy-remove-btn')` guard on the summary-row click (which stops removal
+  clicks from also toggling expand/collapse) still apply unchanged. Verified via jsdom: the button
+  has no "Remove" text, carries the aria-label, contains an SVG with two crossing lines, and
+  clicking it still removes the card with zero runtime errors; re-ran the existing regression suite
+  (type-pill switching, field edits, Save/collapse, Remove) to confirm nothing else broke.
 -->
 
 <script>
@@ -1694,7 +1708,7 @@
             <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
             <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : 'Not yet saved'}</span>
           </div>
-          <button type="button" class="policy-remove-btn" data-action="remove">Remove</button>
+          <button type="button" class="policy-remove-btn" data-action="remove" aria-label="Remove policy" title="Remove policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
         <div class="policy-card-body">
         <div class="policy-card-body-inner">
