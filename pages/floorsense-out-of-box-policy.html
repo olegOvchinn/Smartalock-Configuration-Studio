@@ -203,7 +203,7 @@
      of its own and its already-640px-capped children rendered flush left instead of centered — a
      visible "jump to the left" the moment a group override was selected. .centered is kept as a
      harmless no-op class (the JS still toggles it) now that the base rule already covers it. ---------- */
-  .core-settings-column { max-width: 832px; margin: 0 auto; }
+  .core-settings-column { max-width: 915.2px; margin: 0 auto; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
@@ -215,8 +215,8 @@
      as noticeably smaller than every other page the moment a client had a group policy override
      and at least one additional policy. Compact mode now only tightens max-width/padding/icon
      size; headings and paragraph text keep their full base size in both states. ---------- */
-  .core-settings-column.compact { max-width: 598px; }
-  .core-settings-column.compact .download-card { max-width: 598px; padding: 14px 16px; margin-bottom: 12px; }
+  .core-settings-column.compact { max-width: 657.8px; }
+  .core-settings-column.compact .download-card { max-width: 657.8px; padding: 14px 16px; margin-bottom: 12px; }
   .core-settings-column.compact .summary-group { padding: 14px 0; }
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
   .core-settings-column.compact .core-policy-body { padding: 0 18px 18px; }
@@ -532,7 +532,7 @@
             <svg class="core-policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             <div class="core-policy-heading">
               <span class="core-policy-title">Core Policy</span>
-              <p class="core-policy-desc">The default booking policy — check-in window, prebooking limits, access methods, and more — that applies across the board unless a Desk Group or User Group policy overrides it below.</p>
+              <p class="core-policy-desc">Your organization's default booking policy — it applies to everyone unless a Desk Group or User Group policy overrides it below.</p>
             </div>
           </div>
           <span class="core-policy-status" id="corePolicyStatus">Not yet saved</span>
@@ -1718,6 +1718,25 @@ its .download-card in both non-compact (832px card) and compact (598px card, gro
 saved policies) states, plus confirming every .summary-group/.download-card element still resolves
 to max-width: none (i.e. correctly fills the new wider card) — and re-ran
 python3 /tmp/validate.py plus node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a follow-up request, widened the core policy card another 10% on
+top of the previous 30% increase — #coreSettingsColumn's max-width went from 832px to 915.2px, and
+its .compact variant from 598px to 657.8px (both still centred via the existing base rule).
+
+Also reviewed .core-policy-desc per a request that it read as an explanation of what the core
+policy is for, not a list of the sections below it. The previous copy — "The default booking
+policy — check-in window, prebooking limits, access methods, and more — that applies across the
+board unless a Desk Group or User Group policy overrides it below." — enumerated four of the six
+summary-group topics that already have their own headings just below, effectively repeating the
+page's own table of contents. Reworded to "Your organization's default booking policy — it
+applies to everyone unless a Desk Group or User Group policy overrides it below.", which states
+the card's purpose (the baseline policy for everyone) and its one meaningful exception (group
+overrides), without re-listing section names the reader is about to see anyway.
+
+Verified via jsdom that #coreSettingsColumn resolves to max-width: 915.2px (non-compact) and
+657.8px (.compact, group override + 2 saved policies), and that .core-policy-desc's text content
+matches the new copy exactly. Also re-ran python3 /tmp/validate.py and node --check on the
+extracted script block.
 
 -->
 
