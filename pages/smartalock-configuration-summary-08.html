@@ -130,6 +130,28 @@
   .progress-track { height: 8px; background: var(--line); border-radius: 100px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width .3s ease; }
 
+  /* ---------- end-user guide download card (ported from floorsense-out-of-box-policy.html) ---------- */
+  .download-card {
+    display: flex; align-items: center; gap: 16px; max-width: 640px; margin: 0 0 22px;
+    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
+  }
+  .download-card-icon {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--accent-wash);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent-deep);
+  }
+  .download-card-icon svg { width: 20px; height: 20px; }
+  .download-card-body { flex: 1; min-width: 0; }
+  .download-card-body h3 { margin: 0 0 3px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--ink); }
+  .download-card-body p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+  .download-btn {
+    display: flex; align-items: center; gap: 7px; flex-shrink: 0; text-decoration: none;
+    font-family: var(--font-text); font-weight: 600; font-size: 12.5px; color: #fff;
+    background: var(--accent); border-radius: 980px; padding: 10px 18px; white-space: nowrap;
+    transition: background .15s;
+  }
+  .download-btn:hover { background: var(--accent-deep); }
+  .download-btn svg { width: 15px; height: 15px; }
+
   /* ---------- summary groups ---------- */
   .summary-group {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
@@ -306,6 +328,20 @@
         <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
 
+      <div class="download-card">
+        <div class="download-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="download-card-body">
+          <h3>Explain this policy to your end users</h3>
+          <p>A short, plain-English guide covering reserving, opening and managing lockers — automatically updated to match what's configured below, ready to print or save as a PDF.</p>
+        </div>
+        <a class="download-btn" href="smartalock-locker-guide-live.html" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          View / Print Guide
+        </a>
+      </div>
+
       <!-- IT Configuration & Integrations -->
       <div class="summary-group">
         <div class="summary-group-head">
@@ -428,7 +464,6 @@
       <div class="save-note"><span id="saveText">Read-only — nothing to save on this page</span></div>
       <div style="display:flex; gap:10px;">
         <button class="ghost" id="printBtn" type="button">Print</button>
-        <button class="ghost" id="downloadBtn" type="button">Download JSON</button>
         <button class="primary" id="confirmBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
@@ -482,6 +517,22 @@
   `configured`/`moduleStatus.summary` persistence, and the dynamic recipient note text all behave
   correctly with zero runtime errors; re-ran the prior jsdom test for this page (progress-segment
   `.saved` class, Print/Download JSON still present) to confirm no regressions.
+
+  MOST RECENT CHANGE: per a request to add an end-user PDF part "similar to what is done in the
+  Floorsense summary" and to remove the Download JSON button, this page gained a `.download-card`
+  (CSS/markup ported from floorsense-out-of-box-policy.html) right below the progress card:
+  "Explain this policy to your end users" with a "View / Print Guide" button opening the new
+  pages/smartalock-locker-guide-live.html in a new tab — the Smartalock branch's first end-user
+  guide of any kind (there was no pre-existing static Smartalock PDF the way Floorsense had one).
+  See that new file's own NOTE for the full field-by-field mapping of what it renders dynamically
+  from `project.smartalock.wizard.*`. `#downloadBtn` ("Download JSON") and its click handler
+  (building a `Blob`/object-URL download of the raw project JSON) were removed outright — Print
+  remains the only `.ghost` button alongside "Save & Email Me Summary". `buildSummaryMailtoHref()`
+  also gained the same "the end-user guide isn't attached automatically" line already present on
+  the Floorsense page's own mailto body. Verified via jsdom: `#downloadBtn` no longer exists,
+  `#printBtn`/`#confirmBtn` are unaffected, the download-card's link points at the new guide page
+  with `target="_blank"`, and clicking "Save & Email Me Summary" still disables the button and
+  shows the confirmation panel with no runtime errors.
 -->
 
 <script>
@@ -764,13 +815,6 @@
   })();
 
   document.getElementById('printBtn').addEventListener('click', () => window.print());
-  document.getElementById('downloadBtn').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'Smartalock_Configuration_Summary.json';
-    link.click();
-  });
 
   /* ---------------- summary email ----------------
      Builds a plain-text version of the summary by walking every rendered .summary-group/.summary-row
@@ -800,7 +844,9 @@
       buildSummaryText(),
       '---',
       'End User Guides: https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link',
-      'Admin Portal Guide: https://floorsense.notion.site/SMARTALOCK-FULL-ADMINISTRATION-GUIDE-f278cf8aa6e547579a1b9a8f231b931f'
+      'Admin Portal Guide: https://floorsense.notion.site/SMARTALOCK-FULL-ADMINISTRATION-GUIDE-f278cf8aa6e547579a1b9a8f231b931f',
+      '',
+      "The end-user guide (\"Explain this policy to your end users\") isn't attached automatically — open it from the Configuration Summary page, then print or save it as a PDF and attach it manually before sending."
     ];
     const subject = encodeURIComponent('Smartalock Configuration Summary');
     const body = encodeURIComponent(bodyLines.join('\n'));

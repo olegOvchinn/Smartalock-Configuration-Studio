@@ -1,0 +1,441 @@
+<!--
+  MOST RECENT CHANGE: new file. Per a request to add an end-user PDF part to the Smartalock
+  Configuration Summary "similar to what is done in the Floorsense summary," this page mirrors
+  floorsense-desk-booking-guide-live.html: a live, JS-populated guide (same hero/rows/footer design,
+  recoloured to this app's Smartalock blue palette instead of Floorsense green) that reads
+  project.smartalock.wizard.* from the shared "configurationProject" localStorage key on load and
+  fills in what was actually configured, rather than being a static hand-authored document. Unlike
+  Floorsense, there was no pre-existing static Smartalock guide/PDF at all (assets/documents/ only
+  ever had the Floorsense one) — this is the first end-user guide for the Smartalock branch. A
+  small on-screen toolbar (hidden via @media print) has a "Print / Save as PDF" button that calls
+  window.print(); the visitor's own browser print dialog produces the PDF using this page's print
+  CSS, so — same as the Floorsense version — there's no client-side PDF-generation library
+  dependency to maintain. Opened from smartalock-configuration-summary-08.html's new download-card
+  (see that file's own NOTE) in a new tab.
+
+  Rows made dynamic here, and their source keys (all under project.smartalock.wizard):
+  - Getting Your Locker <- reservationType.reservationTypes (['admin','user','parcel']) — builds a
+    sentence covering whichever combination is selected; when 'user' is included, a duration
+    sub-sentence is added from reservationType.userDuration/userDurationValue/userDurationUnit.
+  - Opening Your Locker <- lockerBehaviour.lockerBehaviour ('' = Pop Open default, or 'push-open')
+    and, for push-open, lockerBehaviour.pushOpenScope ('unknown'/'specific' — specific is described
+    only as "certain lockers" rather than naming the actual bank/number range, since that's an
+    admin-facing detail not meant for an end-user document).
+  - Ways to Access Your Locker <- accessMethods.selected, built into a plain-language list the same
+    way floorsense-desk-booking-guide-live.html builds its check-in-methods sentence.
+  - Locker Policy (two rows: how many at once, what happens at expiry) <- locker.lockerLimit,
+    locker.releaseBehaviour. A third row, "released if left unopened," only appears when
+    locker.idleDuration is actually set (not the default '' = off) <- locker.idleDuration/
+    customIdleDuration.
+  - At the Kiosk <- kioskCustomisation.{openEnabled,lockerEnabled,qrEnabled,cardEnabled} (each
+    defaults to true per this wizard's own flag() helper convention, matching
+    smartalock-configuration-summary-08.html's own reading of these fields) — lists only the
+    actions actually available, and separately lists any of the four that are off in a compact
+    "not available at this kiosk" note (only rendered if at least one is off).
+  - Locker Types Available <- lockerType.selected, in the same fixed display order
+    (large/side/top/middle/bottom/small/custom) already used by the summary page, naming the
+    site's own custom type label when lockerType.exampleNumbers.custom is set.
+  IT Configuration & Integrations (SSO/SCIM/Gallagher) and User Policy (who can use lockers, named
+  locker/user group details) were deliberately left out of this guide — the former is a pure IT/
+  admin integration matter with no end-user-visible behaviour, and the latter's specifics (named
+  groups) are an admin-facing detail, not something an end user needs spelled out — matching the
+  same reasoning the Floorsense guide already applies to its own admin-only fields.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smartalock Locker Guide (Live Preview)</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+    @bottom-left {
+      content: "SMARTALOCK · LOCKER GUIDE";
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 0 26px 64px;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+      color: #8E8E93; margin: 0 64px 26px 0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: #E5E5EA; }
+  body {
+    margin: 0; padding: 0; color: #1D1D1F;
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+
+  /* ---------- on-screen toolbar (hidden on print) ---------- */
+  .toolbar {
+    position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; padding: 14px 24px;
+    background: #1D1D1F; color: #fff;
+  }
+  .toolbar-note { font-size: 12.5px; color: #C7C7CC; line-height: 1.4; }
+  .toolbar-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .toolbar-btn {
+    display: inline-flex; align-items: center; gap: 7px; border: none; cursor: pointer;
+    font-family: inherit; font-weight: 600; font-size: 12.8px; border-radius: 980px;
+    padding: 9px 18px; white-space: nowrap; text-decoration: none;
+  }
+  .toolbar-btn.primary { background: #0071E3; color: #fff; }
+  .toolbar-btn.secondary { background: rgba(255,255,255,0.14); color: #fff; }
+  .toolbar-btn svg { width: 15px; height: 15px; }
+  .page-sheet { max-width: 850px; margin: 26px auto 48px; background: #fff; box-shadow: 0 6px 28px rgba(0,0,0,0.16); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: linear-gradient(135deg, #0071E3 0%, #0058B0 100%);
+    padding: 52px 64px 46px; color: #fff;
+  }
+  .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+  .brand-pill {
+    display: inline-block; background: rgba(255,255,255,0.22); border-radius: 999px;
+    padding: 9px 24px; font-weight: 800; font-size: 19px; letter-spacing: -0.01em;
+  }
+  .brand-kicker { font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.92; }
+  .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.16; margin: 0 0 16px; letter-spacing: -0.01em; }
+  .hero p.sub { font-size: 15px; line-height: 1.55; margin: 0 0 32px; max-width: 620px; opacity: 0.95; }
+  .hero-icons { display: flex; gap: 12px; }
+  .hero-icon-badge {
+    width: 52px; height: 52px; border-radius: 13px; background: rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .hero-icon-badge svg { width: 24px; height: 24px; }
+
+  /* ---------- body ---------- */
+  .body-content { padding: 6px 64px 8px; }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #0071E3; margin: 34px 0 16px; page-break-after: avoid;
+  }
+  .row {
+    display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid #D2D2D7;
+    page-break-inside: avoid;
+  }
+  .row:last-of-type { border-bottom: none; }
+  .row[hidden] { display: none; }
+  .row-icon {
+    width: 52px; height: 52px; border-radius: 13px; background: #E8F1FC; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #0058B0;
+  }
+  .row-icon.warm { background: #FCF1DE; color: #B36B00; }
+  .row-icon svg { width: 22px; height: 22px; }
+  .row-body h3 { font-size: 16px; font-weight: 800; margin: 2px 0 7px; color: #1D1D1F; }
+  .row-body p { font-size: 12.8px; line-height: 1.62; margin: 0; color: #48484A; }
+
+  /* ---------- "not available at this kiosk" box ---------- */
+  .not-on-box {
+    border: 1.5px dashed #C7C7CC; border-radius: 16px; padding: 24px 28px; margin: 30px 0 26px;
+    page-break-inside: avoid;
+  }
+  .not-on-box[hidden] { display: none; }
+  .not-on-title {
+    font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #9A9A9E; margin: 0 0 14px;
+  }
+  .not-on-box ul { margin: 0; padding-left: 18px; color: #6E6E73; font-size: 12.8px; line-height: 1.85; }
+
+  /* ---------- footer disclaimer ---------- */
+  .footer-note {
+    display: flex; gap: 12px; align-items: flex-start; background: #F5F5F7; border-radius: 14px;
+    padding: 20px 24px; margin: 6px 0 30px; page-break-inside: avoid;
+  }
+  .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
+  .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
+
+  @media print {
+    html, body { background: #fff; }
+    .toolbar { display: none; }
+    .page-sheet { max-width: none; margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <p class="toolbar-note">Live preview — reflects the settings currently saved for this project. Use Print to save it as a PDF.</p>
+    <div class="toolbar-actions">
+      <a class="toolbar-btn secondary" href="smartalock-configuration-summary-08.html">Back to Summary</a>
+      <button type="button" class="toolbar-btn primary" id="printBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="page-sheet">
+
+  <div class="hero">
+    <div class="brand-row">
+      <span class="brand-pill">Smartalock</span>
+      <span class="brand-kicker">Locker Guide</span>
+    </div>
+    <h1>Everything you need to know about using your locker</h1>
+    <p class="sub">A quick, plain-English guide to reserving, opening and managing your locker — no jargon, just the essentials.</p>
+    <div class="hero-icons">
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 8.5h18"/><line x1="7" y1="13" x2="12" y2="13"/></svg></span>
+      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+    </div>
+  </div>
+
+  <div class="body-content">
+
+    <div class="section-eyebrow">Getting Your Locker</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4"/></svg></div>
+      <div class="row-body">
+        <h3 id="gettingTitle">How you get a locker</h3>
+        <p id="gettingText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Opening Your Locker</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a3 3 0 0 1 6 0v1"/></svg></div>
+      <div class="row-body">
+        <h3 id="openingTitle">Pop Open</h3>
+        <p id="openingText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Ways to Access Your Locker</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+      <div class="row-body">
+        <h3>Use whatever's easiest for you</h3>
+        <p id="accessMethodsText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Locker Policy</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 8 12 14 22 8 12 2"/><polyline points="2 14 12 20 22 14"/><polyline points="2 11 12 17 22 11"/></svg></div>
+      <div class="row-body">
+        <h3 id="limitTitle">How many lockers at once</h3>
+        <p id="limitText"></p>
+      </div>
+    </div>
+
+    <div class="row" id="row-idle" hidden>
+      <div class="row-icon warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div class="row-body">
+        <h3>Released if left unopened</h3>
+        <p id="idleText"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/></svg></div>
+      <div class="row-body">
+        <h3>What happens when your reservation ends</h3>
+        <p id="releaseText"></p>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">At the Kiosk</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg></div>
+      <div class="row-body">
+        <h3>What you can do at the kiosk</h3>
+        <p id="kioskText"></p>
+      </div>
+    </div>
+
+    <div class="not-on-box" id="kioskNotOnBox" hidden>
+      <p class="not-on-title">Not available at this kiosk</p>
+      <ul id="kioskNotOnList"></ul>
+    </div>
+
+    <div class="section-eyebrow">Locker Types Available</div>
+
+    <div class="row">
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg></div>
+      <div class="row-body">
+        <h3>Locker types on this site</h3>
+        <p id="lockerTypesText"></p>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+      <p>This guide reflects your workplace's current Smartalock configuration as of today. If something here doesn't match what you see at the kiosk, check with your workplace or IT team.</p>
+    </div>
+
+  </div>
+
+  </div>
+
+<script>
+(function () {
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return { smartalock: { wizard: {} } };
+  }
+
+  const project = loadProject();
+  project.smartalock = project.smartalock || { wizard: {} };
+  const wizard = project.smartalock.wizard || {};
+
+  /* ---------------- Getting Your Locker ---------------- */
+  const reservationType = wizard.reservationType || {};
+  const types = Array.isArray(reservationType.reservationTypes) ? reservationType.reservationTypes : [];
+  const TYPE_SENTENCES = {
+    admin: 'your admin team assigns you a locker directly',
+    user: 'you can reserve your own locker at the kiosk whenever you need one',
+    parcel: 'lockers can also be used to receive parcel deliveries'
+  };
+  const activeTypeSentences = ['admin', 'user', 'parcel'].filter(t => types.includes(t)).map(t => TYPE_SENTENCES[t]);
+  let gettingText;
+  if (activeTypeSentences.length === 0) {
+    gettingText = 'Your admin team assigns you a locker directly — there\'s nothing you need to book yourself.';
+  } else if (activeTypeSentences.length === 1) {
+    gettingText = activeTypeSentences[0].charAt(0).toUpperCase() + activeTypeSentences[0].slice(1) + '.';
+  } else {
+    const last = activeTypeSentences[activeTypeSentences.length - 1];
+    const rest = activeTypeSentences.slice(0, -1);
+    gettingText = 'Depending on your role, ' + rest.join(', ') + ', and ' + last + '.';
+  }
+  if (types.includes('user')) {
+    let durationPhrase;
+    if (reservationType.userDuration === 'custom') {
+      durationPhrase = (reservationType.userDurationValue || 'a set number of') + ' ' + (reservationType.userDurationUnit || 'days');
+    } else if (reservationType.userDuration === 'never') {
+      durationPhrase = null;
+    } else {
+      durationPhrase = '24 hours';
+    }
+    if (durationPhrase) {
+      gettingText += ' A self-reserved locker stays yours for ' + durationPhrase + ' before it\'s automatically released.';
+    } else {
+      gettingText += ' A self-reserved locker stays yours until you release it — it never expires on its own.';
+    }
+  }
+  document.getElementById('gettingText').textContent = gettingText;
+
+  /* ---------------- Opening Your Locker ---------------- */
+  const lockerBehaviour = wizard.lockerBehaviour || {};
+  const isPushOpen = lockerBehaviour.lockerBehaviour === 'push-open';
+  document.getElementById('openingTitle').textContent = isPushOpen ? 'Push to Open' : 'Pop Open';
+  if (isPushOpen) {
+    let openingText = 'Once you\'re granted access, gently push the door within 15 seconds to open it.';
+    if (lockerBehaviour.pushOpenScope === 'specific') {
+      openingText += ' This applies to certain lockers on this site — look for signage or ask your workplace team if you\'re not sure which.';
+    }
+    document.getElementById('openingText').textContent = openingText;
+  } else {
+    document.getElementById('openingText').textContent = 'Once you\'re granted access, the locker door pops open automatically — no need to touch it.';
+  }
+
+  /* ---------------- Ways to Access Your Locker ---------------- */
+  const accessMethods = wizard.accessMethods || {};
+  const selectedAccess = Array.isArray(accessMethods.selected) ? accessMethods.selected : [];
+  const ACCESS_PHRASES = {
+    card: 'your building access card',
+    pin: 'a PIN at the kiosk touchscreen',
+    app: 'the Floorsense app',
+    qr: 'a QR code',
+    wallet: 'a digital wallet pass (Apple or Google)'
+  };
+  const accessPhrases = ['card', 'pin', 'app', 'qr', 'wallet'].filter(m => selectedAccess.includes(m)).map(m => ACCESS_PHRASES[m]);
+  let accessSentence;
+  if (accessPhrases.length === 0) {
+    accessSentence = 'Access methods for this site haven\'t been finalised yet — check with your workplace team.';
+  } else if (accessPhrases.length === 1) {
+    accessSentence = 'Access your locker with ' + accessPhrases[0] + '.';
+  } else {
+    const last = accessPhrases[accessPhrases.length - 1];
+    const rest = accessPhrases.slice(0, -1);
+    accessSentence = 'Access your locker with ' + rest.join(', ') + ', or ' + last + '.';
+  }
+  document.getElementById('accessMethodsText').textContent = accessSentence;
+
+  /* ---------------- Locker Policy ---------------- */
+  const locker = wizard.locker || {};
+  const LIMIT_LABELS = { '1': 'one locker', '2': 'two lockers', '3': 'three lockers', unlimited: 'as many lockers as you need' };
+  const limitPhrase = LIMIT_LABELS[locker.lockerLimit] || LIMIT_LABELS['2'];
+  document.getElementById('limitTitle').textContent = locker.lockerLimit === 'unlimited' ? 'No limit on lockers at once' : 'Hold ' + limitPhrase + ' at a time';
+  document.getElementById('limitText').textContent = locker.lockerLimit === 'unlimited'
+    ? 'There\'s no limit to how many lockers you can hold reserved at once.'
+    : 'You can have ' + limitPhrase + ' reserved at once.';
+
+  if (locker.idleDuration) {
+    const idlePhrase = locker.idleDuration === 'custom' ? (locker.customIdleDuration || 'a set period') : '48 hours';
+    document.getElementById('idleText').textContent =
+      'If you don\'t open your locker for ' + idlePhrase + ', it may be automatically released so someone else can use it.';
+    document.getElementById('row-idle').hidden = false;
+  }
+
+  document.getElementById('releaseText').textContent = locker.releaseBehaviour === 'immediate'
+    ? 'Once your reservation expires, access ends immediately — make sure to collect your belongings before then.'
+    : 'If your reservation expires, you\'ll still get one more access to retrieve your belongings before the locker is reassigned.';
+
+  /* ---------------- At the Kiosk ---------------- */
+  const kiosk = wizard.kioskCustomisation || {};
+  const flag = (key) => kiosk.hasOwnProperty(key) ? !!kiosk[key] : true;
+  const KIOSK_ACTIONS = [
+    { key: 'openEnabled', phrase: 'look up and reopen a locker you already have', label: 'Open Existing' },
+    { key: 'lockerEnabled', phrase: 'get a new locker assigned to you', label: 'Get A Locker' },
+    { key: 'qrEnabled', phrase: 'scan a QR code to identify yourself', label: 'Scan QR Code' },
+    { key: 'cardEnabled', phrase: 'tap your access card', label: 'Place Card Here' }
+  ];
+  const onActions = KIOSK_ACTIONS.filter(a => flag(a.key));
+  const offActions = KIOSK_ACTIONS.filter(a => !flag(a.key));
+  let kioskText;
+  if (onActions.length === 0) {
+    kioskText = 'Kiosk options for this site haven\'t been finalised yet — check with your workplace team.';
+  } else {
+    const phrases = onActions.map(a => a.phrase);
+    if (phrases.length === 1) {
+      kioskText = 'At the kiosk, you can ' + phrases[0] + '.';
+    } else {
+      const last = phrases[phrases.length - 1];
+      const rest = phrases.slice(0, -1);
+      kioskText = 'At the kiosk, you can ' + rest.join(', ') + ', or ' + last + '.';
+    }
+  }
+  document.getElementById('kioskText').textContent = kioskText;
+  if (offActions.length > 0) {
+    document.getElementById('kioskNotOnList').innerHTML = offActions.map(a => '<li>' + a.label + '</li>').join('');
+    document.getElementById('kioskNotOnBox').hidden = false;
+  }
+
+  /* ---------------- Locker Types Available ---------------- */
+  const lockerType = wizard.lockerType || {};
+  const TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom' };
+  const TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+  const selectedTypes = Array.isArray(lockerType.selected) ? lockerType.selected : [];
+  const exampleNumbers = lockerType.exampleNumbers || {};
+  const typeNames = TYPE_ORDER.filter(t => selectedTypes.includes(t)).map(t => {
+    if (t === 'custom' && exampleNumbers.custom) return exampleNumbers.custom;
+    return TYPE_LABELS[t];
+  });
+  document.getElementById('lockerTypesText').textContent = typeNames.length
+    ? 'This site offers the following locker types: ' + typeNames.join(', ') + '.'
+    : 'Locker types for this site haven\'t been finalised yet — check with your workplace team.';
+
+  /* ---------------- toolbar ---------------- */
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+})();
+</script>
+
+</body>
+</html>
