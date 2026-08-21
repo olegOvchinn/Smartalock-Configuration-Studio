@@ -335,7 +335,7 @@
     display: none; width: 100%; font-size: 12.16px; font-weight: 500; color: var(--danger); margin: 0 0 14px;
   }
   .policy-name-error.show { display: block; }
-  .policy-save-hint { font-size: 11.48px; color: var(--danger); margin-right: auto; display: none; }
+  .policy-save-hint { font-size: 11.48px; font-weight: 500; color: var(--danger); line-height: 1.4; margin-right: auto; max-width: 340px; display: none; }
   .policy-save-hint.show { display: block; }
   .policy-name-label {
     width: 100%; font-family: var(--font-text); font-size: 11.27px; font-weight: 700;
@@ -1572,6 +1572,29 @@
   expected "Expand" pill, and the description persists through expand, save, and re-edit. Re-ran the
   full existing test suite (saved-pinned sort, type-visibility filter, collapse-unsaved warn/revert)
   to confirm nothing else broke — zero runtime errors throughout.
+
+  MOST RECENT CHANGE: per a request that saving a policy should require BOTH a name AND at least
+  one setting actually different from the core policy — a named-but-otherwise-untouched policy is
+  functionally the same as the core policy, so saving it as "distinct" would be misleading. New
+  `isIdenticalToCorePolicy(policy)` compares every core-comparable field (the same key set
+  `getCorePolicySnapshot()` returns) against the LIVE core policy — not the values the card happened
+  to start from at creation — so a policy only counts as distinct once it genuinely diverges from
+  whatever the core policy is configured to right now. The "Save Policy" click handler runs this
+  check right after the existing name-required check: if identical, the save is blocked (same as the
+  empty-name case — card stays expanded, nothing persisted) and a new inline
+  `<span class="policy-save-hint">` next to the button reads "This policy is identical to the core
+  policy — change at least one setting to save it as a distinct policy." (this reused a
+  `.policy-save-hint` CSS class that existed from an earlier iteration but had no matching markup
+  anywhere — dead code until now). The hint clears optimistically the moment any settings field
+  (number/switch/select/checkbox — deliberately NOT the name field, since a name change alone
+  doesn't resolve this) is edited, via a small `clearIdenticalHint()` helper called alongside each
+  field's existing `markPolicyUnsaved()` call; Save Policy re-validates on every click regardless, so
+  changing a value and then changing it back before saving correctly re-shows the hint. Verified via
+  jsdom: naming a freshly-created (still core-identical) policy and clicking Save Policy blocks the
+  save and shows the hint; changing one setting hides the hint immediately; saving again then
+  succeeds normally (collapses, "Saved"); and a value changed then reverted back to its original
+  before saving correctly re-triggers the block and hint on the next Save Policy click. Re-ran the
+  full existing test suite — zero runtime errors throughout.
 -->
 
 
@@ -1984,6 +2007,14 @@
     };
   }
 
+  // True when every setting on this policy exactly matches the core policy AS IT'S CONFIGURED RIGHT
+  // NOW (not the values the card happened to start from when created) — used to block saving a
+  // policy whose name is the only thing that's actually different from the core policy.
+  function isIdenticalToCorePolicy(policy) {
+    const core = getCorePolicySnapshot();
+    return Object.keys(core).every(key => policy[key] === core[key]);
+  }
+
   // Only reveal the Additional Policies section once Desk Groups and/or User Groups are actually
   // set up to carry their OWN different policy — set on floorsense-desk-user-groups-03.html via the
   // "We would also like to apply different policy (booking rules) to different desk groups" /
@@ -2131,6 +2162,7 @@
         </div>
 
         <div class="policy-card-save-row">
+          <span class="policy-save-hint">This policy is identical to the core policy — change at least one setting to save it as a distinct policy.</span>
           <button type="button" class="primary policy-save-btn">Save Policy</button>
         </div>
         </div>
@@ -2241,6 +2273,18 @@
         nameInput.focus();
         return;
       }
+      // A named policy that hasn't actually had any of its settings changed from the core policy
+      // is functionally the same policy under a different name — saving it wouldn't do anything a
+      // client couldn't already get from the core policy, so block it and explain why, rather than
+      // letting a no-op "distinct" policy pile up. Compares against the LIVE core policy (not the
+      // values this card happened to start from), so a policy only counts as distinct once at least
+      // one setting genuinely differs from what the core policy is configured to right now.
+      if (isIdenticalToCorePolicy(policy)) {
+        const hintEl = card.querySelector('.policy-save-hint');
+        if (hintEl) hintEl.classList.add('show');
+        expandedIds.add(id);
+        return;
+      }
       policy.saved = true;
       // Remember this exact confirmed state — if the client later edits a field then tries to
       // collapse the card without saving again, it reverts here instead of being discarded outright
@@ -2250,6 +2294,14 @@
       savePolicies();
       renderPolicies();
     });
+    // Any actual settings change (as opposed to just the name) potentially resolves the "identical
+    // to core policy" block, so hide that hint optimistically here — Save Policy re-validates and
+    // will show it again if the fields still end up matching the core policy after all (e.g. a
+    // value was changed then changed right back before saving).
+    function clearIdenticalHint() {
+      const hintEl = card.querySelector('.policy-save-hint');
+      if (hintEl) hintEl.classList.remove('show');
+    }
     card.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('change', () => {
         const field = input.getAttribute('data-field');
@@ -2257,6 +2309,7 @@
         policy[field] = Number.isFinite(val) ? val : CORE_POLICY_DEFAULTS[field];
         input.value = policy[field];
         markPolicyUnsaved(card, policy);
+        clearIdenticalHint();
         savePolicies();
       });
     });
@@ -2267,6 +2320,7 @@
         btn.classList.toggle('on', policy[field]);
         btn.setAttribute('aria-checked', policy[field] ? 'true' : 'false');
         markPolicyUnsaved(card, policy);
+        clearIdenticalHint();
         savePolicies();
       });
     });
@@ -2274,6 +2328,7 @@
       sel.addEventListener('change', () => {
         policy[sel.getAttribute('data-field')] = sel.value;
         markPolicyUnsaved(card, policy);
+        clearIdenticalHint();
         savePolicies();
       });
     });
@@ -2281,6 +2336,7 @@
       cb.addEventListener('change', () => {
         policy[cb.getAttribute('data-field')] = cb.checked;
         markPolicyUnsaved(card, policy);
+        clearIdenticalHint();
         savePolicies();
       });
     });
