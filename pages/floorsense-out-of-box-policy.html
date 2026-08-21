@@ -120,14 +120,6 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
-  /* ---------- ready-to-go banner + discrepancy notice ---------- */
-  .ready-banner {
-    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 22px;
-    background: var(--accent-wash); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 14px 16px;
-  }
-  .ready-banner svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
-  .ready-banner p { margin: 0; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
-
   .download-card {
     display: flex; align-items: center; gap: 16px; max-width: 640px; margin: 0 0 22px;
     background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
@@ -222,7 +214,6 @@
      full size. Mutually exclusive with .centered in practice: additional policies can only exist
      once Desk/User Groups are in use, which is exactly when .centered never applies. ---------- */
   .core-settings-column.compact { max-width: 460px; }
-  .core-settings-column.compact .ready-banner,
   .core-settings-column.compact .download-card { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
   .core-settings-column.compact .summary-group { padding: 14px 0; }
   .core-settings-column.compact .core-policy-summary { padding: 14px 18px; }
@@ -235,7 +226,6 @@
   .core-settings-column.compact .summary-row-top .value { font-size: 10.8px; }
   .core-settings-column.compact .summary-desc,
   .core-settings-column.compact .summary-note { font-size: 11px; }
-  .core-settings-column.compact .ready-banner p,
   .core-settings-column.compact .download-card-body p { font-size: 11px; }
   .core-settings-column.compact .download-card-body h3 { font-size: 12.8px; }
   .core-settings-column.compact .edit-link,
@@ -267,7 +257,6 @@
   .core-policy-status.saved { background: var(--accent-wash); color: var(--accent-deep); }
   .core-policy-body { display: none; padding: 0 24px 24px; border-top: 1px solid var(--line); }
   .core-policy-card.expanded .core-policy-body { display: block; padding-top: 20px; }
-  .core-policy-body .ready-banner,
   .core-policy-body .download-card { max-width: none; }
   .core-policy-body .summary-group {
     background: none; border: none; border-radius: 0; max-width: none; padding: 18px 0; margin-bottom: 0;
@@ -531,11 +520,6 @@
           </div>
         </div>
         <div class="core-policy-body" id="corePolicyBody">
-
-      <div class="ready-banner">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
-        <p>These settings follow Floorsense's best practice and are ready to go as-is. Nothing below needs to be configured.</p>
-      </div>
 
       <div class="download-card">
         <div class="download-card-icon">
@@ -1376,6 +1360,18 @@
   decisions rather than live copy. Verified via jsdom: the section intro and the name-input
   placeholder both read "Help Desk" with no remaining "CEO," and the stale Desk/User Group phrase is
   gone — zero runtime errors. Re-ran the full existing test suite to confirm nothing else broke.
+
+  MOST RECENT CHANGE: per a request to remove the "These settings follow Floorsense's best practice
+  and are ready to go as-is. Nothing below needs to be configured." banner, deleted the whole
+  `.ready-banner` `<div>` (icon + paragraph) from inside `#corePolicyBody`, along with its now-dead
+  CSS (`.ready-banner`/`.ready-banner svg`/`.ready-banner p`, and its mentions in the
+  `.core-settings-column.compact`/`.core-policy-body` override selectors, which now just target
+  `.download-card`/`.download-card-body p` on their own). The `.download-card` right below it is
+  untouched. Historical NOTE prose that mentions `.ready-banner` while describing past decisions was
+  left as-is. Verified via jsdom: no `.ready-banner` element remains, no lingering "best practice"/
+  "Nothing below needs to be configured" text anywhere on the page, the download card and core
+  policy card's expand/collapse are unaffected, zero runtime errors. Re-ran the full existing test
+  suite to confirm nothing else broke.
 -->
 
 <script>
