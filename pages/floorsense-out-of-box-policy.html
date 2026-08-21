@@ -707,7 +707,7 @@
         <div class="section-head policies-section-head">
           <span class="eyebrow">Neighbourhood Policies</span>
           <h2 class="section-title">Additional Policies</h2>
-          <p>You told us you're using Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "CEO," mark it as a Desk Group or User Group setting, then adjust it — up to 3 additional policies.</p>
+          <p>You told us you're using Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "Help Desk," then adjust it — up to 3 additional policies.</p>
         </div>
 
         <div class="policies-intro">
@@ -1364,6 +1364,18 @@
   `markPolicyUnsaved()` (the helper that reverts the pill after editing a previously-saved policy).
   "Saved" (once the Save Policy button has been clicked) is unchanged. Re-ran the full test suite
   with the updated expected text — all still pass with zero runtime errors.
+
+  MOST RECENT CHANGE: per a request to use "Help Desk" instead of "CEO" as the example policy name,
+  replaced it in both places it appeared as user-visible copy: the policy-name `<input>`'s
+  placeholder (`"e.g. Finance, Help Desk"`) and the Additional Policies section's own intro
+  paragraph (`"...under a name like 'Finance' or 'Help Desk,' then adjust it..."`). That intro
+  paragraph also had its now-stale "mark it as a Desk Group or User Group setting" clause removed,
+  since the manual type toggle it referred to was removed in an earlier change — the sentence now
+  just describes duplicating and adjusting, matching current behaviour. Remaining "CEO" mentions
+  inside historical NOTE prose elsewhere on this page were left as-is, since they describe past
+  decisions rather than live copy. Verified via jsdom: the section intro and the name-input
+  placeholder both read "Help Desk" with no remaining "CEO," and the stale Desk/User Group phrase is
+  gone — zero runtime errors. Re-ran the full existing test suite to confirm nothing else broke.
 -->
 
 <script>
@@ -1829,7 +1841,7 @@
         <div class="policy-card-body">
         <div class="policy-card-body-inner">
         <div class="policy-card-header">
-          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, CEO" value="${escapeHtml(p.name)}">
+          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, Help Desk" value="${escapeHtml(p.name)}">
         </div>
 
         <div class="policy-field-group">
