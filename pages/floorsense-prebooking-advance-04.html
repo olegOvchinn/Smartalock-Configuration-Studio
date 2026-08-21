@@ -115,7 +115,7 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head { margin: 0 auto 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
@@ -123,7 +123,7 @@
   .section-head p:last-child { margin-bottom: 0; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
-  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
+  .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; margin: 0 auto; }
   @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
   .policy-grid.single { grid-template-columns: 1fr; }
   .policy-card {
@@ -455,6 +455,8 @@
   unaffected since this page is still reached that way by default. Verified via jsdom across both
   URL variants (no query param vs. `?return=summary`): the page loads and the Save & continue click
   fires with zero runtime errors in both cases.
+MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head (max-width: 640px) gained margin: 0 auto, and .policy-grid (max-width: 640px, rendered as a single column via its .single modifier on this page) gained margin: 0 auto, so the heading and the lone policy card are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
 -->
 
 <script>

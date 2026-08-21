@@ -115,7 +115,7 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head { margin: 0 auto 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
@@ -123,7 +123,7 @@
   .section-head p:last-child { margin-bottom: 0; }
 
   /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
   .path-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
     padding: 18px 20px; transition: border-color .15s, background .15s;
@@ -160,7 +160,7 @@
      applies to, so the mode grid below stays locked to "We will not be using NSNP" until this is
      ticked — replaces an earlier plain-text mention of the hardware requirement in the hero. ---------- */
   .nsnp-relay-confirm {
-    max-width: 640px; margin: 0 0 22px; padding: 16px 18px; background: var(--paper-soft);
+    max-width: 640px; margin: 0 auto 22px; padding: 16px 18px; background: var(--paper-soft);
     border: 1.5px solid var(--line); border-radius: var(--radius-lg);
   }
   .relay-confirm-row { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
@@ -184,7 +184,7 @@
   /* ---------- power grace period: a short toggle + fill-in field, folded into the NSNP
      explainer rather than its own diagram card. Replaces an earlier Apple Clock-style time-drum
      treatment per a request to simplify it — a plain number field is all that's needed here. ---------- */
-  .nsnp-grace-block { display: none; margin-top: 20px; max-width: 640px; background: var(--paper-soft); border: 1.5px solid var(--line); border-radius: var(--radius-lg); padding: 20px 22px; }
+  .nsnp-grace-block { display: none; margin: 20px auto 0; max-width: 640px; background: var(--paper-soft); border: 1.5px solid var(--line); border-radius: var(--radius-lg); padding: 20px 22px; }
   .nsnp-grace-block.show { display: block; }
   .grace-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .grace-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
@@ -590,6 +590,8 @@
   reservation end plus the grace period below, the permanently-assigned exception (stated once,
   here rather than in both places), and the "this is optional" framing. Verified via jsdom that both
   strings render as expected and nothing else on the page changed.
+MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head, .path-check-grid, .nsnp-relay-confirm, and .nsnp-grace-block (all max-width: 640px) gained margin: 0 auto (or margin: Npx auto 0 where a top/bottom margin already existed), so the heading, option grid, and extra confirmation/grace-period blocks are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
 -->
 
 <script>

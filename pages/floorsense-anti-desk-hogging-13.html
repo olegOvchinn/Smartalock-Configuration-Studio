@@ -115,7 +115,7 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
+  .section-head { margin: 0 auto 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
@@ -124,7 +124,7 @@
 
   /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
      floorsense-nsnp-11.html — here just 2 modes (enable / don't enable) ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
   .path-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
     padding: 18px 20px; transition: border-color .15s, background .15s;
@@ -155,7 +155,7 @@
      until X happens" or business-hours/check-in-window's "time of day" values do, so this reuses
      just the Apple Clock time-drum mechanics (ported from floorsense-nsnp-11.html), not the
      timeline-track-wrapper/anchor-pin/label-time suite. ---------- */
-  .adh-settings { display: none; margin-top: 20px; max-width: 760px; }
+  .adh-settings { display: none; margin: 20px auto 0; max-width: 760px; }
   .adh-settings.show { display: block; }
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; }
   .timeline-card.standalone { border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
@@ -455,6 +455,8 @@
   leave alone here — only the dynamic back-arrow (`#pageNavPrev`, via `seqResolve()`) is unaffected.
   Verified via jsdom that clicking Continue still saves `moduleStatus` and triggers navigation to
   the new target with no runtime errors.
+MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head and .path-check-grid (max-width: 640px) gained margin: 0 auto, and .adh-settings (max-width: 760px, the time-drum settings block shown once a path is selected) gained margin: 20px auto 0, so the heading, option grid, and settings block are all horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
 -->
 
 <script>
