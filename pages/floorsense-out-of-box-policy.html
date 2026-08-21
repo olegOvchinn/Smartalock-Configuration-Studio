@@ -192,19 +192,23 @@
      Additional Policies only reveals itself after the core policy is saved (see
      updateAdditionalPoliciesVisibility() in the script below), so by the time it's visible the core
      card above it is already collapsed to its header bar. ---------- */
-  .policies-section-head { margin-top: 36px; }
+  .policies-section-head { margin-top: 36px; margin-left: auto; margin-right: auto; }
 
   /* ---------- core policy column: the read-only summary-groups above, wrapped in one container so
-     it can be re-centred as a block once there's no Additional Policies content sitting below/
-     beside it to balance the page (see .centered below). Default (unwrapped visually) state is a
-     no-op — children keep their own max-width:640px flush-left, matching every other page. ---------- */
-  .core-settings-column.centered { max-width: 640px; margin: 0 auto; }
+     it can be centred as a block. Centering is now unconditional (base rule below), not gated
+     behind the .centered modifier — previously only .centered (applied when no Desk/User Group
+     override was in use) carried margin:0 auto, so as soon as a group's "apply different policy"
+     checkbox was ticked on page 03 (making anyGroupsEnabled true) but before any additional policy
+     had actually been created (so .compact hadn't kicked in either), this column had no width cap
+     of its own and its already-640px-capped children rendered flush left instead of centered — a
+     visible "jump to the left" the moment a group override was selected. .centered is kept as a
+     harmless no-op class (the JS still toggles it) now that the base rule already covers it. ---------- */
+  .core-settings-column { max-width: 640px; margin: 0 auto; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
      policies a client is now actively managing, so it's rendered smaller/denser rather than at
-     full size. Mutually exclusive with .centered in practice: additional policies can only exist
-     once Desk/User Groups are in use, which is exactly when .centered never applies. ---------- */
+     full size. Still centred via the base rule above, just narrower. ---------- */
   .core-settings-column.compact { max-width: 460px; }
   .core-settings-column.compact .download-card { max-width: 460px; padding: 14px 16px; margin-bottom: 12px; }
   .core-settings-column.compact .summary-group { padding: 14px 0; }
@@ -268,7 +272,7 @@
   .policies-section { display: none; margin-top: 8px; }
   .policies-section.show { display: block; }
   .policies-intro {
-    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 0 14px;
+    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 0 auto 14px;
     background: var(--accent-wash); border: 1px solid #B7E4C8; border-radius: var(--radius-md); padding: 14px 16px;
   }
   .policies-intro svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
@@ -288,7 +292,7 @@
      spanning the full panel width and the grid's second column became a real, visible right column
      of policy cards — removed outright now that there's no narrow track constraining it. ---------- */
   .policies-grid {
-    display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 0 4px;
+    display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto 4px;
   }
 
   /* ---------- collapsed-by-default policy card: once a policy exists it shows as a compact row
@@ -407,7 +411,7 @@
   .policy-check-row input:checked ~ .policy-check-tick::after { opacity: 1; }
   .policy-check-label { font-size: 12.6px; color: var(--ink); font-weight: 500; }
 
-  .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 1064px; margin-top: 4px; flex-wrap: wrap; }
+  .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 640px; margin: 4px auto 0; flex-wrap: wrap; }
   .add-policy-btn {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: var(--accent-deep);
     background: none; border: 1px solid var(--line); border-radius: 980px; padding: 10px 18px; cursor: pointer;
@@ -1638,8 +1642,40 @@ render side by side as a real right column. Changed .policies-grid from a 2-colu
 single-column flex stack (max-width: 640px, matching .summary-group/.download-card above it),
 removing the now-unnecessary 900px media-query breakpoint entirely. No JS changes were needed —
 this was a pure leftover-CSS issue. Verified via python3 /tmp/validate.py (HTML tag balance) and
-node --check on the extracted <script> block; no runtime behavior changed, only the CSS layout of
+node --check on the extracted script block; no runtime behavior changed, only the CSS layout of
 the policy-card list.
+
+MOST RECENT CHANGE: per a report that selecting a Desk Group or User Group override on
+floorsense-desk-user-groups-03.html made this page's content jump to the left edge instead of
+staying centered, traced this to #coreSettingsColumn's centering having been tied to the
+.centered modifier class, which was only applied when anyGroupsEnabled was false. As soon as a
+group's "apply different policy" checkbox was ticked (anyGroupsEnabled true) but before any
+additional policy had actually been created (so .compact hadn't kicked in either, since that
+needs additionalPolicies.length > 0), the column had neither modifier class, so it had no width
+cap or margin of its own — its already-640px-capped children (download card, summary groups, the
+core policy card) rendered flush left instead of centered. Fixed by making centering
+(max-width: 640px; margin: 0 auto;) the unconditional base rule on .core-settings-column, with
+.compact only narrowing it to 460px (still centered) once at least one additional policy exists;
+.centered is now a harmless no-op class kept only because the JS still toggles it. Applied the
+same fix to the Additional Policies section's own content, which had the identical flush-left bug
+once it became visible: .policies-section-head, .policies-intro (covers both the standing
+"each policy starts as a copy" box and the desk/user precedence-notice variant), and .policies-grid
+all gained margin-left/margin-right: auto (or margin: 0 auto shorthand where no other margin needed
+preserving) at their existing 640px width; .add-policy-row's stale max-width: 1064px (another
+leftover from the old two-column page layout, same root cause as the .policies-grid fix in the
+previous change) was reduced to 640px and centered to match. Verified via a fresh jsdom script
+(loading the page with runScripts: "outside-only", seeding localStorage before manually eval-ing
+the extracted script so the module-scope anyGroupsEnabled/corePolicyState reads the seeded project
+data — an earlier attempt using runScripts: "dangerously" gave a false negative because the
+inline script executes during JSDOM construction, before localStorage could be seeded) across four
+scenarios: no group override (centered, unchanged), a group override selected with the core policy
+unsaved, the same with the core policy saved and Additional Policies revealed, and with two
+additional policies present (.compact, 460px, still centered) — #coreSettingsColumn and every
+Additional Policies content block resolved to margin-left/margin-right: auto in all four cases.
+Also fixed a copy-paste slip in the previous change's own NOTE, which had literally included the
+script-tag substring in its prose — inside an HTML comment this is harmless to the browser, but it
+confused /tmp/extract_js.py's regex-based script extraction into misreading part of that NOTE as
+if it were JS; reworded to "script block" without the angle brackets.
 
 -->
 
