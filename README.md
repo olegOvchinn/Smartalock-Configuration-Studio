@@ -35,7 +35,7 @@ The actual click-through order (module numbers don't match navigation order) is:
 | 01 | `floorsense-reservation-types-01.html` | Desk Allocation Method (Dedicated Workstations / Reserved by User as Needed / Team Leader Allocated / Booked on Behalf) *(Floorsense wizard entry point — pick-a-product.html's Floorsense card lands here)* |
 | 02 | `floorsense-checkin-methods-02.html` | Check-in Methods |
 | 03 | `floorsense-desk-user-groups-03.html` | Desk Groups (Neighbourhoods) &amp; User Groups |
-| 04 | `floorsense-prebooking-advance-04.html` | Advance Booking (how many days ahead of time users can book a desk) |
+| 04 | `floorsense-prebooking-advance-04.html` | Allow Booking in Advance (how many days ahead of time users can book a desk; 0 turns advance booking off) |
 | 05 | `floorsense-business-hours-05.html` | Business Hours (standard opening/closing time used for most users) |
 | 06 | `floorsense-optional-features-06.html` | **Optional Features** — a hub page listing every optional module below with an on/off switch, off by default |
 | 07 | `floorsense-default-reservation-times-07.html` | Default Reservation Times (default booking start, end and duration) |

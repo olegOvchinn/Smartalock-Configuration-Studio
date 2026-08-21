@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advance Booking — Floorsense Configuration Studio (Template)</title>
+<title>Allow Booking in Advance — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -220,7 +220,7 @@
         </a>
         <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Advance Booking</span>
+          <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
         <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
           <span class="progress-seg-fill"></span>
@@ -241,8 +241,8 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Advance Booking</h1>
-        <p class="sub">Choose how many days ahead of time users can book a desk.</p>
+        <h1 class="hero-title">Allow Booking in Advance</h1>
+        <p class="sub">Choose whether users can book a desk ahead of time, and if so, how many days out.</p>
       </div>
     </div>
   </div>
@@ -252,8 +252,7 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Advance Booking</h2>
-        <p>How far in advance can users book a desk? Some workplaces cap this at just a few days ahead, while others allow up to two weeks.</p>
+        <p>Decide how far in advance users can book a desk. Some workplaces cap this at just a few days ahead, while others allow up to two weeks — or turn advance booking off entirely so desks can only be booked for immediate, same-day use.</p>
       </div>
 
       <div class="policy-grid single">
@@ -262,11 +261,12 @@
             <svg class="policy-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
-              <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30.</p>
+              <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
               <div class="minute-field">
-                <input type="number" min="1" max="30" step="1" value="8" class="minute-input" id="prebookingAdvanceDays" aria-label="Advance booking limit, days in advance">
-                <span class="minute-suffix">days in advance (max 30)</span>
+                <input type="number" min="0" max="30" step="1" value="8" class="minute-input" id="prebookingAdvanceDays" aria-label="Advance booking limit, days in advance, 0 to turn off">
+                <span class="minute-suffix">days in advance (0 = off, max 30)</span>
               </div>
+              <p class="policy-hint" id="prebookingStatusHint">Advance booking is on — users can book up to 8 days ahead.</p>
             </div>
           </div>
         </div>
@@ -409,6 +409,34 @@
   of sync. The default of 8 days is unchanged. Verified via jsdom: input's max attribute reads 30, a
   saved value of 25 loads correctly, values above 30 clamp down to 30, 30 itself is accepted without
   being clamped down, and Reset still restores the default of 8.
+
+  MOST RECENT CHANGE: per a request to retitle this page "Allow Booking in Advance" and make 0 days
+  mean "off," the <title>, hero title, section title, and shared progress-bar tooltip (across all 14
+  files that carry it) all changed to "Allow Booking in Advance." The days field's `min` attribute
+  dropped from 1 to 0, `clampPrebookingDays()` now floors at 0 instead of 1, and the policy
+  description/minute-suffix/aria-label were updated to explain that 0 turns advance booking off
+  ("desks can then only be booked for immediate, same-day use"). A new dynamic status line
+  (`#prebookingStatusHint`, using the existing `.policy-hint` style from
+  floorsense-idle-release-09.html) sits below the field and reads either "Advance booking is off —
+  ..." or "Advance booking is on — users can book up to N day(s) ahead," updated on load, on every
+  input, and on Reset via a new `renderStatusHint()` helper called from `applyState()`/`save()`. The
+  section intro paragraph was reworded to mention the off option too. The default remains 8 days
+  (unchanged). On floorsense-out-of-box-policy.html, the row label changed from "Prebooking window"
+  to "Allow booking in advance," and `renderPrebookingWindowSummary()` gained an `days === 0` branch
+  showing "Off" / "Advance booking is off — desks can only be booked for immediate, same-day use."
+  instead of the "N days in advance" copy. Verified via jsdom: page 04 across 0 (off), negative
+  (clamps to 0), 1 (singular "day"), and Reset states (11 assertions); the summary page across
+  days=0, days=20, and no-saved-state defaults, confirming the row label and both dynamic spans
+  update correctly with zero runtime errors (12 assertions).
+
+  MOST RECENT CHANGE: per a follow-up to remove the redundant "Allow Booking in Advance" h2 heading
+  from the Configure section (since the hero title above already says the same thing), the
+  `<h2 class="section-title">` element was deleted entirely, leaving just the "Configure" eyebrow
+  and the intro paragraph — matching the established convention already used on single-topic pages
+  like floorsense-idle-release-09.html, where "the hero title alone carries the heading" (see that
+  file's own NOTE) rather than repeating it. The paragraph text itself is unchanged. Re-verified via
+  jsdom: `h2.section-title` no longer exists on the page, and all other assertions (title, hero
+  title, progress tip, min=0, status hint behavior, Reset) still pass.
 -->
 
 <script>
@@ -472,19 +500,27 @@
   const saveDot = document.getElementById('saveDot');
 
   const PREBOOKING_MAX_DAYS = 30;
+  const prebookingStatusHint = document.getElementById('prebookingStatusHint');
 
   function clampPrebookingDays() {
     let value = parseInt(prebookingAdvanceDays.value, 10);
-    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (!Number.isFinite(value) || value < 0) value = 0;
     if (value > PREBOOKING_MAX_DAYS) value = PREBOOKING_MAX_DAYS;
     prebookingAdvanceDays.value = value;
     return value;
+  }
+
+  function renderStatusHint(days) {
+    prebookingStatusHint.textContent = days === 0
+      ? 'Advance booking is off — desks can only be booked for immediate, same-day use.'
+      : 'Advance booking is on — users can book up to ' + days + (days === 1 ? ' day' : ' days') + ' ahead.';
   }
 
   function save() {
     state.prebookingAdvanceDays = clampPrebookingDays();
     project.floorsense.wizard.prebookingAdvance = state;
     saveProject(project);
+    renderStatusHint(state.prebookingAdvanceDays);
   }
 
   function queueSave() {
@@ -495,6 +531,7 @@
 
   function applyState() {
     prebookingAdvanceDays.value = state.prebookingAdvanceDays;
+    renderStatusHint(state.prebookingAdvanceDays);
   }
   applyState();
 
