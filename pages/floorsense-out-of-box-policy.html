@@ -290,6 +290,10 @@
   .policies-intro svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-deep); margin-top: 1px; }
   .policies-intro p { margin: 0; font-size: 13.12px; line-height: 1.55; color: var(--accent-deep); }
   .policies-intro + .policies-intro { margin-top: -2px; margin-bottom: 18px; }
+  /* Only relevant when both Desk Groups and User Groups are actually in use — hidden by default,
+     shown only once JS confirms both are enabled (see policiesPrecedenceNotice below). */
+  .policies-precedence-notice { display: none; }
+  .policies-precedence-notice.show { display: flex; }
 
   /* ---------- two-column grid for policy cards once created, same idea as
      floorsense-desk-user-groups-03.html's .groups-columns ---------- */
@@ -723,7 +727,7 @@
           <p>Each additional policy starts as an exact copy of the core policy shown above. Changing a setting here only affects that named policy — the core policy and any other additional policies stay untouched.</p>
         </div>
 
-        <div class="policies-intro">
+        <div class="policies-intro policies-precedence-notice" id="policiesPrecedenceNotice">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
           <p><strong>User Group settings take precedence over Desk Group settings.</strong> For example, if a Desk Group's policy allows 1 desk per user but a User Group that person belongs to allows 15, that user will be able to book 15 desks — the User Group setting wins.</p>
         </div>
@@ -1292,6 +1296,29 @@
   has no "Remove" text, carries the aria-label, contains an SVG with two crossing lines, and
   clicking it still removes the card with zero runtime errors; re-ran the existing regression suite
   (type-pill switching, field edits, Save/collapse, Remove) to confirm nothing else broke.
+
+  MOST RECENT CHANGE: per a request that when only Desk Groups is in use (no User Groups selected
+  at all), only the Desk Group-relevant guidance should show — the second `.policies-intro` box
+  ("User Group settings take precedence over Desk Group settings...") was previously always shown
+  whenever the Additional Policies section itself was visible (i.e. whenever `anyGroupsEnabled`,
+  meaning Desk Groups OR User Groups), which meant a client using Desk Groups only saw an
+  irrelevant/confusing warning about a User-vs-Desk conflict that can't actually happen for them.
+  That box (now `id="policiesPrecedenceNotice"`, class `policies-precedence-notice`) is `display:
+  none` by default and only gets `.show` (via a new toggle placed alongside the existing
+  `policiesSection`/`coreSettingsColumn`/`summaryColumns` visibility toggles) when
+  `deskGroupsEnabled && userGroupsEnabled` are BOTH true — the only situation where the precedence
+  rule is actually relevant. The first `.policies-intro` box (explaining that each additional policy
+  starts as a copy of the core policy) is unaffected and still always shows whenever the section is
+  visible.
+  Also verified, per the same request, that "+ Duplicate Core Policy" already defaults a new
+  policy's `groupType` to `'desk'` whenever Desk Groups are enabled (`deskGroupsEnabled ? 'desk' :
+  'user'`, in both the `addPolicyBtn` handler and the loaded-policy mapping) — this was already
+  correct and needed no code change, just confirmation via test.
+  Verified via jsdom across three `deskUserGroups` states (desk-only, user-only, both): the notice
+  stays hidden for desk-only and user-only, shows only when both are enabled, and a newly duplicated
+  policy's badge reads "Desk Group" for desk-only/both and "User Group" for user-only — 12
+  assertions, zero runtime errors. Re-ran the existing policy-card regression and Save-button test
+  suites to confirm nothing else broke.
 -->
 
 <script>
@@ -1927,6 +1954,11 @@
   document.getElementById('policiesSection').classList.toggle('show', anyGroupsEnabled);
   document.getElementById('coreSettingsColumn').classList.toggle('centered', !anyGroupsEnabled);
   document.getElementById('summaryColumns').classList.toggle('two-col', anyGroupsEnabled);
+
+  // The "User Group settings take precedence" warning only makes sense when both kinds of group
+  // actually exist — a client using only Desk Groups (no User Groups at all) has no precedence
+  // conflict to worry about, so the notice stays hidden in that case.
+  document.getElementById('policiesPrecedenceNotice').classList.toggle('show', deskGroupsEnabled && userGroupsEnabled);
 
   renderPolicies();
 
