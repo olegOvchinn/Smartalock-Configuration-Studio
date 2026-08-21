@@ -187,20 +187,12 @@
   .training-check input:checked ~ .training-check-tick::after { opacity: 1; }
   .training-check-label { font-size: 11.8px; color: var(--accent-deep); font-weight: 600; line-height: 1.4; }
 
-  /* ---------- two-column layout: core policy on the left, Additional Policies on the right, once
-     the latter is actually shown (Desk and/or User Groups in use). Collapses back to a single
-     block wrapper (no grid) when Additional Policies is hidden, so the core column's own
-     .centered re-centering (below) still works unaffected. ---------- */
-  .summary-columns.two-col {
-    display: grid; grid-template-columns: minmax(280px, 460px) minmax(0, 1fr);
-    gap: 32px; align-items: start;
-  }
-  @media (max-width: 860px) {
-    .summary-columns.two-col { grid-template-columns: 1fr; }
-  }
+  /* ---------- single-column layout: #summaryColumns is a plain block wrapper (no grid) — the core
+     policy card and, once revealed, the Additional Policies section simply stack top to bottom.
+     Additional Policies only reveals itself after the core policy is saved (see
+     updateAdditionalPoliciesVisibility() in the script below), so by the time it's visible the core
+     card above it is already collapsed to its header bar. ---------- */
   .policies-section-head { margin-top: 36px; }
-  .summary-columns.two-col .policies-section-head { margin-top: 0; }
-  .summary-columns.two-col .policies-section.show { margin-top: 0; }
 
   /* ---------- core policy column: the read-only summary-groups above, wrapped in one container so
      it can be re-centred as a block once there's no Additional Policies content sitting below/
@@ -1434,6 +1426,33 @@
   renders with the asterisk, `for`/`id` match, `required`/`aria-required` are present on the input,
   and clicking Save Policy on a still-unnamed card is still blocked (card stays expanded), zero
   runtime errors.
+
+  MOST RECENT CHANGE: per a request to rethink how Additional Policies appears, replaced the
+  two-column layout (core policy ~460px on the left, Additional Policies filling the rest on the
+  right) with a single stacked column, and made Additional Policies reveal itself only once the
+  core policy has actually been saved — not merely whenever Desk/User Groups need their own policy
+  override. The `.summary-columns.two-col` CSS grid rule was removed outright (the wrapper is now a
+  plain block, so `#coreSettingsColumn` and `#policiesSection` simply stack top to bottom); the JS
+  no longer toggles a `two-col` class anywhere. The reveal logic moved into a new
+  `updateAdditionalPoliciesVisibility()` function — `policiesSection.show` now requires
+  `anyGroupsEnabled && corePolicyState.saved` together, called once at page load (so a reopened
+  project with the core policy already saved shows Additional Policies immediately) and again inside
+  the "Save Core Policy" click handler (so saving it live-reveals the section right below the
+  now-collapsed core card, matching the brief's own "core canvas collapses and now client can see
+  additional policies section right below" description). `#coreSettingsColumn`'s pre-existing
+  `.centered`/`.compact` behavior is unchanged. Separately, per the same request, additional policy
+  cards are now displayed with Desk Group policies before User Group policies — `renderPolicies()`
+  sorts a copy of `additionalPolicies` by `groupType` (stable sort, so creation order within each
+  type is preserved) purely for display; the underlying array/storage order is untouched, so this
+  doesn't affect editing, removal, or the (still capped at 3) creation limit. Chose a single mixed
+  list with type-based sort order over two separately-labelled Desk/User subsections with their own
+  add buttons, since a single "+ Create New Policy" button stays simpler for the client (a policy's
+  Desk/User classification is already visible via its badge). Verified via jsdom across four
+  scenarios: core unsaved (section hidden regardless of group settings), core saved with a policy
+  override in use (section shown), core saved with no policy override in use (section stays hidden),
+  and clicking Save Core Policy live-revealing the section while collapsing the core card — plus a
+  render-order check confirming Desk Group cards sort ahead of User Group cards while preserving
+  each type's own relative creation order; zero runtime errors, `two-col` class never applied.
 -->
 
 
@@ -1766,6 +1785,10 @@
     corePolicyState.collapsed = true;
     saveCorePolicyState();
     renderCorePolicyCard();
+    // Additional Policies (if applicable) only reveals itself once the core policy has actually
+    // been saved — see updateAdditionalPoliciesVisibility() further down, which also runs once at
+    // page load so a project reopened with the core policy already saved shows it immediately.
+    updateAdditionalPoliciesVisibility();
     saveDot.classList.add('show');
     setTimeout(() => saveDot.classList.remove('show'), 900);
   });
@@ -2093,7 +2116,15 @@
 
   function renderPolicies() {
     const list = document.getElementById('policiesList');
-    list.innerHTML = additionalPolicies.map(policyCardHtml).join('');
+    // Display Desk Group policies before User Group policies (a stable sort of a copy, so creation
+    // order within each type is preserved and the underlying additionalPolicies array/order used
+    // for storage is untouched) — this mirrors the precedence notice's own Desk-then-User framing,
+    // reading top to bottom as "base" policies followed by the ones that override them.
+    const sortedPolicies = additionalPolicies.slice().sort((a, b) => {
+      if (a.groupType === b.groupType) return 0;
+      return a.groupType === 'desk' ? -1 : 1;
+    });
+    list.innerHTML = sortedPolicies.map(policyCardHtml).join('');
     list.querySelectorAll('.policy-card').forEach(wirePolicyCard);
 
     const addBtn = document.getElementById('addPolicyBtn');
@@ -2118,12 +2149,17 @@
     renderPolicies();
   });
 
-  // Reveal the section once Desk Groups and/or User Groups are in use, lay it out as a second
-  // column beside the core policy in that case, and re-centre the core settings column on its own
-  // when neither is in use (nothing to sit beside it in that case).
-  document.getElementById('policiesSection').classList.toggle('show', anyGroupsEnabled);
+  // Reveal the section only once Desk Groups and/or User Groups actually need their own policy
+  // override AND the core policy itself has been saved — the client reviews/confirms the core
+  // policy first, then Additional Policies appears in the same single column right below the
+  // now-collapsed core card, rather than sitting beside it before the core policy is even settled.
+  // Re-centre the core settings column on its own when Additional Policies can never apply (nothing
+  // will ever sit below it in that case).
+  function updateAdditionalPoliciesVisibility() {
+    document.getElementById('policiesSection').classList.toggle('show', anyGroupsEnabled && corePolicyState.saved);
+  }
+  updateAdditionalPoliciesVisibility();
   document.getElementById('coreSettingsColumn').classList.toggle('centered', !anyGroupsEnabled);
-  document.getElementById('summaryColumns').classList.toggle('two-col', anyGroupsEnabled);
 
   // The "User Group settings take precedence" warning only makes sense when both kinds of group
   // actually exist — a client using only Desk Groups (no User Groups at all) has no precedence
