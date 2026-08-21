@@ -714,7 +714,7 @@
         <div id="policiesList" class="policies-grid"></div>
 
         <div class="add-policy-row">
-          <button class="add-policy-btn" id="addPolicyBtn" type="button">+ Duplicate Core Policy</button>
+          <button class="add-policy-btn" id="addPolicyBtn" type="button">+ Create New Policy</button>
           <span class="policy-count-note" id="policyCountNote">0 of 3 additional policies created</span>
         </div>
       </div>
@@ -1405,7 +1405,19 @@
   with the status pill still reading "Save" (not "Saved"), shows the error and focuses the name
   field; typing "Finance" clears the error, and clicking Save Policy again then collapses the card
   and flips the pill to "Saved" as normal.
+
+  MOST RECENT CHANGE: per a request to stop calling this button "Duplicate," its label changed from
+  "+ Duplicate Core Policy" to "+ Create New Policy" — purely a copy change, `id="addPolicyBtn"` and
+  its click handler are untouched, so a new policy still starts as a live copy of the actual,
+  currently-configured core policy (via `getCorePolicySnapshot()`) the same way it always has; only
+  how that starting point is described to the client changed, since "Create New Policy" reads more
+  naturally as adding a policy than "Duplicate" does. Historical NOTE prose elsewhere on this page
+  that quotes the old "+ Duplicate Core Policy" label while describing past decisions was left
+  as-is. Verified via jsdom: the button now reads "+ Create New Policy" and clicking it still adds a
+  policy pre-filled with the core policy's live values (e.g. prebookingDays copied through correctly)
+  with zero runtime errors.
 -->
+
 
 <script>
 (function(){
