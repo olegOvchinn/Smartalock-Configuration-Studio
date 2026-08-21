@@ -252,7 +252,6 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <p>Decide how far in advance users can book a desk. Some workplaces cap this at just a few days ahead, while others allow up to two weeks — or turn advance booking off entirely so desks can only be booked for immediate, same-day use.</p>
       </div>
 
       <div class="policy-grid single">
@@ -437,6 +436,13 @@
   file's own NOTE) rather than repeating it. The paragraph text itself is unchanged. Re-verified via
   jsdom: `h2.section-title` no longer exists on the page, and all other assertions (title, hero
   title, progress tip, min=0, status hint behavior, Reset) still pass.
+
+  MOST RECENT CHANGE: per a request to remove the intro paragraph under the "Configure" eyebrow
+  ("Decide how far in advance users can book a desk...") — its content duplicated the policy card's
+  own description just below, which already explains the default, the max, and what 0 does. The
+  `.section-head` block is now just the bare "Configure" eyebrow with no paragraph beneath it.
+  Re-verified via jsdom: all prior assertions (title, hero title, no duplicate section-title, min=0,
+  status hint on/off/singular behavior, Reset) still pass with zero runtime errors.
 -->
 
 <script>
