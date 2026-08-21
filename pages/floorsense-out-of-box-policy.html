@@ -337,6 +337,11 @@
   .policy-name-error.show { display: block; }
   .policy-save-hint { font-size: 11.48px; color: var(--danger); margin-right: auto; display: none; }
   .policy-save-hint.show { display: block; }
+  .policy-name-label {
+    width: 100%; font-family: var(--font-text); font-size: 11.27px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); margin: 0 0 6px;
+  }
+  .policy-name-label .required-asterisk { color: var(--danger); margin-left: 2px; }
 
   .policy-name-input {
     flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; color: var(--ink);
@@ -1416,6 +1421,19 @@
   as-is. Verified via jsdom: the button now reads "+ Create New Policy" and clicking it still adds a
   policy pre-filled with the core policy's live values (e.g. prebookingDays copied through correctly)
   with zero runtime errors.
+
+  MOST RECENT CHANGE: per a follow-up request that every policy has to have a name, made that
+  requirement visible up front rather than only surfacing it as an error after an empty-name Save
+  attempt (which was already blocked — see the earlier "Block saving an unnamed additional policy"
+  change above). Added a `<label class="policy-name-label" for="policyNameInput-${p.id}">Policy
+  name<span class="required-asterisk">*</span></label>` above the name input (a per-card unique id
+  since multiple policy cards render on the page at once), and gave the input itself `required` and
+  `aria-required="true"` attributes for semantics/screen-reader support. The existing block-on-save
+  logic, error message, and error-clearing-on-input behavior are unchanged — this is purely making
+  the already-enforced rule visible before the client hits Save. Verified via jsdom: the label
+  renders with the asterisk, `for`/`id` match, `required`/`aria-required` are present on the input,
+  and clicking Save Policy on a still-unnamed card is still blocked (card stays expanded), zero
+  runtime errors.
 -->
 
 
@@ -1885,7 +1903,8 @@
         <div class="policy-card-body">
         <div class="policy-card-body-inner">
         <div class="policy-card-header">
-          <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, Help Desk" value="${escapeHtml(p.name)}">
+          <label class="policy-name-label" for="policyNameInput-${p.id}">Policy name<span class="required-asterisk">*</span></label>
+          <input type="text" id="policyNameInput-${p.id}" class="policy-name-input" data-field="name" required aria-required="true" placeholder="e.g. Finance, Help Desk" value="${escapeHtml(p.name)}">
           <p class="policy-name-error">Give this policy a name before saving.</p>
         </div>
 
