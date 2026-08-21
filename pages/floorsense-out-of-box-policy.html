@@ -1319,6 +1319,38 @@
   policy's badge reads "Desk Group" for desk-only/both and "User Group" for user-only — 12
   assertions, zero runtime errors. Re-ran the existing policy-card regression and Save-button test
   suites to confirm nothing else broke.
+
+  MOST RECENT CHANGE: per a request that a duplicated policy's data should actually be a copy of
+  the core policy (so a client can modify then save), discovered that "+ Duplicate Core Policy" was
+  really copying `CORE_POLICY_DEFAULTS` — a fixed constant that had already drifted from the real
+  core policy in more than one place (e.g. Check-in Window's real default is 30/60 min, not the
+  60/60 the constant claimed; Prebooking window can now be anywhere from 0-30 days, not always 8).
+  Added `getCorePolicySnapshot()`, which reads the ACTUAL currently-configured core policy from its
+  real sources — `project.floorsense.wizard.{checkinWindow,prebookingAdvance,
+  defaultReservationTimes,checkinMethods,fme,outOfBoxPolicy}` — and is now used everywhere a policy
+  is copied from the core: the initial load mapping (so an older saved policy missing a field falls
+  back to the live core value, not a stale constant) and the "+ Duplicate Core Policy" handler.
+  `CORE_POLICY_DEFAULTS` itself is unchanged and kept only for its original narrow purpose — the
+  `input[type=number]` change handler's fallback when a field somehow ends up non-numeric.
+  Two fields needed a small mapping since the additional-policy schema doesn't exactly mirror the
+  live state's shape: (1) Default reservation duration — when the real page is in "fixed-end" mode
+  rather than "fixed duration," there's no single hours number to copy directly, so it's
+  approximated as the equivalent hours between the configured start and end time. (2) Access
+  Methods — the live system has one combined "app or desktop browser" method (`'prebooking'`), not
+  separate App/Desktop toggles, so both `accessApp`/`accessDesktop` mirror that same flag; the `qr`
+  method has no equivalent field on the additional-policy card and isn't carried over. `nsnpMode`
+  intentionally stays `'depends'` regardless of the core policy's real NSNP configuration, since
+  "depends on [core] policy" is already the correct representation of "matches the core policy" for
+  that specific field.
+  Verified via jsdom with every relevant core setting deliberately set away from
+  `CORE_POLICY_DEFAULTS`' old fixed values (45/90 min, 21 days, 4 hrs, both behaviour toggles off,
+  card+qr+wallet access with no app/desktop, FME "all", recurring on, DND off, max desks 7): a newly
+  duplicated policy copies every one of those real values correctly (14 field assertions), the
+  client can then modify one field and Save without the rest reverting to the snapshot (persists
+  correctly to localStorage), and a separate case confirms the fixed-end-mode duration
+  approximation (08:00–17:00 → 9 hours) — 20 assertions total, zero runtime errors. Re-ran the full
+  existing test suite (policy regression, Save button, precedence notice) to confirm nothing else
+  broke.
 -->
 
 <script>
@@ -1657,11 +1689,12 @@
   /* ---------------- additional (neighbourhood-specific) policies ----------------
      Only shown once Desk Groups are in use. Every field here mirrors a setting that already has an
      Edit button on the core policy above: Check-in Window, Prebooking & Duration, Check-in
-     Behaviour, Access Methods, and Additional Options. CORE_POLICY_DEFAULTS matches the literal
-     fixed values shown in those read-only rows above (60/60 min, 8 days, 9 hrs, swipe-out required,
-     auto-cancel on elsewhere, Cards/App/Desktop on, Wallet Pass off, NSNP "depends", sit-stand off,
-     recurring off, DND on) — duplicating a policy starts from an exact copy of those, so the client
-     only needs to touch what's actually different for that group. */
+     Behaviour, Access Methods, and Additional Options. CORE_POLICY_DEFAULTS is only used as a
+     last-resort fallback when a number field somehow ends up non-numeric (see the input[type=number]
+     change handler below) — it is NOT what a duplicated policy actually starts from; that's
+     getCorePolicySnapshot() just below, which reads the real, currently-configured core policy
+     values (which can differ from these fixed numbers — e.g. Check-in Window's real default is
+     30/60 min, Prebooking window can be anywhere from 0-30 days, etc.). */
   const CORE_POLICY_DEFAULTS = {
     checkinBeforeMin: 60, checkinAfterMin: 60,
     prebookingDays: 8, reservationDurationHours: 9,
@@ -1671,6 +1704,59 @@
     maxDesksPerUser: 1
   };
   const MAX_ADDITIONAL_POLICIES = 3;
+
+  function parseSnapshotTime(hhmm) {
+    const [h, m] = String(hhmm || '').split(':').map(Number);
+    return (Number.isFinite(h) ? h : 0) * 60 + (Number.isFinite(m) ? m : 0);
+  }
+
+  // Builds a snapshot of the ACTUAL core policy as currently configured across this page and the
+  // dedicated pages it links to — this is what a duplicated policy should start as an exact copy
+  // of, so a client only needs to touch what's genuinely different for that group. Falls back to
+  // each field's own documented default (matching the read-only rows' own fallback logic above)
+  // when nothing's been saved yet for a given setting.
+  function getCorePolicySnapshot() {
+    const checkinWindowState = project.floorsense.wizard.checkinWindow || {};
+    const prebookingState = project.floorsense.wizard.prebookingAdvance || {};
+    const durationState = project.floorsense.wizard.defaultReservationTimes || {};
+    const checkinMethodsState = project.floorsense.wizard.checkinMethods || {};
+    const fmeState = project.floorsense.wizard.fme || {};
+    const oob = project.floorsense.wizard.outOfBoxPolicy || {};
+    const selectedMethods = Array.isArray(checkinMethodsState.selected) ? checkinMethodsState.selected : ['prebooking'];
+
+    const endMode = durationState.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
+    let reservationDurationHours = Number.isFinite(durationState.defaultDurationHours) ? durationState.defaultDurationHours : 9;
+    if (endMode === 'fixed-end') {
+      // No separate "fixed end time" concept on the additional-policy card — approximate it as the
+      // equivalent number of hours between the configured start and end time, so duplicating still
+      // starts from something representative rather than silently reverting to the generic default.
+      const diffMinutes = ((parseSnapshotTime(durationState.defaultEndTime || '17:00') - parseSnapshotTime(durationState.defaultStartTime || '08:30')) + 1440) % 1440;
+      if (diffMinutes > 0) reservationDurationHours = Math.round((diffMinutes / 60) * 10) / 10;
+    }
+
+    return {
+      checkinBeforeMin: Number.isFinite(checkinWindowState.checkInEarlyMinutes) ? checkinWindowState.checkInEarlyMinutes : 30,
+      checkinAfterMin: Number.isFinite(checkinWindowState.checkInLateMinutes) ? checkinWindowState.checkInLateMinutes : 60,
+      prebookingDays: Number.isFinite(prebookingState.prebookingAdvanceDays) ? prebookingState.prebookingAdvanceDays : 8,
+      reservationDurationHours: reservationDurationHours,
+      swipeOutRequired: oob.swipeOutRequired !== false,
+      autoCancelOnElsewhere: oob.autoCancelOnElsewhere !== false,
+      // The live Access Methods only has one combined "app or desktop browser" method
+      // ('prebooking'), not separate App/Desktop toggles — mirror it onto both fields. QR has no
+      // equivalent field on the additional-policy card and is intentionally not carried over.
+      accessCards: selectedMethods.includes('card'),
+      accessApp: selectedMethods.includes('prebooking'),
+      accessDesktop: selectedMethods.includes('prebooking'),
+      accessWalletPass: selectedMethods.includes('wallet'),
+      // 'depends' means "same as the core policy" for this field specifically — already correct by
+      // definition for a fresh copy, so it isn't read from anywhere else.
+      nsnpMode: 'depends',
+      sitStandEnabled: (fmeState.mode || 'none') !== 'none',
+      recurringEnabled: typeof oob.recurringEnabled === 'boolean' ? oob.recurringEnabled : false,
+      dndEnabled: typeof oob.dndEnabled === 'boolean' ? oob.dndEnabled : true,
+      maxDesksPerUser: Number.isFinite(oob.maxDesksPerUser) ? oob.maxDesksPerUser : 1
+    };
+  }
 
   // Only reveal the Additional Policies section once Desk Groups and/or User Groups are actually
   // in use — set on floorsense-desk-user-groups-03.html; "none" (or missing) means that kind of
@@ -1687,7 +1773,7 @@
 
   let additionalPolicies = (Array.isArray(project.floorsense.wizard.additionalPolicies) ? project.floorsense.wizard.additionalPolicies : [])
     .slice(0, MAX_ADDITIONAL_POLICIES)
-    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false }, CORE_POLICY_DEFAULTS, p));
+    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false }, getCorePolicySnapshot(), p));
 
   function savePolicies() {
     project.floorsense.wizard.additionalPolicies = additionalPolicies;
@@ -1941,7 +2027,7 @@
     const newId = 'policy-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     additionalPolicies.push(Object.assign(
       { id: newId, name: '', groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false },
-      CORE_POLICY_DEFAULTS
+      getCorePolicySnapshot()
     ));
     expandedIds.add(newId); // new policies open expanded so there's something to edit right away
     savePolicies();
