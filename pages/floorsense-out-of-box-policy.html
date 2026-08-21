@@ -343,18 +343,6 @@
   .policy-card-save-row { display: flex; justify-content: flex-end; margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--line); }
   .policy-card-save-row button.primary { padding: 9px 20px; font-size: 12.5px; }
 
-  /* ---------- Desk Group / User Group type choice, a compact 2-way pill toggle at the top of
-     each policy card. Whichever type isn't currently in use is shown disabled — a client can only
-     pick between types that are actually enabled on floorsense-desk-user-groups-03.html. ---------- */
-  .policy-type-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .policy-type-pill {
-    flex: 1; text-align: center; font-family: var(--font-text); font-weight: 600; font-size: 11.8px;
-    padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer;
-    color: var(--ink-soft); background: var(--paper); transition: border-color .15s, background .15s, color .15s;
-  }
-  .policy-type-pill.selected { border-color: var(--accent); background: var(--accent-wash); color: var(--accent-deep); }
-  .policy-type-pill.disabled-choice { opacity: 0.4; cursor: not-allowed; }
-  .policy-type-pill:not(.disabled-choice):hover { border-color: var(--accent); }
   .policy-name-input {
     flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; color: var(--ink);
     border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--paper-soft);
@@ -1351,6 +1339,31 @@
   approximation (08:00–17:00 → 9 hours) — 20 assertions total, zero runtime errors. Re-ran the full
   existing test suite (policy regression, Save button, precedence notice) to confirm nothing else
   broke.
+
+  MOST RECENT CHANGE: per a request to remove the "Desk Group Setting" / "User Group Setting"
+  buttons from each duplicated policy card, deleted `typePillsHtml()` entirely along with its call
+  site (right after the name input in `policyCardHtml()`), its click-wiring block in
+  `wirePolicyCard()`, and the now-dead `.policy-type-row`/`.policy-type-pill` CSS. A policy's
+  `groupType` is no longer changeable from within the card — it's set once, automatically, when the
+  policy is created (defaulting to `'desk'` if Desk Groups are enabled, else `'user'`, per the
+  existing `deskGroupsEnabled ? 'desk' : 'user'` logic already covered by an earlier fix) and stays
+  fixed after that. The read-only `.policy-type-badge` pill in the collapsed summary row (still
+  showing "Desk Group" / "User Group") is unaffected — it now simply reflects that one-time
+  assignment rather than a live, user-editable choice. `deskGroupsEnabled`/`userGroupsEnabled`
+  remain in use elsewhere (the default-groupType assignment and the precedence-notice visibility
+  toggle), so nothing else needed to change.
+  Verified via jsdom: no `.policy-type-pill` elements render on a card, the badge still shows the
+  correct auto-assigned type, and the rest of the card (number/switch/select/checkbox edits,
+  Save/collapse, Remove) all continue to work with zero runtime errors — re-ran the full existing
+  test suite (policy regression, Save button, precedence notice, duplicate-copies-core including
+  the fixed-end approximation, X button) to confirm nothing else broke.
+
+  MOST RECENT CHANGE: per a follow-up, the additional-policy card's own status pill (distinct from
+  the core policy card's identically-worded one, which is unchanged) now reads "Save" instead of
+  "Not yet saved" in its unsaved state — both in `policyCardHtml()`'s initial render and in
+  `markPolicyUnsaved()` (the helper that reverts the pill after editing a previously-saved policy).
+  "Saved" (once the Save Policy button has been clicked) is unchanged. Re-ran the full test suite
+  with the updated expected text — all still pass with zero runtime errors.
 -->
 
 <script>
@@ -1797,16 +1810,6 @@
             </label>`;
   }
 
-  function typePillsHtml(p) {
-    const deskSelected = p.groupType === 'desk';
-    const userSelected = p.groupType === 'user';
-    return `
-      <div class="policy-type-row">
-        <button type="button" class="policy-type-pill${deskSelected ? ' selected' : ''}${deskGroupsEnabled ? '' : ' disabled-choice'}" data-type="desk"${deskGroupsEnabled ? '' : ' disabled'}>Desk Group Setting</button>
-        <button type="button" class="policy-type-pill${userSelected ? ' selected' : ''}${userGroupsEnabled ? '' : ' disabled-choice'}" data-type="user"${userGroupsEnabled ? '' : ' disabled'}>User Group Setting</button>
-      </div>`;
-  }
-
   function policyCardHtml(p) {
     const expanded = expandedIds.has(p.id);
     const trimmedName = String(p.name || '').trim();
@@ -1819,7 +1822,7 @@
             <svg class="policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
             <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
-            <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : 'Not yet saved'}</span>
+            <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : 'Save'}</span>
           </div>
           <button type="button" class="policy-remove-btn" data-action="remove" aria-label="Remove policy" title="Remove policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>
@@ -1828,7 +1831,6 @@
         <div class="policy-card-header">
           <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, CEO" value="${escapeHtml(p.name)}">
         </div>
-        ${typePillsHtml(p)}
 
         <div class="policy-field-group">
           <p class="policy-field-group-title">Prebooking &amp; Duration</p>
@@ -1919,7 +1921,7 @@
     policy.saved = false;
     const statusEl = card.querySelector('.policy-card-status');
     if (statusEl) {
-      statusEl.textContent = 'Not yet saved';
+      statusEl.textContent = 'Save';
       statusEl.classList.remove('saved');
     }
   }
@@ -1956,20 +1958,6 @@
       expandedIds.delete(id);
       savePolicies();
       renderPolicies();
-    });
-    card.querySelectorAll('.policy-type-pill').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (btn.disabled) return;
-        const type = btn.getAttribute('data-type');
-        policy.groupType = type;
-        markPolicyUnsaved(card, policy);
-        savePolicies();
-        card.querySelectorAll('.policy-type-pill').forEach(b => b.classList.toggle('selected', b.getAttribute('data-type') === type));
-        const badge = card.querySelector('.policy-type-badge');
-        badge.className = 'policy-type-badge ' + type;
-        badge.textContent = type === 'user' ? 'User Group' : 'Desk Group';
-      });
     });
     card.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('change', () => {
