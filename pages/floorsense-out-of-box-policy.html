@@ -327,10 +327,17 @@
   }
   .policy-type-badge.desk { background: var(--accent-wash); color: var(--accent-deep); }
   .policy-type-badge.user { background: #E8F0FE; color: #1A56DB; }
+  .policy-card-status {
+    flex-shrink: 0; font-size: 9.6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 9px; border-radius: 999px; white-space: nowrap; background: var(--paper-soft); color: var(--ink-soft);
+  }
+  .policy-card-status.saved { background: var(--accent-wash); color: var(--accent-deep); }
   .policy-card-body { display: none; padding: 0 22px 20px; border-top: 1px solid var(--line); }
   .policy-card.expanded .policy-card-body { display: block; }
   .policy-card-body-inner { padding-top: 16px; }
   .policy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .policy-card-save-row { display: flex; justify-content: flex-end; margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .policy-card-save-row button.primary { padding: 9px 20px; font-size: 12.5px; }
 
   /* ---------- Desk Group / User Group type choice, a compact 2-way pill toggle at the top of
      each policy card. Whichever type isn't currently in use is shown disabled — a client can only
@@ -1248,6 +1255,29 @@
   non-default saved states for each (21 total assertions for Access Methods/Idle/FME, 15 for
   Prebooking window/Default duration including the fixed-end mode branch) — all passing with zero
   runtime errors.
+
+  MOST RECENT CHANGE: per a request to add a Save button to each Additional Policy card and have it
+  collapse once saved, `policyCardHtml()` gained a `.policy-card-status` pill in the summary row
+  (next to the type badge — "Not yet saved" by default, "Saved" once confirmed, styled exactly like
+  the core policy card's own `.core-policy-status`/`.saved` pattern) and a `.policy-card-save-row`
+  with a "Save Policy" button at the bottom of the card body, mirroring `.core-policy-save-row`/
+  `#coreSaveBtn` above. Each policy object now carries a `saved` boolean (defaulting to `false` for
+  both newly-created policies and any loaded from an older saved project that predates this field).
+  Clicking "Save Policy" sets `policy.saved = true`, removes the card's id from `expandedIds` (so it
+  collapses), calls `savePolicies()`, and re-renders — identical in spirit to how "Save Core Policy"
+  sets `saved`/`collapsed` and persists. Since these cards (unlike the core policy card) have actual
+  editable fields, a new `markPolicyUnsaved(card, policy)` helper is called from every field-edit
+  handler (name input, type pill, number inputs, switches, select, checkboxes); if the policy was
+  previously saved, it flips `policy.saved` back to `false` and updates the status pill's text/class
+  directly (no full re-render, so mid-edit input focus isn't lost) — signalling that a saved-and-
+  collapsed policy which gets reopened and edited again needs re-saving before its "Saved" status is
+  trustworthy. Verified via jsdom: a newly-added policy starts expanded with "Not yet saved" and a
+  visible Save button; clicking Save collapses it, flips the pill to "Saved", and persists
+  `saved: true` to localStorage; re-expanding and editing the name flips the pill back to "Not yet
+  saved" without collapsing the card; and a project loaded with a pre-saved policy starts collapsed
+  showing "Saved" (18 assertions). A separate regression pass re-exercised type-pill switching,
+  number/switch field edits, and Remove after the new Save flow — all still behave correctly with
+  zero runtime errors (8 assertions).
 -->
 
 <script>
@@ -1616,7 +1646,7 @@
 
   let additionalPolicies = (Array.isArray(project.floorsense.wizard.additionalPolicies) ? project.floorsense.wizard.additionalPolicies : [])
     .slice(0, MAX_ADDITIONAL_POLICIES)
-    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user' }, CORE_POLICY_DEFAULTS, p));
+    .map(p => Object.assign({ groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false }, CORE_POLICY_DEFAULTS, p));
 
   function savePolicies() {
     project.floorsense.wizard.additionalPolicies = additionalPolicies;
@@ -1662,6 +1692,7 @@
             <svg class="policy-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             <span class="policy-card-name${trimmedName ? '' : ' placeholder'}">${trimmedName ? escapeHtml(p.name) : 'Untitled policy'}</span>
             <span class="policy-type-badge ${badgeType}">${badgeLabel}</span>
+            <span class="policy-card-status${p.saved ? ' saved' : ''}">${p.saved ? 'Saved' : 'Not yet saved'}</span>
           </div>
           <button type="button" class="policy-remove-btn" data-action="remove">Remove</button>
         </div>
@@ -1743,9 +1774,27 @@
             ${switchHtml('dndEnabled', p.dndEnabled)}
           </div>
         </div>
+
+        <div class="policy-card-save-row">
+          <button type="button" class="primary policy-save-btn">Save Policy</button>
+        </div>
         </div>
         </div>
       </div>`;
+  }
+
+  // Marks a policy as not-yet-saved again if it's edited after having been saved (the Save Policy
+  // button collapses the card and flips it to "Saved" — touching a field afterward means that
+  // confirmation is stale until the client saves again). Updates the status pill directly rather
+  // than a full re-render, matching the existing name-input pattern, so mid-edit focus isn't lost.
+  function markPolicyUnsaved(card, policy) {
+    if (!policy.saved) return;
+    policy.saved = false;
+    const statusEl = card.querySelector('.policy-card-status');
+    if (statusEl) {
+      statusEl.textContent = 'Not yet saved';
+      statusEl.classList.remove('saved');
+    }
   }
 
   function wirePolicyCard(card) {
@@ -1760,6 +1809,7 @@
     });
     card.querySelector('.policy-name-input').addEventListener('input', (e) => {
       policy.name = e.target.value;
+      markPolicyUnsaved(card, policy);
       savePolicies();
       const trimmed = policy.name.trim();
       const nameEl = card.querySelector('.policy-card-name');
@@ -1773,12 +1823,20 @@
       savePolicies();
       renderPolicies();
     });
+    card.querySelector('.policy-save-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      policy.saved = true;
+      expandedIds.delete(id);
+      savePolicies();
+      renderPolicies();
+    });
     card.querySelectorAll('.policy-type-pill').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (btn.disabled) return;
         const type = btn.getAttribute('data-type');
         policy.groupType = type;
+        markPolicyUnsaved(card, policy);
         savePolicies();
         card.querySelectorAll('.policy-type-pill').forEach(b => b.classList.toggle('selected', b.getAttribute('data-type') === type));
         const badge = card.querySelector('.policy-type-badge');
@@ -1792,6 +1850,7 @@
         const val = parseInt(input.value, 10);
         policy[field] = Number.isFinite(val) ? val : CORE_POLICY_DEFAULTS[field];
         input.value = policy[field];
+        markPolicyUnsaved(card, policy);
         savePolicies();
       });
     });
@@ -1801,18 +1860,21 @@
         policy[field] = !policy[field];
         btn.classList.toggle('on', policy[field]);
         btn.setAttribute('aria-checked', policy[field] ? 'true' : 'false');
+        markPolicyUnsaved(card, policy);
         savePolicies();
       });
     });
     card.querySelectorAll('select.policy-select').forEach(sel => {
       sel.addEventListener('change', () => {
         policy[sel.getAttribute('data-field')] = sel.value;
+        markPolicyUnsaved(card, policy);
         savePolicies();
       });
     });
     card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', () => {
         policy[cb.getAttribute('data-field')] = cb.checked;
+        markPolicyUnsaved(card, policy);
         savePolicies();
       });
     });
@@ -1837,7 +1899,7 @@
     if (additionalPolicies.length >= MAX_ADDITIONAL_POLICIES) return;
     const newId = 'policy-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     additionalPolicies.push(Object.assign(
-      { id: newId, name: '', groupType: deskGroupsEnabled ? 'desk' : 'user' },
+      { id: newId, name: '', groupType: deskGroupsEnabled ? 'desk' : 'user', saved: false },
       CORE_POLICY_DEFAULTS
     ));
     expandedIds.add(newId); // new policies open expanded so there's something to edit right away
