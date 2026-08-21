@@ -279,20 +279,22 @@
   .policies-precedence-notice { display: none; }
   .policies-precedence-notice.show { display: flex; }
 
-  /* ---------- two-column grid for policy cards once created, same idea as
-     floorsense-desk-user-groups-03.html's .groups-columns ---------- */
+  /* ---------- single-column stack of policy cards, matching the flush-left 640px width used by
+     .summary-group/.download-card above and every other wizard page's single-column convention.
+     This used to be a two-column grid (grid-template-columns: 1fr 1fr, max-width: 1064px) back when
+     it only ever rendered inside the ~460px-wide right-hand track of a two-column page layout, so
+     its own 900px collapse breakpoint never actually triggered in practice. Once the page layout
+     was flattened to a single stacked column (see NOTE history below), this section started
+     spanning the full panel width and the grid's second column became a real, visible right column
+     of policy cards — removed outright now that there's no narrow track constraining it. ---------- */
   .policies-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
-    max-width: 1064px; margin: 0 0 4px;
-  }
-  @media (max-width: 900px) {
-    .policies-grid { grid-template-columns: 1fr; }
+    display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 0 4px;
   }
 
   /* ---------- collapsed-by-default policy card: once a policy exists it shows as a compact row
      (name + type badge + Remove), and a client taps it to expand and see/edit the actual fields —
      rather than every card always showing its full form, which got noisy once several existed
-     side by side in the two-column grid below. ---------- */
+     stacked below each other. ---------- */
   .policy-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1622,6 +1624,23 @@
   pure styling-parity pass; flagged for the client rather than guessed at. Verified via jsdom: Core
   Policy description and status pill still render correctly, still visible in compact mode, and
   expand/collapse/save behavior is unaffected — zero runtime errors.
+MOST RECENT CHANGE: per a request to check why this page was still split into two
+columns and remove the right column, found that .policies-grid (the container for additional
+policy cards, #policiesList) still used a leftover grid-template-columns: 1fr 1fr from an
+earlier design generation where the whole page was a two-column layout (core policy in a narrow
+left track, Additional Policies in the wider right track — see the "MOST RECENT CHANGE: per a
+follow-up request, the core policy and Additional Policies now sit side by side" note further
+down). That outer two-column layout was removed later (see the "single-column layout" NOTE),
+but .policies-grid's own inner 2-column grid was never removed with it — it had been harmless
+while confined to a ~460px-wide track (well under its 900px collapse breakpoint), but once the
+page flattened to one full-width stacked column, 2-3 additional policy cards could actually
+render side by side as a real right column. Changed .policies-grid from a 2-column CSS grid to a
+single-column flex stack (max-width: 640px, matching .summary-group/.download-card above it),
+removing the now-unnecessary 900px media-query breakpoint entirely. No JS changes were needed —
+this was a pure leftover-CSS issue. Verified via python3 /tmp/validate.py (HTML tag balance) and
+node --check on the extracted <script> block; no runtime behavior changed, only the CSS layout of
+the policy-card list.
+
 -->
 
 
