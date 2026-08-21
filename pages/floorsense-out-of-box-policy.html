@@ -328,15 +328,22 @@
   .policy-card-body { display: none; padding: 0 22px 20px; border-top: 1px solid var(--line); }
   .policy-card.expanded .policy-card-body { display: block; }
   .policy-card-body-inner { padding-top: 16px; }
-  .policy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .policy-card-save-row { display: flex; justify-content: flex-end; margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .policy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .policy-card-save-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--line); }
   .policy-card-save-row button.primary { padding: 9px 20px; font-size: 12.5px; }
+  .policy-name-error {
+    display: none; width: 100%; font-size: 12.16px; font-weight: 500; color: var(--danger); margin: 0 0 14px;
+  }
+  .policy-name-error.show { display: block; }
+  .policy-save-hint { font-size: 11.48px; color: var(--danger); margin-right: auto; display: none; }
+  .policy-save-hint.show { display: block; }
 
   .policy-name-input {
     flex: 1; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; color: var(--ink);
     border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--paper-soft);
   }
   .policy-name-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .policy-name-input.error { border-color: var(--danger); }
   .policy-remove-btn {
     flex-shrink: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
     color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 50%; padding: 0; cursor: pointer;
@@ -1385,6 +1392,19 @@
   different booking policy for specific Desk Groups and/or User Groups" to match the tightened
   condition. Defaults are unaffected: DEFAULT_USER_GROUPS on page 03 still has policy:true (so
   Additional Policies still shows out of the box), DEFAULT_DESK_GROUPS still has policy:false.
+
+  MOST RECENT CHANGE: per a request to stop an unnamed policy from being saved, the Save Policy
+  button's click handler now checks `policy.name.trim()` first — if it's empty, the save is blocked
+  entirely (no `policy.saved = true`, no collapse, no `savePolicies()`/`renderPolicies()`): the card
+  stays expanded, the name input gets an `.error` red-border class and a new inline
+  `<p class="policy-name-error">Give this policy a name before saving.</p>` message is shown right
+  below it, and the input is focused so the required fix is immediately obvious. Typing a non-empty
+  name clears both the red border and the message right away (wired into the existing name-input
+  `input` handler), so the client doesn't have to click Save again just to dismiss the error.
+  Verified via jsdom: clicking Save Policy on a freshly-added, still-unnamed card leaves it expanded
+  with the status pill still reading "Save" (not "Saved"), shows the error and focuses the name
+  field; typing "Finance" clears the error, and clicking Save Policy again then collapses the card
+  and flips the pill to "Saved" as normal.
 -->
 
 <script>
@@ -1854,6 +1874,7 @@
         <div class="policy-card-body-inner">
         <div class="policy-card-header">
           <input type="text" class="policy-name-input" data-field="name" placeholder="e.g. Finance, Help Desk" value="${escapeHtml(p.name)}">
+          <p class="policy-name-error">Give this policy a name before saving.</p>
         </div>
 
         <div class="policy-field-group">
@@ -1968,6 +1989,13 @@
       const nameEl = card.querySelector('.policy-card-name');
       nameEl.textContent = trimmed || 'Untitled policy';
       nameEl.classList.toggle('placeholder', !trimmed);
+      // clear the "give this policy a name" error the moment there's real text to save, rather
+      // than making the client re-click Save Policy just to dismiss it.
+      if (trimmed) {
+        e.target.classList.remove('error');
+        const errorEl = card.querySelector('.policy-name-error');
+        if (errorEl) errorEl.classList.remove('show');
+      }
     });
     card.querySelector('.policy-remove-btn').addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1978,6 +2006,19 @@
     });
     card.querySelector('.policy-save-btn').addEventListener('click', (e) => {
       e.stopPropagation();
+      // an unnamed ("Untitled policy") card can't be saved — the name is how the client tells
+      // this policy apart from the core policy and any other additional policies, so a nameless
+      // one saved (and collapsed) would be indistinguishable and easy to lose track of. Block the
+      // save, keep the card open, flag the name field, and focus it so the fix is obvious.
+      if (!policy.name || !policy.name.trim()) {
+        const nameInput = card.querySelector('.policy-name-input');
+        const errorEl = card.querySelector('.policy-name-error');
+        nameInput.classList.add('error');
+        if (errorEl) errorEl.classList.add('show');
+        expandedIds.add(id);
+        nameInput.focus();
+        return;
+      }
       policy.saved = true;
       expandedIds.delete(id);
       savePolicies();
