@@ -558,7 +558,7 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Allow booking in advance</span>
-            <span class="value-group"><span class="value" id="prebookingWindowSummaryValue">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="prebookingWindowSummaryValue">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="prebookingWindowSummaryDesc">Users can book a desk up to 8 days ahead of time.</p>
         </div>
@@ -1209,6 +1209,11 @@
   back here after Save & continue on floorsense-checkin-methods-02.html, that row's edit-link href
   gained a `?return=summary` query param (`floorsense-checkin-methods-02.html?return=summary`).
   The redirect logic itself lives on the destination page — see its own NOTE for details.
+
+  MOST RECENT CHANGE: same pattern applied to the "Allow booking in advance" row per an identical
+  request for floorsense-prebooking-advance-04.html — its row-edit-link href gained
+  `?return=summary` (`floorsense-prebooking-advance-04.html?return=summary`). Redirect logic again
+  lives on the destination page.
 
   MOST RECENT CHANGE: per a request to "check the rest of the sections with edit buttons work,"
   audited every Edit/row-edit-link row on this page. Check-in Window and NSNP were already

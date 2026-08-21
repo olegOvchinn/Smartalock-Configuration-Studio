@@ -443,6 +443,18 @@
   `.section-head` block is now just the bare "Configure" eyebrow with no paragraph beneath it.
   Re-verified via jsdom: all prior assertions (title, hero title, no duplicate section-title, min=0,
   status hint on/off/singular behavior, Reset) still pass with zero runtime errors.
+
+  MOST RECENT CHANGE: per a request that editing "Allow booking in advance" from the Configuration
+  Summary and hitting Save & continue should return there rather than advancing to Business Hours,
+  this page picked up the same `?return=summary` pattern already used on
+  floorsense-checkin-methods-02.html. The summary's row-edit-link href gained the query param
+  (`floorsense-prebooking-advance-04.html?return=summary`), and continueBtn's click handler now
+  reads `new URLSearchParams(window.location.search).get('return') === 'summary'` into
+  `returnToSummary`, redirecting to floorsense-out-of-box-policy.html instead of
+  floorsense-business-hours-05.html when true — normal step-04-of-the-wizard navigation is
+  unaffected since this page is still reached that way by default. Verified via jsdom across both
+  URL variants (no query param vs. `?return=summary`): the page loads and the Save & continue click
+  fires with zero runtime errors in both cases.
 -->
 
 <script>
@@ -552,12 +564,15 @@
     queueSave();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('prebooking-advance');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-business-hours-05.html'; }, 500);
+    const nextUrl = returnToSummary ? 'floorsense-out-of-box-policy.html' : 'floorsense-business-hours-05.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 })();
 </script>
