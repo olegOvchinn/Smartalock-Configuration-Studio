@@ -237,20 +237,20 @@
   }
   .core-policy-summary {
     display: flex; align-items: center; justify-content: space-between; gap: 14px;
-    padding: 24px 30px; cursor: pointer;
+    padding: 20px 22px; cursor: pointer;
   }
   .core-policy-summary-main { display: flex; align-items: center; gap: 14px; }
-  .core-policy-chevron { width: 19px; height: 19px; color: var(--ink-soft); transition: transform .18s; flex-shrink: 0; }
+  .core-policy-chevron { width: 17px; height: 17px; color: var(--ink-soft); transition: transform .18s; flex-shrink: 0; }
   .core-policy-card.expanded .core-policy-chevron { transform: rotate(90deg); }
   .core-policy-heading { display: flex; flex-direction: column; gap: 4px; }
-  .core-policy-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; color: var(--ink); }
-  .core-policy-desc { margin: 0; font-size: 13px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; max-width: 540px; }
+  .core-policy-title { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); }
+  .core-policy-desc { margin: 0; font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; max-width: 540px; }
   .core-policy-status {
-    flex-shrink: 0; font-size: 10.6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
-    padding: 4px 11px; border-radius: 999px; background: var(--paper-soft); color: var(--ink-soft);
+    flex-shrink: 0; font-size: 9.6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 9px; border-radius: 999px; background: var(--paper-soft); color: var(--ink-soft);
   }
   .core-policy-status.saved { background: var(--accent-wash); color: var(--accent-deep); }
-  .core-policy-body { display: none; padding: 0 30px 30px; border-top: 1px solid var(--line); }
+  .core-policy-body { display: none; padding: 0 22px 22px; border-top: 1px solid var(--line); }
   .core-policy-card.expanded .core-policy-body { display: block; padding-top: 20px; }
   .core-policy-body .download-card { max-width: none; }
   .core-policy-body .summary-group {
@@ -447,7 +447,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .submit-guides-icon svg { width: 18px; height: 18px; }
-  .submit-guides-body h3 { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--accent-deep); }
+  .submit-guides-body h3 { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--accent-deep); }
   .submit-guides-body > p { margin: 0 0 14px; font-size: 13.12px; color: var(--accent-deep); }
   .submit-guides-continue {
     display: inline-block; font-family: var(--font-text); font-weight: 600; font-size: 12.5px;
@@ -470,7 +470,7 @@
   }
   button.primary:hover { background: var(--accent-deep); }
   button.primary:active { transform: scale(0.98); }
-  button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
@@ -1595,6 +1595,33 @@
   succeeds normally (collapses, "Saved"); and a value changed then reverted back to its original
   before saving correctly re-triggers the block and hint on the next Save Policy click. Re-ran the
   full existing test suite — zero runtime errors throughout.
+
+  MOST RECENT CHANGE: per a request to review this page's styling for uniformity with pages 01-04,
+  an audit found the shared tokens (`:root` variables, brand header, progress bar, hero/eyebrow,
+  card border/radius pattern, action bar, page-nav, footer) already matched exactly — the
+  discrepancies were all a handful of ad-hoc round-number values introduced by earlier changes on
+  this page specifically, rather than anything structural. Fixed: `.core-policy-summary` padding
+  `24px 30px` -> `20px 22px` (was noticeably larger than every other card header on the page —
+  `.summary-group`/`.desk-check-card`-equivalents all use 16-22px); `.core-policy-body` padding
+  matched to `0 22px 22px`; `.core-policy-chevron` `19px` -> `17px` to suit the smaller header;
+  `.core-policy-title` `20px/weight 600/var(--ink)` -> `21.32px/weight 500/var(--header-grey)` to
+  match the established "big card title" scale used by `.summary-group-head h3`/`.desk-title`/
+  `.policy-title` on this and every other wizard page; `.core-policy-desc` `13px` -> `14.76px`
+  matching the sitewide `.desk-desc`/`.policy-desc` description-text scale; `.core-policy-status`
+  `10.6px`/padding `4px 11px` -> `9.6px`/`3px 9px` to match this page's own sibling status pills
+  (`.policy-card-status`, `.policy-type-badge`); `.submit-guides-body h3` `18px` -> `14.76px` to
+  match the equivalent `.download-card-body h3` callout-heading size already used elsewhere on this
+  page; `button.primary:disabled` opacity `0.55` -> `0.4` to match `button.primary:disabled` on
+  pages 01/02 (03/04 don't define this rule at all, so 01/02 were the only precedent). Left
+  `.policy-card-name` (15px) alone — it's a compact list-item name inside a nested additional-policy
+  card, not a top-level "big card" title, so it isn't a fair comparison against the 21.32px scale.
+  Also deliberately did NOT add a `button.ghost`/Reset button to match 01-04's action bar, even
+  though this page is the only one without one — pages 01-04's Reset clears that page's own
+  in-progress selections, but this page has no equivalent single well-defined "reset" target (core
+  policy vs. additional policies vs. the whole review), so fabricating one wasn't in scope for a
+  pure styling-parity pass; flagged for the client rather than guessed at. Verified via jsdom: Core
+  Policy description and status pill still render correctly, still visible in compact mode, and
+  expand/collapse/save behavior is unaffected — zero runtime errors.
 -->
 
 
