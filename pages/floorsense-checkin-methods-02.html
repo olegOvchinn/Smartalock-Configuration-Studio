@@ -517,6 +517,19 @@
   MOST RECENT CHANGE: per a request to make that note warmer and less terse, it now reads "This is
   a paid add-on, so it's worth checking with us before selecting it." — softer tone, first person
   ("us") instead of the blunter imperative "consult before selecting this."
+
+  MOST RECENT CHANGE: per a request that tapping "Edit" on the Access Methods row in the
+  Configuration Summary (floorsense-out-of-box-policy.html) should return here to a "Save &
+  continue" that goes back to the summary rather than forward into the main wizard sequence.
+  Since this page is also reached normally as step 02 of the linear wizard (where Save & continue
+  must still advance to floorsense-desk-user-groups-03.html), a plain unconditional redirect
+  (the pattern used on the optional-feature hub pages) wasn't right here. Instead: the summary's
+  edit-link href gained a `?return=summary` query param, and continueBtn's click handler now reads
+  `new URLSearchParams(window.location.search).get('return') === 'summary'` into
+  `returnToSummary`, picking `floorsense-out-of-box-policy.html` as the redirect target instead of
+  `floorsense-desk-user-groups-03.html` when true. Verified via jsdom across both URLs (no query
+  param vs. `?return=summary`) that the page loads and the button click fires with zero runtime
+  errors, and that URLSearchParams parses the flag as expected.
 -->
 
 
@@ -632,12 +645,15 @@
     queueSave();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('checkin-methods');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-desk-user-groups-03.html'; }, 500);
+    const nextUrl = returnToSummary ? 'floorsense-out-of-box-policy.html' : 'floorsense-desk-user-groups-03.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 })();
 </script>

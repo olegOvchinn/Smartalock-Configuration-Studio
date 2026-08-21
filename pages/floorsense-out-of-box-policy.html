@@ -605,7 +605,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <h3><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>Access Methods</h3>
-          <a class="edit-link" href="floorsense-checkin-methods-02.html">Edit</a>
+          <a class="edit-link" href="floorsense-checkin-methods-02.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">Enabled methods</span><span class="value">Cards · App · Desktop</span></div>
@@ -1204,6 +1204,11 @@
   instead of risking drifting out of sync again. Verified via jsdom across 4 cases (no saved
   state/defaults, 45/90, 60/60 matching the old hardcoded wording exactly, and confirming
   `buildSummaryText()` picks up the dynamic value via the DOM with zero code changes there).
+
+  MOST RECENT CHANGE: per a request that tapping "Edit" on the Access Methods row should return
+  back here after Save & continue on floorsense-checkin-methods-02.html, that row's edit-link href
+  gained a `?return=summary` query param (`floorsense-checkin-methods-02.html?return=summary`).
+  The redirect logic itself lives on the destination page — see its own NOTE for details.
 -->
 
 <script>
