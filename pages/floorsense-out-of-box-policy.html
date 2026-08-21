@@ -577,8 +577,8 @@
           <a class="edit-link" href="floorsense-checkin-window-08.html">Edit</a>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Check-in window</span><span class="value">60 min before – 60 min after</span></div>
-          <p class="summary-desc">End users can confirm (check in to) a desk booking at the desk starting 60 minutes before the reservation's start time, and no later than 60 minutes after it. Example: for an 8:00 AM booking, check-in is available from 7:00 AM through to 9:00 AM.</p>
+          <div class="summary-row-top"><span class="label">Check-in window</span><span class="value" id="checkinWindowSummaryValue">60 min before – 60 min after</span></div>
+          <p class="summary-desc" id="checkinWindowSummaryDesc">End users can confirm (check in to) a desk booking at the desk starting 60 minutes before the reservation's start time, and no later than 60 minutes after it. Example: for an 8:00 AM booking, check-in is available from 7:00 AM through to 9:00 AM.</p>
         </div>
       </div>
 
@@ -1186,6 +1186,24 @@
   download-card's copy and icon-button label were updated accordingly ("View / Print Guide"), and
   the end-of-flow mailto note about attaching the guide manually was reworded to mention
   printing/saving it as a PDF first rather than just "downloading" it.
+
+  MOST RECENT CHANGE: per a request that the Check-in Window row "should reflect change if
+  edited," it was fixed the same way the NSNP row was earlier — the `.value` span
+  (`#checkinWindowSummaryValue`) and `.summary-desc` paragraph (`#checkinWindowSummaryDesc`) were
+  hardcoded to "60 min before – 60 min after" and its worked example regardless of what was
+  actually saved on floorsense-checkin-window-08.html. A new `renderCheckinWindowSummary()` IIFE
+  (with small `formatCheckinMinutes()`/`formatCheckinClock()` helpers) now reads
+  `project.floorsense.wizard.checkinWindow.{checkInEarlyMinutes,checkInLateMinutes}` on load and
+  renders both the compact value ("N min/hr before – N min/hr after") and the full sentence with a
+  correctly time-shifted 8:00 AM worked example. Read-only here, same as NSNP — Check-in Window is
+  only ever configured on its own page via this group's Edit link. This incidentally corrects a
+  real discrepancy: the dedicated page's own coded default is 30/60 minutes, not the 60/60 this
+  row's hardcoded text claimed (an earlier NOTE on this file explains that 60/60 was a deliberate
+  "correction" to match the worked example text at the time, but the actual page's default was
+  apparently never updated to match) — the row now always shows the true saved-or-default value
+  instead of risking drifting out of sync again. Verified via jsdom across 4 cases (no saved
+  state/defaults, 45/90, 60/60 matching the old hardcoded wording exactly, and confirming
+  `buildSummaryText()` picks up the dynamic value via the DOM with zero code changes there).
 -->
 
 <script>
@@ -1321,6 +1339,42 @@
       desc += ' Grace period on: stays powered ' + graceMinutes + ' min after the reservation ends.';
     }
     document.getElementById('nsnpSummaryDesc').textContent = desc;
+  })();
+
+  /* ---------------- Check-in Window row: reflect what was actually configured on
+     floorsense-checkin-window-08.html (project.floorsense.wizard.checkinWindow), rather than a
+     fixed "60 min before – 60 min after" placeholder. Read-only here — Check-in Window is only
+     ever configured on its own page, reached via this group's Edit link. ---------------- */
+  function formatCheckinMinutes(m) {
+    if (!Number.isFinite(m) || m <= 0) return '0 min';
+    if (m % 60 === 0) {
+      const h = m / 60;
+      return h + (h === 1 ? ' hr' : ' hrs');
+    }
+    return m + ' min';
+  }
+  function formatCheckinClock(totalMinutesFromMidnight) {
+    let m = ((totalMinutesFromMidnight % 1440) + 1440) % 1440;
+    let hour24 = Math.floor(m / 60);
+    const minute = m % 60;
+    const suffix = hour24 >= 12 ? 'PM' : 'AM';
+    let hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12;
+    return hour12 + ':' + String(minute).padStart(2, '0') + ' ' + suffix;
+  }
+  (function renderCheckinWindowSummary() {
+    const savedCheckinWindow = project.floorsense.wizard.checkinWindow || {};
+    const earlyMin = Number.isFinite(savedCheckinWindow.checkInEarlyMinutes) ? savedCheckinWindow.checkInEarlyMinutes : 30;
+    const lateMin = Number.isFinite(savedCheckinWindow.checkInLateMinutes) ? savedCheckinWindow.checkInLateMinutes : 60;
+    document.getElementById('checkinWindowSummaryValue').textContent =
+      formatCheckinMinutes(earlyMin) + ' before – ' + formatCheckinMinutes(lateMin) + ' after';
+    const exampleStartTotalMin = 8 * 60;
+    document.getElementById('checkinWindowSummaryDesc').textContent =
+      'End users can confirm (check in to) a desk booking at the desk starting ' + earlyMin +
+      ' minutes before the reservation\'s start time, and no later than ' + lateMin +
+      ' minutes after it. Example: for an 8:00 AM booking, check-in is available from ' +
+      formatCheckinClock(exampleStartTotalMin - earlyMin) + ' through to ' +
+      formatCheckinClock(exampleStartTotalMin + lateMin) + '.';
   })();
 
   /* ---------------- horizontal progress bar ---------------- */
