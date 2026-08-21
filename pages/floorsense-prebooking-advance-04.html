@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Booking Window — Floorsense Configuration Studio (Template)</title>
+<title>Advance Booking — Floorsense Configuration Studio (Template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -220,7 +220,7 @@
         </a>
         <a class="progress-seg current" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Booking Window</span>
+          <span class="progress-seg-tip">Advance Booking</span>
         </a>
         <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
           <span class="progress-seg-fill"></span>
@@ -241,7 +241,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <span class="eyebrow">Getting Started</span>
-        <h1 class="hero-title">Booking Window</h1>
+        <h1 class="hero-title">Advance Booking</h1>
         <p class="sub">Choose how many days ahead of time users can book a desk.</p>
       </div>
     </div>
@@ -252,8 +252,8 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
-        <h2 class="section-title">Booking Window</h2>
-        <p>If users can book a desk ahead of time through the app or a kiosk, how far in advance can they do it? Some workplaces cap this at just a few days ahead, while others allow up to two weeks.</p>
+        <h2 class="section-title">Advance Booking</h2>
+        <p>How far in advance can users book a desk? Some workplaces cap this at just a few days ahead, while others allow up to two weeks.</p>
       </div>
 
       <div class="policy-grid single">
@@ -388,6 +388,19 @@
   Verified via jsdom: page loads with zero runtime errors, title/hero/section/policy titles all
   updated, progress-bar tooltip updated, no lingering "prebooking" in the rendered (script/style
   stripped) page text, and the days-in-advance field still defaults to 8 and clamps to a max of 15.
+
+  MOST RECENT CHANGE: per a follow-up saying "Booking Window" wasn't a good title (the policy
+  card's own title/description were fine as-is), the <title>, hero title, section title, and
+  progress-bar tooltip all changed again to "Advance Booking" — still avoiding "prebooking," but a
+  tighter, more natural phrase than "Booking Window." The section intro paragraph also dropped its
+  mention of the booking mechanism per a request not to explain how desks get booked here (that's
+  covered elsewhere, e.g. Access Methods): "If users can book a desk ahead of time through the app
+  or a kiosk, how far in advance can they do it?" became simply "How far in advance can users book
+  a desk?" The policy card's own title ("Advance booking limit") and description were left
+  untouched, as explicitly requested. The tooltip was again updated to "Advance Booking" across all
+  14 files that carry the shared progress-bar nav. Verified via jsdom: zero runtime errors,
+  title/hero/section/tooltip all read "Advance Booking," the section description no longer mentions
+  "app" or "kiosk," and the card's own title/description are unchanged.
 -->
 
 <script>
