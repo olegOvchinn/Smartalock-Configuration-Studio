@@ -189,6 +189,11 @@
   .group-check-card.checked .group-tick::after { opacity: 1; }
   .group-card-body { min-width: 0; flex: 1; }
   .group-title { font-weight: 600; font-size: 14.76px; color: var(--ink); display: block; margin: 0 0 4px; }
+  .group-tag {
+    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px; margin-left: 6px;
+    display: inline-block; vertical-align: middle;
+  }
   .group-desc { font-size: 13.12px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- conditional policy textarea panel, ported from floorsense-nsnp-11.html's
@@ -329,7 +334,7 @@
                 <input type="checkbox" name="deskGroupMode" value="none">
                 <span class="group-tick" aria-hidden="true"></span>
                 <div class="group-card-body">
-                  <span class="group-title">We will not use Desk Groups (can be setup later)</span>
+                  <span class="group-title">We will not use Desk Groups (can be setup later) <span class="group-tag">Recommended</span></span>
                 </div>
               </label>
             </div>
@@ -378,7 +383,7 @@
                 <input type="checkbox" name="userGroupMode" value="none">
                 <span class="group-tick" aria-hidden="true"></span>
                 <div class="group-card-body">
-                  <span class="group-title">We will not use User Groups feature initially (will rely on Desk Group and General policy)</span>
+                  <span class="group-title">We will not use User Groups feature initially (will rely on Desk Group and General policy) <span class="group-tag">Recommended</span></span>
                 </div>
               </label>
             </div>
@@ -553,6 +558,14 @@
   add them if your policy really needs different rules for different groups of users, as each one
   adds a bit more setup complexity." This explains the "why" (when Desk/User Groups are actually
   needed) rather than just warning about complexity in the abstract.
+
+  MOST RECENT CHANGE: per a request to mark the first choice on both cards (Desk Group Setup and
+  User Group Setup) as recommended, a small "Recommended" pill (.group-tag, styled identically to
+  the existing .desk-tag "Default" pill on floorsense-checkin-methods-02.html) was added next to
+  the "We will not use Desk Groups (can be setup later)" and "We will not use User Groups feature
+  initially (will rely on Desk Group and General policy)" option titles - both are already each
+  grid's first/default-checked choice, so no default-state or JS changes were needed, only the
+  label markup and a new .group-tag CSS rule.
 -->
 
 <script>

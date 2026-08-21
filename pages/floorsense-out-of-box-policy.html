@@ -691,7 +691,7 @@
         <div class="section-head policies-section-head">
           <span class="eyebrow">Neighbourhood Policies</span>
           <h2 class="section-title">Additional Policies</h2>
-          <p>You told us you're using Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "Help Desk," then adjust it — up to 3 additional policies.</p>
+          <p>You told us you'd like different booking policy for specific Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "Help Desk," then adjust it — up to 3 additional policies.</p>
         </div>
 
         <div class="policies-intro">
@@ -1372,6 +1372,19 @@
   "Nothing below needs to be configured" text anywhere on the page, the download card and core
   policy card's expand/collapse are unaffected, zero runtime errors. Re-ran the full existing test
   suite to confirm nothing else broke.
+
+  MOST RECENT CHANGE: per a request that the Additional Policies section (and its "+ Duplicate Core
+  Policy" option) should only appear if page 03 has the "apply different policy" checkbox ticked for
+  Desk Groups and/or User Groups — not merely because Desk Groups/User Groups are in use at all (e.g.
+  just for reporting/floorplan purposes with no policy override intended). `deskGroupsEnabled`/
+  `userGroupsEnabled` now read `deskUserGroupsState.{deskGroups,userGroups}.policy === true` instead
+  of `.none === false`; everything downstream (policiesSection/coreSettingsColumn/summaryColumns
+  visibility, the precedence notice, each new/loaded policy's groupType assignment) was already
+  driven off these two consts, so no other logic changed. The section-head intro paragraph was
+  reworded from "You told us you're using Desk Groups and/or User Groups" to "You told us you'd like
+  different booking policy for specific Desk Groups and/or User Groups" to match the tightened
+  condition. Defaults are unaffected: DEFAULT_USER_GROUPS on page 03 still has policy:true (so
+  Additional Policies still shows out of the box), DEFAULT_DESK_GROUPS still has policy:false.
 -->
 
 <script>
@@ -1780,12 +1793,15 @@
   }
 
   // Only reveal the Additional Policies section once Desk Groups and/or User Groups are actually
-  // in use — set on floorsense-desk-user-groups-03.html; "none" (or missing) means that kind of
-  // group isn't in play, so there's nothing to layer a same-type policy on top of. A policy card's
-  // Desk/User Group choice is disabled toward whichever type isn't currently enabled.
+  // set up to carry their OWN different policy — set on floorsense-desk-user-groups-03.html via the
+  // "We would also like to apply different policy (booking rules) to different desk groups" /
+  // "We want to apply different override policy for different User Groups to trump the Desk Group
+  // policy or default booking policy" checkboxes (the `policy` field). Just using Desk Groups or
+  // User Groups for grouping/reporting only (without that policy checkbox ticked) means there's
+  // nothing to layer a same-type policy override on top of, so the duplicate option stays hidden.
   const deskUserGroupsState = project.floorsense.wizard.deskUserGroups || {};
-  const deskGroupsEnabled = !!deskUserGroupsState.deskGroups && deskUserGroupsState.deskGroups.none === false;
-  const userGroupsEnabled = !!deskUserGroupsState.userGroups && deskUserGroupsState.userGroups.none === false;
+  const deskGroupsEnabled = !!deskUserGroupsState.deskGroups && deskUserGroupsState.deskGroups.policy === true;
+  const userGroupsEnabled = !!deskUserGroupsState.userGroups && deskUserGroupsState.userGroups.policy === true;
   const anyGroupsEnabled = deskGroupsEnabled || userGroupsEnabled;
 
   // in-memory only (not persisted) — tracks which policy cards are expanded. Existing/loaded
