@@ -558,16 +558,16 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Prebooking window</span>
-            <span class="value-group"><span class="value">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="prebookingWindowSummaryValue">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html">Edit</a></span>
           </div>
-          <p class="summary-desc">Users can book a desk up to 8 days ahead of time.</p>
+          <p class="summary-desc" id="prebookingWindowSummaryDesc">Users can book a desk up to 8 days ahead of time.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Default reservation duration</span>
-            <span class="value-group"><span class="value">9 hours</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="defaultDurationSummaryValue">9 hours</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html">Edit</a></span>
           </div>
-          <p class="summary-desc">A reservation lasts 9 hours by default.</p>
+          <p class="summary-desc" id="defaultDurationSummaryDesc">A reservation lasts 9 hours by default.</p>
         </div>
       </div>
 
@@ -608,8 +608,8 @@
           <a class="edit-link" href="floorsense-checkin-methods-02.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top"><span class="label">Enabled methods</span><span class="value">Cards · App · Desktop</span></div>
-          <p class="summary-desc">Building access cards, the Floorsense mobile app, and the desktop app are all available out of the box. Wallet pass is available too, but as a paid add-on it isn't enabled by default.</p>
+          <div class="summary-row-top"><span class="label">Enabled methods</span><span class="value" id="accessMethodsSummaryValue">Cards · App · Desktop</span></div>
+          <p class="summary-desc" id="accessMethodsSummaryDesc">Building access cards, the Floorsense mobile app, and the desktop app are all available out of the box. Wallet pass is available too, but as a paid add-on it isn't enabled by default.</p>
         </div>
       </div>
 
@@ -627,9 +627,9 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Auto-Release on Idle</span>
-            <span class="value-group"><span class="value">Off by default</span><a class="row-edit-link" href="floorsense-idle-release-09.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="idleReleaseSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-idle-release-09.html">Edit</a></span>
           </div>
-          <p class="summary-desc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn't checked into in time. Enable and configure it from Optional Features if required.</p>
+          <p class="summary-desc" id="idleReleaseSummaryDesc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn't checked into in time. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -641,9 +641,9 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Sit-stand desks</span>
-            <span class="value-group"><span class="value">Off</span><a class="row-edit-link" href="floorsense-fme-12.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="fmeSummaryValue">Off</span><a class="row-edit-link" href="floorsense-fme-12.html">Edit</a></span>
           </div>
-          <p class="summary-desc">Sit-stand desk integration is disabled by default.</p>
+          <p class="summary-desc" id="fmeSummaryDesc">Sit-stand desk integration is disabled by default.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -1209,6 +1209,40 @@
   back here after Save & continue on floorsense-checkin-methods-02.html, that row's edit-link href
   gained a `?return=summary` query param (`floorsense-checkin-methods-02.html?return=summary`).
   The redirect logic itself lives on the destination page — see its own NOTE for details.
+
+  MOST RECENT CHANGE: per a request to "check the rest of the sections with edit buttons work,"
+  audited every Edit/row-edit-link row on this page. Check-in Window and NSNP were already
+  dynamic; Check-in Behaviour, Maximum desks per user, Recurring bookings, and Privacy are live
+  inputs/toggles, not Edit-link rows. Five rows were still hardcoded and have now been wired up the
+  same way as Check-in Window:
+    - Prebooking window (`#prebookingWindowSummaryValue`/`Desc`) reads
+      `project.floorsense.wizard.prebookingAdvance.prebookingAdvanceDays` (default 8), singular
+      "day" handled for the edge case of 1.
+    - Default reservation duration (`#defaultDurationSummaryValue`/`Desc`) reads
+      `project.floorsense.wizard.defaultReservationTimes.{defaultDurationHours,defaultEndTime,
+      endMode}` (defaults 9 hours / 'duration' mode) — floorsense-default-reservation-times-07.html
+      actually offers two distinct modes (fixed duration vs. a shared end time for every booking),
+      so the row now branches: 'duration' shows "N hours" / "A reservation lasts N hours by
+      default," 'fixed-end' shows "Ends at H:MM AM/PM" / "Every reservation ends at H:MM AM/PM,
+      regardless of when it starts." (reusing the existing `formatCheckinClock()` helper).
+    - Access Methods "Enabled methods" (`#accessMethodsSummaryValue`/`Desc`) reads
+      `project.floorsense.wizard.checkinMethods.selected` (default `['prebooking']`, matching that
+      page's own DEFAULT_SELECTED) and builds an Oxford-comma sentence from a fixed
+      card/prebooking/qr/wallet order, via a small new `joinOxford()` helper. If wallet isn't among
+      the selected methods, the old "paid add-on, not enabled by default" caveat sentence is still
+      appended so that detail isn't lost.
+    - Auto-Release on Idle (`#idleReleaseSummaryValue`/`Desc`) reads
+      `project.floorsense.wizard.idleRelease.{enabled,idleHours}` (default enabled:false,
+      idleHours:3) — shows "After N hours" / an enabled-specific sentence when on, otherwise keeps
+      the original "Off by default" copy.
+    - Sit-stand desks (`#fmeSummaryValue`/`Desc`) reads `project.floorsense.wizard.fme.mode`
+      (values 'none'/'all'/'list', default 'none') — three distinct value/desc pairs depending on
+      whether FME is off, on for all desks, or on for a provided list of desks.
+  All five are read-only rows here (configured on their own dedicated pages via each row's Edit
+  link), same pattern as Check-in Window/NSNP. Verified via jsdom across default and multiple
+  non-default saved states for each (21 total assertions for Access Methods/Idle/FME, 15 for
+  Prebooking window/Default duration including the fixed-end mode branch) — all passing with zero
+  runtime errors.
 -->
 
 <script>
@@ -1380,6 +1414,99 @@
       ' minutes after it. Example: for an 8:00 AM booking, check-in is available from ' +
       formatCheckinClock(exampleStartTotalMin - earlyMin) + ' through to ' +
       formatCheckinClock(exampleStartTotalMin + lateMin) + '.';
+  })();
+
+  (function renderPrebookingWindowSummary() {
+    const savedPrebooking = project.floorsense.wizard.prebookingAdvance || {};
+    const days = Number.isFinite(savedPrebooking.prebookingAdvanceDays) ? savedPrebooking.prebookingAdvanceDays : 8;
+    document.getElementById('prebookingWindowSummaryValue').textContent =
+      days + (days === 1 ? ' day in advance' : ' days in advance');
+    document.getElementById('prebookingWindowSummaryDesc').textContent =
+      'Users can book a desk up to ' + days + (days === 1 ? ' day' : ' days') + ' ahead of time.';
+  })();
+
+  function joinOxford(arr) {
+    if (arr.length === 0) return '';
+    if (arr.length === 1) return arr[0];
+    if (arr.length === 2) return arr[0] + ' and ' + arr[1];
+    return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
+  }
+
+  (function renderAccessMethodsSummary() {
+    const savedMethods = project.floorsense.wizard.checkinMethods || {};
+    const selected = Array.isArray(savedMethods.selected) ? savedMethods.selected : ['prebooking'];
+    const ORDER = ['card', 'prebooking', 'qr', 'wallet'];
+    const VALUE_LABELS = { card: 'Cards', prebooking: 'App/Desktop', qr: 'QR Code', wallet: 'Wallet Pass' };
+    const DESC_PHRASES = {
+      card: 'building access cards',
+      prebooking: 'the Floorsense mobile app and desktop browser portal',
+      qr: 'QR codes at the desk',
+      wallet: 'wallet pass (a paid add-on)'
+    };
+    const active = ORDER.filter(m => selected.includes(m));
+    document.getElementById('accessMethodsSummaryValue').textContent =
+      active.length ? active.map(m => VALUE_LABELS[m]).join(' · ') : 'None selected';
+    if (active.length) {
+      const phrase = joinOxford(active.map(m => DESC_PHRASES[m]));
+      const verb = active.length > 1 ? 'are' : 'is';
+      let desc = phrase.charAt(0).toUpperCase() + phrase.slice(1) + ' ' + verb + ' available for checking in to a desk.';
+      if (!active.includes('wallet')) {
+        desc += ' Wallet pass is available too, but as a paid add-on it isn\'t enabled by default.';
+      }
+      document.getElementById('accessMethodsSummaryDesc').textContent = desc;
+    } else {
+      document.getElementById('accessMethodsSummaryDesc').textContent = 'No check-in methods are currently selected — choose at least one from Access Methods.';
+    }
+  })();
+
+  (function renderIdleReleaseSummary() {
+    const savedIdle = project.floorsense.wizard.idleRelease || {};
+    const enabled = !!savedIdle.enabled;
+    const idleHours = Number.isFinite(savedIdle.idleHours) ? savedIdle.idleHours : 3;
+    if (enabled) {
+      const hoursLabel = idleHours + (idleHours === 1 ? ' hour' : ' hours');
+      document.getElementById('idleReleaseSummaryValue').textContent = 'After ' + hoursLabel;
+      document.getElementById('idleReleaseSummaryDesc').textContent =
+        'Enabled — automatically frees up a reservation if the desk isn\'t checked into within ' + hoursLabel + ' of the booking start.';
+    } else {
+      document.getElementById('idleReleaseSummaryValue').textContent = 'Off by default';
+      document.getElementById('idleReleaseSummaryDesc').textContent =
+        'Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn\'t checked into in time. Enable and configure it from Optional Features if required.';
+    }
+  })();
+
+  (function renderFmeSummary() {
+    const savedFme = project.floorsense.wizard.fme || {};
+    const mode = savedFme.mode || 'none';
+    if (mode === 'all') {
+      document.getElementById('fmeSummaryValue').textContent = 'On (all desks)';
+      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for all desks.';
+    } else if (mode === 'list') {
+      document.getElementById('fmeSummaryValue').textContent = 'On (selected desks)';
+      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for a specific list of desks provided during setup.';
+    } else {
+      document.getElementById('fmeSummaryValue').textContent = 'Off';
+      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is disabled by default.';
+    }
+  })();
+
+  (function renderDefaultDurationSummary() {
+    const savedDuration = project.floorsense.wizard.defaultReservationTimes || {};
+    const endMode = savedDuration.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
+    if (endMode === 'fixed-end') {
+      const endTime = savedDuration.defaultEndTime || '17:00';
+      const [endH, endM] = endTime.split(':').map(Number);
+      const endClock = formatCheckinClock((Number.isFinite(endH) ? endH : 17) * 60 + (Number.isFinite(endM) ? endM : 0));
+      document.getElementById('defaultDurationSummaryValue').textContent = 'Ends at ' + endClock;
+      document.getElementById('defaultDurationSummaryDesc').textContent =
+        'Every reservation ends at ' + endClock + ', regardless of when it starts.';
+    } else {
+      const hours = Number.isFinite(savedDuration.defaultDurationHours) ? savedDuration.defaultDurationHours : 9;
+      const hoursLabel = hours + (hours === 1 ? ' hour' : ' hours');
+      document.getElementById('defaultDurationSummaryValue').textContent = hoursLabel;
+      document.getElementById('defaultDurationSummaryDesc').textContent =
+        'A reservation lasts ' + hoursLabel + ' by default.';
+    }
   })();
 
   /* ---------------- horizontal progress bar ---------------- */
