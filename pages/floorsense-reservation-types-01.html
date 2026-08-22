@@ -120,16 +120,13 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
-  /* ---------- types-illustration: banner illustration shown once above the desk allocation
-     option cards, reusing the same HR/Client Care neighbourhood image and .groups-illustration
-     treatment introduced on floorsense-desk-user-groups-03.html — plain bordered image card, full
-     page width like .section-head's siblings, capped/centered so it doesn't overpower the page.
-     ---------- */
-  .types-illustration {
-    max-width: 640px; margin: 0 auto 28px; border: 1px solid var(--line); border-radius: var(--radius-lg);
-    background: var(--paper); padding: 12px; text-align: center;
-  }
-  .types-illustration img { display: block; width: 100%; height: auto; margin: 0 auto; }
+  /* ---------- desk-thumb: per-option illustration thumbnail, replacing the plain .desk-icon-img
+     line icon on the 3 options an illustration exists for (Dedicated Workstations, Reserved by
+     User as Needed, AI Agent Auto-Prebooked) — each cropped from one combined reference image into
+     its own file (assets/images/reservation-type-*.png), text-free so it doesn't duplicate the
+     card's own title/description. Wider than tall (source crop ~2.3:1), so sized by width with
+     height:auto rather than forced into the old 56x56 icon box. ---------- */
+  .desk-thumb { width: 132px; height: auto; flex-shrink: 0; border-radius: 8px; }
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
@@ -284,16 +281,12 @@
         <span class="eyebrow">Configure</span>
       </div>
 
-      <div class="types-illustration">
-        <img src="../assets/images/reservation-types-illustration.png" alt="The three desk allocation methods illustrated: Dedicated Workstations (a permanent desk for one person), Reserved by User as Needed (users book any available desk themselves), and AI Agent Auto-Prebooked (an AI agent automatically pre-books a desk).">
-      </div>
-
       <div class="desk-check-grid" id="templateGrid">
         <div class="desk-check-card" data-template="fixed">
           <label class="desk-row">
             <input type="checkbox" value="fixed">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <img class="desk-thumb" src="../assets/images/reservation-type-dedicated.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
               <p class="desk-desc">Give someone their own permanent desk. Common for senior staff who need the same seat every day.</p>
@@ -312,7 +305,7 @@
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="5.5" height="6" rx="1"/><rect x="9.25" y="9" width="5.5" height="6" rx="1"/><rect x="16.5" y="9" width="5.5" height="6" rx="1"/><path d="M10.7 12l1.3 1.3 2-2"/></svg>
+            <img class="desk-thumb" src="../assets/images/reservation-type-as-needed.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -348,7 +341,7 @@
           <label class="desk-row">
             <input type="checkbox" value="ai-agent">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="3"/><path d="M12 9V5"/><circle cx="12" cy="4" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="14.5" r="1.1" fill="currentColor" stroke="none"/><path d="M4 13H2M22 13h-2"/></svg>
+            <img class="desk-thumb" src="../assets/images/reservation-type-ai-agent.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked</h3>
               <p class="desk-desc">An AI agent automatically prebooks a desk for the user ahead of time, based on your organisation's policy rules — no manual booking needed.</p>
@@ -501,6 +494,24 @@ Saved to assets/images/reservation-types-illustration.png and wired into the sam
 `.types-illustration` wrapper (no CSS/markup structure changes, just the `src`/`alt` on the single
 `<img>`). Verified via python3 /tmp/validate.py and node --check on the extracted script block
 (JS untouched, markup-only change).
+
+MOST RECENT CHANGE: per a follow-up request, removed the top banner entirely and instead split the
+reference illustration into 3 separate cropped images, one per matching option card, dropping the
+old per-option line icons in favour of these. The source image
+(assets/images/reservation-types-illustration.png, since removed) happened to combine one scene
+per visible option — Dedicated Workstations, Reserved by User as Needed, and AI Agent
+Auto-Prebooked are exactly this page's 3 currently-visible cards (Team Leader Allocated and Booked
+on Behalf remain hidden from an earlier request and have no matching artwork, so they keep their
+original line icons) — so each scene was cropped out with its baked-in title/description text
+excluded (autocropped to the artwork only, via PIL, to avoid duplicating the card's own `<h3>`/`<p>`
+text) and saved as assets/images/reservation-type-dedicated.png,
+assets/images/reservation-type-as-needed.png, and assets/images/reservation-type-ai-agent.png.
+Each of those 3 cards' `<svg class="desk-icon-img">` was replaced with an
+`<img class="desk-thumb">` pointing at its crop; new `.desk-thumb { width: 132px; height: auto;
+flex-shrink: 0; border-radius: 8px; }` sizes by width (crops are ~2.3:1, not square, so the old
+56x56 icon box doesn't apply) while `.desk-icon-img` stays in place, still used by the two hidden
+cards. Verified via python3 /tmp/validate.py and node --check on the extracted script block
+(JS/checkbox-wiring untouched, markup/asset-only change).
 
 -->
 
