@@ -128,9 +128,9 @@
      across the floor" concept (a 9-5 clock, a desk switching on, a floorplan/server, and a
      building) — same pattern as the other single-card pages (floorsense-prebooking-advance-04.html)
      rather than the multi-card split used on pages 01/02. Sized by width (landscape ~1.59:1), well
-     under its ~680px native width so it stays crisp. .checkin-card-icon is now unused on this page
-     (the header's, not the unrelated footer's — .checkin-footer-icon is untouched) and was removed.
-     ---------- */
+     under its ~680px native width so it stays crisp. .checkin-card-icon (the header's icon) is now
+     unused on this page and was removed. The footer's own icon was later removed too — see the
+     NOTE block below — so this page now has zero icons, just the header illustration. ---------- */
   .checkin-card-illustration { width: 300px; height: auto; flex-shrink: 0; border-radius: 10px; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
@@ -230,9 +230,6 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
-     the page (was a 40px wrapper around a 34px svg). ---------- */
-  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -381,7 +378,6 @@
         </div>
 
         <div class="checkin-footer">
-          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
           <p class="checkin-footer-text">These hours are used across the rest of this wizard as the standard, floor-wide default.</p>
         </div>
       </div>
@@ -536,6 +532,13 @@ multi-line description. The `.checkin-card` itself was already 760px (this page'
 width, unlike pages 01/02/04 which needed widening to match), so no grid/card-width change was
 needed here. Verified via python3 /tmp/validate.py, node --check on the extracted script block
 (JS/drum logic untouched), and a rendered weasyprint preview.
+
+MOST RECENT CHANGE: per a follow-up request to remove the remaining icon, the footer's
+`<svg class="checkin-footer-icon">` (a calendar glyph) was deleted along with its now-unused
+`.checkin-footer-icon` CSS rule — `.checkin-footer` now just shows its text, unpadded by an icon
+column. This page now has zero icons: the header illustration replaced the one line icon it had,
+and this removes the other. Verified via python3 /tmp/validate.py and node --check on the extracted
+script block (JS untouched, markup/CSS-only change).
 
 -->
 
