@@ -73,29 +73,15 @@
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
 
-  /* ---------- two-column product layout: static image placeholder above each card ---------- */
+  /* ---------- two-column product layout: image incorporated into each choice card ---------- */
   .product-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
   @media (max-width: 720px) { .product-columns { grid-template-columns: 1fr; } }
-  .product-col { display: flex; flex-direction: column; gap: 16px; }
 
-  .page-visual-frame {
-    width: 100%; border-radius: 24px; overflow: hidden;
-    border: 1.5px dashed var(--line); background: var(--paper-soft);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-    aspect-ratio: 4 / 3; color: var(--ink-soft); font-family: var(--font-text); font-size: 10.82px; text-align: center; padding: 20px;
-  }
-  .page-visual-frame svg { width: 40px; height: 40px; opacity: 0.5; }
-  .page-visual-placeholder-content strong { display: block; font-family: var(--font-display); font-weight: 600; font-size: 13.08px; color: var(--header-grey); margin-bottom: 4px; }
-  .page-visual-frame.filled { border-style: solid; border-color: var(--line); background: #fff; padding: 0; }
-  .page-visual-frame.filled img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .page-visual-frame.smartalock-visual { aspect-ratio: 909 / 587; }
-  .page-visual-frame.floorsense-visual { aspect-ratio: 760 / 543; }
-
-  /* ---------- product choice cards (same visual language as tcard) ---------- */
+  /* ---------- product choice cards ---------- */
 
   .tcard {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 24px; position: relative; transition: border-color .18s, background .18s, box-shadow .18s;
+    padding: 0; overflow: hidden; position: relative; transition: border-color .18s, background .18s, box-shadow .18s;
     display: block; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .tcard[data-type="smartalock"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
@@ -103,9 +89,9 @@
   .tcard:hover { border-color: var(--tc); background: var(--tc-wash); }
   .tcard.chosen { background: var(--tc-wash); border-color: var(--tc); box-shadow: none; }
 
-  .tcard-body { min-width: 0; }
-  .tcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 8px; color: var(--tc); display: flex; align-items: center; gap: 10px; }
-  .tcard h3 .tcard-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
+  .tcard-visual { display: block; width: 100%; height: auto; }
+  .tcard-body { min-width: 0; padding: 20px 24px 22px; }
+  .tcard-brand-logo { height: 32px; width: auto; display: block; margin: 0 0 10px; }
   .tcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- action bar ---------- */
@@ -163,33 +149,19 @@
     <div class="panel-inner">
 
       <div class="product-columns" id="productGrid">
-        <div class="product-col">
-          <div class="page-visual-frame filled smartalock-visual">
-            <img src="../assets/images/pick-a-product-smartalock.png" alt="Smartalock isometric diagram of a bank of smart lockers with users checking in at kiosks and locker banks">
-          </div>
-          <div class="tcard" data-type="smartalock">
-            <div class="tcard-body">
-              <h3>
-                <svg class="tcard-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4"/></svg>
-                Smartalock
-              </h3>
-              <p class="desc">Smartalock is a locker management system. This step-by-step wizard walks you through configuring it for your site.</p>
-            </div>
+        <div class="tcard" data-type="smartalock">
+          <img class="tcard-visual" src="../assets/images/pick-a-product-smartalock.png" alt="Smartalock isometric diagram of a bank of smart lockers with users checking in at kiosks and locker banks">
+          <div class="tcard-body">
+            <img class="tcard-brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
+            <p class="desc">Smartalock is a locker management system. This step-by-step wizard walks you through configuring it for your site.</p>
           </div>
         </div>
 
-        <div class="product-col">
-          <div class="page-visual-frame filled floorsense-visual">
-            <img src="../assets/images/pick-a-product-floorsense.png" alt="Floorsense isometric office diagram showing desk booking workstations, a meeting room, and a break area">
-          </div>
-          <div class="tcard" data-type="floorsense">
-            <div class="tcard-body">
-              <h3>
-                <svg class="tcard-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg>
-                Floorsense
-              </h3>
-              <p class="desc">Floorsense is a desk booking and workplace management system. This step-by-step wizard walks you through configuring it for your site.</p>
-            </div>
+        <div class="tcard" data-type="floorsense">
+          <img class="tcard-visual" src="../assets/images/pick-a-product-floorsense.png" alt="Floorsense isometric office diagram showing desk booking workstations, a meeting room, and a break area">
+          <div class="tcard-body">
+            <img class="tcard-brand-logo" src="../assets/images/floorsense-logo.png" alt="Floorsense">
+            <p class="desc">Floorsense is a desk booking and workplace management system. This step-by-step wizard walks you through configuring it for your site.</p>
           </div>
         </div>
       </div>
@@ -249,6 +221,8 @@ MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with t
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
 MOST RECENT CHANGE: Filled the previously-empty Smartalock "Image placeholder" box with a user-supplied grayscale isometric locker-room diagram (assets/images/pick-a-product-smartalock.png), using the same .filled treatment as the Floorsense box but via its own .smartalock-visual aspect-ratio modifier (909/587) so the image fills edge-to-edge with no cropping. The Floorsense box's image was also swapped for a new user-supplied scene (a plain desk-booking office, no colored callout labels), reusing the same assets/images/pick-a-product-floorsense.png filename; its frame got its own .floorsense-visual modifier (aspect-ratio 760/543) since the new image's proportions differ from the old one. The generic .page-visual-frame.filled rule now only carries the shared border/background styling, with aspect-ratio moved out to these two per-image modifier classes. The intro's "Pick Smartalock or Floorsense below to start building its configuration." subtitle was also removed, leaving just the "Choose a Product to Configure" heading.
+
+MOST RECENT CHANGE: Per a request to consolidate each product's visual into its choice card rather than sitting in a separate box above it, the standalone .page-visual-frame/.product-col wrapper was removed and its image (.tcard-visual) moved inside the .tcard itself as a full-bleed top banner (the card switched to padding:0/overflow:hidden so the image's corners get clipped by the card's own border-radius, with a new .tcard-body wrapping the text content below it in its own padding). Within that body, the old icon+title <h3> (with its 56px .tcard-icon-img SVG) was removed and replaced with a .tcard-brand-logo <img> of the product's real logo file (smartalock-logo.png / floorsense-logo.png, 32px tall) — so the card now reads image, then brand mark, then description, with no icon or plain-text title anywhere on it. Since .tcard-visual is a plain <img> at width:100%/height:auto (rather than a fixed-aspect-ratio frame), each product's image keeps its own native proportions with no cropping needed, making the now-unused .page-visual-frame/.smartalock-visual/.floorsense-visual rules removable too.
 -->
 
 <script>
