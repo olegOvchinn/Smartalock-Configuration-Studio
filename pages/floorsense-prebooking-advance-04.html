@@ -44,7 +44,7 @@
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
   .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
-  .brand-logo-floorsense { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--accent); }
+  .brand-logo-floorsense { height: 22px; width: auto; display: block; flex-shrink: 0; }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
   /* ---------- horizontal progress bar (mirrors the Smartalock wizard pattern) ---------- */
@@ -208,7 +208,7 @@
         <div class="brand">
           <img class="brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
           <span class="brand-divider">×</span>
-          <span class="brand-logo-floorsense">Floorsense</span>
+          <img class="brand-logo-floorsense" src="../assets/images/floorsense-logo.png" alt="Floorsense">
           <span class="brand-tagline">Configuration Studio · Module Preview</span>
         </div>
 
@@ -482,6 +482,7 @@ applied to pages 01/02. Verified via python3 /tmp/validate.py, node --check on t
 block (JS/state logic untouched), and a rendered weasyprint preview confirming the illustration
 sits comfortably beside the card's text.
 
+MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
 -->
 
 <script>
