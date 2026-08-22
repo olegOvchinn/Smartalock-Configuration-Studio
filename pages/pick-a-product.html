@@ -90,6 +90,8 @@
   .tcard.chosen { background: var(--tc-wash); border-color: var(--tc); box-shadow: none; }
 
   .tcard-visual { display: block; width: 100%; height: auto; }
+  .tcard-visual-frame { aspect-ratio: 909 / 587; overflow: hidden; }
+  .tcard-visual-frame .tcard-visual-zoom { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transform-origin: center; }
   .tcard-body { min-width: 0; padding: 20px 24px 22px; }
   .tcard-brand-logo { height: 32px; width: auto; display: block; margin: 0 0 10px; }
   .tcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
@@ -150,7 +152,9 @@
 
       <div class="product-columns" id="productGrid">
         <div class="tcard" data-type="smartalock">
-          <img class="tcard-visual" src="../assets/images/pick-a-product-smartalock.png" alt="Smartalock isometric diagram of a bank of smart lockers with users checking in at kiosks and locker banks">
+          <div class="tcard-visual-frame">
+            <img class="tcard-visual tcard-visual-zoom" src="../assets/images/pick-a-product-smartalock.png" alt="Smartalock isometric diagram of a bank of smart lockers with users checking in at kiosks and locker banks">
+          </div>
           <div class="tcard-body">
             <img class="tcard-brand-logo" src="../assets/images/smartalock-logo.png" alt="Smartalock">
             <p class="desc">Smartalock is a locker management system. This step-by-step wizard walks you through configuring it for your site.</p>
@@ -223,6 +227,8 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Filled the previously-empty Smartalock "Image placeholder" box with a user-supplied grayscale isometric locker-room diagram (assets/images/pick-a-product-smartalock.png), using the same .filled treatment as the Floorsense box but via its own .smartalock-visual aspect-ratio modifier (909/587) so the image fills edge-to-edge with no cropping. The Floorsense box's image was also swapped for a new user-supplied scene (a plain desk-booking office, no colored callout labels), reusing the same assets/images/pick-a-product-floorsense.png filename; its frame got its own .floorsense-visual modifier (aspect-ratio 760/543) since the new image's proportions differ from the old one. The generic .page-visual-frame.filled rule now only carries the shared border/background styling, with aspect-ratio moved out to these two per-image modifier classes. The intro's "Pick Smartalock or Floorsense below to start building its configuration." subtitle was also removed, leaving just the "Choose a Product to Configure" heading.
 
 MOST RECENT CHANGE: Per a request to consolidate each product's visual into its choice card rather than sitting in a separate box above it, the standalone .page-visual-frame/.product-col wrapper was removed and its image (.tcard-visual) moved inside the .tcard itself as a full-bleed top banner (the card switched to padding:0/overflow:hidden so the image's corners get clipped by the card's own border-radius, with a new .tcard-body wrapping the text content below it in its own padding). Within that body, the old icon+title <h3> (with its 56px .tcard-icon-img SVG) was removed and replaced with a .tcard-brand-logo <img> of the product's real logo file (smartalock-logo.png / floorsense-logo.png, 32px tall) — so the card now reads image, then brand mark, then description, with no icon or plain-text title anywhere on it. Since .tcard-visual is a plain <img> at width:100%/height:auto (rather than a fixed-aspect-ratio frame), each product's image keeps its own native proportions with no cropping needed, making the now-unused .page-visual-frame/.smartalock-visual/.floorsense-visual rules removable too.
+
+MOST RECENT CHANGE: Per a request to enlarge the Smartalock card's image specifically (clarified as "zoom within the same card size," not widen the card), it's now wrapped in a new .tcard-visual-frame (fixed at the image's own 909/587 aspect-ratio, overflow:hidden) with a .tcard-visual-zoom modifier applying transform: scale(1.2) to the <img> inside, cropping evenly on all sides so the scene reads 20% bigger without changing the card's or column's width. Floorsense's image is untouched (still a plain width:100%/height:auto <img>, same as before), so the two cards remain the same width as each other.
 -->
 
 <script>
