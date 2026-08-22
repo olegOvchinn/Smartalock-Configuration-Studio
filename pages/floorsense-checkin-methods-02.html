@@ -115,7 +115,7 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin: 0 auto 22px; max-width: 640px; }
+  .section-head { margin: 0 auto 22px; max-width: 760px; }
   .section-head + .section-head { margin-top: 36px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
@@ -124,15 +124,25 @@
   .section-head p a { color: var(--accent-deep); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--accent-wash); }
   .section-head p a:hover { border-bottom-color: var(--accent-deep); }
 
+  /* ---------- desk-thumb: per-option illustration thumbnail, replacing the plain line icon
+     (formerly .desk-icon-img, now unused on this page) — reusing the pattern introduced on
+     floorsense-reservation-types-01.html, but sized
+     by height rather than width since these 4 crops (from one combined reference image, one scene
+     per check-in method) are portrait rather than landscape. Sized to be crisp (well under each
+     crop's native ~250-320px width) without distorting aspect ratio. .desk-row switches from
+     flex-start to center alignment so the taller image and the shorter 2-3 line text block line up
+     visually instead of the image trailing off below the text. ---------- */
+  .desk-thumb { height: 150px; width: auto; flex-shrink: 0; border-radius: 10px; }
+
   /* ---------- desk reservation-method cards (multi-select, same tick-box language as pages 04/09) ---------- */
-  .desk-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
+  .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
   .desk-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+    padding: 22px 26px; transition: border-color .15s, background .15s;
   }
   .desk-check-card:hover { border-color: var(--accent); }
   .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .desk-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .desk-row { display: flex; align-items: center; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
@@ -146,7 +156,6 @@
     opacity: 0; transition: opacity .15s;
   }
   .desk-check-card.checked .desk-tick::after { opacity: 1; }
-  .desk-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .desk-card-body { min-width: 0; flex: 1; }
   .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .desk-tag {
@@ -282,7 +291,7 @@
           <label class="desk-row">
             <input type="checkbox" value="card">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>
+            <img class="desk-thumb" src="../assets/images/checkin-method-card.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">Building Access Cards at Desk</h3>
               <p class="desk-desc">Users swipe their existing building access card at any desk to reserve it for their session.</p>
@@ -297,7 +306,7 @@
           <label class="desk-row">
             <input type="checkbox" value="prebooking">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 15l2 2 4-4"/></svg>
+            <img class="desk-thumb" src="../assets/images/checkin-method-prebooking.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
               <p class="desk-desc">Book and check in via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal.</p>
@@ -309,7 +318,7 @@
           <label class="desk-row">
             <input type="checkbox" value="qr">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2M14 19h2M17 17h4v4h-4z" fill="currentColor" stroke="none"/></svg>
+            <img class="desk-thumb" src="../assets/images/checkin-method-qr.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">QR Code at Desk</h3>
               <p class="desk-desc">Users scan a QR code displayed at the desk to reserve it for their session.</p>
@@ -321,7 +330,7 @@
           <label class="desk-row">
             <input type="checkbox" value="wallet">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 8.5h18"/><line x1="7" y1="13" x2="12" y2="13"/><line x1="7" y1="16.5" x2="15" y2="16.5"/></svg>
+            <img class="desk-thumb" src="../assets/images/checkin-method-wallet.png" alt="">
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
               <p class="desk-desc">Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it.</p>
@@ -531,6 +540,26 @@
   param vs. `?return=summary`) that the page loads and the button click fires with zero runtime
   errors, and that URLSearchParams parses the flag as expected.
 MOST RECENT CHANGE: Centered the single-column option list to match the page-00 pattern. .section-head and .desk-check-grid (both max-width: 640px) gained margin: 0 auto so the section heading and the check-in method option cards are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
+MOST RECENT CHANGE: per a request to illustrate this page the same way as
+floorsense-reservation-types-01.html, a user-supplied reference image (one continuous scene showing
+a person for each of the 4 check-in methods, connected by workflow arrows through a shared "server"
+element) was cropped into 4 separate per-option images and each `.desk-check-card`'s
+`<svg class="desk-icon-img">` was replaced with an `<img class="desk-thumb">`:
+assets/images/checkin-method-card.png (Building Access Cards), checkin-method-prebooking.png
+(Mobile App or Desktop Browser Booking — includes the shared server tower, since visually it sits
+directly above this option's person/laptop), checkin-method-qr.png (QR Code), and
+checkin-method-wallet.png (Wallet Pass, includes the "CHECKED IN" shield). Unlike page 01's crops
+(landscape ~2.3:1, all similar shape), these 4 came out portrait with quite different aspect ratios
+(0.97 down to 0.42) since the source was one continuous diagram rather than four boxed scenes, so
+`.desk-thumb` is sized by height (150px, width auto) rather than width, and `.desk-row` switched
+from `align-items: flex-start` to `center` so the taller images line up visually with each card's
+shorter 2-3 line text block instead of trailing off below it. All 4 cards on this page now use
+images, so (unlike page 01, which still has 2 hidden cards using it) `.desk-icon-img` is fully
+unused here and was removed. Grid/section-head widened 640px to 760px and card padding/row gap
+bumped up (same values as page 01's enlarge pass) so the images have room. Verified via
+python3 /tmp/validate.py, node --check on the extracted script block (JS/checkbox-wiring
+untouched), and a rendered weasyprint preview of both grid rows.
 
 -->
 
