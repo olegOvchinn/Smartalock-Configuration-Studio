@@ -115,7 +115,7 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin: 0 auto 22px; max-width: 640px; }
+  .section-head { margin: 0 auto 22px; max-width: 760px; }
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
@@ -125,18 +125,21 @@
      User as Needed, AI Agent Auto-Prebooked) — each cropped from one combined reference image into
      its own file (assets/images/reservation-type-*.png), text-free so it doesn't duplicate the
      card's own title/description. Wider than tall (source crop ~2.3:1), so sized by width with
-     height:auto rather than forced into the old 56x56 icon box. ---------- */
-  .desk-thumb { width: 132px; height: auto; flex-shrink: 0; border-radius: 8px; }
+     height:auto rather than forced into the old 56x56 icon box. Sized at 210px (up from an initial
+     132px) and the card/grid widened to match, per a request that the cards be enlarged/widened so
+     these illustrations "fit in nicely" — 210px is still below the ~320px source crop width, so it
+     stays crisp rather than upscaled/blurry. ---------- */
+  .desk-thumb { width: 210px; height: auto; flex-shrink: 0; border-radius: 10px; }
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
-  .desk-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
+  .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
   .desk-check-card {
     background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+    padding: 22px 26px; transition: border-color .15s, background .15s;
   }
   .desk-check-card:hover { border-color: var(--accent); }
   .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .desk-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
@@ -512,6 +515,16 @@ flex-shrink: 0; border-radius: 8px; }` sizes by width (crops are ~2.3:1, not squ
 56x56 icon box doesn't apply) while `.desk-icon-img` stays in place, still used by the two hidden
 cards. Verified via python3 /tmp/validate.py and node --check on the extracted script block
 (JS/checkbox-wiring untouched, markup/asset-only change).
+
+MOST RECENT CHANGE: per a request to enlarge/widen the cards so the new illustrations "fit in
+nicely," bumped `.desk-thumb` from 132px to 210px wide (still under the ~320px source crop width,
+so it stays crisp rather than blurry from upscaling) and widened `.desk-check-grid`/`.section-head`
+from 640px to 760px to give the bigger thumbnails more room next to the title/description. Card
+padding grew from `18px 20px` to `22px 26px` and the `.desk-row` gap from 14px to 20px to match the
+larger scale. Purely a sizing change — no markup structure, JS, or icon-vs-image logic changed.
+Verified via python3 /tmp/validate.py, node --check on the extracted script block, and a rendered
+preview (weasyprint) confirming the illustrations now sit comfortably beside each card's text at
+the larger size.
 
 -->
 
