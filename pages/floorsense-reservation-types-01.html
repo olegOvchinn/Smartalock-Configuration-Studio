@@ -120,6 +120,17 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
+  /* ---------- types-illustration: banner illustration shown once above the desk allocation
+     option cards, reusing the same HR/Client Care neighbourhood image and .groups-illustration
+     treatment introduced on floorsense-desk-user-groups-03.html — plain bordered image card, full
+     page width like .section-head's siblings, capped/centered so it doesn't overpower the page.
+     ---------- */
+  .types-illustration {
+    max-width: 640px; margin: 0 auto 28px; border: 1px solid var(--line); border-radius: var(--radius-lg);
+    background: var(--paper); padding: 12px; text-align: center;
+  }
+  .types-illustration img { display: block; width: 100%; height: auto; margin: 0 auto; }
+
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
   .desk-check-card {
@@ -271,6 +282,10 @@
 
       <div class="section-head">
         <span class="eyebrow">Configure</span>
+      </div>
+
+      <div class="types-illustration">
+        <img src="../assets/images/desk-user-groups-illustration.png" alt="Example: an HR neighbourhood and a Client Care neighbourhood, each with their own desks, so bookings can be routed to the right area for each group.">
       </div>
 
       <div class="desk-check-grid" id="templateGrid">
@@ -472,6 +487,16 @@
 MOST RECENT CHANGE: Centered the single-column option list to match the page-00 pattern. .section-head and .desk-check-grid (both max-width: 640px) gained margin: 0 auto so the section heading and the reservation-type option cards are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
 MOST RECENT CHANGE: as the reference page for the site-wide icon-size unification (every other Floorsense page's content icons were resized/redesigned to match this page's existing 56x56px .desk-icon-img), reviewed this page's own 5 icons for semantic fit and found one weak one: 'Reserved by User as Needed' used an abstract crossed-arrows/resize glyph. Replaced it with three small desk tiles plus a checkmark on one, directly depicting 'pick whichever desk is available' rather than a generic flexibility arrow. The other 4 icons (pin for Dedicated Workstations, org-chart for Team Leader Allocated, ID-card+person for Booked on Behalf, robot face for AI Agent Auto-Prebooked) were already good matches and left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to reuse the same illustration/treatment introduced on
+floorsense-desk-user-groups-03.html, the HR/Client Care neighbourhood image
+(assets/images/desk-user-groups-illustration.png) was added above this page's option cards too,
+via a new `.types-illustration` wrapper — the same bordered-card treatment as page 03's
+`.groups-illustration` (paper/line/radius-lg tokens, 640px cap, centered), placed between
+`.section-head` and `.desk-check-grid`. The image doesn't depict this page's own Desk Allocation
+Method options, but the request was simply to reuse the same illustration site-wide rather than to
+add a page-specific one. Verified via python3 /tmp/validate.py and node --check on the extracted
+script block (JS untouched, markup/CSS-only change).
 
 -->
 
