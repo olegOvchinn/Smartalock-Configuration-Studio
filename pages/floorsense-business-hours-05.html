@@ -122,11 +122,16 @@
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
-  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
-  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
-     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
-     circle badge with a 24px white icon inside. ---------- */
-  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .checkin-card-header { display: flex; align-items: center; gap: 24px; padding: 22px 22px 20px; }
+  /* ---------- checkin-card-illustration: replaces the header's plain .checkin-card-icon line
+     icon with a user-supplied illustration depicting the whole "standard business hours applied
+     across the floor" concept (a 9-5 clock, a desk switching on, a floorplan/server, and a
+     building) — same pattern as the other single-card pages (floorsense-prebooking-advance-04.html)
+     rather than the multi-card split used on pages 01/02. Sized by width (landscape ~1.59:1), well
+     under its ~680px native width so it stays crisp. .checkin-card-icon is now unused on this page
+     (the header's, not the unrelated footer's — .checkin-footer-icon is untouched) and was removed.
+     ---------- */
+  .checkin-card-illustration { width: 300px; height: auto; flex-shrink: 0; border-radius: 10px; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
@@ -335,7 +340,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          <img class="checkin-card-illustration" src="../assets/images/business-hours-illustration.png" alt="">
           <p class="checkin-card-desc">
             Most users share the same standard business hours — roll the time drums on either side
             of the diagram below to set when most people arrive and when they head out for the day.
@@ -513,6 +518,24 @@
   reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
   appear in the bar at all.
 MOST RECENT CHANGE: per the site-wide icon-size unification, converted .checkin-card-icon (was a 48px accent-green circle badge with a 24px white clock icon) and .checkin-footer-icon (was a 40px wrapper around a 34px svg) to bare 56x56px icons directly on their svg elements, matching floorsense-reservation-types-01.html's .desk-icon-img exactly. Both icons already used a clock face — a good semantic match for a time-of-day setting — so only size/markup changed, not the icon design. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to illustrate this page the same way as
+floorsense-reservation-types-01.html, floorsense-checkin-methods-02.html, and
+floorsense-prebooking-advance-04.html, a user-supplied reference image (a 9-5 clock at the center,
+surrounded by a desk switching on, a floorplan/server, and a building — depicting "standard
+business hours applied across the floor") was autocropped to its content bounds (1024x489 down to
+680x427) and saved to assets/images/business-hours-illustration.png. Like page 04 (and unlike pages
+01/02's multi-option split), this page has one card and one holistic concept to depict, so the
+whole crop was used as-is in the header, replacing `<svg class="checkin-card-icon">` with an
+`<img class="checkin-card-illustration">`. `.checkin-card-icon` is now unused on this page (the
+header's icon — the unrelated footer's `.checkin-footer-icon` is untouched) and was removed. New
+`.checkin-card-illustration` sized by width (300px, landscape ~1.59:1, well under the crop's native
+width so it stays crisp); `.checkin-card-header` switched from `align-items: flex-start` to
+`center` and its gap bumped from 18px to 24px so the taller image lines up with the header's
+multi-line description. The `.checkin-card` itself was already 760px (this page's own established
+width, unlike pages 01/02/04 which needed widening to match), so no grid/card-width change was
+needed here. Verified via python3 /tmp/validate.py, node --check on the extracted script block
+(JS/drum logic untouched), and a rendered weasyprint preview.
 
 -->
 
