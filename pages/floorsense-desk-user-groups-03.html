@@ -162,6 +162,17 @@
      used when it sat inside a column/section. ---------- */
   .page-top-notice { max-width: none; margin: 0 0 28px; }
 
+  /* ---------- groups-illustration: banner illustration shown once above the Desk/User Group
+     cards, depicting the HR / Client Care neighbourhood example used in this module's own copy
+     (see the Desk Group Setup examples below). Plain image card, full page width like
+     .page-top-notice, with a light border/background so the white illustration canvas doesn't
+     float directly on the panel background. ---------- */
+  .groups-illustration {
+    max-width: none; margin: 0 0 28px; border: 1px solid var(--line); border-radius: var(--radius-lg);
+    background: var(--paper); padding: 12px; text-align: center;
+  }
+  .groups-illustration img { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
+
   /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods-02.html's
      .desk-check-card — reused here (renamed .group-check-card) for both the Desk Group and User
      Group checkbox groups, since both need independently-tickable options rather than a
@@ -320,6 +331,10 @@
       <div class="setup-notice page-top-notice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
         <p>You don't need to set up Desk Groups unless you want different booking rules for a specific area. Likewise, extra User Groups are optional — only add them if your policy really needs different rules for different groups of users, as each one adds a bit more setup complexity.</p>
+      </div>
+
+      <div class="groups-illustration">
+        <img src="../assets/images/desk-user-groups-illustration.png" alt="Example: an HR neighbourhood and a Client Care neighbourhood, each with their own desks, so bookings can be routed to the right area for each group.">
       </div>
 
       <div class="groups-columns">
@@ -609,6 +624,19 @@ JS (wireGroup(), which selects by [data-mode] and input[type="checkbox"], not by
 works correctly after the markup change — ticking a "policy" checkbox still reveals its subfields
 panel and saves the expected state to localStorage. Also re-ran python3 /tmp/validate.py and
 node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to add a banner illustration above the cards showing the
+HR/Client Care neighbourhood example already used in this module's own copy, the user-provided
+reference illustration (an isometric graphic depicting two desk neighbourhoods labelled "HR" and
+"Client Care", each with its own desks and a person routed to the correct area) was saved as-is to
+assets/images/desk-user-groups-illustration.png and embedded via a new .groups-illustration
+wrapper (plain bordered card, matching the .paper/.line/.radius-lg tokens used elsewhere on this
+page) placed between .page-top-notice and .groups-columns — i.e. directly above the Desk/User
+Group option cards, as requested. The image is capped at 640px wide and centred so it doesn't
+overpower the page. (A hand-authored isometric SVG in the site's own line-icon style was tried
+first, but the user preferred the original reference image used as-is, so that image is embedded
+directly instead of a redrawn version.) Verified via python3 /tmp/validate.py and node --check on
+the extracted script block (unchanged JS, so no regression risk beyond markup/CSS).
 
 -->
 
