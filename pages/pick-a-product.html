@@ -74,7 +74,7 @@
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
 
   /* ---------- two-column product layout: image incorporated into each choice card ---------- */
-  .product-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
+  .product-columns { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 24px; max-width: 900px; margin: 0 auto; }
   @media (max-width: 720px) { .product-columns { grid-template-columns: 1fr; } }
 
   /* ---------- product choice cards ---------- */
@@ -229,6 +229,8 @@ MOST RECENT CHANGE: Filled the previously-empty Smartalock "Image placeholder" b
 MOST RECENT CHANGE: Per a request to consolidate each product's visual into its choice card rather than sitting in a separate box above it, the standalone .page-visual-frame/.product-col wrapper was removed and its image (.tcard-visual) moved inside the .tcard itself as a full-bleed top banner (the card switched to padding:0/overflow:hidden so the image's corners get clipped by the card's own border-radius, with a new .tcard-body wrapping the text content below it in its own padding). Within that body, the old icon+title <h3> (with its 56px .tcard-icon-img SVG) was removed and replaced with a .tcard-brand-logo <img> of the product's real logo file (smartalock-logo.png / floorsense-logo.png, 32px tall) — so the card now reads image, then brand mark, then description, with no icon or plain-text title anywhere on it. Since .tcard-visual is a plain <img> at width:100%/height:auto (rather than a fixed-aspect-ratio frame), each product's image keeps its own native proportions with no cropping needed, making the now-unused .page-visual-frame/.smartalock-visual/.floorsense-visual rules removable too.
 
 MOST RECENT CHANGE: Per a request to enlarge the Smartalock card's image specifically (clarified as "zoom within the same card size," not widen the card), it's now wrapped in a new .tcard-visual-frame (fixed at the image's own 909/587 aspect-ratio, overflow:hidden) with a .tcard-visual-zoom modifier applying transform: scale(1.2) to the <img> inside, cropping evenly on all sides so the scene reads 20% bigger without changing the card's or column's width. Floorsense's image is untouched (still a plain width:100%/height:auto <img>, same as before), so the two cards remain the same width as each other.
+
+MOST RECENT CHANGE: Fixed the Smartalock card leaving a big empty gap below its paragraph (which also read as its image looking oddly off-center within an over-tall card). The root cause was CSS Grid's default align-items: stretch — since Floorsense's description is longer, Grid was stretching the shorter Smartalock card to match Floorsense's height, and with .tcard being a plain block element that extra height just landed as dead space after the last child rather than being distributed anywhere. Added align-items: start to .product-columns so each card now sizes to its own content; the two cards can be different heights again, matching how every other multi-card page in this project already behaves.
 -->
 
 <script>
