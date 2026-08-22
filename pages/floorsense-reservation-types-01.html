@@ -285,7 +285,7 @@
       </div>
 
       <div class="types-illustration">
-        <img src="../assets/images/desk-user-groups-illustration.png" alt="Example: an HR neighbourhood and a Client Care neighbourhood, each with their own desks, so bookings can be routed to the right area for each group.">
+        <img src="../assets/images/reservation-types-illustration.png" alt="The three desk allocation methods illustrated: Dedicated Workstations (a permanent desk for one person), Reserved by User as Needed (users book any available desk themselves), and AI Agent Auto-Prebooked (an AI agent automatically pre-books a desk).">
       </div>
 
       <div class="desk-check-grid" id="templateGrid">
@@ -489,14 +489,18 @@ MOST RECENT CHANGE: Centered the single-column option list to match the page-00 
 MOST RECENT CHANGE: as the reference page for the site-wide icon-size unification (every other Floorsense page's content icons were resized/redesigned to match this page's existing 56x56px .desk-icon-img), reviewed this page's own 5 icons for semantic fit and found one weak one: 'Reserved by User as Needed' used an abstract crossed-arrows/resize glyph. Replaced it with three small desk tiles plus a checkmark on one, directly depicting 'pick whichever desk is available' rather than a generic flexibility arrow. The other 4 icons (pin for Dedicated Workstations, org-chart for Team Leader Allocated, ID-card+person for Booked on Behalf, robot face for AI Agent Auto-Prebooked) were already good matches and left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 MOST RECENT CHANGE: per a request to reuse the same illustration/treatment introduced on
-floorsense-desk-user-groups-03.html, the HR/Client Care neighbourhood image
-(assets/images/desk-user-groups-illustration.png) was added above this page's option cards too,
-via a new `.types-illustration` wrapper — the same bordered-card treatment as page 03's
-`.groups-illustration` (paper/line/radius-lg tokens, 640px cap, centered), placed between
-`.section-head` and `.desk-check-grid`. The image doesn't depict this page's own Desk Allocation
-Method options, but the request was simply to reuse the same illustration site-wide rather than to
-add a page-specific one. Verified via python3 /tmp/validate.py and node --check on the extracted
-script block (JS untouched, markup/CSS-only change).
+floorsense-desk-user-groups-03.html, the HR/Client Care neighbourhood image was added above this
+page's option cards too, via a new `.types-illustration` wrapper — the same bordered-card
+treatment as page 03's `.groups-illustration` (paper/line/radius-lg tokens, 640px cap, centered),
+placed between `.section-head` and `.desk-check-grid`.
+
+MOST RECENT CHANGE: the user then supplied a page-specific illustration actually depicting this
+page's own three Desk Allocation Method options (Dedicated Workstations, Reserved by User as
+Needed, AI Agent Auto-Prebooked), so the borrowed HR/Client Care image was swapped out for it.
+Saved to assets/images/reservation-types-illustration.png and wired into the same
+`.types-illustration` wrapper (no CSS/markup structure changes, just the `src`/`alt` on the single
+`<img>`). Verified via python3 /tmp/validate.py and node --check on the extracted script block
+(JS untouched, markup-only change).
 
 -->
 
