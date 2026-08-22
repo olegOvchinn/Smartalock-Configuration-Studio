@@ -93,7 +93,7 @@
   .tcard-brand-logo { height: 32px; width: auto; display: block; }
   .tcard-visual { display: block; width: 100%; height: auto; }
   .tcard-visual-frame { aspect-ratio: 760 / 543; overflow: hidden; }
-  .tcard-visual-frame .tcard-visual-zoom { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transform-origin: center; }
+  .tcard-visual-frame .tcard-visual-zoom { width: 100%; height: 100%; object-fit: cover; object-position: 10% center; transform: scale(1.2); transform-origin: center; }
   .tcard-body { min-width: 0; padding: 16px 24px 22px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .tcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
@@ -240,6 +240,8 @@ MOST RECENT CHANGE: Fixed the Smartalock card leaving a big empty gap below its 
 MOST RECENT CHANGE: Per a follow-up request, moved each card's .tcard-brand-logo to a new .tcard-logo-bar above the image (card order is now: brand logo, then image, then description) rather than sitting between the image and the paragraph. Also brought equal card heights back per an explicit request: removed the align-items: start added in the previous change and instead made .tcard a flex column (display:flex; flex-direction:column) with .tcard-body set to flex:1 and justify-content:center — so when Grid's default align-items:stretch makes the shorter card match the taller one's height, the extra room is absorbed by vertically centering that card's paragraph in its body rather than dumping it as dead space below the text (the problem the previous change had fixed by giving up on equal heights entirely).
 
 MOST RECENT CHANGE: Changed .tcard-visual-frame's aspect-ratio from 909/587 (the Smartalock source image's own native ratio) to 760/543 (the Floorsense image's native ratio), so the Smartalock image area renders at exactly the same height as Floorsense's plain width:100%/height:auto image at any given card width, instead of being ~10% shorter. The .tcard-visual-zoom transform: scale(1.2) crop still applies on top of that ratio, so the framing just crops a bit more off the sides than before — no other change needed since object-fit: cover already handles the different native/target ratios.
+
+MOST RECENT CHANGE: Fixed the Smartalock crop cutting into the standalone cabinet/person group at the image's left edge while leaving extra bare floor visible on the right — since the source image's content already runs edge-to-edge with no dead margins, the default center object-position (50%) was cropping real content on the left and empty floor on the right in equal amounts, which reads as unbalanced because the two sides aren't equally "busy." Set object-position: 10% center on .tcard-visual-zoom (worked out by replicating the exact object-fit: cover + object-position + scale(1.2) crop math in a Python/PIL script and comparing candidate crops side by side) so the visible window shifts left, keeping the cabinet/person group intact with a small clean margin instead of clipping it.
 -->
 
 <script>
