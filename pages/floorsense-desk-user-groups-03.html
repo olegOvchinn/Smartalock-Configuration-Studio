@@ -187,6 +187,11 @@
     opacity: 0; transition: opacity .15s;
   }
   .group-check-card.checked .group-tick::after { opacity: 1; }
+  /* ---------- big bare content icon per option, matching floorsense-reservation-types-01.html's
+     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — this page previously had
+     no content icons at all, just the tick + title text used by every other card grid on the
+     site. ---------- */
+  .group-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .group-card-body { min-width: 0; flex: 1; }
   .group-title { font-weight: 600; font-size: 14.76px; color: var(--ink); display: block; margin: 0 0 4px; }
   .group-tag {
@@ -333,6 +338,7 @@
               <label class="group-row">
                 <input type="checkbox" name="deskGroupMode" value="none">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We will not use Desk Groups (can be setup later) <span class="group-tag">Recommended</span></span>
                 </div>
@@ -343,6 +349,7 @@
               <label class="group-row">
                 <input type="checkbox" name="deskGroupMode" value="provide">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1.5"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="4" x2="12" y2="12"/><circle cx="7" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We will provide a list of desk numbers and identify which desk belongs to which group on floorplan</span>
                 </div>
@@ -353,6 +360,7 @@
               <label class="group-row">
                 <input type="checkbox" name="deskGroupMode" value="policy">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M15 2v5h5"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We would also like to apply different policy (booking rules) to different desk groups</span>
                 </div>
@@ -382,6 +390,7 @@
               <label class="group-row">
                 <input type="checkbox" name="userGroupMode" value="none">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We will not use User Groups feature initially (will rely on Desk Group and General policy) <span class="group-tag">Recommended</span></span>
                 </div>
@@ -392,6 +401,7 @@
               <label class="group-row">
                 <input type="checkbox" name="userGroupMode" value="provide">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We will provide a list of User Group names and advise which user belongs to which group via spreadsheet for upload</span>
                 </div>
@@ -402,6 +412,7 @@
               <label class="group-row">
                 <input type="checkbox" name="userGroupMode" value="policy">
                 <span class="group-tick" aria-hidden="true"></span>
+                <svg class="group-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M15 2v5h5"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
                 <div class="group-card-body">
                   <span class="group-title">We want to apply different override policy for different User Groups to trump the Desk Group policy or default booking policy</span>
                 </div>
@@ -566,6 +577,39 @@
   initially (will rely on Desk Group and General policy)" option titles - both are already each
   grid's first/default-checked choice, so no default-state or JS changes were needed, only the
   label markup and a new .group-tag CSS rule.
+MOST RECENT CHANGE: per a request to illustrate this page's cards, added a big bare
+56x56px content icon to each of the 6 .group-check-card options (matching
+floorsense-reservation-types-01.html's .desk-icon-img size/style exactly) — this page previously
+had no content icons at all, just the tick + title text pattern. New .group-icon-img class, icon
+placed between the tick and the card body, same position used on every other option-card page.
+
+Icon choices, reusing the sitewide icon vocabulary established during the earlier icon-size/
+redesign pass where a good match already existed, rather than inventing new metaphors for concepts
+already illustrated elsewhere:
+- Both "We will not use ... Groups" options (Desk and User, each tagged Recommended) use the same
+  circle-with-diagonal-slash "off" glyph already used for "we will not be using X" on
+  floorsense-nsnp-11.html/floorsense-fme-12.html — these two cards are functionally identical
+  concepts (declining the feature), so sharing one icon keeps the two columns visually parallel.
+- "We will provide a list of desk numbers ... on floorplan" gets a new floorplan icon (a rectangle
+  divided into rooms with a marked desk dot in one), distinct from the plain bulleted-list icon
+  used for the User Group equivalent below, since this option is specifically about marking up a
+  floorplan rather than just supplying a list of names.
+- "We will provide a list of User Group names ... via spreadsheet" reuses the exact bulleted-list
+  icon (three lines + three dots) already used for "we'll provide a list" options on
+  floorsense-nsnp-11.html/floorsense-fme-12.html, since this option really is just a plain list/
+  spreadsheet with no floorplan involved.
+- Both "apply different policy" options (Desk Group and User Group) use a new policy-document icon
+  (a page with a folded corner and two text lines) — a distinct shape from the clipboard-checkmark
+  icon used for "the core policy is ready" on floorsense-setup-path-00.html, so the two don't read
+  as the same concept, while still being instantly recognisable as "a policy document."
+
+Verified via a jsdom script (loading the page with runScripts: "outside-only", then eval-ing the
+extracted script) that all 6 new icons resolve to 56x56px and that the existing checkbox-wiring
+JS (wireGroup(), which selects by [data-mode] and input[type="checkbox"], not by position) still
+works correctly after the markup change — ticking a "policy" checkbox still reveals its subfields
+panel and saves the expected state to localStorage. Also re-ran python3 /tmp/validate.py and
+node --check on the extracted script block.
+
 -->
 
 <script>
