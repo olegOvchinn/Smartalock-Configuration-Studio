@@ -42,7 +42,7 @@
   .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
 
   .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-logo { height: 15.4px; width: auto; display: block; flex-shrink: 0; }
   .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
   .brand-logo-floorsense { height: 22px; width: auto; display: block; flex-shrink: 0; }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
@@ -856,6 +856,7 @@
 MOST RECENT CHANGE: per the site-wide icon-size unification, found this page had locally redefined the shared .path-icon-img class down to 38px — out of step with every other page using that same class name (nsnp-11, fme-12, anti-desk-hogging-13, all at 56px, matching floorsense-reservation-types-01.html's .desk-icon-img). Bumped it back to 56px. Also redesigned the third card's icon ('reservation ends at close of business hours'), which reused the exact same clock-with-tick-marks glyph as the second card ('ends after a fixed number of hours') with only cosmetic tick marks added — the two options weren't visually distinguishable at a glance. Replaced it with a sunset glyph (a horizon line with a dome/sun shape and rays), a more literal and distinct depiction of 'end of the business day' versus a plain duration clock. Also normalized the first card's icon to stroke-width 1.6 (was 1.8) to match the site's established icon stroke convention. Left .footer-hint-icon (a small aside/notice icon, not a card-level content icon) at its existing size. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
+MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 -->
 
 <script>

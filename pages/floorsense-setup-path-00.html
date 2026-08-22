@@ -42,7 +42,7 @@
   .panel-inner { max-width: var(--panel-maxw); margin: 0 auto; width: 100%; padding: 0 28px; }
 
   .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+  .brand-logo { height: 15.4px; width: auto; display: block; flex-shrink: 0; }
   .brand-divider { color: var(--line); font-size: 15px; font-weight: 300; }
   .brand-logo-floorsense { height: 22px; width: auto; display: block; flex-shrink: 0; }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
@@ -450,6 +450,7 @@ on the extracted script block (JS untouched, markup/CSS-only change), and a rend
 preview.
 
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
+MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 -->
 
 <script>
