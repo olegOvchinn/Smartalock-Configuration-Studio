@@ -123,6 +123,16 @@
     max-width: 720px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); padding: 26px 28px 28px;
   }
+  /* ---------- complete-card-banner: a user-supplied illustration summarizing everything this
+     page's copy describes as done (desk config with checkmarks, groups configured, business
+     hours, optional features all switched on, and a "prebooking ready" calendar) — placed as a
+     full-width banner above the existing icon+title header rather than replacing the small
+     .complete-card-icon, since this card's header doesn't have a description paragraph beside the
+     icon the way other single-card pages (04/05) do; the image acts as a hero visual instead.
+     Sized to the card's own content width (100% of the padded area) with height auto, capped by
+     the card's overall width rather than a fixed pixel size. ---------- */
+  .complete-card-banner { margin: -2px 0 20px; }
+  .complete-card-banner img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
   .complete-card-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
   /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
      .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — this used to be a 48px
@@ -249,6 +259,9 @@
     <div class="panel-inner">
 
       <div class="complete-card">
+        <div class="complete-card-banner">
+          <img src="../assets/images/core-complete-illustration.png" alt="">
+        </div>
         <div class="complete-card-header">
           <svg class="complete-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="9" y="1" width="6" height="3" rx="1"/><path d="M8.3 12.6l2.3 2.3L15.8 9.8"/></svg>
           <h2 class="complete-card-title">The core policy is ready</h2>
@@ -420,6 +433,21 @@
   summary is a separate follow-up task, not yet done. See
   floorsense-default-reservation-times-07.html's own NOTE for how an orphaned page's bar now reads.
 MOST RECENT CHANGE: per a site-wide request to make every Floorsense icon the same big size as floorsense-reservation-types-01.html's .desk-icon-img (56x56px, bare/unbadged, accent-coloured stroke) and to better match each icon to its purpose, .complete-card-icon was converted from a 48px accent-green circle badge (with a 24px white checkmark inside) to a bare 56px icon directly on the svg element (no wrapper div, matching page01's markup pattern exactly). The generic checkmark-in-circle was also redesigned as a clipboard with a checkmark, depicting a completed policy document rather than a generic 'success' glyph. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to illustrate this page the same way as the other Floorsense
+pages, a user-supplied reference image (a single wide scene summarizing everything this page's copy
+describes as done: a desk config with green checkmarks, a "core groups configured" floorplan,
+a business-hours clock, three optional features shown "ON", and a calendar badged "prebooking
+ready") was autocropped to its content bounds (1024x489 down to 812x428) and saved to
+assets/images/core-complete-illustration.png. Unlike the other single-card pages
+(floorsense-prebooking-advance-04.html, floorsense-business-hours-05.html), this card's header has
+no description paragraph beside the icon — just a small icon + title, with the paragraphs below —
+so rather than replacing `.complete-card-icon` (kept as-is), the image was added as a new full-width
+`.complete-card-banner` sitting above the existing header, acting as a hero visual for the whole
+card. Sized to 100% of the card's padded content width (no fixed pixel size, so it scales with the
+card itself) with a `--radius-md` corner radius. Verified via python3 /tmp/validate.py, node --check
+on the extracted script block (JS untouched, markup/CSS-only change), and a rendered weasyprint
+preview.
 
 -->
 
