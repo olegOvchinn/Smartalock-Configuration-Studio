@@ -85,7 +85,7 @@
     display: flex; flex-direction: column; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .tcard[data-type="smartalock"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
-  .tcard[data-type="floorsense"] { --tc: #1FAA59; --tc-wash: #E6F7ED; }
+  .tcard[data-type="floorsense"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
   .tcard:hover { border-color: var(--tc); background: var(--tc-wash); }
   .tcard.chosen { background: var(--tc-wash); border-color: var(--tc); box-shadow: none; }
 
@@ -242,6 +242,8 @@ MOST RECENT CHANGE: Per a follow-up request, moved each card's .tcard-brand-logo
 MOST RECENT CHANGE: Changed .tcard-visual-frame's aspect-ratio from 909/587 (the Smartalock source image's own native ratio) to 760/543 (the Floorsense image's native ratio), so the Smartalock image area renders at exactly the same height as Floorsense's plain width:100%/height:auto image at any given card width, instead of being ~10% shorter. The .tcard-visual-zoom transform: scale(1.2) crop still applies on top of that ratio, so the framing just crops a bit more off the sides than before — no other change needed since object-fit: cover already handles the different native/target ratios.
 
 MOST RECENT CHANGE: Fixed the Smartalock crop cutting into the standalone cabinet/person group at the image's left edge while leaving extra bare floor visible on the right — since the source image's content already runs edge-to-edge with no dead margins, the default center object-position (50%) was cropping real content on the left and empty floor on the right in equal amounts, which reads as unbalanced because the two sides aren't equally "busy." Set object-position: 10% center on .tcard-visual-zoom (worked out by replicating the exact object-fit: cover + object-position + scale(1.2) crop math in a Python/PIL script and comparing candidate crops side by side) so the visible window shifts left, keeping the cabinet/person group intact with a small clean margin instead of clipping it.
+
+MOST RECENT CHANGE: Per a request that Floorsense branch cards use Smartalock's blue instead of green (confirmed via follow-up to apply "everywhere," including this page), `.tcard[data-type="floorsense"]` changed from `{ --tc: #1FAA59; --tc-wash: #E6F7ED; }` to `{ --tc: #0071E3; --tc-wash: #E8F1FC; }` — the same blue already used by `.tcard[data-type="smartalock"]`, so both product cards on this picker now share one accent color. `.tcard[data-type="user"]` on smartalock-reservation-type-01.html (an unrelated internal card variant that happened to reuse the same green hex) was deliberately left untouched, as it has nothing to do with Floorsense/Smartalock product branding. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block, and visually confirmed via a weasyprint render.
 -->
 
 <script>

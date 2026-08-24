@@ -17,9 +17,9 @@
     --paper: #FFFFFF;
     --paper-soft: #F5F5F7;
     --line: #D2D2D7;
-    --accent: #1FAA59;
-    --accent-wash: #E6F7ED;
-    --accent-deep: #178A48;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
     --danger: #FF3B30;
     --radius-lg: 20px;
     --radius-md: 14px;
@@ -535,6 +535,8 @@ MOST RECENT CHANGE: Per a request to swap the two new crops' grey card backgroun
 MOST RECENT CHANGE: Replaced assets/images/reservation-type-team-leader.png with a new user-supplied version of the same scene — same pointing team-leader pose and 3-desk arrow layout, but the desk cards now show filled-in named/faced profiles instead of blank silhouettes, plus a sit-stand height readout ("72.5 cm" with up/down controls) at each desk. Already had a clean white background, so just autocropped to content bounds (no caption text or grey card background to remove this time). Ratio changed slightly (1.58:1 vs the old 1.46:1) but still landscape-short enough that `.desk-thumb-tall`'s existing `height: 120px` sizing didn't need adjusting. Updated the `<img>`'s alt text to match the new artwork (drops "unnamed"/"pending check-in," since the desks are now shown as assigned to named people with height controls).
 
 MOST RECENT CHANGE: Swapped in a follow-up variant of the same scene where the third desk is highlighted in bright green instead of the same teal as the first two (rest of the composition unchanged). Same filename (assets/images/reservation-type-team-leader.png), so no markup/CSS changes were needed — autocropped to content bounds the same way as the version before it.
+
+MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables (progress bar, pills, buttons, focus states, etc.) now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render (the "GETTING STARTED" and "CONFIGURE" pills now render blue).
 -->
 
 <script>

@@ -47,6 +47,8 @@
   freed if you don't tap in fast enough) is already covered by the check-in-window row above from an
   end-user's point of view, and it reads as an admin-facing safety-net setting rather than a
   distinct thing an end user needs to be told about; flag if it should get its own row.
+
+MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's hardcoded green values (which, unlike the wizard pages, aren't driven by CSS variables) were swapped one-for-one using this page's own Smartalock parallel (smartalock-locker-guide-live.html) as the reference: #1FAA59 -> #0071E3, #146B3A -> #0058B0, #E6F7ED -> #E8F1FC, #178A48 -> #0058B0. Covers the toolbar's primary button, the hero gradient, section-eyebrow headings, and the row-icon badges. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -91,14 +93,14 @@
     font-family: inherit; font-weight: 600; font-size: 12.8px; border-radius: 980px;
     padding: 9px 18px; white-space: nowrap; text-decoration: none;
   }
-  .toolbar-btn.primary { background: #1FAA59; color: #fff; }
+  .toolbar-btn.primary { background: #0071E3; color: #fff; }
   .toolbar-btn.secondary { background: rgba(255,255,255,0.14); color: #fff; }
   .toolbar-btn svg { width: 15px; height: 15px; }
   .page-sheet { max-width: 850px; margin: 26px auto 48px; background: #fff; box-shadow: 0 6px 28px rgba(0,0,0,0.16); }
 
   /* ---------- hero ---------- */
   .hero {
-    background: linear-gradient(135deg, #1FAA59 0%, #146B3A 100%);
+    background: linear-gradient(135deg, #0071E3 0%, #0058B0 100%);
     padding: 52px 64px 46px; color: #fff;
   }
   .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
@@ -120,7 +122,7 @@
   .body-content { padding: 6px 64px 8px; }
   .section-eyebrow {
     font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #1FAA59; margin: 34px 0 16px; page-break-after: avoid;
+    color: #0071E3; margin: 34px 0 16px; page-break-after: avoid;
   }
   .row {
     display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid #D2D2D7;
@@ -129,8 +131,8 @@
   .row:last-of-type { border-bottom: none; }
   .row[hidden] { display: none; }
   .row-icon {
-    width: 52px; height: 52px; border-radius: 13px; background: #E6F7ED; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; color: #178A48;
+    width: 52px; height: 52px; border-radius: 13px; background: #E8F1FC; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #0058B0;
   }
   .row-icon.warm { background: #FCF1DE; color: #B36B00; }
   .row-icon svg { width: 22px; height: 22px; }

@@ -17,9 +17,9 @@
     --paper: #FFFFFF;
     --paper-soft: #F5F5F7;
     --line: #D2D2D7;
-    --accent: #1FAA59;
-    --accent-wash: #E6F7ED;
-    --accent-deep: #178A48;
+    --accent: #0071E3;
+    --accent-wash: #E8F1FC;
+    --accent-deep: #0058B0;
     --danger: #FF3B30;
     --radius-lg: 20px;
     --radius-md: 14px;
@@ -539,6 +539,8 @@ script block (JS untouched, markup/CSS-only change).
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
+
+MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 -->
 
 
