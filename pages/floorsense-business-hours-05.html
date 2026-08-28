@@ -143,45 +143,55 @@
      Both pins are the same normal size and move independently along the rail — neither is a fixed
      anchor the other is measured against. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 64px 6px 40px; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-
-  /* ---------- 30-minute tick marks along the rail: a full-hour tick every 60 minutes (taller,
-     darker) and a half-hour tick every 30 minutes in between (shorter, lighter), generated in JS
-     from the same RAIL_START_MIN/RAIL_END_MIN/minutesToPercent() scale the pins use, so ticks and
-     pins always agree on where a given time sits along the rail. ---------- */
-  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
-  .timeline-tick {
-    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
-    transform: translate(-50%, -50%); opacity: 0.6;
+  .timeline-track-wrapper { position: relative; height: 6px; margin: 76px 10px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper-soft);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.10);
   }
-  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+  .timeline-zone {
+    position: absolute; top: 0; height: 6px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  }
+
+  /* ---------- 30-minute tick marks below the rail: a full-hour tick every 60 minutes (taller,
+     darker) and a half-hour tick every 30 minutes in between (shorter, lighter dots), generated in
+     JS from the same RAIL_START_MIN/RAIL_END_MIN/minutesToPercent() scale the pins use, so ticks
+     and pins always agree on where a given time sits along the rail. ---------- */
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
 
   .timeline-node {
     position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none;
-    padding: 16px; margin: -16px; cursor: grab; touch-action: none;
+    padding: 16px; margin: -16px; cursor: grab; touch-action: none; z-index: 2;
   }
   .timeline-node:active, .timeline-node.dragging { cursor: grabbing; }
   .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
   }
   .timeline-node:hover .anchor-pin, .timeline-node.dragging .anchor-pin {
-    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .timeline-node.dragging .anchor-pin { transform: scale(1.1); }
+  .timeline-node.dragging .anchor-pin { transform: scale(1.12); }
   .timeline-node:focus-visible .anchor-pin {
-    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-time.primary { background: #102A43; }
   .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
 
   /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
@@ -558,6 +568,30 @@ past departure clamping to departure−60min, dragging departure below arrival c
 arrival+60min, ArrowRight/ArrowLeft stepping by exactly 30 minutes, and the resulting values
 persisting to `localStorage`'s `configurationProject.floorsense.wizard.businessHours`. Also validated
 via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: Per feedback that the timeline diagram "does its job but looks dated", gave it a
+visual refresh — no markup, JS, or behavior changes, purely CSS. The rail thickened from a flat 3px
+line to a 6px pill-shaped groove (`border-radius: 999px`, plus a subtle `inset box-shadow` so it
+reads as a recessed track rather than a flat bar); the colored zone between the pins matches the same
+6px/pill treatment. The 30-minute tick marks moved from crossing through the rail itself (which read
+as a barcode/ruler) to a quieter row of small dots sitting just below it (2px dots, 4px dashes on the
+hour), so they inform without competing with the rail or pins. Pins grew from 15px to 19px with a
+softer two-layer shadow for more depth, and now shift from navy to `--accent-deep` on hover/drag
+(previously only a static navy, with color change reserved for the halo glow) — an extra affordance
+cue that a pin is interactive. The floating time labels (previously bare bold text sitting on the
+card's plain background) became solid pill-shaped chips (`--accent-deep` background, white text,
+`border-radius: 999px`) that read as active controls rather than static captions, and the "Arrives"/
+"Departs" captions below gained small-caps letter-spacing (`text-transform: uppercase; font-size:
+10.5px; letter-spacing: 0.04em`) for a lighter, more deliberate hierarchy against the now much
+bolder time chips above the pins. `.timeline-track-wrapper`'s margins were retuned (76px top / 46px
+bottom, up from 64px/40px) to fit the taller pill labels and the ticks' new position below the rail
+without crowding either the "Standard hours" subtitle above or the footer below. Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, the same jsdom
+drag/keyboard smoke test used for the original conversion (confirms styling changes didn't disturb
+any of the interaction logic), and a weasyprint render of an isolated copy of this card with the
+pins/zone/ticks statically inlined at their default 9:00 AM/5:00 PM position (since WeasyPrint can't
+execute the JS that normally positions them) to visually confirm the redesign before porting it into
+this file.
 -->
 
 
