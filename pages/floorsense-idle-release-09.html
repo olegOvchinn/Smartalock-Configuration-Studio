@@ -163,78 +163,93 @@
   .idle-body.show { display: block; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
-  .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
-  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
 
   /* ---------- diagram row: a fixed "Reserved" pin at the rail's left edge and a directly-draggable
      "Released" pin, joined by a shaded zone. Ticks mark every 30-minute segment along the rail so a
      dragged pin's position can be read against the grid at a glance — the same granularity the old
      time drum stepped in. Neither pin is an absolute clock time (idle release isn't tied to any
-     time of day), so both label-times show elapsed hours instead. ---------- */
+     time of day), so both label-times show elapsed hours instead. Rail/zone/tick/pin styling below
+     matches floorsense-business-hours-05.html's final "segmented glass" redesign — see the MOST
+     RECENT CHANGE note below. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 6px 40px; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-
-  /* ---------- 30-minute tick marks along the rail, generated in JS from the same
-     ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/endPercentForOffset() scale the pin uses. ---------- */
-  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
-  .timeline-tick {
-    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
-    transform: translate(-50%, -50%); opacity: 0.6;
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 6px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
   }
-  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+  /* ---------- segmented zone: the filled Reserved-Released span renders as a row of individually
+     rounded 30-minute blocks (flex children, small gap between each, inner blue-glass glow + glossy
+     sheen) rather than one solid gradient bar. Each segment's own background color is set inline by
+     JS (a per-segment interpolation from a deep to a lighter blue), not by this base rule. ---------- */
+  .timeline-zone {
+    position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+
+  /* ---------- 30-minute tick marks below the rail, generated in JS from the same
+     ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/endPercentForOffset() scale the pin uses. ---------- */
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
 
   .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
   .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; }
   .timeline-node.draggable:active, .timeline-node.draggable.dragging { cursor: grabbing; }
   .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0; /* invisible drag handle, matching floorsense-business-hours-05.html — the large
+      invisible hit-target and the floating label-time chip still make the interactive pin fully
+      usable and readable without a visible knob. */
   }
   .timeline-node.draggable:hover .anchor-pin, .timeline-node.draggable.dragging .anchor-pin {
-    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .timeline-node.draggable.dragging .anchor-pin { transform: scale(1.06); }
+  .timeline-node.draggable.dragging .anchor-pin { transform: scale(1.12); }
   .timeline-node.draggable:focus-visible .anchor-pin {
-    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
   .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
-  /* ---------- "Released" is the value the pin actually controls, so it gets the enlarged pin/
-     label treatment (same 66px sizing as the other reservation-time diagrams' emphasized pin);
-     "Reserved" sits at a fixed left-edge spot on the same rail and is never draggable. ---------- */
-  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
-  .big-anchor .label-time.primary {
-    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
   /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
      .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
      (same constraint as floorsense-checkin-window-08.html's diagram). ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
   @keyframes ci-grow {
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
   }
   .timeline-card.animate-in .label-time,
   .timeline-card.animate-in .label-desc {
@@ -374,9 +389,6 @@
 
         <div class="idle-body" id="idleBody">
         <div class="timeline-card">
-          <div class="timeline-header">
-            <p class="timeline-subtitle">Auto-release after: <strong id="idleHoursLabel">3h</strong></p>
-          </div>
           <div class="timeline-diagram-row">
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
@@ -388,7 +400,7 @@
                 <div class="label-time">0h</div>
                 <div class="label-desc">Reserved</div>
               </div>
-              <div class="timeline-node big-anchor draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
+              <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
                 <div class="anchor-pin"></div>
                 <div class="label-time primary" id="idleEndTime">3h</div>
                 <div class="label-desc">Released</div>
@@ -583,6 +595,34 @@ past either rail edge clamping to 30min/24h, a 30-minute ArrowLeft step, and cor
 extracted script block. Like business-hours-05, WeasyPrint can't render this page's JS-positioned
 diagram at all (it doesn't execute JavaScript), so the jsdom test is the actual verification here,
 not a rendered preview.
+
+MOST RECENT CHANGE: Per a request to rebuild every other Floorsense timeline to match
+floorsense-business-hours-05.html's now-much-iterated-on visual design, this page's diagram got the
+full same treatment: the rail grew from a flat 3px line to a 36px pill-shaped casing (white
+background, thin `--line` border); the shaded zone between "Reserved" and "Released" changed from one
+solid gradient bar to a row of individually rounded 30-minute blocks (a new `renderZoneSegments()` +
+`lerpColor()` pair, ported verbatim, populates `#idleZone` on every `updateDiagram()` call) each with
+an inner blue-glass glow and glossy top sheen (`.timeline-zone-seg`/`::before`); tick marks moved from
+crossing through the rail to a quiet dotted row below it; both pins' round `.anchor-pin` knobs became
+invisible (`opacity: 0`), relying on the floating time-chip labels and the segmented bar itself to
+carry the information; and the "Auto-release after: 3h" `.timeline-subtitle` line above the diagram
+was removed as redundant with the "Released" pin's own chip. The page-specific `.big-anchor` emphasis
+(a 66px pin and a 22.5px display-font label reserved for "Released", the one value this page's user
+actually controls) was retired along with it — with pins now uniformly invisible and both chips using
+the same small pill-chip style, an enlarged/differently-styled "Released" label no longer read as
+consistent with the new design language, so `#idleEndNode` dropped the `big-anchor` class and
+`.big-anchor`'s CSS rules were deleted; "Released" is still visually distinguished from "Reserved" by
+being the one pin with a `.draggable` hit-target and interactive glow, the same way
+floorsense-business-hours-05.html distinguishes its two equally-styled pins by behavior rather than
+size. `ci-pop-handle`'s keyframe/animation-trigger rule was removed for the same reason it was removed
+on business-hours-05: its `both`-fill-mode end state (`opacity: 1`) would have overridden the pin's
+new invisible base state after playing once. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a jsdom test (enabling the feature via the on/off
+switch first, since the diagram is hidden until then) confirming the subtitle/big-anchor markup is
+gone, `.anchor-pin`'s computed opacity is 0, segment count/labels update correctly through a drag and
+an ArrowLeft step, and `localStorage` persistence still works, plus a weasyprint render of an isolated
+copy of the card (forced visible, segments/ticks/pins statically inlined at the default 3h state)
+confirming the casing/segmented-bar/chip layout matches business-hours-05's look.
 -->
 
 <script>
@@ -680,7 +720,31 @@ not a rendered preview.
     return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
   }
 
-  const idleHoursLabel = document.getElementById('idleHoursLabel');
+  /* ---------------- segmented zone colors: matches floorsense-business-hours-05.html's
+     lerpColor()/renderZoneSegments() approach — each 30-minute block's background is a linear
+     interpolation between a deep and a light blue across the full segment count. ---------- */
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+  function renderZoneSegments(durationMinutes) {
+    const segCount = Math.max(0, Math.round(durationMinutes / 30));
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    idleZone.innerHTML = html;
+  }
+
   const idleStartNode = document.getElementById('idleStartNode');
   const idleEndNode = document.getElementById('idleEndNode');
   const idleEndTime = document.getElementById('idleEndTime');
@@ -696,8 +760,8 @@ not a rendered preview.
     idleEndNode.style.left = endPercent + '%';
     idleZone.style.left = ROW_EDGE_PERCENT + '%';
     idleZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    renderZoneSegments(idleMinutes);
     const durLabel = formatDurationMinutes(idleMinutes);
-    idleHoursLabel.textContent = durLabel;
     idleEndTime.textContent = durLabel;
     idleHint.textContent = 'If a desk sits unclaimed or unused for ' + formatHours(state.idleHours) +
       ', it\'s automatically released back to general availability — this can happen at any time of day, on any day.';
