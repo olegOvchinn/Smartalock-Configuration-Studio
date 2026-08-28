@@ -120,16 +120,11 @@
     max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
     border-radius: var(--radius-lg); overflow: hidden;
   }
-  .checkin-card-header { display: flex; align-items: center; gap: 24px; padding: 22px 22px 20px; }
-  /* ---------- checkin-card-illustration: replaces the header's plain .checkin-card-icon line
-     icon with a user-supplied illustration depicting the whole "standard business hours applied
-     across the floor" concept (a 9-5 clock, a desk switching on, a floorplan/server, and a
-     building) — same pattern as the other single-card pages (floorsense-prebooking-advance-04.html)
-     rather than the multi-card split used on pages 01/02. Sized by width (landscape ~1.59:1), well
-     under its ~680px native width so it stays crisp. .checkin-card-icon (the header's icon) is now
-     unused on this page and was removed. The footer's own icon was later removed too — see the
-     NOTE block below — so this page now has zero icons, just the header illustration. ---------- */
-  .checkin-card-illustration { width: 300px; height: auto; flex-shrink: 0; border-radius: 10px; }
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
+  /* ---------- checkin-card-icon: a basic square glyph replacing the header illustration this page
+     used previously — see the MOST RECENT CHANGE note below. Same 56x56px/currentColor convention as
+     floorsense-checkin-window-08.html's own .checkin-card-icon. ---------- */
+  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
@@ -344,7 +339,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <img class="checkin-card-illustration" src="../assets/images/business-hours-illustration.png" alt="An isometric arc connecting a sunrise icon labeled 9:00 AM to a crescent-moon icon labeled 5:00 PM, depicting the start and end of the business day">
+          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
           <p class="checkin-card-desc">
             Most users share the same standard business hours — drag either pin on the timeline
             below to set when most people arrive and when they head out for the day. These hours
@@ -733,6 +728,29 @@ render of an isolated copy of the card confirming the glossy top-sheen gradient 
 (WeasyPrint supports gradient backgrounds even though, per the earlier NOTE, it doesn't render
 box-shadow blur — so the inset glow layers themselves remain unconfirmed visually in this project's
 static-render workflow, same limitation as before).
+
+MOST RECENT CHANGE: Per a request to "instead of the image in the card create a basic squire [sic]
+icon", replaced the header's `<img class="checkin-card-illustration">` (the isometric sunrise/moon
+illustration added two changes ago) with a basic `<svg class="checkin-card-icon">` — a single
+`<rect x="4" y="4" width="16" height="16" rx="2"/>` drawn with the same `viewBox="0 0 24 24"
+fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"`
+convention every other basic icon on the Floorsense wizard uses (e.g.
+floorsense-checkin-window-08.html's `.checkin-card-icon`). `.checkin-card-illustration`'s CSS rule
+(width/height/border-radius) was removed and a fresh `.checkin-card-icon { width: 56px; height: 56px;
+flex-shrink: 0; color: var(--accent); }` rule was added — the same 56x56px/currentColor sizing this
+site's earlier icon-size unification established. `.checkin-card-header` reverted from the
+illustration-era `align-items: center; gap: 24px;` back to the small-icon convention (`align-items:
+flex-start; gap: 18px;`) other single-icon cards use. `assets/images/business-hours-illustration.png`
+is now unreferenced by any page (confirmed via grep) but was left in place rather than deleted, since
+file deletions in the connected project folder require the person's explicit go-ahead. Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a weasyprint
+render confirming the square icon and reflowed header/description text — though the icon renders
+black rather than the intended `--accent` blue in that render specifically because WeasyPrint doesn't
+resolve `currentColor` against an inherited CSS custom property inside embedded SVG (confirmed via an
+isolated minimal test reproducing the same issue), a renderer limitation consistent with this file's
+other documented WeasyPrint gaps (no JS execution, no box-shadow blur) rather than a bug in the
+markup — the identical pattern already renders correctly in a real browser on every other page that
+uses it.
 -->
 
 

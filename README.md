@@ -206,6 +206,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The segmented blocks got a bright blue glow (`box-shadow: 0 0 6px 1px rgba(10,132,255,0.85), 0 0 14px 2px rgba(10,132,255,0.5)`, layered on top of each block's own gradient fill and inset highlight) so the filled zone reads as one continuous luminous strip, and the rail grew another 50% taller (24px to 36px) per two more follow-up requests.
 - One more follow-up shrank the blocks themselves 30% (their vertical inset within the rail grew from 3px to 7.5px top/bottom, so segment height went from 30px to 21px) while leaving the now-36px rail's own height untouched, per "the height of the rail is good but make the blocks inside 30% less tall".
 - The outer bright-blue glow was replaced with an inward "blue glass" look, per "add some glow inside like if they are made of blue glass" (clarified with "no need glow outside"): the segments now use an inset cyan glow, a brighter top inset highlight, a darker bottom inset shadow for depth, and a new glossy top-to-bottom white sheen overlay (`.timeline-zone-seg::before`) layered over each block's own gradient color.
+- The header illustration was swapped back out for a basic square icon (`<svg class="checkin-card-icon"><rect .../></svg>`, 56x56px, `stroke="currentColor"` colored via `--accent`), matching the plain-icon convention every other single-card Floorsense page uses. `assets/images/business-hours-illustration.png` is now unreferenced but was left in place rather than deleted.
 
 ## Status
 
