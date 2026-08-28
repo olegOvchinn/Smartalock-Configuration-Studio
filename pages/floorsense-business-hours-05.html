@@ -157,12 +157,21 @@
     display: flex; align-items: stretch; gap: 3px;
   }
   .timeline-zone-seg {
+    position: relative; overflow: hidden;
     flex: 1 1 0; min-width: 0; border-radius: 5px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.35),
-      inset 0 -1px 1px rgba(16,42,67,0.10),
-      0 0 6px 1px rgba(10,132,255,0.85),
-      0 0 14px 2px rgba(10,132,255,0.5);
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  /* ---------- glossy top sheen: a soft white-to-transparent gradient laid over each segment's own
+     JS-set background color, combined with the inset glow above, to read as backlit blue glass
+     rather than a flat colored tile. ---------- */
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
   }
 
   /* ---------- 30-minute tick marks below the rail: a full-hour tick every 60 minutes (taller,
@@ -705,6 +714,25 @@ casing rather than filling nearly all of it. Verified via an inline HTMLParser t
 `node --check` on the extracted script block, and a weasyprint render of an isolated copy of the card
 (segments statically inlined) confirming the shorter blocks render centered within the unchanged-height
 rail.
+
+MOST RECENT CHANGE: Per a follow-up request to "add some glow inside like if they are made of blue
+glass" (and a clarification that "no need glow outside"), `.timeline-zone-seg`'s two outer bright-blue
+`box-shadow` glow layers from the earlier "glow bright blue" change were removed and replaced with an
+inward-facing treatment instead: an `inset 0 0 8px 2px rgba(120,200,255,0.9)` soft cyan glow bleeding
+in from the block's own edges, paired with a brighter top inset highlight (`inset 0 1px 1px
+rgba(255,255,255,0.6)`) and a darker inset shadow along the bottom (`inset 0 -2px 3px
+rgba(6,30,60,0.28)`) for a sense of depth/thickness. A new `.timeline-zone-seg::before` pseudo-element
+adds a glossy top-to-bottom white sheen (`linear-gradient(180deg, rgba(255,255,255,0.55) 0%,
+rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%)`) layered over each segment's own JS-set
+background color, the combination reading as backlit blue glass rather than a flat colored tile.
+`.timeline-zone-seg` gained `position: relative; overflow: hidden;` so the sheen pseudo-element clips
+to the segment's own rounded corners (this doesn't affect the outer glow box-shadow removed above,
+since an element's own `overflow` never clips its own box-shadow — only descendants). Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a weasyprint
+render of an isolated copy of the card confirming the glossy top-sheen gradient renders correctly
+(WeasyPrint supports gradient backgrounds even though, per the earlier NOTE, it doesn't render
+box-shadow blur — so the inset glow layers themselves remain unconfirmed visually in this project's
+static-render workflow, same limitation as before).
 -->
 
 
