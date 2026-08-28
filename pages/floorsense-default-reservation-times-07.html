@@ -199,20 +199,38 @@
   .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
-  /* ---------- diagram row: an Apple-Clock-style time drum to the left of the rail, rolling the
-     drum moves the relevant pin (and, for cards 2/3, the connecting zone) — ported from
-     floorsense-checkin-window-08.html's check-in-window drum, generalized to take an explicit
-     `values` array so this page can drive one drum with absolute clock times (card 1's start,
-     card 3's end) and another with elapsed durations (card 2's fixed length). ---------- */
-  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
+  /* ---------- diagram row: each card's rail pin is directly draggable now (see the MOST RECENT
+     CHANGE note below for the removed time-drum history). Ticks mark every 30-minute segment along
+     each rail so a dragged pin's position can be read against the grid at a glance — the same
+     granularity the old time drums stepped in. ---------- */
+  .timeline-diagram-row { display: block; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 6px 40px; }
   .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
   .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
 
+  /* ---------- 30-minute tick marks along each rail, generated in JS from that card's own scale
+     (card 1: full-day linear; cards 2/3: the shared ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/
+     endPercentForOffset() scale). ---------- */
+  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
+    transform: translate(-50%, -50%); opacity: 0.6;
+  }
+  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+
   .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; }
+  .timeline-node.draggable:active, .timeline-node.draggable.dragging { cursor: grabbing; }
   .timeline-node .anchor-pin {
     width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+  }
+  .timeline-node.draggable:hover .anchor-pin, .timeline-node.draggable.dragging .anchor-pin {
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node.draggable.dragging .anchor-pin { transform: scale(1.06); }
+  .timeline-node.draggable:focus-visible .anchor-pin {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
   }
   .timeline-node .label-time {
     position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
@@ -238,42 +256,6 @@
   }
   .center-node .label-desc,
   .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
-
-  /* ---------- Apple Clock-style time drum, ported verbatim (styling + scroll-snap mechanics)
-     from floorsense-checkin-window-08.html, including its white/3D body treatment. ---------- */
-  .time-drum {
-    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
-  }
-  .time-drum::before {
-    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom,
-      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
-      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
-  }
-  .time-drum-window {
-    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
-    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
-    background: rgba(16,42,67,0.03);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
-  }
-  .time-drum-scroll {
-    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-    border-radius: 12px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-  }
-  .time-drum-scroll::-webkit-scrollbar { display: none; }
-  .time-drum-pad { height: 60px; }
-  .time-drum-row {
-    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
-  }
-  .time-drum-row.selected {
-    font-size: 15px; font-weight: 700; color: #102A43;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-  }
 
   /* ---------- reveal animation: plays once when the example scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
@@ -424,10 +406,9 @@
       <div class="cards-wrap">
 
         <!-- Card 1: start time — not part of the end-mode choice below, just a plain setting.
-             The plain <input type="time"> and its "Example" comparison diagram are gone; a single
-             Apple-Clock-style time drum (30-min steps, absolute clock time) sits to the left of a
-             solo timeline whose one pin is enlarged to match floorsense-checkin-window-08.html's
-             "Booking start" pin (.center-node, 66px). -->
+             A solo timeline whose one pin (enlarged to match floorsense-checkin-window-08.html's
+             "Booking start" pin, .center-node, 66px) is directly draggable along the full-day rail,
+             snapping to 30-minute segments. -->
         <div class="info-card">
           <div class="info-row">
             <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg>
@@ -441,13 +422,11 @@
                   <p class="timeline-subtitle">Custom start time: <strong id="card1StartLabel">8:30 AM</strong></p>
                 </div>
                 <div class="timeline-diagram-row">
-                  <div class="time-drum" id="card1StartDrum" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
-                    <div class="time-drum-window"></div>
-                    <div class="time-drum-scroll" id="card1StartDrumScroll"></div>
-                  </div>
                   <div class="timeline-track-wrapper">
-                    <div class="timeline-rail"></div>
-                    <div class="timeline-node center-node" id="card1StartNode">
+                    <div class="timeline-rail">
+                      <div class="timeline-ticks" id="card1Ticks"></div>
+                    </div>
+                    <div class="timeline-node center-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
                       <div class="anchor-pin"></div>
                       <div class="label-time primary" id="card1StartTime">8:30 AM</div>
                       <div class="label-desc">Custom start</div>
@@ -463,10 +442,9 @@
 
         <div class="path-check-grid" id="endModeGrid">
 
-          <!-- Card 2: end time worked out as a fixed duration after the start time. The number
-               input and two-row "Example" comparison are gone; a duration drum (30-min steps) sits
-               to the left of a single timeline showing card 1's start (enlarged, read-only here)
-               and this card's own drum-controlled end, joined by a shaded zone. -->
+          <!-- Card 2: end time worked out as a fixed duration after the start time. A single
+               timeline shows card 1's start (fixed, read-only here) and this card's own directly-
+               draggable "Ends" pin, joined by a shaded zone, snapping to 30-minute segments. -->
           <div class="path-check-card" data-mode="duration">
             <label class="path-row">
               <input type="radio" name="endMode" value="duration">
@@ -480,20 +458,17 @@
                     <p class="timeline-subtitle">Fixed duration: <strong id="durationLabel">9h</strong></p>
                   </div>
                   <div class="timeline-diagram-row">
-                    <div class="time-drum" id="durationDrum" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="1440">
-                      <div class="time-drum-window"></div>
-                      <div class="time-drum-scroll" id="durationDrumScroll"></div>
-                    </div>
                     <div class="timeline-track-wrapper">
                       <div class="timeline-rail">
                         <div class="timeline-zone" id="durationZone"></div>
+                        <div class="timeline-ticks" id="durationTicks"></div>
                       </div>
                       <div class="timeline-node" id="durationStartNode">
                         <div class="anchor-pin"></div>
                         <div class="label-time" id="durationStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node big-anchor" id="durationEndNode">
+                      <div class="timeline-node big-anchor draggable" id="durationEndNode" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="960">
                         <div class="anchor-pin"></div>
                         <div class="label-time primary" id="durationEndTime">5:30 PM</div>
                         <div class="label-desc">Ends</div>
@@ -506,10 +481,9 @@
             </label>
           </div>
 
-          <!-- Card 3: end time worked out as a shared close-of-business clock time. The time input
-               and two-row "Example" comparison are gone; an absolute-time drum sits to the left of
-               a single timeline showing card 1's start (enlarged, read-only here) and this card's
-               own drum-controlled end, joined by a shaded zone. -->
+          <!-- Card 3: end time worked out as a shared close-of-business clock time. A single
+               timeline shows card 1's start (fixed, read-only here) and this card's own directly-
+               draggable "Ends" pin, joined by a shaded zone, snapping to 30-minute segments. -->
           <div class="path-check-card" data-mode="fixed-end">
             <label class="path-row">
               <input type="radio" name="endMode" value="fixed-end">
@@ -523,20 +497,17 @@
                     <p class="timeline-subtitle">Shared end time: <strong id="fixedEndLabel">5:00 PM</strong></p>
                   </div>
                   <div class="timeline-diagram-row">
-                    <div class="time-drum" id="fixedEndDrum" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="1410">
-                      <div class="time-drum-window"></div>
-                      <div class="time-drum-scroll" id="fixedEndDrumScroll"></div>
-                    </div>
                     <div class="timeline-track-wrapper">
                       <div class="timeline-rail">
                         <div class="timeline-zone" id="fixedEndZone"></div>
+                        <div class="timeline-ticks" id="fixedEndTicks"></div>
                       </div>
                       <div class="timeline-node" id="fixedEndStartNode">
                         <div class="anchor-pin"></div>
                         <div class="label-time" id="fixedEndStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node big-anchor" id="fixedEndEndNode">
+                      <div class="timeline-node big-anchor draggable" id="fixedEndEndNode" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="960">
                         <div class="anchor-pin"></div>
                         <div class="label-time primary" id="fixedEndEndTime">5:00 PM</div>
                         <div class="label-desc">Ends</div>
@@ -856,6 +827,58 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to apply floorsense-business-hours-05.html's "remove the time
+drums, make the pins directly draggable, split the timeline into 30-minute segments" treatment
+analogically to every other drum+timeline page, all three of this page's time drums
+(`#card1StartDrum`/`#durationDrum`/`#fixedEndDrum`, plus the `.time-drum`/`.time-drum-window`/
+`.time-drum-scroll`/`.time-drum-pad`/`.time-drum-row` CSS and the generalized
+`buildDrumRows()`/`createTimeDrum(scrollEl, values, opts)` they shared) were removed outright, along
+with the `timeDrumValues`/`durationDrumValues` arrays and `DRUM_ROW_H` constant that fed them.
+
+Card 1's `#card1StartNode` (previously fixed at `left:50%` via `.center-node`, with the drum doing
+all the actual value-setting) is now itself directly draggable across the FULL rail on a plain
+linear 0-1440-minute scale (`card1StartNode.style.left = (minutes/1440*100) + '%'`, set from JS in
+`updateCard1Diagram()` rather than relying on the CSS-only `left:50%`), snapped to 30 minutes and
+clamped to `[0, 1410]` (23:30, the same last value the drum's own 30-min-step value list topped out
+at). Cards 2/3's `#durationEndNode`/`#fixedEndEndNode` ("Ends") are now directly draggable along
+their own already-existing `ROW_EDGE_PERCENT`(10%)/`DURATION_MAX_MINUTES`(16h)/
+`endPercentForOffset()` fixed-left-anchor scale — unchanged geometry, just driven by a drag instead
+of a drum — while their "Starts" pins stay fixed and non-interactive exactly as before (still just a
+read-only reflection of card 1's own start time). Card 2's drag value is a duration, clamped to
+`[30, 960]` (30min-16h, matching the drum's own `aria-valuemin`); card 3's drag value is an
+offset-from-start that becomes `defaultEndTime = defaultStartTime + offset`, clamped to
+`[0, 960]` (no forced minimum, matching the pre-existing lack of one on that drum).
+
+A single generalized `makeDraggablePin(nodeEl, { minutesFromPercent, getMinutes, setMinutes })`
+replaces all three per-card drum-onChange wirings: it finds each pin's own rail via
+`nodeEl.closest('.timeline-track-wrapper')` (since each of the three cards has its own independent
+rail — a plain `document.querySelector` would only ever find the first one), converts `clientX` to a
+percentage of that rail, and each card supplies its own `minutesFromPercent()` implementing that
+card's own scale/clamp/snap. Arrow-key stepping (30min/press) was added to each pin's own `keydown`
+handler. `role="slider"`/`tabindex="0"`/`aria-label` moved from the removed drums onto the three now-
+draggable pins; `aria-valuemin`/`aria-valuemax` for cards 2/3 changed from the drums' `30`/`1440` and
+`0`/`1410` to `30`/`960` and `0`/`960` respectively, matching the actual drag-reachable range on their
+own rail (the same "honest rail-value" adjustment made on floorsense-idle-release-09.html, where a
+drum's fuller range got visually capped by the rail's own scale anyway). A `renderTicksInto(container,
+maxMinutes, percentFn)` helper draws 30-minute ticks into all three cards' new `.timeline-ticks`
+layers using each card's own scale (card 1: 49 ticks/25 hour-ticks over the full day; cards 2/3: 33
+ticks/17 hour-ticks each over their shared 16h scale). `applyState()` no longer repositions three
+drums — it now just re-syncs the end-mode radio cards, since each pin's position is derived fresh
+from `state` by `updateCard1Diagram()`/`updateDurationDiagram()`/`updateFixedEndDiagram()` rather
+than depending on drum scroll state.
+
+Verified with a jsdom smoke test driving real `pointerdown`/`pointermove`/`pointerup`/`keydown`
+events across all three cards: confirms initial state (8:30 AM/9h/5:00 PM), correct tick counts per
+card, dragging card 1's pin to the rail's midpoint landing on exactly 12:00 PM AND that change
+live-propagating into cards 2/3's read-only "Starts" labels, dragging card 2's pin to its rail's
+midpoint/left-edge/right-edge landing on 8h/30min(clamped)/16h respectively, dragging card 3's pin to
+its rail's midpoint correctly computing `start + offset` (12:00 PM + 8h = 8:00 PM), a 30-minute
+arrow-key step on card 1, and correct persistence of all three values to `localStorage`. Also
+validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script
+block, and a weasyprint render confirming no markup/layout breakage (though, as with the other
+converted pages, WeasyPrint can't execute the JS that actually positions these pins, so the jsdom
+test is the real functional verification).
 -->
 
 <script>
@@ -996,6 +1019,8 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
 
   const card1StartLabel = document.getElementById('card1StartLabel');
   const card1StartTime = document.getElementById('card1StartTime');
+  const card1StartNode = document.getElementById('card1StartNode');
+  const card1TicksEl = document.getElementById('card1Ticks');
 
   const durationLabel = document.getElementById('durationLabel');
   const durationStartNode = document.getElementById('durationStartNode');
@@ -1004,6 +1029,7 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   const durationEndTime = document.getElementById('durationEndTime');
   const durationZone = document.getElementById('durationZone');
   const durationHint = document.getElementById('durationHint');
+  const durationTicksEl = document.getElementById('durationTicks');
 
   const fixedEndLabel = document.getElementById('fixedEndLabel');
   const fixedEndStartNode = document.getElementById('fixedEndStartNode');
@@ -1012,11 +1038,16 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   const fixedEndEndTime = document.getElementById('fixedEndEndTime');
   const fixedEndZone = document.getElementById('fixedEndZone');
   const fixedEndHint = document.getElementById('fixedEndHint');
+  const fixedEndTicksEl = document.getElementById('fixedEndTicks');
 
   function updateCard1Diagram() {
-    const startLabel = formatMinutesAs12Hour(parseTimeToMinutes(state.defaultStartTime));
+    const startMinutes = parseTimeToMinutes(state.defaultStartTime);
+    const startLabel = formatMinutesAs12Hour(startMinutes);
     card1StartLabel.textContent = startLabel;
     card1StartTime.textContent = startLabel;
+    card1StartNode.style.left = (startMinutes / 1440 * 100) + '%';
+    card1StartNode.setAttribute('aria-valuenow', startMinutes);
+    card1StartNode.setAttribute('aria-valuetext', startLabel);
   }
 
   function updateDurationDiagram() {
@@ -1055,115 +1086,92 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     updateFixedEndDiagram();
   }
 
-  /* ---------------- Apple Clock-style time drums, ported from
-     floorsense-checkin-window-08.html and generalized to take an explicit `values` array (rather
-     than a single closure-captured value list), since this page needs two different value sets:
-     absolute clock times for card 1's start and card 3's end, and elapsed durations for card 2's
-     fixed length. See that page's own NOTE for the scroll-snap mechanics. ---------------- */
-  const DRUM_ROW_H = 30;
-  const timeDrumValues = [];
-  for (let m = 0; m < 1440; m += 30) timeDrumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
-  const durationDrumValues = [];
-  for (let m = 30; m <= 24 * 60; m += 30) durationDrumValues.push({ minutes: m, label: formatDurationMinutes(m) });
-
-  function buildDrumRows(scrollEl, values) {
-    let html = '<div class="time-drum-pad"></div>';
-    values.forEach((v, i) => {
-      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
-    });
-    html += '<div class="time-drum-pad"></div>';
-    scrollEl.innerHTML = html;
-    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  /* ---------------- 30-minute tick marks along each rail (static; drawn once) ---------------- */
+  function renderTicksInto(containerEl, maxMinutes, percentFn) {
+    let html = '';
+    for (let m = 0; m <= maxMinutes; m += 30) {
+      const percent = percentFn(m);
+      const isHour = m % 60 === 0;
+      html += `<div class="timeline-tick${isHour ? ' hour' : ''}" style="left:${percent}%"></div>`;
+    }
+    containerEl.innerHTML = html;
   }
+  renderTicksInto(card1TicksEl, 1440, (m) => (m / 1440) * 100);
+  renderTicksInto(durationTicksEl, DURATION_MAX_MINUTES, (m) => endPercentForOffset(m));
+  renderTicksInto(fixedEndTicksEl, DURATION_MAX_MINUTES, (m) => endPercentForOffset(m));
 
-  function createTimeDrum(scrollEl, values, opts) {
-    const rows = buildDrumRows(scrollEl, values);
-    let current = -1;
-    let settleTimer = null;
-
-    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
-    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
-    function highlight(index) {
-      if (index === current) return;
-      current = index;
-      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
-      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
-      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
+  /* ---------------- directly-draggable pins: pointerdown on a pin starts a drag tracked on
+     `document`, converting clientX to a percentage of that pin's own `.timeline-track-wrapper`
+     (found via `.closest()`, since each of the three cards has its own independent rail) and back
+     to a value via each card's own scale, snapped to the nearest 30 minutes. Replaces the Apple
+     Clock-style time drums this page used previously — see the MOST RECENT CHANGE note below. ---- */
+  function makeDraggablePin(nodeEl, { minutesFromPercent, setMinutes, getMinutes }) {
+    function percentFromClientX(clientX) {
+      const rect = nodeEl.closest('.timeline-track-wrapper').getBoundingClientRect();
+      return Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
     }
-    function nearestIndexForMinutes(minutes) {
-      let best = 0, bestDiff = Infinity;
-      values.forEach((v, i) => {
-        const diff = Math.abs(v.minutes - minutes);
-        if (diff < bestDiff) { bestDiff = diff; best = i; }
-      });
-      return best;
+    function onPointerMove(e) {
+      setMinutes(minutesFromPercent(percentFromClientX(e.clientX)));
     }
-    function scrollToIndex(index, smooth) {
-      index = clampIndex(index);
-      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
-      highlight(index);
+    function onPointerUp() {
+      nodeEl.classList.remove('dragging');
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+      queueSave();
     }
-
-    scrollEl.addEventListener('scroll', () => {
-      highlight(clampIndex(indexFromScroll()));
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const settled = clampIndex(indexFromScroll());
-        scrollToIndex(settled, true);
-        if (opts.onChange) opts.onChange(values[settled].minutes);
-      }, 120);
-    }, { passive: true });
-
-    scrollEl.parentElement.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
+    nodeEl.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      nodeEl.classList.add('dragging');
+      nodeEl.focus();
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+    });
+    nodeEl.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
         e.preventDefault();
-        const i = clampIndex(indexFromScroll() + 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      } else if (e.key === 'ArrowUp') {
+        setMinutes(getMinutes() + 30);
+        queueSave();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
         e.preventDefault();
-        const i = clampIndex(indexFromScroll() - 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
+        setMinutes(getMinutes() - 30);
+        queueSave();
       }
     });
-
-    scrollToIndex(nearestIndexForMinutes(opts.initialMinutes), false);
-
-    return {
-      setMinutes(minutes) { scrollToIndex(nearestIndexForMinutes(minutes), false); }
-    };
   }
 
-  const card1StartDrum = createTimeDrum(document.getElementById('card1StartDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.defaultStartTime),
-    onChange: (minutes) => {
-      state.defaultStartTime = minutesToHHMM(minutes);
+  makeDraggablePin(card1StartNode, {
+    minutesFromPercent: (percent) => Math.max(0, Math.min(1410, Math.round((percent / 100) * 1440 / 30) * 30)),
+    getMinutes: () => parseTimeToMinutes(state.defaultStartTime),
+    setMinutes: (minutes) => {
+      state.defaultStartTime = minutesToHHMM(Math.max(0, Math.min(1410, minutes)));
       updateAllDiagrams();
-      queueSave();
     }
   });
-  const durationDrum = createTimeDrum(document.getElementById('durationDrumScroll'), durationDrumValues, {
-    initialMinutes: Math.round((parseFloat(state.defaultDurationHours) || 0) * 60),
-    onChange: (minutes) => {
-      state.defaultDurationHours = minutes / 60;
+  makeDraggablePin(durationEndNode, {
+    minutesFromPercent: (percent) => {
+      const t = Math.max(0, Math.min(1, (percent - ROW_EDGE_PERCENT) / (100 - 2 * ROW_EDGE_PERCENT)));
+      return Math.max(30, Math.min(DURATION_MAX_MINUTES, Math.round((t * DURATION_MAX_MINUTES) / 30) * 30));
+    },
+    getMinutes: () => Math.round((parseFloat(state.defaultDurationHours) || 0) * 60),
+    setMinutes: (minutes) => {
+      state.defaultDurationHours = Math.max(30, Math.min(DURATION_MAX_MINUTES, minutes)) / 60;
       updateAllDiagrams();
-      queueSave();
     }
   });
-  const fixedEndDrum = createTimeDrum(document.getElementById('fixedEndDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.defaultEndTime),
-    onChange: (minutes) => {
-      state.defaultEndTime = minutesToHHMM(minutes);
+  makeDraggablePin(fixedEndEndNode, {
+    minutesFromPercent: (percent) => {
+      const t = Math.max(0, Math.min(1, (percent - ROW_EDGE_PERCENT) / (100 - 2 * ROW_EDGE_PERCENT)));
+      return Math.max(0, Math.min(DURATION_MAX_MINUTES, Math.round((t * DURATION_MAX_MINUTES) / 30) * 30));
+    },
+    getMinutes: () => parseTimeToMinutes(state.defaultEndTime) - parseTimeToMinutes(state.defaultStartTime),
+    setMinutes: (offsetMinutes) => {
+      const clampedOffset = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes));
+      state.defaultEndTime = minutesToHHMM(parseTimeToMinutes(state.defaultStartTime) + clampedOffset);
       updateAllDiagrams();
-      queueSave();
     }
   });
 
   function applyState() {
-    card1StartDrum.setMinutes(parseTimeToMinutes(state.defaultStartTime));
-    durationDrum.setMinutes(Math.round((parseFloat(state.defaultDurationHours) || 0) * 60));
-    fixedEndDrum.setMinutes(parseTimeToMinutes(state.defaultEndTime));
     setEndModeCards(state.endMode);
   }
   applyState();
