@@ -140,7 +140,7 @@
      Both pins are the same normal size and move independently along the rail — neither is a fixed
      anchor the other is measured against. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 24px; margin: 72px 10px 46px; }
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 10px 46px; }
   .timeline-rail {
     position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
     border: 1.5px solid var(--line);
@@ -158,7 +158,11 @@
   }
   .timeline-zone-seg {
     flex: 1 1 0; min-width: 0; border-radius: 5px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 1px rgba(16,42,67,0.10);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -1px 1px rgba(16,42,67,0.10),
+      0 0 6px 1px rgba(10,132,255,0.85),
+      0 0 14px 2px rgba(10,132,255,0.5);
   }
 
   /* ---------- 30-minute tick marks below the rail: a full-hour tick every 60 minutes (taller,
@@ -664,6 +668,34 @@ the floating time labels still update correctly, and dragging/localStorage persi
 plus a weasyprint render of an isolated copy of the card (segments/pins/ticks statically inlined at
 9:00 AM/5:00 PM) confirming the cleaner look — a segmented bar with two floating time chips and no
 subtitle line or visible pin knobs.
+
+MOST RECENT CHANGE: Per a follow-up request to "make the blocks in the timeline glow bright blue",
+`.timeline-zone-seg` gained two extra outer `box-shadow` layers on top of its existing inset
+highlight/shadow — `0 0 6px 1px rgba(10,132,255,0.85)` and a wider, softer `0 0 14px 2px
+rgba(10,132,255,0.5)` — using a bright iOS-style blue (`#0A84FF`) independent of each segment's own
+deep-blue-to-cyan fill color, so every block gets the same uniform glow regardless of its position in
+the gradient. Because the segments sit only 3px apart, the glow bleeds across the small gaps between
+them, reading as one continuous luminous strip rather than individually-glowing dots.
+
+MOST RECENT CHANGE: Per a further follow-up request to "make the timeline rail 50% higher",
+`.timeline-track-wrapper`'s height increased from 24px to 36px (and, since `.timeline-rail` fills the
+wrapper via `inset: 0`, the rail grew by the same 50%); the wrapper's top margin was trimmed slightly
+(72px to 66px) to keep the taller control sitting at roughly the same distance below the card
+description now that the subtitle above it is gone. `.timeline-zone`'s 3px top/bottom inset is
+unchanged, so the segments themselves grew taller in proportion to the rail (from 18px to 30px tall).
+Pin position/behavior, tick marks, and floating labels are unaffected — everything above them is
+positioned relative to `.timeline-node`'s own `top: 50%` centering or the wrapper's edges, both of
+which scale automatically with the wrapper's new height.
+
+Both of the above were verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a jsdom test confirming segment count/box-shadow presence and that
+dragging a pin to the rail's midpoint still lands on the correct time (2:00 PM) with the taller
+wrapper's geometry. The glow itself could not be confirmed via this project's usual weasyprint static
+-render technique — an isolated test (`.box { box-shadow: 0 0 20px 8px rgba(...); }`) showed WeasyPrint
+renders box-shadow with zero blur/spread regardless of the values given, a renderer limitation (not a
+CSS bug) also seen with this page's inset highlights, which never showed a visible sheen in prior
+weasyprint previews either. The rail's height increase, segment count, colors, and pin positions were
+still confirmed via that same static render.
 -->
 
 
