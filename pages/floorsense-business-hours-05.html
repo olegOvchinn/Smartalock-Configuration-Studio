@@ -137,20 +137,42 @@
   .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
-  /* ---------- diagram row: an Apple-Clock-style time drum on each side of the rail, rolling
-     either drum moves that side's pin (and the connecting arrival-to-departure zone between them)
-     — same mechanics as floorsense-checkin-window-08.html's earliest/latest drums, but here both
-     ends are independent (Arrival/Departure) rather than offsets from a fixed center booking-start
-     time, so both pins are the same normal size and both move along a plain day-scale rail. ---------- */
-  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 64px 20px 40px; flex: 1; min-width: 0; }
+  /* ---------- diagram row: a single day-scale rail with two directly-draggable pins (Arrival/
+     Departure). Ticks mark every 30-minute segment along the rail so a dragged pin's position can
+     be read against the grid at a glance, the same granularity the old time drums stepped in.
+     Both pins are the same normal size and move independently along the rail — neither is a fixed
+     anchor the other is measured against. ---------- */
+  .timeline-diagram-row { display: block; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 64px 6px 40px; }
   .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
   .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
 
-  .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  /* ---------- 30-minute tick marks along the rail: a full-hour tick every 60 minutes (taller,
+     darker) and a half-hour tick every 30 minutes in between (shorter, lighter), generated in JS
+     from the same RAIL_START_MIN/RAIL_END_MIN/minutesToPercent() scale the pins use, so ticks and
+     pins always agree on where a given time sits along the rail. ---------- */
+  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
+    transform: translate(-50%, -50%); opacity: 0.6;
+  }
+  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+
+  .timeline-node {
+    position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none;
+    padding: 16px; margin: -16px; cursor: grab; touch-action: none;
+  }
+  .timeline-node:active, .timeline-node.dragging { cursor: grabbing; }
   .timeline-node .anchor-pin {
     width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+  }
+  .timeline-node:hover .anchor-pin, .timeline-node.dragging .anchor-pin {
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node.dragging .anchor-pin { transform: scale(1.1); }
+  .timeline-node:focus-visible .anchor-pin {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
   }
   .timeline-node .label-time {
     position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
@@ -160,44 +182,6 @@
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
     font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
-  }
-
-  /* ---------- Apple Clock-style time drum: native scroll + scroll-snap gives free momentum/
-     touch/wheel support without custom pointer-drag math. Each row is an absolute clock time
-     (30-min steps); the settled center row is the picked value. Ported verbatim, including the
-     white/3D body treatment, from floorsense-checkin-window-08.html. ---------- */
-  .time-drum {
-    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
-  }
-  .time-drum::before {
-    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom,
-      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
-      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
-  }
-  .time-drum-window {
-    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
-    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
-    background: rgba(16,42,67,0.03);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
-  }
-  .time-drum-scroll {
-    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-    border-radius: 12px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-  }
-  .time-drum-scroll::-webkit-scrollbar { display: none; }
-  .time-drum-pad { height: 60px; }
-  .time-drum-row {
-    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
-  }
-  .time-drum-row.selected {
-    font-size: 15px; font-weight: 700; color: #102A43;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
   }
 
   /* ---------- reveal animation: plays once when the diagram scrolls into view. Only opacity/
@@ -335,10 +319,10 @@
         <div class="checkin-card-header">
           <img class="checkin-card-illustration" src="../assets/images/business-hours-illustration.png" alt="">
           <p class="checkin-card-desc">
-            Most users share the same standard business hours — roll the time drums on either side
-            of the diagram below to set when most people arrive and when they head out for the day.
-            These hours apply across the floor by default; individual modules further on can still
-            carve out exceptions.
+            Most users share the same standard business hours — drag either pin on the timeline
+            below to set when most people arrive and when they head out for the day. These hours
+            apply across the floor by default; individual modules further on can still carve out
+            exceptions.
           </p>
         </div>
 
@@ -347,28 +331,21 @@
             <p class="timeline-subtitle">Standard hours: <strong id="businessHoursRangeLabel">9:00 AM – 5:00 PM</strong></p>
           </div>
           <div class="timeline-diagram-row">
-            <div class="time-drum" id="arrivalDrum" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="0" aria-valuemax="1410">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="arrivalDrumScroll"></div>
-            </div>
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
                 <div class="timeline-zone" id="businessHoursZone"></div>
+                <div class="timeline-ticks" id="timelineTicks"></div>
               </div>
-              <div class="timeline-node" id="arrivalNode">
+              <div class="timeline-node" id="arrivalNode" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="360" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
                 <div class="label-time" id="arrivalTime">9:00 AM</div>
                 <div class="label-desc">Arrives</div>
               </div>
-              <div class="timeline-node" id="departureNode">
+              <div class="timeline-node" id="departureNode" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="360" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
                 <div class="label-time primary" id="departureTime">5:00 PM</div>
                 <div class="label-desc">Departs</div>
               </div>
-            </div>
-            <div class="time-drum" id="departureDrum" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="0" aria-valuemax="1410">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="departureDrumScroll"></div>
             </div>
           </div>
         </div>
@@ -541,6 +518,46 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to remove the Apple Clock-style time drums and make the rail's
+pins directly draggable instead, plus split the timeline into 30-minute segments, this page's
+diagram was reworked: the two `.time-drum` elements (and their now-fully-unused
+`.time-drum`/`.time-drum-window`/`.time-drum-scroll`/`.time-drum-pad`/`.time-drum-row` CSS,
+`buildDrumRows()`/`createTimeDrum()`, and the `arrivalDrum`/`departureDrum` instances) were removed
+outright. `role="slider"`/`tabindex="0"`/`aria-label`/`aria-valuemin`/`aria-valuemax` moved from the
+old drum wrappers onto `#arrivalNode`/`#departureNode` themselves, since the pins are now the only
+interactive element; `renderDiagram()` keeps their `aria-valuenow`/`aria-valuetext` in sync. A new
+`makeDraggableNode()` wires each pin to a `pointerdown` on itself + `pointermove`/`pointerup` on
+`document` (so a fast drag isn't dropped if the pointer leaves the small pin), converting `clientX`
+to a percentage of `.timeline-track-wrapper`'s own `getBoundingClientRect()` and back to minutes via
+the same `RAIL_START_MIN`/`RAIL_END_MIN`/`minutesToPercent()` scale `renderDiagram()` already used,
+snapped to the nearest 30-minute step — the same granularity the drums stepped in, and the same
+`MIN_BUSINESS_HOURS_MINUTES` (60min) mutual-clamp the drums enforced, now also bounded to the rail's
+own 6:00 AM–10:00 PM span (previously a drum could dial in any time 00:00–23:30 and the pin would
+just visually pin to the rail's edge; dragging the rail itself can no longer produce an off-rail
+value, which reads as the more honest behavior for a rail-based control). Arrow-key stepping (30min
+per press) was added directly to each pin's own `keydown` handler, replacing the drums' equivalent.
+A new `.timeline-ticks` container, populated once by `renderTicks()`, draws a tick at every 30-minute
+mark along the rail (taller/darker `.timeline-tick.hour` every 60 minutes, shorter/lighter otherwise)
+using the same scale, so the segments are visible as a static ruler regardless of where the pins
+currently sit. Each pin's hit target was enlarged with inverse padding/margin (`padding:16px;
+margin:-16px`) and given `cursor:grab`/`touch-action:none` plus a `hover`/`.dragging`/`:focus-visible`
+glow on `.anchor-pin` for drag affordance, matching the enlarged-glow pattern
+floorsense-checkin-window-08.html's now-removed handle-drag implementation once used. The card copy
+("roll the time drums…") was reworded to "drag either pin…". `.timeline-diagram-row` no longer needs
+the two-drum flex layout (`display:flex; align-items:flex-start; gap:8px` → `display:block`) since
+`.timeline-track-wrapper` is its only remaining child; the wrapper's side margin shrank from 20px to
+6px now that there's no adjacent 78px-wide drum eating into the available width. Note that WeasyPrint
+doesn't execute JavaScript at all, so this page's diagram — pins, zone, and now the ticks too — has
+never rendered in a WeasyPrint preview (confirmed by rendering the pre-edit commit: the pins and
+labels pile up at the rail's left edge there too, identically). A jsdom smoke test was used instead:
+it drives real `pointerdown`/`pointermove`/`pointerup`/`keydown` events against the loaded page and
+confirmed initial state (9:00 AM–5:00 PM), 33 ticks (17 of them hour-ticks) from a 6:00 AM–10:00 PM
+rail in 30-minute steps, a drag to the rail's midpoint landing exactly on 2:00 PM, dragging arrival
+past departure clamping to departure−60min, dragging departure below arrival clamping to
+arrival+60min, ArrowRight/ArrowLeft stepping by exactly 30 minutes, and the resulting values
+persisting to `localStorage`'s `configurationProject.floorsense.wizard.businessHours`. Also validated
+via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 
 
@@ -630,13 +647,15 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     return Math.max(0, Math.min(100, ((minutes - RAIL_START_MIN) / (RAIL_END_MIN - RAIL_START_MIN)) * 100));
   }
 
-  /* ---------------- rail: Arrival/Departure pins + connecting zone, driven by the drums below ---------------- */
+  /* ---------------- rail: Arrival/Departure pins + connecting zone, directly draggable ---------------- */
   const arrivalNode = document.getElementById('arrivalNode');
   const departureNode = document.getElementById('departureNode');
   const businessHoursZone = document.getElementById('businessHoursZone');
   const arrivalTimeEl = document.getElementById('arrivalTime');
   const departureTimeEl = document.getElementById('departureTime');
   const businessHoursRangeLabel = document.getElementById('businessHoursRangeLabel');
+  const timelineTrackWrapper = document.querySelector('.timeline-track-wrapper');
+  const timelineTicksEl = document.getElementById('timelineTicks');
 
   function renderDiagram() {
     const arrivalMinutes = parseTimeToMinutes(state.arrivalTime);
@@ -652,114 +671,84 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     arrivalTimeEl.textContent = arrivalLabel;
     departureTimeEl.textContent = departureLabel;
     businessHoursRangeLabel.textContent = arrivalLabel + ' – ' + departureLabel;
+    arrivalNode.setAttribute('aria-valuenow', arrivalMinutes);
+    arrivalNode.setAttribute('aria-valuetext', arrivalLabel);
+    departureNode.setAttribute('aria-valuenow', departureMinutes);
+    departureNode.setAttribute('aria-valuetext', departureLabel);
   }
 
-  /* ---------------- Apple Clock-style time drums (30-min steps, full 24h), ported from
-     floorsense-checkin-window-08.html. See that page's own NOTE for the scroll-snap mechanics. */
-  const DRUM_ROW_H = 30;
-  const timeDrumValues = [];
-  for (let m = 0; m < 1440; m += 30) timeDrumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
-
-  function buildDrumRows(scrollEl, values) {
-    let html = '<div class="time-drum-pad"></div>';
-    values.forEach((v, i) => {
-      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
-    });
-    html += '<div class="time-drum-pad"></div>';
-    scrollEl.innerHTML = html;
-    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  /* ---------------- 30-minute tick marks along the rail (static; drawn once) ---------------- */
+  function renderTicks() {
+    let html = '';
+    for (let m = RAIL_START_MIN; m <= RAIL_END_MIN; m += 30) {
+      const percent = minutesToPercent(m);
+      const isHour = m % 60 === 0;
+      html += `<div class="timeline-tick${isHour ? ' hour' : ''}" style="left:${percent}%"></div>`;
+    }
+    timelineTicksEl.innerHTML = html;
   }
+  renderTicks();
 
-  function createTimeDrum(scrollEl, values, opts) {
-    const rows = buildDrumRows(scrollEl, values);
-    let current = -1;
-    let settleTimer = null;
-
-    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
-    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
-    function highlight(index) {
-      if (index === current) return;
-      current = index;
-      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
-      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
-      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
-    }
-    function nearestIndexForMinutes(minutes) {
-      let best = 0, bestDiff = Infinity;
-      values.forEach((v, i) => {
-        const diff = Math.abs(v.minutes - minutes);
-        if (diff < bestDiff) { bestDiff = diff; best = i; }
-      });
-      return best;
-    }
-    function scrollToIndex(index, smooth) {
-      index = clampIndex(index);
-      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
-      highlight(index);
-    }
-
-    // Applies opts.clampMinutes (if given) to an index so the drum can never settle on a value
-    // that would leave less than the minimum gap to the OTHER drum's current value.
-    function clampedIndex(index) {
-      if (!opts.clampMinutes) return index;
-      const wanted = values[clampIndex(index)].minutes;
-      const allowed = opts.clampMinutes(wanted);
-      return allowed === wanted ? index : nearestIndexForMinutes(allowed);
-    }
-
-    scrollEl.addEventListener('scroll', () => {
-      highlight(clampIndex(indexFromScroll()));
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const settled = clampedIndex(indexFromScroll());
-        scrollToIndex(settled, true);
-        if (opts.onChange) opts.onChange(values[settled].minutes);
-      }, 120);
-    }, { passive: true });
-
-    scrollEl.parentElement.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const i = clampedIndex(indexFromScroll() + 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const i = clampedIndex(indexFromScroll() - 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      }
-    });
-
-    scrollToIndex(clampedIndex(nearestIndexForMinutes(opts.initialMinutes)), false);
-
-    return {
-      setMinutes(minutes) { scrollToIndex(clampedIndex(nearestIndexForMinutes(minutes)), false); }
-    };
-  }
-
-  // Neither drum may land within this many minutes of the other — a business day shorter than an
-  // hour isn't a realistic default. Each clamp reads the OTHER drum's live state at call-time,
-  // since (unlike checkin-window's fixed booking-start reference) both ends here can move.
+  // Neither pin may land within this many minutes of the other — a business day shorter than an
+  // hour isn't a realistic default. Each clamp reads the OTHER pin's live state at call-time, since
+  // both ends here are independently draggable rather than one being a fixed reference point.
   const MIN_BUSINESS_HOURS_MINUTES = 60;
 
-  const arrivalDrum = createTimeDrum(document.getElementById('arrivalDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.arrivalTime),
-    clampMinutes: (minutes) => Math.min(minutes, parseTimeToMinutes(state.departureTime) - MIN_BUSINESS_HOURS_MINUTES),
-    onChange: (minutes) => {
-      state.arrivalTime = minutesToHHMM(minutes);
+  /* ---------------- draggable pins: pointerdown on a pin starts a drag tracked on `document` (so
+     it keeps working even if the pointer leaves the small hit target), converting clientX to a
+     percentage of .timeline-track-wrapper's own getBoundingClientRect() and back to minutes via
+     the same RAIL_START_MIN/RAIL_END_MIN scale renderDiagram() uses, snapped to the nearest
+     30-minute tick. Replaces the Apple Clock-style time drums this page used previously — see the
+     MOST RECENT CHANGE note below. ---------- */
+  function makeDraggableNode(nodeEl, opts) {
+    function minutesFromClientX(clientX) {
+      const rect = timelineTrackWrapper.getBoundingClientRect();
+      const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+      let minutes = RAIL_START_MIN + (rawPercent / 100) * (RAIL_END_MIN - RAIL_START_MIN);
+      minutes = Math.round(minutes / 30) * 30;
+      return opts.clampMinutes(minutes);
+    }
+    function onPointerMove(e) {
+      opts.onChange(minutesFromClientX(e.clientX));
       renderDiagram();
+    }
+    function onPointerUp() {
+      nodeEl.classList.remove('dragging');
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
       queueSave();
     }
+    nodeEl.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      nodeEl.classList.add('dragging');
+      nodeEl.focus();
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+    });
+    nodeEl.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        opts.onChange(opts.clampMinutes(opts.getMinutes() + 30));
+        renderDiagram();
+        queueSave();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        opts.onChange(opts.clampMinutes(opts.getMinutes() - 30));
+        renderDiagram();
+        queueSave();
+      }
+    });
+  }
+
+  makeDraggableNode(arrivalNode, {
+    getMinutes: () => parseTimeToMinutes(state.arrivalTime),
+    clampMinutes: (minutes) => Math.max(RAIL_START_MIN, Math.min(minutes, parseTimeToMinutes(state.departureTime) - MIN_BUSINESS_HOURS_MINUTES)),
+    onChange: (minutes) => { state.arrivalTime = minutesToHHMM(minutes); }
   });
-  const departureDrum = createTimeDrum(document.getElementById('departureDrumScroll'), timeDrumValues, {
-    initialMinutes: parseTimeToMinutes(state.departureTime),
-    clampMinutes: (minutes) => Math.max(minutes, parseTimeToMinutes(state.arrivalTime) + MIN_BUSINESS_HOURS_MINUTES),
-    onChange: (minutes) => {
-      state.departureTime = minutesToHHMM(minutes);
-      renderDiagram();
-      queueSave();
-    }
+  makeDraggableNode(departureNode, {
+    getMinutes: () => parseTimeToMinutes(state.departureTime),
+    clampMinutes: (minutes) => Math.min(RAIL_END_MIN, Math.max(minutes, parseTimeToMinutes(state.arrivalTime) + MIN_BUSINESS_HOURS_MINUTES)),
+    onChange: (minutes) => { state.departureTime = minutesToHHMM(minutes); }
   });
 
   /* ---------------- fields ---------------- */
@@ -775,11 +764,6 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     save();
     saveDot.classList.add('show');
     setTimeout(() => saveDot.classList.remove('show'), 900);
-  }
-
-  function applyState() {
-    arrivalDrum.setMinutes(parseTimeToMinutes(state.arrivalTime));
-    departureDrum.setMinutes(parseTimeToMinutes(state.departureTime));
   }
 
   renderDiagram();
@@ -806,7 +790,6 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.arrivalTime = '09:00';
     state.departureTime = '17:00';
-    applyState();
     renderDiagram();
     queueSave();
   });
