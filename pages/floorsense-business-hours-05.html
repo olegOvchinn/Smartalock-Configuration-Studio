@@ -327,7 +327,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <img class="checkin-card-illustration" src="../assets/images/business-hours-illustration.png" alt="">
+          <img class="checkin-card-illustration" src="../assets/images/business-hours-illustration.png" alt="An isometric arc connecting a sunrise icon labeled 9:00 AM to a crescent-moon icon labeled 5:00 PM, depicting the start and end of the business day">
           <p class="checkin-card-desc">
             Most users share the same standard business hours — drag either pin on the timeline
             below to set when most people arrive and when they head out for the day. These hours
@@ -592,6 +592,24 @@ any of the interaction logic), and a weasyprint render of an isolated copy of th
 pins/zone/ticks statically inlined at their default 9:00 AM/5:00 PM position (since WeasyPrint can't
 execute the JS that normally positions them) to visually confirm the redesign before porting it into
 this file.
+
+MOST RECENT CHANGE: Per a request for "a simple slick, cool illustration for what is business hours
+start and end using ISO style", replaced assets/images/business-hours-illustration.png — previously a
+cluttered five-element scene (desk, floorplan/server, clock-face badge, office layout, building) left
+over in the old green palette from before the site's blue rebrand — with a new hand-authored isometric
+illustration in the current blue palette. The new artwork shows two isometric puck-shaped icons (built
+from a two-ellipse-arc path for a smooth coin/cylinder profile rather than a faceted shape) connected
+by a soft blue gradient arc with small decorative dots tracing its path: a sunrise puck labeled "9:00
+AM / ARRIVES" on the left and a crescent-moon puck labeled "5:00 PM / DEPARTS" on the right, each sitting
+on its own soft cast-shadow ellipse. Produced by hand-authoring the illustration as SVG, rasterizing it
+with cairosvg, and autocropping the transparent margin via PIL/numpy (final asset 1247x707px). Confirmed
+via `grep -r "business-hours-illustration"` that this asset is referenced only on this page, so no other
+file needed updating. The `<img>`'s alt text was updated to describe the new scene ("An isometric arc
+connecting a sunrise icon labeled 9:00 AM to a crescent-moon icon labeled 5:00 PM, depicting the start
+and end of the business day"); no CSS change was needed since the image is sized via a fixed
+`width: 300px; height: auto;` rule. Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block, and a full-page weasyprint render confirming the new illustration displays
+correctly and proportionally in the .checkin-card header.
 -->
 
 
