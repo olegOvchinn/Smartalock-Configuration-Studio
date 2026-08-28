@@ -208,6 +208,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The outer bright-blue glow was replaced with an inward "blue glass" look, per "add some glow inside like if they are made of blue glass" (clarified with "no need glow outside"): the segments now use an inset cyan glow, a brighter top inset highlight, a darker bottom inset shadow for depth, and a new glossy top-to-bottom white sheen overlay (`.timeline-zone-seg::before`) layered over each block's own gradient color.
 - The header illustration was swapped back out for a basic square icon (`<svg class="checkin-card-icon"><rect .../></svg>`, 56x56px, `stroke="currentColor"` colored via `--accent`), matching the plain-icon convention every other single-card Floorsense page uses. `assets/images/business-hours-illustration.png` is now unreferenced but was left in place rather than deleted.
 - That square icon became an actual clock face and grew 50% larger (56px to 84px), per "make it sqiaire clock, 50% larger with business hours highlite": added hour/minute hands (pointing to 12 and 3) plus a filled pie-slice sector spanning 9→12→5 o'clock (the 8-hour span a 9-to-5 workday covers) as a soft `currentColor`-tinted "business hours" highlight behind the hands.
+- The departure time chip's near-black `.label-time.primary` background became `var(--accent)` (bright blue) instead of the old navy `#102A43`, per "label-time primary make blue instead of black" — the arrival chip's `var(--accent-deep)` background keeps the two labels visually distinct, just both blue now.
 
 ## Status
 
