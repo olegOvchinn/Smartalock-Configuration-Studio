@@ -133,9 +133,6 @@
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
-  .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
-  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
   /* ---------- diagram row: a single day-scale rail with two directly-draggable pins (Arrival/
      Departure). Ticks mark every 30-minute segment along the rail so a dragged pin's position can
@@ -184,6 +181,9 @@
     width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
     box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
     transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0; /* invisible drag handle — see MOST RECENT CHANGE note; the large invisible
+      padding/margin hit-target above and the floating label-time chip still make each pin fully
+      draggable and readable without a visible knob. */
   }
   .timeline-node:hover .anchor-pin, .timeline-node.dragging .anchor-pin {
     background: var(--accent-deep);
@@ -209,16 +209,9 @@
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
      .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves. ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
   @keyframes ci-grow {
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
   }
   .timeline-card.animate-in .label-time,
   .timeline-card.animate-in .label-desc {
@@ -348,9 +341,6 @@
         </div>
 
         <div class="timeline-card">
-          <div class="timeline-header">
-            <p class="timeline-subtitle">Standard hours: <strong id="businessHoursRangeLabel">9:00 AM – 5:00 PM</strong></p>
-          </div>
           <div class="timeline-diagram-row">
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
@@ -653,6 +643,27 @@ span, first segment `rgb(0, 88, 176)` = `#0058B0`, last `rgb(90, 200, 250)` = `#
 values still persist to `localStorage`, and a weasyprint render of an isolated copy of this card with
 segments/pins/ticks statically inlined at the default 9:00 AM–5:00 PM position (since WeasyPrint
 can't execute the JS that positions them) to visually confirm the redesign before finalizing it.
+
+MOST RECENT CHANGE: Per a follow-up request to "remove the timeline-subtitle, and make sliders
+invisible", removed the `.timeline-header`/`.timeline-subtitle` line ("Standard hours: 9:00 AM –
+5:00 PM") above the diagram — redundant now that the floating time chips above each pin already show
+the same two values — along with its now-unused `.timeline-header`/`.timeline-subtitle`/
+`.timeline-subtitle strong` CSS rules and the JS that kept it in sync
+(`businessHoursRangeLabel`/its `.textContent` assignment in `renderDiagram()`). Separately, each
+pin's visible round `.anchor-pin` knob was hidden (`opacity: 0`), so only the floating time-chip
+label and the "Arrives"/"Departs" caption remain visible above/below where the pin sits — the pin
+itself is still fully present and interactive (same 16px invisible hit-target padding, `cursor:grab`,
+pointer/keyboard drag logic, and `role="slider"` semantics all untouched), just with no visible knob.
+Since the pop-in reveal animation (`ci-pop-handle`) ended each pin at `opacity: 1` via its
+`both`-fill-mode keyframes — which would have overridden the new invisible base state after the
+reveal animation played once — that animation rule and its now-unused `@keyframes ci-pop-handle`
+were removed too; the zone's `ci-grow` scale-in and the labels' `ci-fade` reveal are unaffected.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+jsdom test confirming the subtitle/header elements are gone, `.anchor-pin`'s computed opacity is 0,
+the floating time labels still update correctly, and dragging/localStorage persistence still work,
+plus a weasyprint render of an isolated copy of the card (segments/pins/ticks statically inlined at
+9:00 AM/5:00 PM) confirming the cleaner look — a segmented bar with two floating time chips and no
+subtitle line or visible pin knobs.
 -->
 
 
@@ -763,7 +774,6 @@ can't execute the JS that positions them) to visually confirm the redesign befor
   const businessHoursZone = document.getElementById('businessHoursZone');
   const arrivalTimeEl = document.getElementById('arrivalTime');
   const departureTimeEl = document.getElementById('departureTime');
-  const businessHoursRangeLabel = document.getElementById('businessHoursRangeLabel');
   const timelineTrackWrapper = document.querySelector('.timeline-track-wrapper');
   const timelineTicksEl = document.getElementById('timelineTicks');
 
@@ -795,7 +805,6 @@ can't execute the JS that positions them) to visually confirm the redesign befor
     const departureLabel = formatMinutesAs12Hour(departureMinutes);
     arrivalTimeEl.textContent = arrivalLabel;
     departureTimeEl.textContent = departureLabel;
-    businessHoursRangeLabel.textContent = arrivalLabel + ' – ' + departureLabel;
     arrivalNode.setAttribute('aria-valuenow', arrivalMinutes);
     arrivalNode.setAttribute('aria-valuetext', arrivalLabel);
     departureNode.setAttribute('aria-valuenow', departureMinutes);
