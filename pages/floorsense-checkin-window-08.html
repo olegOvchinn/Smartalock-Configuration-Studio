@@ -182,88 +182,101 @@
   .checkin-card + .checkin-card { margin-top: 20px; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
-  .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
-  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
   /* ---------- diagram row: a fixed "Booking start" pin at rail center with two directly-draggable
      dots (earliest/latest check-in) on either side. Ticks mark every 30-minute segment on both
      halves of the rail so a dragged dot's position can be read against the grid at a glance — the
-     same granularity the old time drums stepped in. ---------- */
+     same granularity the old time drums stepped in. Rail/zone/tick/pin styling below matches
+     floorsense-business-hours-05.html's final "segmented glass" redesign — see the MOST RECENT
+     CHANGE note below. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 6px 40px; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; }
-  .timeline-zone.pre-window { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-  .timeline-zone.post-window { background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 6px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
+  }
+  /* ---------- segmented zones: the pre-window/post-window spans each render as a row of
+     individually rounded 30-minute blocks (flex children, small gap between each, inner blue-glass
+     glow + glossy sheen) rather than one solid gradient bar. Each segment's own background color is
+     set inline by JS (a per-segment interpolation from a deep to a lighter blue, reversed on the
+     post-window side so both zones read as light-near-center/deep-at-the-outer-edge, matching the
+     old two-tone gradient this replaced), not by this base rule. ---------- */
+  .timeline-zone {
+    position: absolute; top: 7.5px; bottom: 7.5px;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
 
   /* ---------- 30-minute tick marks on both halves of the rail, generated in JS from the same
      offsetToPercent()/MAX_OFFSET_MINUTES/MIN_VISUAL_PERCENT scale the draggable dots use. ---------- */
-  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
   .timeline-tick {
-    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
-    transform: translate(-50%, -50%); opacity: 0.6;
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
   }
-  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
 
   .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
   .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; }
   .timeline-node.draggable:active, .timeline-node.draggable.dragging { cursor: grabbing; }
-  .timeline-node .handle {
-    display: block; width: 16px; height: 16px; border-radius: 50%; background: #102A43;
-    border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+  .timeline-node .handle,
+  .timeline-node .anchor-pin {
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0; /* invisible drag handle, matching floorsense-business-hours-05.html — the large
+      invisible hit-target and the floating label-time chip still make each draggable dot fully
+      usable and readable without a visible knob. */
   }
   .timeline-node.draggable:hover .handle, .timeline-node.draggable.dragging .handle {
-    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .timeline-node.draggable.dragging .handle { transform: scale(1.1); }
+  .timeline-node.draggable.dragging .handle { transform: scale(1.12); }
   .timeline-node.draggable:focus-visible .handle {
-    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
-  }
-  .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
   .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
-  /* ---------- booking start: centered on the rail, with an oversized pin (3x the enlarged 22px
-     size = 66px) and a label scaled back down (3x smaller than the enlarged 67.5px size = 22.5px) ---------- */
+  /* ---------- booking start: centered on the rail. Previously an oversized 66px pin with a
+     scaled-down 22.5px display-font label; retired in favor of the same small pill-chip treatment
+     every other pin on the Floorsense wizard now uses (see MOST RECENT CHANGE) — "Booking start" is
+     still distinguishable from the draggable dots by simply never having a .draggable hit-target or
+     hover/focus glow. ---------- */
   .center-node { left: 50%; }
-  .center-node .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
-  .center-node .label-time.primary {
-    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .center-node .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
   /* ---------- reveal animation: plays once when the example scrolls into view, showing the
-     window "opening" outward from the fixed booking-start time. Only opacity/box-shadow/scaleX
-     are animated on elements that don't rely on `transform` for their own positioning, since
-     .timeline-node/.label-time/.label-desc/.tooltip use translate()/translateX() to center
-     themselves and a CSS animation on `transform` would overwrite that base offset. ---------- */
+     window "opening" outward from the fixed booking-start time. Only opacity/scaleX are animated on
+     elements that don't rely on `transform` for their own positioning, since
+     .timeline-node/.label-time/.label-desc use translate()/translateX() to center themselves and a
+     CSS animation on `transform` would overwrite that base offset. ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
   @keyframes ci-grow {
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
-  }
-  @keyframes ci-ping {
-    0% { box-shadow: 0 0 0 0 rgba(16,42,67,0.35); }
-    70% { box-shadow: 0 0 0 11px rgba(16,42,67,0); }
-    100% { box-shadow: 0 0 0 0 rgba(16,42,67,0); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both, ci-ping 1.4s ease-out .35s 2;
   }
   .timeline-card.animate-in .center-node .label-time,
   .timeline-card.animate-in .center-node .label-desc {
@@ -276,10 +289,6 @@
   .timeline-card.animate-in .timeline-zone.post-window {
     transform-origin: left center;
     animation: ci-grow .5s ease-out .3s both;
-  }
-  .timeline-card.animate-in .start-node .handle,
-  .timeline-card.animate-in .end-node .handle {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) .65s both;
   }
   .timeline-card.animate-in .start-node .label-time,
   .timeline-card.animate-in .start-node .label-desc,
@@ -422,9 +431,6 @@
         </div>
 
         <div class="timeline-card">
-          <div class="timeline-header">
-            <p class="timeline-subtitle">Booking start time: <strong id="checkinExampleStart">8:30 AM</strong></p>
-          </div>
           <div class="timeline-diagram-row">
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
@@ -925,6 +931,39 @@ edge landing on 180min, a 30-minute `ArrowLeft` step, and correct persistence to
 render this page's JS-positioned diagram at all (it doesn't execute JavaScript), so the jsdom test is
 the real verification here — the historical note about needing a `scrollTo` shim for jsdom no longer
 applies now that there's no scroll-snap drum left to shim.
+
+MOST RECENT CHANGE: Per a request to rebuild every other Floorsense timeline to match
+floorsense-business-hours-05.html's now-much-iterated-on visual design, this page's diagram got the
+full same treatment: the rail grew from a flat 3px line to a 36px pill-shaped casing (white
+background, thin `--line` border); the pre-window/post-window shaded zones changed from one solid
+gradient each to a row of individually rounded 30-minute blocks (a new `renderZoneSegmentsInto()` +
+`lerpColor()` pair, adapted from business-hours-05's `renderZoneSegments()`/`lerpColor()`, populates
+`#preWindowZone`/`#postWindowZone` on every `renderRailPositions()` call — the post-window zone's
+interpolation is reversed, `reverseGradient:true`, so both zones still read as light-near-the-center-
+pin/deep-at-the-outer-edge, matching the two-tone gradient they replaced) each with an inner
+blue-glass glow and glossy top sheen (`.timeline-zone-seg`/`::before`); tick marks moved from crossing
+through the rail to a quiet dotted row below it; every pin's round knob — the draggable dots'
+`.handle` circles and the fixed center pin's `.anchor-pin` — became invisible (`opacity: 0`), relying
+on the floating time-chip labels and the segmented bars themselves to carry the information; and the
+"Booking start time: 8:30 AM" `.timeline-subtitle` line above the diagram was removed as redundant
+with the center pin's own chip (its `checkinExampleStart` JS wiring went with it). The page-specific
+`.center-node` emphasis (a 66px pin and a 22.5px display-font label for "Booking start") was retired
+along with it, for the same reason `.big-anchor` was retired on floorsense-idle-release-09.html: with
+every pin now uniformly invisible and every chip using the same small pill style, an enlarged/
+differently-styled center label no longer read as consistent with the new design language —
+"Booking start" is still distinguishable from the draggable dots by simply never having a
+`.draggable` hit-target or hover/focus glow, not by size. `ci-pop-handle` and `ci-ping` (the
+radar-ping animation on the center pin's reveal) were removed entirely — both animations' `both`-
+fill-mode end states would have overridden the now-invisible pins' base state after playing once, and
+with the pins invisible a box-shadow-only ping would have been invisible anyway. `ci-fade`/`ci-grow`
+(labels fading in, zones growing outward) are unaffected. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, a jsdom test confirming the subtitle
+is gone, `.handle`/`.anchor-pin`'s computed opacity is 0, both zones' segment counts update correctly
+(reversed gradient included) through a drag to the rail edge and an ArrowRight step, and localStorage
+persistence still works, plus a weasyprint render of an isolated copy of the card (segments/ticks/pins
+statically inlined at the default 30-min-before/60-min-after state) confirming the casing/segmented-
+bar/chip layout — and the light-near-center/deep-at-edges gradient direction on both sides — matches
+business-hours-05's look.
 -->
 
 <script>
@@ -1057,6 +1096,33 @@ applies now that there's no scroll-snap drum left to shim.
     return side === 'before' ? 50 - percentFromCenter : 50 + percentFromCenter;
   }
 
+  /* ---------------- segmented zone colors: matches floorsense-business-hours-05.html's
+     lerpColor()/renderZoneSegments() approach — each 30-minute block's background is a linear
+     interpolation between a deep and a light blue across the full segment count. The post-window
+     zone reverses the interpolation (reverseGradient:true) so both zones read as
+     light-near-center/deep-at-the-outer-edge, matching the two-tone gradient this replaced. ---------- */
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+  function renderZoneSegmentsInto(zoneEl, offsetMinutes, reverseGradient) {
+    const segCount = Math.max(0, Math.round(offsetMinutes / 30));
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, reverseGradient ? 1 - t : t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    zoneEl.innerHTML = html;
+  }
+
   function renderRailPositions() {
     const startPercent = offsetToPercent(state.checkInEarlyMinutes, 'before');
     const endPercent = offsetToPercent(state.checkInLateMinutes, 'after');
@@ -1066,6 +1132,8 @@ applies now that there's no scroll-snap drum left to shim.
     preWindowZone.style.width = (50 - startPercent) + '%';
     postWindowZone.style.left = '50%';
     postWindowZone.style.width = (endPercent - 50) + '%';
+    renderZoneSegmentsInto(preWindowZone, state.checkInEarlyMinutes, false);
+    renderZoneSegmentsInto(postWindowZone, state.checkInLateMinutes, true);
     startGapLabel.textContent = formatMinutesOnly(state.checkInEarlyMinutes) + ' before';
     endGapLabel.textContent = formatMinutesOnly(state.checkInLateMinutes) + ' after';
     startNode.setAttribute('aria-valuenow', Math.round(state.checkInEarlyMinutes));
@@ -1176,7 +1244,6 @@ applies now that there's no scroll-snap drum left to shim.
   renderRailPositions();
 
   /* ---------------- check-in window live example ---------------- */
-  const checkinExampleStart = document.getElementById('checkinExampleStart');
   const checkinStartTime = document.getElementById('checkinStartTime');
   const checkinEarliestTime = document.getElementById('checkinEarliestTime');
   const checkinLatestTime = document.getElementById('checkinLatestTime');
@@ -1185,7 +1252,6 @@ applies now that there's no scroll-snap drum left to shim.
     const early = state.checkInEarlyMinutes;
     const late = state.checkInLateMinutes;
     const startLabel = formatMinutesAs12Hour(startMinutes);
-    checkinExampleStart.textContent = startLabel;
     checkinStartTime.textContent = startLabel;
     checkinEarliestTime.textContent = formatMinutesAs12Hour(startMinutes - early);
     checkinLatestTime.textContent = formatMinutesAs12Hour(startMinutes + late);
