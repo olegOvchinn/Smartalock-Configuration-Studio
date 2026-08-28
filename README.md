@@ -209,6 +209,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The header illustration was swapped back out for a basic square icon (`<svg class="checkin-card-icon"><rect .../></svg>`, 56x56px, `stroke="currentColor"` colored via `--accent`), matching the plain-icon convention every other single-card Floorsense page uses. `assets/images/business-hours-illustration.png` is now unreferenced but was left in place rather than deleted.
 - That square icon became an actual clock face and grew 50% larger (56px to 84px), per "make it sqiaire clock, 50% larger with business hours highlite": added hour/minute hands (pointing to 12 and 3) plus a filled pie-slice sector spanning 9→12→5 o'clock (the 8-hour span a 9-to-5 workday covers) as a soft `currentColor`-tinted "business hours" highlight behind the hands.
 - The departure time chip's near-black `.label-time.primary` background became `var(--accent)` (bright blue) instead of the old navy `#102A43`, per "label-time primary make blue instead of black" — the arrival chip's `var(--accent-deep)` background keeps the two labels visually distinct, just both blue now.
+- Per an immediate follow-up ("make it instead same colour as the one to the left"), `.label-time.primary` changed once more to `var(--accent-deep)`, matching the arrival chip's color exactly rather than using two different blues.
 
 ## Status
 

@@ -206,7 +206,7 @@
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .timeline-node .label-time.primary { background: var(--accent); }
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -772,6 +772,12 @@ time chip's `.label-time.primary` background changed from the near-black `#102A4
 color so the two floating time labels stay visually distinguishable, just both blue now instead of one
 blue and one near-black. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block, and a weasyprint render confirming the departure chip now renders bright blue.
+
+MOST RECENT CHANGE: Per a follow-up request to "make it instead same colour as the one to the left",
+`.label-time.primary`'s background changed again, from `var(--accent)` to `var(--accent-deep)` — the
+same value the base `.label-time` rule (i.e., the arrival chip) already uses — so the two floating
+time chips now match exactly rather than using two different blues. Verified via an inline HTMLParser
+tag-balance check and `node --check` on the extracted script block.
 -->
 
 
