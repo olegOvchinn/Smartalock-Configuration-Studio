@@ -143,14 +143,25 @@
      Both pins are the same normal size and move independently along the rail — neither is a fixed
      anchor the other is measured against. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 6px; margin: 76px 10px 46px; }
+  .timeline-track-wrapper { position: relative; height: 24px; margin: 72px 10px 46px; }
   .timeline-rail {
-    position: absolute; inset: 0; border-radius: 999px; background: var(--paper-soft);
-    box-shadow: inset 0 1px 2px rgba(16,42,67,0.10);
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
   }
+  /* ---------- segmented zone: the filled Arrival-Departure span renders as a row of individually
+     rounded 30-minute blocks (flex children, small gap between each) rather than one solid pill, so
+     the rail reads as a stepped/segmented control rather than a plain progress bar — per a request
+     to make the timeline visually closer to a reference "segmented capsule" picker image. Each
+     segment's own background color is set inline by JS (a per-segment interpolation from a deep to
+     a lighter blue), not by this base rule. ---------- */
   .timeline-zone {
-    position: absolute; top: 0; height: 6px; border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+    position: absolute; top: 3px; bottom: 3px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 1px rgba(16,42,67,0.10);
   }
 
   /* ---------- 30-minute tick marks below the rail: a full-hour tick every 60 minutes (taller,
@@ -610,6 +621,38 @@ and end of the business day"); no CSS change was needed since the image is sized
 `width: 300px; height: auto;` rule. Verified via an inline HTMLParser tag-balance check, `node --check`
 on the extracted script block, and a full-page weasyprint render confirming the new illustration displays
 correctly and proportionally in the .checkin-card header.
+
+MOST RECENT CHANGE: Per a user-supplied reference image of a segmented capsule-style timeline picker
+("analyse this image and build timeline visually similar to it"), the filled Arrival–Departure zone
+was reworked from one solid gradient pill into a row of individually rounded 30-minute blocks with a
+small gap between each, so the rail reads as a stepped/segmented control rather than a plain progress
+bar — the reference's core visual idea. The surrounding `.timeline-rail` also gained a lighter
+"casing" look (white background, thin `--line` border) in place of its previous flat `--paper-soft`
+fill, and grew from 6px to 24px tall to give the segments room to read as distinct rounded blocks.
+The reference itself uses a diamond-grid backdrop, glossy 3D gradient blocks, and metallic
+triangular cone pins in place of drag handles; per a design-fit discussion, only the segmented-block
+concept was adopted, kept within this site's existing flat, clean visual language — no textured
+background was added and the round `.anchor-pin` drag handles were left as-is (not replaced with
+cones), so the control still visually matches the rest of the wizard.
+
+Implementation: `.timeline-zone` changed from a single absolutely-positioned gradient bar to a flex
+container (`display:flex; gap:3px`) inset 3px from the rail's edges; a new `renderZoneSegments()`
+populates it with one `.timeline-zone-seg` div per 30-minute step between the two pins (always a
+whole number, since both pins snap to the 30-minute grid), each colored inline via a new `lerpColor()`
+helper interpolating from a deep blue (`#0058B0`, matching `--accent-deep`) to a light cyan
+(`#5AC8FA`) across the segment count — so the separate blocks read as one continuous gradient, the
+same effect the reference's glossy bar achieves with a single image. `renderZoneSegments()` is called
+from `renderDiagram()` on every render (initial load, drag, arrow-key step, and Reset), so segment
+count and coloring always stay in sync with the live Arrival/Departure range. `.timeline-track-wrapper`'s
+height grew from 6px to 24px and its top margin was retuned (76px to 72px) to keep the taller rail
+comfortably clear of the "Standard hours" subtitle above; the pins, their labels, and the tick-dot row
+below the rail are otherwise unchanged. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a jsdom test confirming segment count/colors update
+correctly through a drag and an arrow-key step (16 segments for the default 9:00 AM–5:00 PM 8-hour
+span, first segment `rgb(0, 88, 176)` = `#0058B0`, last `rgb(90, 200, 250)` = `#5AC8FA`) and that
+values still persist to `localStorage`, and a weasyprint render of an isolated copy of this card with
+segments/pins/ticks statically inlined at the default 9:00 AM–5:00 PM position (since WeasyPrint
+can't execute the JS that positions them) to visually confirm the redesign before finalizing it.
 -->
 
 
@@ -699,6 +742,21 @@ correctly and proportionally in the .checkin-card header.
     return Math.max(0, Math.min(100, ((minutes - RAIL_START_MIN) / (RAIL_END_MIN - RAIL_START_MIN)) * 100));
   }
 
+  /* ---------------- segmented zone colors: each 30-minute block's background is a linear
+     interpolation between a deep and a light blue across the full segment count, so the zone reads
+     as one continuous gradient even though it's built from separate, gapped elements. ---------- */
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+
   /* ---------------- rail: Arrival/Departure pins + connecting zone, directly draggable ---------------- */
   const arrivalNode = document.getElementById('arrivalNode');
   const departureNode = document.getElementById('departureNode');
@@ -709,6 +767,20 @@ correctly and proportionally in the .checkin-card header.
   const timelineTrackWrapper = document.querySelector('.timeline-track-wrapper');
   const timelineTicksEl = document.getElementById('timelineTicks');
 
+  /* ---------------- populate the zone with one flex child per 30-minute block between Arrival and
+     Departure (always a whole number of 30-min steps, since both pins snap to that grid), each
+     colored via lerpColor() so the run of separate blocks reads as a single gradient. ---------- */
+  function renderZoneSegments(arrivalMinutes, departureMinutes) {
+    const segCount = Math.max(0, Math.round((departureMinutes - arrivalMinutes) / 30));
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    businessHoursZone.innerHTML = html;
+  }
+
   function renderDiagram() {
     const arrivalMinutes = parseTimeToMinutes(state.arrivalTime);
     const departureMinutes = parseTimeToMinutes(state.departureTime);
@@ -718,6 +790,7 @@ correctly and proportionally in the .checkin-card header.
     departureNode.style.left = departurePercent + '%';
     businessHoursZone.style.left = arrivalPercent + '%';
     businessHoursZone.style.width = Math.max(0, departurePercent - arrivalPercent) + '%';
+    renderZoneSegments(arrivalMinutes, departureMinutes);
     const arrivalLabel = formatMinutesAs12Hour(arrivalMinutes);
     const departureLabel = formatMinutesAs12Hour(departureMinutes);
     arrivalTimeEl.textContent = arrivalLabel;
