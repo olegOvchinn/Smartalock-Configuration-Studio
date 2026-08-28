@@ -153,7 +153,7 @@
      segment's own background color is set inline by JS (a per-segment interpolation from a deep to
      a lighter blue), not by this base rule. ---------- */
   .timeline-zone {
-    position: absolute; top: 3px; bottom: 3px; left: 0; width: 0;
+    position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
     display: flex; align-items: stretch; gap: 3px;
   }
   .timeline-zone-seg {
@@ -696,6 +696,15 @@ renders box-shadow with zero blur/spread regardless of the values given, a rende
 CSS bug) also seen with this page's inset highlights, which never showed a visible sheen in prior
 weasyprint previews either. The rail's height increase, segment count, colors, and pin positions were
 still confirmed via that same static render.
+
+MOST RECENT CHANGE: Per a follow-up request that "the height of the rail is good but make the blocks
+inside 30% less tall", `.timeline-zone`'s vertical inset within `.timeline-rail` grew from a flat 3px
+top/bottom to 7.5px top/bottom, shrinking the segments' own height from 30px to 21px (30% less) while
+leaving the 36px rail itself untouched — the blocks now sit narrower and centered inside the taller
+casing rather than filling nearly all of it. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, and a weasyprint render of an isolated copy of the card
+(segments statically inlined) confirming the shorter blocks render centered within the unchanged-height
+rail.
 -->
 
 
