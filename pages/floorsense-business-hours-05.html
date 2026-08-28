@@ -124,7 +124,7 @@
   /* ---------- checkin-card-icon: a basic square glyph replacing the header illustration this page
      used previously — see the MOST RECENT CHANGE note below. Same 56x56px/currentColor convention as
      floorsense-checkin-window-08.html's own .checkin-card-icon. ---------- */
-  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  .checkin-card-icon { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
@@ -339,7 +339,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <p class="checkin-card-desc">
             Most users share the same standard business hours — drag either pin on the timeline
             below to set when most people arrive and when they head out for the day. These hours
@@ -751,6 +751,20 @@ isolated minimal test reproducing the same issue), a renderer limitation consist
 other documented WeasyPrint gaps (no JS execution, no box-shadow blur) rather than a bug in the
 markup — the identical pattern already renders correctly in a real browser on every other page that
 uses it.
+
+MOST RECENT CHANGE: Per a follow-up request to "make it sqiaire [sic] clock, 50% larger with business
+hours highlite [sic]", the plain square glyph above became an actual clock face: a filled pie-slice
+`<path>` (fill: `currentColor` at 0.15 opacity, no stroke) spans from the 9 o'clock point through 12
+to the 5 o'clock point — the 240°/8-hour sector a 9-to-5 workday covers on a 12-hour dial — sitting
+behind two `currentColor` hour/minute `<line>` hands (pointing to 12 and 3, in the same stroke style
+as the outer square) so the wedge reads as a soft "business hours" highlight rather than a full
+quadrant marker. `.checkin-card-icon` grew 50% (56px to 84px) per the same request; the icon's own
+`viewBox="0 0 24 24"` and the square `<rect>`'s coordinates are unchanged, since scaling is handled
+entirely by the CSS width/height (the SVG scales up proportionally). Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a weasyprint render
+confirming the wedge/hands/square layout and the larger size — the wedge shows correctly as a light
+gray sector even under WeasyPrint's black-only `currentColor` rendering (see the note above), since
+`fill-opacity` is independent of the color-resolution issue.
 -->
 
 
