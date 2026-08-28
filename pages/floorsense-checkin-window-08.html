@@ -186,19 +186,39 @@
   .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; }
   .timeline-subtitle strong { color: #102A43; font-weight: 700; }
 
-  /* ---------- diagram row: an Apple-Clock-style time drum on each side of the rail, rolling the
-     drum moves that side's slider/zone on the rail between them ---------- */
-  .timeline-diagram-row { display: flex; align-items: flex-start; gap: 8px; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 20px 40px; flex: 1; min-width: 0; }
+  /* ---------- diagram row: a fixed "Booking start" pin at rail center with two directly-draggable
+     dots (earliest/latest check-in) on either side. Ticks mark every 30-minute segment on both
+     halves of the rail so a dragged dot's position can be read against the grid at a glance — the
+     same granularity the old time drums stepped in. ---------- */
+  .timeline-diagram-row { display: block; }
+  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 6px 40px; }
   .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
   .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; }
   .timeline-zone.pre-window { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
   .timeline-zone.post-window { background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
 
+  /* ---------- 30-minute tick marks on both halves of the rail, generated in JS from the same
+     offsetToPercent()/MAX_OFFSET_MINUTES/MIN_VISUAL_PERCENT scale the draggable dots use. ---------- */
+  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
+    transform: translate(-50%, -50%); opacity: 0.6;
+  }
+  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+
   .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
+  .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; }
+  .timeline-node.draggable:active, .timeline-node.draggable.dragging { cursor: grabbing; }
   .timeline-node .handle {
     display: block; width: 16px; height: 16px; border-radius: 50%; background: #102A43;
-    border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+  }
+  .timeline-node.draggable:hover .handle, .timeline-node.draggable.dragging .handle {
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .timeline-node.draggable.dragging .handle { transform: scale(1.1); }
+  .timeline-node.draggable:focus-visible .handle {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
   }
   .timeline-node .anchor-pin {
     width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
@@ -222,45 +242,6 @@
     margin-bottom: 10px;
   }
   .center-node .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
-
-  /* ---------- Apple Clock-style time drum: native scroll + scroll-snap gives free momentum/
-     touch/wheel support without custom pointer-drag math. Each row is an absolute clock time
-     (30-min steps); the settled center row is the picked value. ---------- */
-  .time-drum {
-    position: relative; width: 78px; height: 150px; flex-shrink: 0; margin-top: 15px;
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
-  }
-  /* subtle top/bottom shading over the white drum body, like light curving away over a cylinder,
-     so the numbers read as sitting on a rotating 3D wheel rather than a flat scroll list */
-  .time-drum::before {
-    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom,
-      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
-      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
-  }
-  .time-drum-window {
-    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
-    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
-    background: rgba(16,42,67,0.03);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
-  }
-  .time-drum-scroll {
-    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-    border-radius: 12px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-  }
-  .time-drum-scroll::-webkit-scrollbar { display: none; }
-  .time-drum-pad { height: 60px; }
-  .time-drum-row {
-    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
-  }
-  .time-drum-row.selected {
-    font-size: 15px; font-weight: 700; color: #102A43;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-  }
 
   /* ---------- reveal animation: plays once when the example scrolls into view, showing the
      window "opening" outward from the fixed booking-start time. Only opacity/box-shadow/scaleX
@@ -434,9 +415,9 @@
           <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg>
           <p class="checkin-card-desc">
             Users can confirm (check in) their desk booking at the desk within a window before and
-            after the booking start time — roll the time drums on either side of the diagram below
-            to set how wide that window is. Outside that window, an unclaimed desk automatically
-            reverts to being generally available.
+            after the booking start time — drag either dot on the diagram below to set how wide that
+            window is. Outside that window, an unclaimed desk automatically reverts to being
+            generally available.
           </p>
         </div>
 
@@ -445,16 +426,13 @@
             <p class="timeline-subtitle">Booking start time: <strong id="checkinExampleStart">8:30 AM</strong></p>
           </div>
           <div class="timeline-diagram-row">
-            <div class="time-drum" id="earliestDrum" tabindex="0" role="slider" aria-label="Earliest check-in time" aria-valuemin="0" aria-valuemax="1410">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="earliestDrumScroll"></div>
-            </div>
             <div class="timeline-track-wrapper">
               <div class="timeline-rail">
                 <div class="timeline-zone pre-window" id="preWindowZone"></div>
                 <div class="timeline-zone post-window" id="postWindowZone"></div>
+                <div class="timeline-ticks" id="checkinTicks"></div>
               </div>
-              <div class="timeline-node start-node" id="startNode">
+              <div class="timeline-node start-node draggable" id="startNode" tabindex="0" role="slider" aria-label="Earliest check-in time, minutes before booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
                 <div class="label-time" id="checkinEarliestTime">7:30 AM</div>
                 <div class="label-desc" id="startGapLabel">30 min before</div>
@@ -464,15 +442,11 @@
                 <div class="label-time primary" id="checkinStartTime">8:30 AM</div>
                 <div class="label-desc">Booking start</div>
               </div>
-              <div class="timeline-node end-node" id="endNode">
+              <div class="timeline-node end-node draggable" id="endNode" tabindex="0" role="slider" aria-label="Latest check-in time, minutes after booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
                 <div class="label-time" id="checkinLatestTime">9:30 AM</div>
                 <div class="label-desc" id="endGapLabel">60 min after</div>
               </div>
-            </div>
-            <div class="time-drum" id="latestDrum" tabindex="0" role="slider" aria-label="Latest check-in time" aria-valuemin="0" aria-valuemax="1410">
-              <div class="time-drum-window"></div>
-              <div class="time-drum-scroll" id="latestDrumScroll"></div>
             </div>
           </div>
         </div>
@@ -903,6 +877,54 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to apply floorsense-business-hours-05.html's "remove the time
+drums, make the pins directly draggable, split the timeline into 30-minute segments" treatment
+analogically to every other drum+timeline page, this page's `#earliestDrum`/`#latestDrum` (and the
+`.time-drum`/`.time-drum-window`/`.time-drum-scroll`/`.time-drum-pad`/`.time-drum-row` CSS,
+`buildDrumRows()`/`createTimeDrum()` they depended on) were removed outright — this is the fourth
+and final act in this page's own history of drag-handles -> drums -> drag-handles again (see the
+"MOST RECENT REDESIGN"/"the on-rail drag handles... were replaced with a pair of... time drums"
+notes above for the earlier back-and-forth). Unlike a straight revert to that old
+`createTimelineHandle()` implementation, this reuses the CURRENT drum-era geometry
+(`offsetToPercent()`/`MAX_OFFSET_MINUTES`(3h)/`MIN_VISUAL_PERCENT`(10)) rather than the older
+non-uniform `HOUR_STEPS` array (0.5/1/1.5/2/3/4/5/6/7/8/9h), so the rail's scale and the 30-minute
+gap/step granularity this task asked for stay exactly as the drums left them.
+
+`role="slider"`/`tabindex="0"`/`aria-label` moved from the removed drum wrappers onto
+`#startNode`/`#endNode` themselves (the fixed `#center-node` "Booking start" pin was never
+interactive and stays that way); `aria-valuemin`/`aria-valuemax` changed from the drums' `0`/`1410`
+(absolute clock minutes, since a drum picked an absolute time) to `30`/`180` (the actual
+minutes-before/after-booking-start value these dots now directly represent).
+`makeDraggableCheckinNode(nodeEl, side, opts)` wires each dot to a `pointerdown` on itself +
+`pointermove`/`pointerup` on `document`, converting `clientX` to a percentage of
+`.timeline-track-wrapper`'s own `getBoundingClientRect()` (clamped to that dot's own half of the
+rail — `[0,50]` for `side:'before'`, `[50,100]` for `side:'after'`, so a drag can never cross past
+center onto the other dot's territory) and back to an offset-minutes value via the exact inverse of
+`offsetToPercent()`, snapped to the nearest 30 minutes and floored at `MIN_GAP_MINUTES`(30) — the
+same floor the drums' `clampMinutes` hook enforced, just expressed directly in offset-minutes now
+rather than via `startMinutes ± minutes`. Arrow-key stepping (30min/press, `ArrowRight`/`ArrowUp` to
+increase the gap and `ArrowLeft`/`ArrowDown` to decrease it, matching the "regardless of visual
+direction" convention the drums used) was added to each dot's own `keydown` handler. A new
+`.timeline-ticks` layer, built once by `renderTicks()`, draws a tick every 30 minutes from 0 to
+`MAX_OFFSET_MINUTES` on BOTH halves of the rail using the same `offsetToPercent()` scale (14 ticks
+total, 8 of them hour-ticks), so the segments are visible as a static ruler on either side of the
+fixed center pin. A new `.draggable` modifier class scopes drag affordance (grab cursor, enlarged
+hit target, hover/dragging/focus glow on `.handle`) to `#startNode`/`#endNode` only, leaving the
+fixed `.center-node` — which still uses the separate `.anchor-pin` element, never `.handle` — visibly
+undraggable. The header copy ("roll the time drums on either side") was reworded to "drag either dot
+on the diagram below".
+
+Verified with a jsdom smoke test driving real `pointerdown`/`pointermove`/`pointerup`/`keydown`
+events: confirms the initial 30min-before/60min-after state (8:00 AM/9:30 AM against an 8:30 AM
+booking start), 14/8 tick counts, dragging `#startNode` to the rail's left edge landing on exactly
+180min, dragging it back toward center clamping at the 30min floor, dragging `#endNode` to the right
+edge landing on 180min, a 30-minute `ArrowLeft` step, and correct persistence to
+`localStorage`'s `checkinWindow` state. Also validated via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block. As with the other converted pages, WeasyPrint can't
+render this page's JS-positioned diagram at all (it doesn't execute JavaScript), so the jsdom test is
+the real verification here — the historical note about needing a `scrollTo` shim for jsdom no longer
+applies now that there's no scroll-snap drum left to shim.
 -->
 
 <script>
@@ -1012,91 +1034,7 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
 
   const startMinutes = parseTimeToMinutes(savedDefaultStartTime);
 
-  /* ---------------- Apple Clock-style time drums (30-min steps, full 24h) driving the rail's
-     start/end sliders. See the "Apple Clock" .time-drum CSS above for the scroll-snap mechanics. */
-  const DRUM_ROW_H = 30;
-  const drumValues = [];
-  for (let m = 0; m < 1440; m += 30) drumValues.push({ minutes: m, label: formatMinutesAs12Hour(m) });
-
-  function buildDrumRows(scrollEl) {
-    let html = '<div class="time-drum-pad"></div>';
-    drumValues.forEach((v, i) => {
-      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
-    });
-    html += '<div class="time-drum-pad"></div>';
-    scrollEl.innerHTML = html;
-    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
-  }
-
-  function createTimeDrum(scrollEl, opts) {
-    const rows = buildDrumRows(scrollEl);
-    let current = -1;
-    let settleTimer = null;
-
-    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
-    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
-    function highlight(index) {
-      if (index === current) return;
-      current = index;
-      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
-      scrollEl.parentElement.setAttribute('aria-valuenow', drumValues[index].minutes);
-      scrollEl.parentElement.setAttribute('aria-valuetext', drumValues[index].label);
-    }
-    function nearestIndexForMinutes(minutes) {
-      let best = 0, bestDiff = Infinity;
-      drumValues.forEach((v, i) => {
-        const diff = Math.abs(v.minutes - minutes);
-        if (diff < bestDiff) { bestDiff = diff; best = i; }
-      });
-      return best;
-    }
-    function scrollToIndex(index, smooth) {
-      index = clampIndex(index);
-      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
-      highlight(index);
-    }
-
-    // Applies opts.clampMinutes (if given) to an index so the drum can never settle on a value
-    // that would put less than the minimum gap between check-in time and booking start.
-    function clampedIndex(index) {
-      if (!opts.clampMinutes) return index;
-      const wanted = drumValues[clampIndex(index)].minutes;
-      const allowed = opts.clampMinutes(wanted);
-      return allowed === wanted ? index : nearestIndexForMinutes(allowed);
-    }
-
-    scrollEl.addEventListener('scroll', () => {
-      highlight(clampIndex(indexFromScroll()));
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const settled = clampedIndex(indexFromScroll());
-        scrollToIndex(settled, true);
-        if (opts.onChange) opts.onChange(drumValues[settled].minutes);
-      }, 120);
-    }, { passive: true });
-
-    scrollEl.parentElement.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const i = clampedIndex(indexFromScroll() + 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(drumValues[i].minutes);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const i = clampedIndex(indexFromScroll() - 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(drumValues[i].minutes);
-      }
-    });
-
-    scrollToIndex(clampedIndex(nearestIndexForMinutes(opts.initialMinutes)), false);
-
-    return {
-      setMinutes(minutes) { scrollToIndex(clampedIndex(nearestIndexForMinutes(minutes)), false); }
-    };
-  }
-
-  /* ---------------- rail: earliest/latest dots + shaded zones, driven by the drums above ---------------- */
+  /* ---------------- rail: earliest/latest dots + shaded zones, directly draggable ---------------- */
   // Scaled down from a 12h range so the minimum 30-minute gap (MIN_GAP_MINUTES) still lands a
   // visible distance from center — on the old 12h scale, 30 minutes was only ~2% of the rail,
   // well inside the footprint of the now much-bigger booking-start pin. MIN_VISUAL_PERCENT also
@@ -1110,6 +1048,8 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   const postWindowZone = document.getElementById('postWindowZone');
   const startGapLabel = document.getElementById('startGapLabel');
   const endGapLabel = document.getElementById('endGapLabel');
+  const checkinTicksEl = document.getElementById('checkinTicks');
+  const checkinTrackWrapper = document.querySelector('.timeline-track-wrapper');
 
   function offsetToPercent(offsetMinutes, side) {
     const t = Math.max(0, Math.min(MAX_OFFSET_MINUTES, offsetMinutes)) / MAX_OFFSET_MINUTES;
@@ -1128,7 +1068,25 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     postWindowZone.style.width = (endPercent - 50) + '%';
     startGapLabel.textContent = formatMinutesOnly(state.checkInEarlyMinutes) + ' before';
     endGapLabel.textContent = formatMinutesOnly(state.checkInLateMinutes) + ' after';
+    startNode.setAttribute('aria-valuenow', Math.round(state.checkInEarlyMinutes));
+    startNode.setAttribute('aria-valuetext', formatMinutesOnly(state.checkInEarlyMinutes) + ' before');
+    endNode.setAttribute('aria-valuenow', Math.round(state.checkInLateMinutes));
+    endNode.setAttribute('aria-valuetext', formatMinutesOnly(state.checkInLateMinutes) + ' after');
   }
+
+  /* ---------------- 30-minute tick marks on both halves of the rail (static; drawn once) ---------------- */
+  function renderTicks() {
+    let html = '';
+    for (let m = 0; m <= MAX_OFFSET_MINUTES; m += 30) {
+      const isHour = m % 60 === 0;
+      const beforePercent = offsetToPercent(m, 'before');
+      const afterPercent = offsetToPercent(m, 'after');
+      html += `<div class="timeline-tick${isHour ? ' hour' : ''}" style="left:${beforePercent}%"></div>`;
+      html += `<div class="timeline-tick${isHour ? ' hour' : ''}" style="left:${afterPercent}%"></div>`;
+    }
+    checkinTicksEl.innerHTML = html;
+  }
+  renderTicks();
 
   /* ---------------- fields ---------------- */
   const saveText = document.getElementById('saveText');
@@ -1146,34 +1104,74 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   }
 
   function applyState() {
-    earliestDrum.setMinutes(startMinutes - state.checkInEarlyMinutes);
-    latestDrum.setMinutes(startMinutes + state.checkInLateMinutes);
     renderRailPositions();
   }
 
-  // Neither drum may land closer than this to the booking start time — an earliest/latest
-  // check-in time within 30 minutes of the booking itself would leave no real setup window.
+  // Neither dot may land closer than this to the booking start time — an earliest/latest check-in
+  // time within 30 minutes of the booking itself would leave no real setup window.
   const MIN_GAP_MINUTES = 30;
 
-  const earliestDrum = createTimeDrum(document.getElementById('earliestDrumScroll'), {
-    initialMinutes: startMinutes - state.checkInEarlyMinutes,
-    clampMinutes: (minutes) => Math.min(minutes, startMinutes - MIN_GAP_MINUTES),
-    onChange: (minutes) => {
-      state.checkInEarlyMinutes = Math.max(MIN_GAP_MINUTES, startMinutes - minutes);
+  /* ---------------- draggable earliest/latest dots: pointerdown on a dot starts a drag tracked on
+     `document`, converting clientX to a percentage of .timeline-track-wrapper's own
+     getBoundingClientRect() and back to an offset-from-center-minutes value via the inverse of
+     offsetToPercent(), snapped to the nearest 30 minutes. Replaces the Apple Clock-style time drums
+     this page used previously — see the MOST RECENT CHANGE note below. ---------- */
+  function makeDraggableCheckinNode(nodeEl, side, opts) {
+    function minutesFromClientX(clientX) {
+      const rect = checkinTrackWrapper.getBoundingClientRect();
+      let percent = ((clientX - rect.left) / rect.width) * 100;
+      percent = side === 'before' ? Math.max(0, Math.min(50, percent)) : Math.max(50, Math.min(100, percent));
+      const percentFromCenter = side === 'before' ? (50 - percent) : (percent - 50);
+      let t = (percentFromCenter - MIN_VISUAL_PERCENT) / (50 - MIN_VISUAL_PERCENT);
+      t = Math.max(0, Math.min(1, t));
+      let minutes = t * MAX_OFFSET_MINUTES;
+      minutes = Math.round(minutes / 30) * 30;
+      return opts.clampMinutes(minutes);
+    }
+    function onPointerMove(e) {
+      opts.onChange(minutesFromClientX(e.clientX));
       renderRailPositions();
       updateCheckinExample();
+    }
+    function onPointerUp() {
+      nodeEl.classList.remove('dragging');
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
       queueSave();
     }
+    nodeEl.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      nodeEl.classList.add('dragging');
+      nodeEl.focus();
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+    });
+    nodeEl.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        opts.onChange(opts.clampMinutes(opts.getMinutes() + 30));
+        renderRailPositions();
+        updateCheckinExample();
+        queueSave();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        opts.onChange(opts.clampMinutes(opts.getMinutes() - 30));
+        renderRailPositions();
+        updateCheckinExample();
+        queueSave();
+      }
+    });
+  }
+
+  makeDraggableCheckinNode(startNode, 'before', {
+    getMinutes: () => state.checkInEarlyMinutes,
+    clampMinutes: (minutes) => Math.max(MIN_GAP_MINUTES, minutes),
+    onChange: (minutes) => { state.checkInEarlyMinutes = minutes; }
   });
-  const latestDrum = createTimeDrum(document.getElementById('latestDrumScroll'), {
-    initialMinutes: startMinutes + state.checkInLateMinutes,
-    clampMinutes: (minutes) => Math.max(minutes, startMinutes + MIN_GAP_MINUTES),
-    onChange: (minutes) => {
-      state.checkInLateMinutes = Math.max(MIN_GAP_MINUTES, minutes - startMinutes);
-      renderRailPositions();
-      updateCheckinExample();
-      queueSave();
-    }
+  makeDraggableCheckinNode(endNode, 'after', {
+    getMinutes: () => state.checkInLateMinutes,
+    clampMinutes: (minutes) => Math.max(MIN_GAP_MINUTES, minutes),
+    onChange: (minutes) => { state.checkInLateMinutes = minutes; }
   });
   renderRailPositions();
 
