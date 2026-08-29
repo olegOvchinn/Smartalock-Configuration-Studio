@@ -125,16 +125,11 @@
     display: flex; align-items: center; gap: 22px; padding: 22px;
   }
   .feature-row + .feature-row { border-top: 1px solid var(--line); }
-  /* ---------- feature-row-thumb: replaces each row's plain .feature-row-icon line icon with its
-     own crop of a user-supplied reference image (one scene per optional feature: Idle's clock +
-     "TIME-OUT" desk, NSNP's "NO BOOKING" + relay-box desk pair, FME's phone-controlled standing
-     desk, and Anti Desk Hogging's shield-with-X over shared cubicles) — same illustration pattern
-     as the other Floorsense pages, but four per-row crops from a single source image instead of a
-     header/single-card treatment. Sized by width (all four crops land between ~1.3:1 and ~1.9:1,
-     close enough to size consistently); well under each crop's native ~300-420px width so they
-     stay crisp. .feature-row-icon is now unused on this page (all 4 rows converted) and was
-     removed; the unrelated footer icon (.feature-footer-icon) is untouched. ---------- */
-  .feature-row-thumb { width: 221px; height: auto; flex-shrink: 0; border-radius: 8px; }
+  /* ---------- feature-row-icon: bare accent-coloured line icon, "Style 1" — the same treatment as
+     floorsense-business-hours-05.html's .checkin-card-icon (84x84px, color: var(--accent), no
+     badge/background/photo). Replaces the per-row photo crops (.feature-row-thumb, removed) used
+     briefly on this page — see the MOST RECENT CHANGE note below. ---------- */
+  .feature-row-icon { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
   .feature-row-body { flex: 1; min-width: 0; }
   .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
   .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
@@ -196,9 +191,9 @@
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
-  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
-     the page (was a 40px wrapper around a 34px svg). ---------- */
-  .feature-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
+     color: var(--accent)) so every icon on this page is now the same size/style. ---------- */
+  .feature-footer-icon { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
   .feature-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -305,7 +300,7 @@
       <div class="feature-card">
 
         <div class="feature-row">
-          <img class="feature-row-thumb" src="../assets/images/optional-feature-idle.png" alt="">
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
             <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
@@ -319,7 +314,7 @@
         </div>
 
         <div class="feature-row">
-          <img class="feature-row-thumb" src="../assets/images/optional-feature-nsnp.png" alt="">
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">No Swipe No Power (NSNP)</p>
             <p class="feature-row-desc">Desk power policy requiring Floorsense NSNP relay units — desks only power on for an active, checked-in booking.</p>
@@ -329,7 +324,7 @@
         </div>
 
         <div class="feature-row">
-          <img class="feature-row-thumb" src="../assets/images/optional-feature-fme.png" alt="">
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
             <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app or handset. Requires motor integration with a Floorsense handset.</p>
@@ -346,7 +341,7 @@
         </div>
 
         <div class="feature-row">
-          <img class="feature-row-thumb" src="../assets/images/optional-feature-adh.png" alt="">
+          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><line x1="2" y1="22" x2="22" y2="2"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Anti Desk Hogging</p>
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
@@ -544,6 +539,21 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to name page 05's (floorsense-business-hours-05.html) bare
+84x84px accent-coloured icon treatment "Style 1" and apply it here, this page's 4 per-row photo
+crops (.feature-row-thumb: optional-feature-idle.png / -nsnp.png / -fme.png / -adh.png) were
+replaced with bare symbolic SVG icons, restoring the same clock / power-button / up-arrow-on-a-pole
+/ crossed-repeat-arrow glyphs this page used before the photo-illustration pass (see the "site-wide
+icon-size unification" MOST RECENT CHANGE further up this NOTE block), but now sized at 84px to
+match Style 1 exactly rather than the sitewide 56px convention. `.feature-row-icon`'s CSS was
+updated accordingly (`width/height: 84px`, replacing `.feature-row-thumb`'s photo sizing), and the
+footer icon (`.feature-footer-icon`) was bumped from 56px to 84px too so every icon on this page now
+shares one consistent size/style with floorsense-business-hours-05.html's icon. The 4
+`optional-feature-*.png` crops are no longer referenced by this page but were left in place rather
+than deleted. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block (untouched -- markup/CSS-only change), and a WeasyPrint render confirming all 5 icons
+(4 rows + footer) render as clean bare accent-blue line icons at a consistent 84px.
 -->
 
 <script>
