@@ -119,23 +119,23 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
   /* ---------- desk-icon-badge: a square "iOS-glass" tile behind each symbolic glyph — a
-     translucent blue gradient with backdrop blur, a glossy top sheen, and an inset blue glow, so
-     the icon reads as a frosted glass square rather than a bare line icon. Only blue and white are
-     used anywhere (translucent blue background/glow, white glyph strokes/sheen) — see the MOST
-     RECENT CHANGE note below. ---------- */
+     translucent white gradient with backdrop blur, a glossy top sheen, and an inset blue glow, so
+     the icon reads as a frosted glass square rather than a bare line icon. Background is white glass
+     with blue glyph lines (flipped from an earlier blue-background/white-line version) — see the
+     MOST RECENT CHANGE note below. ---------- */
   .desk-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
-    background: linear-gradient(135deg, rgba(0,88,176,0.55), rgba(0,113,227,0.32));
+    background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(232,241,252,0.85));
     backdrop-filter: blur(4px) saturate(160%);
     -webkit-backdrop-filter: blur(4px) saturate(160%);
-    border: 1px solid rgba(255,255,255,0.55);
+    border: 1px solid rgba(0,113,227,0.25);
     box-shadow:
-      inset 0 1px 1px rgba(255,255,255,0.65),
-      inset 0 -8px 12px rgba(0,40,90,0.22),
-      inset 0 0 16px 3px rgba(110,185,255,0.55),
-      0 2px 6px rgba(16,42,67,0.14);
+      inset 0 1px 1px rgba(255,255,255,0.9),
+      inset 0 -6px 10px rgba(0,88,176,0.10),
+      inset 0 0 14px 3px rgba(0,113,227,0.35),
+      0 2px 6px rgba(16,42,67,0.10);
   }
   /* ---------- glossy top sheen, same white-to-transparent technique used on
      floorsense-business-hours-05.html's timeline segments, layered over the badge's own gradient
@@ -143,10 +143,10 @@
   .desk-icon-badge::before {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0) 65%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0) 65%);
     pointer-events: none;
   }
-  .desk-icon-glyph { width: 30px; height: 30px; color: #fff; position: relative; z-index: 1; }
+  .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
@@ -295,7 +295,7 @@
         <div class="desk-check-card" data-template="fixed">
           <label class="desk-row">
             <input type="checkbox" value="fixed">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.3"/><circle cx="12" cy="9" r="2.6"/></svg></div>
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.12"/><circle cx="12" cy="9" r="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
               <p class="desk-desc">Give someone their own permanent desk. Common for senior staff who need the same seat every day.</p>
@@ -313,7 +313,7 @@
         <div class="desk-check-card" data-template="adhoc">
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1.2" fill="currentColor" fill-opacity="0.35"/><path d="M11.1 11.6l0.85 0.85 1.5-1.6" stroke-width="1.4"/><rect x="16" y="9" width="5.5" height="5.5" rx="1.2"/></svg></div>
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1.2" fill="currentColor" fill-opacity="0.15"/><path d="M11.1 11.6l0.85 0.85 1.5-1.6" stroke-width="1.1"/><rect x="16" y="9" width="5.5" height="5.5" rx="1.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -324,7 +324,7 @@
         <div class="desk-check-card" data-template="team-leader">
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.35"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
               <p class="desk-desc">Lets a team leader book several desks in one go without naming who each is for — desks simply show as reserved for the team. A team leader can optionally also book on behalf of their team members, but that's time-consuming to do desk by desk, so isn't meant for frequent use. Either way, desks must be checked in or claimed by the user, or the booking expires.</p>
@@ -335,7 +335,7 @@
         <div class="desk-check-card" data-template="booked-on-behalf">
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.35"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.4"/></svg></div>
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
               <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has allocated them to book for. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
@@ -346,7 +346,7 @@
         <div class="desk-check-card" data-template="ai-agent">
           <label class="desk-row">
             <input type="checkbox" value="ai-agent">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.2"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.4"/></svg></div>
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.08"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked</h3>
               <p class="desk-desc">An AI agent automatically prebooks a desk for the user ahead of time, based on your organisation's policy rules — no manual booking needed.</p>
@@ -616,6 +616,26 @@ and a weasyprint render confirming the square glass badges, gradient, and sheen 
 (WeasyPrint doesn't render `box-shadow` blur/spread at all, per the same documented limitation noted
 elsewhere on this site, so the inner-glow/highlight layers are flatter in that specific static render
 than in a real browser — not a markup issue).
+
+MOST RECENT CHANGE: Per a request to flip the badges to "white background but blue lines instead,
+make lines thinner and sharper, and increase size of the symbols inside the icon canvases by 15%",
+`.desk-icon-badge`'s gradient background changed from translucent blue to translucent white
+(`rgba(255,255,255,0.92)` → `rgba(232,241,252,0.85)`), its border from translucent white to a
+faint blue (`rgba(0,113,227,0.25)`), and its inset box-shadow stack now uses a lighter blue-tinted
+bottom shadow and blue inner glow against the white glass rather than a dark shadow against blue —
+still "a bit of glow from the inside" as established earlier, just recolored to sit on white.
+`.desk-icon-glyph` changed from `color:#fff` to `color:var(--accent)` (the site's blue) so the line
+icons themselves are now blue-on-white instead of white-on-blue, and grew from 30px to 34.5px
+(+15%). Each of the 5 inline SVGs had `stroke-width` reduced from 1.6 to 1.3 (secondary detail
+strokes from 1.4 to 1.1) and `stroke-linecap`/`stroke-linejoin` changed from `round`/`round` to
+`butt`/`miter` for a thinner, crisper line with sharp corners instead of soft rounded ones. Each
+glyph's `fill-opacity` (previously raised for contrast against a blue background) was reverted to
+its original lower value (0.3→0.12, 0.35→0.15 ×3, 0.2→0.08) since a light blue fill now sits against
+white rather than a white fill against blue. Only blue and white still appear anywhere. Validated
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
+and a weasyprint render (with `currentColor` swapped for its resolved hex, since WeasyPrint can't
+resolve `currentColor` against an inherited CSS custom property inside embedded SVG) confirming the
+white glass badges, thinner sharp blue lines, and enlarged glyphs render as intended.
 -->
 
 <script>
