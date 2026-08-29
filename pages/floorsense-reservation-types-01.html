@@ -118,33 +118,16 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
-  /* ---------- desk-icon-badge: a square "iOS-glass" tile behind each symbolic glyph — a
-     translucent white gradient with backdrop blur, a glossy top sheen, and an inset blue glow, so
-     the icon reads as a frosted glass square rather than a bare line icon. Background is white glass
-     with blue glyph lines (flipped from an earlier blue-background/white-line version) — see the
-     MOST RECENT CHANGE note below. ---------- */
+  /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
+     a simple blue border, per a request to drop the glass/glow treatment (backdrop blur, inset
+     highlight/shadow/glow layers, sheen overlay) while keeping the icon shapes themselves unchanged
+     — see the MOST RECENT CHANGE note below. ---------- */
   .desk-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-    background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(232,241,252,0.85));
-    backdrop-filter: blur(4px) saturate(160%);
-    -webkit-backdrop-filter: blur(4px) saturate(160%);
-    border: 1px solid rgba(0,113,227,0.25);
-    box-shadow:
-      inset 0 1px 1px rgba(255,255,255,0.9),
-      inset 0 -6px 10px rgba(0,88,176,0.10),
-      inset 0 0 14px 3px rgba(0,113,227,0.35),
-      0 2px 6px rgba(16,42,67,0.10);
-  }
-  /* ---------- glossy top sheen, same white-to-transparent technique used on
-     floorsense-business-hours-05.html's timeline segments, layered over the badge's own gradient
-     to read as backlit glass. ---------- */
-  .desk-icon-badge::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0) 65%);
-    pointer-events: none;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
   }
   .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
@@ -636,6 +619,18 @@ via an inline HTMLParser tag-balance check, `node --check` on the extracted scri
 and a weasyprint render (with `currentColor` swapped for its resolved hex, since WeasyPrint can't
 resolve `currentColor` against an inherited CSS custom property inside embedded SVG) confirming the
 white glass badges, thinner sharp blue lines, and enlarged glyphs render as intended.
+
+MOST RECENT CHANGE: Per a request to "keep shapes of the icons but remove glow and glass shadowing,
+instead make blue canvas border line", `.desk-icon-badge` dropped the entire glass treatment —
+`backdrop-filter`, the gradient background, and the inset highlight/depth-shadow/glow `box-shadow`
+stack are all gone, along with the now-unused `.desk-icon-badge::before` sheen overlay rule (removed
+outright). The badge is now a plain flat square: solid white background (`#fff`) with a
+`1.5px solid var(--accent)` blue border, same 60px size and 18px corner radius as before.
+`.desk-icon-glyph` (34.5px, `color: var(--accent)`) and all 5 SVG glyph shapes/strokes/fill-opacity
+values are untouched from the prior change — only the badge container simplified, not the icons
+themselves. Validated via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block (untouched), and a weasyprint render (currentColor swapped for its resolved hex for
+preview purposes) confirming clean flat white-canvas/blue-border badges with the same glyph shapes.
 -->
 
 <script>
