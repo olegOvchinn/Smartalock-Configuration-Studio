@@ -122,15 +122,18 @@
   .section-head p a { color: var(--accent-deep); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--accent-wash); }
   .section-head p a:hover { border-bottom-color: var(--accent-deep); }
 
-  /* ---------- desk-thumb: per-option illustration thumbnail, replacing the plain line icon
-     (formerly .desk-icon-img, now unused on this page) — reusing the pattern introduced on
-     floorsense-reservation-types-01.html, but sized
-     by height rather than width since these 4 crops (from one combined reference image, one scene
-     per check-in method) are portrait rather than landscape. Sized to be crisp (well under each
-     crop's native ~250-320px width) without distorting aspect ratio. .desk-row switches from
-     flex-start to center alignment so the taller image and the shorter 2-3 line text block line up
-     visually instead of the image trailing off below the text. ---------- */
-  .desk-thumb { height: 150px; width: auto; flex-shrink: 0; border-radius: 10px; }
+  /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
+     a simple blue border, matching floorsense-reservation-types-01.html's icon styling (no
+     glass/glow treatment, just shape + blue border). Replaces the earlier per-option illustration
+     photo (.desk-thumb) — see the MOST RECENT CHANGE note below. ---------- */
+  .desk-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+  }
+  .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- desk reservation-method cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
@@ -140,7 +143,7 @@
   }
   .desk-check-card:hover { border-color: var(--accent); }
   .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
-  .desk-row { display: flex; align-items: center; gap: 20px; cursor: pointer; }
+  .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
@@ -287,7 +290,7 @@
           <label class="desk-row">
             <input type="checkbox" value="card">
             <span class="desk-tick" aria-hidden="true"></span>
-            <img class="desk-thumb" src="../assets/images/checkin-method-card.png" alt="">
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="3" y="9" width="18" height="3" fill="currentColor" fill-opacity="0.15"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Building Access Cards at Desk</h3>
               <p class="desk-desc">Users swipe their existing building access card at any desk to reserve it for their session.</p>
@@ -302,7 +305,7 @@
           <label class="desk-row">
             <input type="checkbox" value="prebooking">
             <span class="desk-tick" aria-hidden="true"></span>
-            <img class="desk-thumb" src="../assets/images/checkin-method-prebooking.png" alt="">
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.2" y="3.5" width="14" height="10.5" rx="1.5"/><line x1="2.2" y1="6.8" x2="16.2" y2="6.8"/><rect x="12.5" y="9.5" width="8" height="12.5" rx="2" fill="#fff" stroke="currentColor"/><line x1="15" y1="19.2" x2="18" y2="19.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
               <p class="desk-desc">Book and check in via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal.</p>
@@ -314,7 +317,7 @@
           <label class="desk-row">
             <input type="checkbox" value="qr">
             <span class="desk-tick" aria-hidden="true"></span>
-            <img class="desk-thumb" src="../assets/images/checkin-method-qr.png" alt="">
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="4.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="15.5" y="2.5" width="6" height="6" rx="1"/><rect x="17.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="2.5" y="15.5" width="6" height="6" rx="1"/><rect x="4.3" y="17.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="13.4" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="13.4" y="17.3" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="17.3" width="2.6" height="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">QR Code at Desk</h3>
               <p class="desk-desc">Users scan a QR code displayed at the desk to reserve it for their session.</p>
@@ -326,7 +329,7 @@
           <label class="desk-row">
             <input type="checkbox" value="wallet">
             <span class="desk-tick" aria-hidden="true"></span>
-            <img class="desk-thumb" src="../assets/images/checkin-method-wallet.png" alt="">
+            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
               <p class="desk-desc">Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it.</p>
@@ -562,6 +565,30 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to "review page 02 icons to match page 01 icon styling", the 4
+photographic <img class="desk-thumb"> crops (checkin-method-card.png / -prebooking.png / -qr.png /
+-wallet.png) were replaced with bare symbolic SVG glyphs in the same flat .desk-icon-badge (60px
+white square, 1.5px solid var(--accent) blue border, no glass/glow) + .desk-icon-glyph (34.5px,
+color: var(--accent), stroke-width: 1.3, stroke-linecap: butt, stroke-linejoin: miter) treatment
+currently used on floorsense-reservation-types-01.html:
+- Building Access Cards at Desk: a card outline with a filled horizontal stripe, reading as a
+  magnetic-stripe swipe card.
+- Mobile App or Desktop Browser Booking: a small browser/device window overlapped by a phone
+  (phone filled white to cleanly occlude the corner behind it), symbolizing "app or browser."
+- QR Code at Desk: a classic QR glyph -- three finder-pattern corner squares plus a scatter of
+  small filled data blocks.
+- Wallet Pass at Desk: two overlapping rounded card shapes (front one filled white to occlude the
+  back one) with a stripe, reading as a stack of passes/wallet rather than the single flat card
+  used for Building Access Cards.
+.desk-thumb (150px-tall image sizing) is now unused and was removed; .desk-row reverted from
+align-items: center (needed for the old portrait photo crops) back to flex-start to match page 01's
+icon-badge alignment. The 4 checkin-method-*.png crops are no longer referenced by this page but
+were left in place rather than deleted. Verified via an inline HTMLParser tag-balance check,
+node --check on the extracted script block (untouched -- markup/CSS-only change), and a weasyprint
+render (with currentColor swapped for its resolved hex for preview purposes) confirming all 4
+badges render as clean flat white-canvas/blue-border squares with sharp, thin, symbolic blue line
+icons.
 -->
 
 
