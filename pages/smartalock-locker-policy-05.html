@@ -145,7 +145,24 @@
   }
   .qcard.visual-active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
+  /* ---------- qcard-icon-badge: matches floorsense-checkin-methods-02.html's icon styling — a
+     flat 60px white square with rounded corners (18px) and a plain colored border, no glow/shadow,
+     containing a smaller (34.5px) bare line-icon glyph with thin sharp strokes. Unlike the
+     Floorsense pages (all one shared --accent blue), this page keeps each icon's own original
+     colour from its former PNG (blue clock, green lockers, purple padlock) via 3 modifier classes
+     rather than one shared accent — see the MOST RECENT CHANGE note below. ---------- */
+  .qcard-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+  }
+  .qcard-icon-badge.badge-blue { border: 1.5px solid #1E409D; }
+  .qcard-icon-badge.badge-blue .qcard-icon-glyph { color: #1E409D; }
+  .qcard-icon-badge.badge-green { border: 1.5px solid #1C8723; }
+  .qcard-icon-badge.badge-green .qcard-icon-glyph { color: #1C8723; }
+  .qcard-icon-badge.badge-purple { border: 1.5px solid #4527B9; }
+  .qcard-icon-badge.badge-purple .qcard-icon-glyph { color: #4527B9; }
+  .qcard-icon-glyph { width: 34.5px; height: 34.5px; }
   .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
   .qcard label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
   .qcard select, .qcard textarea, .qcard input[type="text"] {
@@ -286,7 +303,7 @@
         <div class="page-text">
 
       <div class="qcard" id="qcard-idle" data-visual="idle">
-        <h3><img class="qcard-icon" src="../assets/images/icon-release-when-idle.png" alt="">Release when reserved but unused</h3>
+        <h3><div class="qcard-icon-badge badge-blue"><svg class="qcard-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="13" r="7.5"/><path d="M12 8.5v4.5l3 2"/><path d="M15.6 5.4a7.6,7.6 0 0 1 3.6,3.7"/><path d="M19.7 7.7l0.3,2.4l-2.3,-0.6"/></svg></div>Release when reserved but unused</h3>
         <p class="qdesc">Choose how long a locker can remain unused before it is automatically released.</p>
         <label>Release when idle</label>
         <select id="idleDuration">
@@ -303,7 +320,7 @@
       </div>
 
       <div class="qcard" id="qcard-limits" data-visual="limits">
-        <h3><img class="qcard-icon" src="../assets/images/icon-locker-limits.png" alt="">Lockers per User</h3>
+        <h3><div class="qcard-icon-badge badge-green"><svg class="qcard-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="4" width="5.8" height="16" rx="1"/><rect x="9.1" y="4" width="5.8" height="16" rx="1" fill="currentColor" fill-opacity="0.15"/><rect x="15.7" y="4" width="5.8" height="16" rx="1"/><line x1="4.3" y1="8" x2="6.5" y2="8" stroke-width="1"/><line x1="10.9" y1="8" x2="13.1" y2="8" stroke-width="1"/><line x1="17.5" y1="8" x2="19.7" y2="8" stroke-width="1"/><circle cx="5.4" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="18.6" cy="13.5" r="1" fill="currentColor" stroke="none"/></svg></div>Lockers per User</h3>
         <p class="qdesc">Define how many lockers a user can reserve.</p>
         <label>Maximum lockers per user</label>
         <select id="lockerLimit">
@@ -315,7 +332,7 @@
       </div>
 
       <div class="qcard" id="qcard-behaviour" data-visual="behaviour">
-        <h3><img class="qcard-icon" src="../assets/images/icon-release-behaviour.png" alt="">Release Behaviour</h3>
+        <h3><div class="qcard-icon-badge badge-purple"><svg class="qcard-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="5" y="11" width="11" height="9" rx="1.5" fill="currentColor" fill-opacity="0.15"/><circle cx="10.5" cy="15" r="1.1" fill="currentColor" stroke="none"/><path d="M10.5 16v2"/><path d="M7.3 11V8.2a4,4 0 0 1 7.6,-1.7"/><path d="M16.2 6a5,5 0 0 1 2,3.6"/><path d="M18.6 8l0.4,2.3l-2.2,-0.7"/></svg></div>Release Behaviour</h3>
         <p class="qdesc">Define when a locker becomes available again.</p>
         <label>When do we release an expired locker?</label>
         <select id="releaseBehaviour">
@@ -362,6 +379,31 @@
   NOTE for Oleg: template variant of locker-policy-v4.html — nav pane removed, horizontal progress bar
   under the branding instead. No image lived in this page's nav pane, so content is otherwise unchanged.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+
+MOST RECENT CHANGE: Per a request to "analyse icons styling on page 02 [floorsense-checkin-
+methods-02.html] and apply this style to smartalock-locker-policy-05.html however make sure to keep
+icon colours (green purple blue)", the 3 `<img class="qcard-icon" src="...">` PNG icons (Release
+when Idle, Lockers per User, Release Behaviour — each a circular pale-wash badge around a
+colored line-icon, per the Floorsense-era icon convention) were replaced with bare inline SVG
+glyphs wrapped in a new `.qcard-icon-badge` div matching page 02's icon treatment exactly: a flat
+60px white square with rounded corners (18px) and a plain colored border, no glow/gradient/shadow,
+containing a smaller (34.5px) glyph with thin sharp strokes (stroke-width 1.3, butt caps, miter
+joins). Unlike the Floorsense pages (all one shared `--accent` blue), this page's 3 icons keep their
+own distinct original colours sampled from the source PNGs — blue `#1E409D` (clock/idle), green
+`#1C8723` (lockers), purple `#4527B9` (padlock) — via 3 new modifier classes (`.badge-blue`,
+`.badge-green`, `.badge-purple`) rather than one shared accent variable, since the whole point of
+this request was to preserve the page's existing multi-colour scheme while adopting page 02's
+square-badge shape/border language. Each glyph was redrawn to match its source icon's concept: a
+clock face with hands and a curved "reset" arrow (idle), three locker columns with keyholes and the
+middle one highlighted (matching the original PNG's green-highlighted middle locker), and an open
+padlock with a curved release arrow. The old `.qcard-icon { width: 72px; height: 72px; }` rule (sized
+for the `<img>`) was removed; the 3 `icon-*.png` files are no longer referenced but were left in
+place rather than deleted. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched — markup/CSS-only change), and a WeasyPrint render (with
+`currentColor` swapped for each icon's resolved hex, since WeasyPrint can't resolve `currentColor`
+against an inherited class-based color inside embedded SVG — the same documented limitation noted
+elsewhere on this site) confirming all 3 badges render as clean flat white-canvas/colored-border
+squares with sharp glyphs in their original blue/green/purple.
 -->
 
 <script>
