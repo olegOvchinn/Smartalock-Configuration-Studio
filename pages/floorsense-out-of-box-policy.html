@@ -147,10 +147,10 @@
   /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary-08.html).
      NOTE: every actual .summary-group element on this page lives inside .core-policy-body, whose
      higher-specificity ".core-policy-body .summary-group" rule below zeroes out background/border/
-     radius/padding/max-width, so this base glass treatment currently has no visible effect — kept
-     anyway for consistency with the rest of the site's glass-card propagation and in case a
-     .summary-group is ever rendered outside .core-policy-body. See the MOST RECENT CHANGE note
-     below. ---------- */
+     radius/padding/max-width/box-shadow, so this base glass treatment currently has no visible
+     effect — kept anyway for consistency with the rest of the site's glass-card propagation and in
+     case a .summary-group is ever rendered outside .core-policy-body. See the MOST RECENT CHANGE
+     note below. ---------- */
   .summary-group {
     background: rgba(255,255,255,0.6);
     backdrop-filter: blur(10px) saturate(160%);
@@ -310,7 +310,7 @@
   .core-policy-body .download-card { max-width: none; }
   .core-policy-body .summary-group {
     background: none; border: none; border-radius: 0; max-width: none; padding: 18px 0; margin-bottom: 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--line); box-shadow: none;
   }
   .core-policy-save-row { display: flex; justify-content: flex-end; margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--line); }
 
@@ -1908,6 +1908,24 @@ cleanly onto two lines directly under the "Reservation types" label with no over
 single-default-value case ("Reserved by User as Needed") is unaffected in substance, just now stacked
 below its label instead of beside it. Also re-validated via an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block (untouched — markup/CSS-only change).
+
+MOST RECENT CHANGE: per a report that every section from "Desk Allocation Method" onward looked like
+its content was crammed right up against its own edges, found the real cause: the glass-card
+propagation pass (see the earlier MOST RECENT CHANGE note above) added a `box-shadow` to the base
+`.summary-group` rule, but the higher-specificity `.core-policy-body .summary-group` override — which
+strips background/border/radius/padding/max-width so the six summary rows read as flush sections
+inside the single `.core-policy-card` "canvas" — was never updated to also zero that box-shadow out.
+Since every actual `.summary-group` on this page lives inside `.core-policy-body`, each of the six
+still-flush sections was independently casting the full glass-card shadow (`0 14px 34px -10px
+rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06)`) with no background/border to contain it —
+the shadow rendered as a dark smudge hugging each section's own edges, on top of the `.core-policy-card`
+wrapper's own outer shadow, reading as if each row's content had no breathing room. Fixed by adding
+`box-shadow: none;` to the `.core-policy-body .summary-group` override, so only the single outer
+`.core-policy-card` "canvas" now casts a shadow; the per-icon shadows (`.summary-icon-badge`,
+`.download-card-icon-badge`, both `0 3px 6px rgba(16,42,67,0.10)`) are untouched and still visible.
+Updated the older NOTE above (which claimed the override already zeroed every box-model property) to
+mention box-shadow explicitly. Verified via an inline HTMLParser tag-balance check and `node --check`
+on the extracted script block (markup/CSS-only change, no JS touched).
 -->
 
 
