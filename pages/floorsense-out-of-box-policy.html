@@ -734,6 +734,13 @@
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
+            <span class="label">Remote Booking Confirmation</span>
+            <button type="button" class="policy-switch" id="coreRemoteConfirmToggle" role="switch" aria-checked="false"></button>
+          </div>
+          <p class="summary-desc">When on, users can confirm their booking remotely with a tap, any time, instead of checking in at the desk itself. Off by default.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top">
             <span class="label">Privacy</span>
             <button type="button" class="policy-switch on" id="coreDndToggle" role="switch" aria-checked="true"></button>
           </div>
@@ -1945,6 +1952,28 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to review this summary against today's changes on
+floorsense-optional-features-06.html, added a new "Remote Booking Confirmation" row to the
+Additional Options group — that hub gained this brand-new feature today
+(`project.floorsense.wizard.remoteConfirm.enabled`) with no dedicated standalone page of its own,
+so it follows the same pattern already used for Recurring bookings/Privacy (a live `.policy-switch`
+directly on this card, autosaving on click) rather than the read-only-row-with-Edit-link pattern
+used for Idle/NSNP/Sit-stand, which each live on their own page. It intentionally reuses the exact
+same state key the hub's own switch reads/writes, so the two stay in sync regardless of which one
+was last touched — same convention as every other cross-page toggle on this card. This addition is
+scoped to the summary's own read/write display only: it is NOT wired into `CORE_POLICY_DEFAULTS`,
+`getCorePolicySnapshot()`, or the per-Desk/User-Group additional-policy cards, matching how Maximum
+Desks Per User was rolled out incrementally when it was first added (see its own MOST RECENT
+CHANGE further up this file) — extending it into the per-group policy-clone system is a separate,
+larger decision than a same-day sync pass. The hub's other two changes today — removing NSNP's
+switch from the hub (NSNP itself, its own page, and this summary's NSNP row/Edit-link are all
+unaffected) and briefly adding then removing an inline day-of-week picker for Recurring Bookings
+(the underlying `outOfBoxPolicy.recurringEnabled` field this summary's own toggle reads/writes was
+never touched by that detour) — needed no changes here at all. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming the
+new toggle initializes off, flips on/off and persists to `remoteConfirm.enabled` on click, and
+doesn't interfere with the adjacent Recurring bookings/Privacy toggles.
 -->
 
 
@@ -2074,6 +2103,26 @@ touched file.
       saveProject(project);
     });
   });
+
+  /* ---------------- Remote Booking Confirmation toggle: added alongside
+     floorsense-optional-features-06.html's own switch for this feature, both reading/writing
+     project.floorsense.wizard.remoteConfirm.enabled — a separate top-level state key, NOT nested
+     under outOfBoxPolicy like Recurring bookings/Privacy above, so this can't reuse
+     coreAdditionalToggles as-is (that loop always writes into outOfBoxPolicy). Same
+     autosave-on-click convention as every other toggle on this card. ---------------- */
+  (function initRemoteConfirmToggle() {
+    const el = document.getElementById('coreRemoteConfirmToggle');
+    const on = !!(project.floorsense.wizard.remoteConfirm && project.floorsense.wizard.remoteConfirm.enabled);
+    el.classList.toggle('on', on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
+    el.addEventListener('click', () => {
+      const nowOn = !el.classList.contains('on');
+      el.classList.toggle('on', nowOn);
+      el.setAttribute('aria-checked', nowOn ? 'true' : 'false');
+      project.floorsense.wizard.remoteConfirm = Object.assign({}, project.floorsense.wizard.remoteConfirm, { enabled: nowOn });
+      saveProject(project);
+    });
+  })();
 
   /* ---------------- NSNP row: reflect what was actually configured on floorsense-nsnp-11.html
      (project.floorsense.wizard.nsnp), rather than a fixed "Off by default" placeholder. Read-only

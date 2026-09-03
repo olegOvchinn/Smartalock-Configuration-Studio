@@ -314,6 +314,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Redrew the Anti Desk Hogging icon as a solid-silhouette bird sitting in a nest (keeping its existing highlight circle unchanged), replacing the earlier repeat-arrow-with-a-slash glyph; nudged the bird down afterward so it visibly sits inside the nest bowl rather than perched above it.
 - Redrew the FME (Follow Me Ergonomics) icon on `floorsense-optional-features-06.html` as two separate vertical arrows, one up and one down, replacing the earlier single up-arrow-on-a-pole glyph; then simplified it further to just the two arrow tips inside the page's standard highlight circle, dropping the shafts and base line.
 - Removed Recurring Bookings' inline day-of-week picker from `floorsense-optional-features-06.html` — it's back to a plain on/off switch (still reusing `outOfBoxPolicy.recurringEnabled`), with the "chosen days of the week" wording dropped from its description.
+- Synced `floorsense-out-of-box-policy.html`'s Configuration Summary with today's `floorsense-optional-features-06.html` changes: added a live "Remote Booking Confirmation" toggle to the Additional Options group (new `remoteConfirm.enabled` state, same switch pattern as Recurring bookings/Privacy, kept in sync with the hub's own switch). NSNP's row and Recurring bookings' existing toggle needed no changes — NSNP itself and `outOfBoxPolicy.recurringEnabled` were both unaffected by today's hub-only edits.
 
 ## Status
 
