@@ -122,13 +122,27 @@
   /* ---------- locker type checkbox grid ---------- */
   .type-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   @media (max-width: 480px) { .type-check-grid { grid-template-columns: 1fr; } }
+  /* ---------- glass card: per the site-wide propagation of the treatment finished on
+     floorsense-reservation-types-01.html, .type-check-card dropped its solid `border: 1.5px solid
+     var(--line)` for a translucent white background + backdrop blur + soft fuzzy box-shadow standing
+     in for the border. Its existing `:hover`/`.checked` states, previously shown via `border-color`,
+     now read through the shadow/background tint instead — see the MOST RECENT CHANGE note below. ---------- */
   .type-check-card {
     display: flex; align-items: center; gap: 14px; padding: 18px 20px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-lg); cursor: pointer;
-    transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); cursor: pointer;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .type-check-card:hover { border-color: var(--accent); }
-  .type-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .type-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .type-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   .type-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .type-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
@@ -144,6 +158,25 @@
   .type-check-card.checked .type-tick::after { opacity: 1; }
   .type-check-card .type-label { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
   .type-check-card .type-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
+  /* ---------- type-icon-badge: wraps each raster <img class="type-icon-img"> in a white square
+     badge with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge
+     pattern. The 7 locker-type cards form a repeating option group, so badges cycle through the
+     5-color palette (repeating from the top past the 5th) rather than sharing one blue — see the
+     MOST RECENT CHANGE note below. Only the badge's border is colored; the raster icon images are
+     left untouched. ---------- */
+  .type-icon-badge {
+    width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .type-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .type-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .type-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .type-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .type-icon-badge.badge-amber { border-color: #F2A154; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -297,13 +330,13 @@
           </div>
 
           <div class="type-check-grid" id="typeCheckGrid">
-            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt="">Top</span></label>
-            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt="">Middle</span></label>
-            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt="">Bottom</span></label>
-            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt="">Large</span></label>
-            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt="">Side</span></label>
-            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt="">Small</span></label>
-            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt="">Custom Type</span></label>
+            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt=""></span>Top</span></label>
+            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-pink"><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt=""></span>Middle</span></label>
+            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-purple"><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt=""></span>Bottom</span></label>
+            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-teal"><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt=""></span>Large</span></label>
+            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-amber"><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt=""></span>Side</span></label>
+            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt=""></span>Small</span></label>
+            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-pink"><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt=""></span>Custom Type</span></label>
           </div>
 
           <div class="selected-types" id="selectedTypes"></div>
@@ -348,6 +381,8 @@
   under the branding instead. The demo GIF already lived alongside the type-check grid (not in the old
   nav pane), so it's untouched here.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .type-check-card dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; its existing `:hover` and `.checked` states (previously `border-color: var(--accent)` plus, for `.checked`, `background: var(--accent-wash)`) were converted to read through the shadow tint/spread and background tint instead. The separate small `.type-tick` custom-checkbox marker (22px, unrelated to the icon) was left untouched. Each of the 7 raster `.type-icon-img` icons (Top, Middle, Bottom, Large, Side, Small, Custom Type) was wrapped in a new `.type-icon-badge` span (72px, white background, colored border, sized to fit the existing 56px icons — a `<span>` rather than a `<div>` since it nests inside the inline `.type-label` span) — since these 7 cards form a repeating option group, the badges cycle through the full blue/pink/purple/teal/amber palette and repeat from blue for the 6th/7th icons. Only each badge's border color was set; the icon image files were not modified. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 <script>
