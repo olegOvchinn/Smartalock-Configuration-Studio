@@ -115,10 +115,14 @@
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
      with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
      (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
-     The 3 icons here (Company Details, Contacts, Project Dates) form a repeating group of question
-     cards, so each gets its own palette color in DOM order rather than one shared blue — see the
-     MOST RECENT CHANGE note below. The badge only colors its own border; the raster icon images are
-     left untouched. ---------- */
+     Unlike most other pages' icon-badges (which cycle an arbitrary palette since their icons are
+     single-tone line art with no inherent color of their own), these 3 PNGs are pre-colored
+     circular icon badges in their own right — each already bakes in a colored glyph plus a matching
+     light wash background (blue for Company Details, teal for Contacts, amber for Project Dates).
+     Per a request that the badge border match the icon symbol inside, each modifier's border-color
+     was sampled directly from its icon's own dominant glyph pixels (median RGB via PIL) rather than
+     assigned from the site's generic rotating palette — see the MOST RECENT CHANGE note below. The
+     badge only colors its own border; the raster icon images are left untouched. ---------- */
   .qcard-icon-badge {
     width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
@@ -127,9 +131,9 @@
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .qcard-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .qcard-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .qcard-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .qcard-icon-badge.badge-blue { border-color: #0071E3; }
+  .qcard-icon-badge.badge-teal { border-color: #0E8F8F; }
+  .qcard-icon-badge.badge-amber { border-color: #D98E00; }
   .qcard-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
@@ -250,7 +254,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><div class="qcard-icon-badge badge-pink"><img class="qcard-icon" src="assets/images/icon-contacts.png" alt=""></div>Contacts <span class="qcard-tag">Optional</span></h3>
+        <h3><div class="qcard-icon-badge badge-teal"><img class="qcard-icon" src="assets/images/icon-contacts.png" alt=""></div>Contacts <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -281,7 +285,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><div class="qcard-icon-badge badge-purple"><img class="qcard-icon" src="assets/images/icon-dates.png" alt=""></div>Project Dates <span class="qcard-tag">Optional</span></h3>
+        <h3><div class="qcard-icon-badge badge-amber"><img class="qcard-icon" src="assets/images/icon-dates.png" alt=""></div>Project Dates <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -391,6 +395,18 @@ palette in DOM order, since the 3 cards form a repeating group. The badge only c
 border; the icon `<img>` elements and their underlying PNG files were left byte-for-byte untouched.
 Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
 (untouched — CSS/markup-only change).
+
+MOST RECENT CHANGE: per a follow-up request that each icon badge's border color match the icon
+symbol inside it, replaced the initial arbitrary blue/pink/purple palette assignment with colors
+sampled directly from each PNG: a PIL script isolated each icon's saturated, mid-brightness pixels
+(excluding the pale wash background baked into each circular icon and any near-white/near-black
+edge pixels) and took the median RGB. Results: icon-company.png's glyph is `#0071E3` (the site's own
+accent blue — `.badge-blue` updated from the previous `#4A8DF0` to this exact value), icon-
+contacts.png's is `#0E8F8F` (a dark teal — new `.badge-teal` replacing the old `.badge-pink`), and
+icon-dates.png's is `#D98E00` (a burnt amber/orange — new `.badge-amber` replacing the old
+`.badge-purple`). Verified visually by opening each source PNG directly and confirming the sampled
+hex reads as the same color as its glyph line-art, plus an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block (untouched — CSS/markup-only change).
 -->
 
 <script>
