@@ -120,13 +120,23 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ----------
+     NOTE: .policy-card/.policy-grid/.policy-diagram-frame/.policy-subgroup below are dead CSS with
+     no matching markup on this page (a leftover from an earlier redesign — the live wrapper is
+     .cards-wrap further down); still converted to the glass-card treatment for consistency with
+     every other var(--radius-lg) card rule on this page, in case they're reactivated later — see
+     the MOST RECENT CHANGE note at the end of this file. ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
   @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
   .policy-grid.single { grid-template-columns: 1fr; }
   .policy-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 18px 20px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .policy-row { display: flex; align-items: flex-start; gap: 14px; }
   .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
@@ -155,11 +165,21 @@
      Relaxed/Strict presets on floorsense-setup-path-00.html ---------- */
   .path-check-grid { display: flex; flex-direction: column; gap: 14px; margin: 4px 0 26px; }
   .path-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .path-check-card:hover { border-color: var(--accent); }
-  .path-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .path-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .path-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .path-tick {
@@ -187,8 +207,13 @@
      not a radio choice, so it uses a plain bordered card with no tick ---------- */
   .cards-wrap { max-width: 760px; margin: 0 auto; }
   .info-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 18px 20px; margin: 4px 0 14px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .info-row { display: flex; align-items: flex-start; gap: 14px; }
   .section-choice-label { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 4px 4px 10px; }
@@ -287,14 +312,33 @@
   }
 
   .footer-hint { display: flex; align-items: center; gap: 14px; margin-top: 8px; padding: 2px 4px; }
-  .footer-hint-icon { width: 30px; height: 30px; flex-shrink: 0; color: var(--accent); display: flex; align-items: center; justify-content: center; }
-  .footer-hint-icon svg { width: 26px; height: 26px; }
+  /* ---------- footer-hint-icon-badge: this was a plain flex-centering wrapper div (no background/
+     border of its own) around a bare 26px svg. Per the site-wide icon-badge propagation from
+     floorsense-reservation-types-01.html, wrapped it in the same white/accent-bordered badge look
+     (sized down proportionally from page01's 60px/34.5px, since this glyph was already much
+     smaller). This is a single lone icon (the only icon in the page's footer hint, not part of a
+     repeating option group), so it kept plain var(--accent) blue rather than a palette colour — see
+     the MOST RECENT CHANGE note below. ---------- */
+  .footer-hint-icon {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .footer-hint-glyph { width: 26px; height: 26px; color: var(--accent); position: relative; z-index: 1; }
   .footer-hint-text { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
   .policy-diagram-frame {
     max-width: 900px; margin: 0 0 20px; padding: 20px 22px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .policy-diagram-frame svg { width: 100%; height: auto; display: block; }
   .policy-diagram-frame + .policy-diagram-frame { margin-top: 0; margin-bottom: 28px; }
@@ -523,7 +567,7 @@
 
         <div class="footer-hint">
           <div class="footer-hint-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="10.5" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>
+            <svg class="footer-hint-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="10.5" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>
           </div>
           <p class="footer-hint-text">Users can always set their own start time — this choice only decides how the end time (or duration) is worked out when they don't.</p>
         </div>
@@ -879,6 +923,27 @@ validated via an inline HTMLParser tag-balance check and `node --check` on the e
 block, and a weasyprint render confirming no markup/layout breakage (though, as with the other
 converted pages, WeasyPrint can't execute the JS that actually positions these pins, so the jsdom
 test is the real functional verification).
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest
+card/icon styling sitewide, all four var(--radius-lg) card rules on this page — `.info-card` (card
+1, static), `.path-check-card` (cards 2/3, radio-selectable), `.policy-card`, and
+`.policy-diagram-frame` (the latter two are dead CSS with no matching markup on this page, a
+leftover from an earlier redesign, but were converted too for consistency in case they're ever
+reactivated) — swapped their opaque paper background and solid grey border for the same translucent
+glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft
+fuzzy box-shadow used on page 01's `.desk-check-card`. `.path-check-card`'s `:hover`/`.checked`
+states, previously shown via `border-color`, now read through the shadow's tint/spread and a
+background tint instead, matching page 01's converted `:hover`/`.checked` treatment; `.info-card`
+and `.policy-card`/`.policy-diagram-frame` have no such interactive state, so only got the base
+glass treatment. Separately, `.footer-hint-icon` — previously a bare flex-centering wrapper div with
+no background/border, holding a plain 26px svg — was converted into a small white/accent-bordered
+icon badge (40px, scaled down from page 01's 60px/34.5px pairing since this glyph was already much
+smaller), with the svg itself renamed to `.footer-hint-glyph` for its color/sizing. As the only icon
+on this page's footer hint (not part of a repeating option group), it kept plain `var(--accent)` blue
+rather than one of page 01's palette colours. This page's other icon class, `.path-icon-img` (used
+by the three content cards' own bare svgs), was left untouched — out of scope for this pass.
+Verified via an inline HTMLParser tag-balance check (`python3 /tmp/validate.py`) and `node --check`
+on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 <script>
