@@ -121,7 +121,21 @@
      floorsense-idle-release-09.html's lone-icon convention) instead of the reference's rounded-square
      app-icon frame and indigo line color. Plain accent blue, since this page only ever has one icon
      in isolation. ---------- */
-  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; box-shadow: 0 3px 6px rgba(16,42,67,0.10); }
+  /* ---------- policy-icon-badge: wraps the raster <img class="policy-icon-img"> in a white square
+     badge with a colored border, matching smartalock-templates-00.html's .qcard-icon-badge treatment
+     of this exact same icon-dates.png asset — that page samples the badge border color directly from
+     each icon's own dominant glyph pixels rather than the site's generic rotating palette, since
+     icon-dates.png already bakes in its own colored glyph + light wash background (amber, in this
+     case) rather than being neutral line art. `#D98E00` is the same sampled amber value used there. ---------- */
+  .policy-icon-badge {
+    width: 88px; height: 88px; border-radius: 24px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid #D98E00;
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -342,7 +356,7 @@
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <img class="policy-icon-img" src="../assets/images/icon-dates.png" alt="A calendar icon on a pale amber circular backdrop">
+            <div class="policy-icon-badge"><img class="policy-icon-img" src="../assets/images/icon-dates.png" alt="A calendar icon on a pale amber circular backdrop"></div>
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -556,6 +570,23 @@
   unaffected since this page is still reached that way by default. Verified via jsdom across both
   URL variants (no query param vs. `?return=summary`): the page loads and the Save & continue click
   fires with zero runtime errors in both cases.
+
+MOST RECENT CHANGE: per a request to add a "canvas border line" around this page's icon, the bare
+`<img class="policy-icon-img" src="icon-dates.png">` (which previously carried its own
+border-radius/box-shadow directly on the image, no wrapper div, per the "use icon-dates.png
+instead" change earlier in this NOTE block) is now wrapped in a new `.policy-icon-badge` div: an
+88px white square, 24px radius, `border: 1.5px solid #D98E00`, same short drop-shadow as before.
+`#D98E00` isn't invented — it's the same amber value already used at the project root in
+smartalock-templates-00.html's `.qcard-icon-badge.badge-amber`, which wraps this exact same
+icon-dates.png asset and samples its border color directly from the icon's own dominant glyph
+pixels (via PIL median-RGB) rather than the site's generic blue/pink/purple/teal rotating palette,
+since this icon already bakes in its own colored glyph + pale wash background rather than being
+neutral line art. `.policy-icon-img` itself simplified to just its 72px width/height (the
+border-radius/box-shadow it used to carry moved to the new wrapper, so there's no doubled shadow).
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a rendered weasyprint preview confirming the icon now sits inside a white canvas with a clean
+amber border line, with the drop shadow no longer bleeding past the badge's rounded corners.
+
 MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head (max-width: 640px) gained margin: 0 auto, and .policy-grid (max-width: 640px, rendered as a single column via its .single modifier on this page) gained margin: 0 auto, so the heading and the lone policy card are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
 MOST RECENT CHANGE: per a request to illustrate this page the same way as
