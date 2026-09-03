@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -269,7 +264,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">All Set</span>
         <h1 class="hero-title">Core Setup Complete</h1>
         <p class="sub">Everything that applies to everyone by default is now configured. Here's what happens next.</p>
       </div>
@@ -477,6 +471,8 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
 MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card/icon styling sitewide, `.complete-card` swapped its opaque paper background and solid grey `border: 1.5px solid var(--line)` for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy `box-shadow` used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/`.checked` variant was needed, just the base glass treatment. Separately, `.complete-card-icon`'s bare 56px svg (no wrapper) was wrapped in a new `.complete-card-icon-badge` (64px, white background, `1.5px solid var(--accent)` border, short drop shadow) matching page 01's `.desk-icon-badge`, sized slightly larger than page 01's 60px/34.5px pairing so the glyph itself could stay at its original 56px rather than shrinking it. The icon's own `<rect rx="2">` shape was checked against business-hours-05's "Style 1" canvas-icon convention (a `rect rx="2"` canvas plus a `fill-opacity="0.15"` highlight shape) but has no accompanying opacity-15 highlight, so it didn't qualify for that exemption and was in scope for the badge treatment. As a single lone icon (not part of a repeating multi-option card group), it kept plain `var(--accent)` blue rather than being assigned one of the palette colours used for page 01's 5-card option group. Verified via an inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-only change).
+
+MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed the single `<span class="eyebrow">All Set</span>` above the hero title. Its parent `.panel-intro` still had the `<h1>` hero title and `<p class="sub">`, so only the span was removed, not the parent. Also removed the now-unused base `.eyebrow` and `.panel-intro .eyebrow` CSS rulesets from the inline stylesheet (this page never had a `.section-head .eyebrow` rule). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 -->
 
 <script>
