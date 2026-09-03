@@ -122,18 +122,40 @@
 
   /* ---------- explainer card (icon+desc, live diagram, footer) — shared pattern, first introduced
      on floorsense-checkin-window-08.html; widened from 640px to 760px and centered to match that
-     page's own card sizing ---------- */
+     page's own card sizing. Per the site-wide glass-card propagation from
+     floorsense-reservation-types-01.html, dropped the opaque paper background and solid grey border
+     for a translucent backdrop-blurred background and soft fuzzy box-shadow; this card has no
+     hover/selected state (the on/off switch inside it is its own control, not a card-level state),
+     so no `:hover`/`.checked` variant was needed — see the MOST RECENT CHANGE note below. ---------- */
   .checkin-card {
-    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg); overflow: hidden;
+    max-width: 760px; margin: 0 auto;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
-  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
-     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
-     circle badge with a plain X ("cancel") glyph that didn't evoke idle/release at all; redesigned
-     as a clock with an arrow breaking away from it, depicting a reservation exiting once idle time
-     elapses. ---------- */
-  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- content icon badge: this used to be a bare 56px svg (no wrapper), matching
+     floorsense-reservation-types-01.html's pre-badge .desk-icon-img treatment. Per the site-wide
+     propagation of page01's icon-badge pattern, wrapped in a new .checkin-card-icon-badge (white
+     background, thin accent border, short drop shadow), sized 64px/56px (vs page01's 60px/34.5px)
+     to keep this glyph at its original 56px, with the svg itself renamed to
+     .checkin-card-icon-glyph. This icon's shapes (a clock face + a breakaway arrow) have no
+     accompanying `fill-opacity="0.15"` highlight, so it doesn't match business-hours-05's "Style 1"
+     canvas-icon convention and was in scope. It's the only header icon on this page's single
+     .checkin-card (not part of a repeating option group), so it kept plain var(--accent) blue
+     rather than a palette colour — see the MOST RECENT CHANGE note below. ---------- */
+  .checkin-card-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .checkin-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   /* ---------- on/off switch, ported from smartalock-kiosk-customisation-07.html's .switch —
@@ -264,9 +286,21 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
-     the page (was a 40px wrapper around a 34px svg). ---------- */
-  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- footer icon badge: was a bare 56x56px svg (see the note this replaces, above). Per
+     the same site-wide icon-badge propagation, wrapped in a new .checkin-footer-icon-badge
+     (64px/56px, same sizing rationale as .checkin-card-icon-badge above), svg renamed to
+     .checkin-footer-icon-glyph. This icon (a plain clock face) has no `fill-opacity="0.15"`
+     highlight, so it doesn't match "Style 1" and was in scope. As the lone footer icon on this page
+     (not a repeating option group), it kept plain var(--accent) blue. ---------- */
+  .checkin-footer-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .checkin-footer-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -373,7 +407,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="12" r="7"/><path d="M10 8v4l2.2 1.4"/><path d="M17 15l4.5 4.5M21.5 15.5v4h-4"/></svg>
+          <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="12" r="7"/><path d="M10 8v4l2.2 1.4"/><path d="M17 15l4.5 4.5M21.5 15.5v4h-4"/></svg></div>
           <div style="flex:1; min-width:0;">
             <p class="checkin-card-desc">
               This is an optional feature, off by default. If turned on, a desk that sits unclaimed
@@ -411,7 +445,7 @@
         </div>
 
         <div class="checkin-footer">
-          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div class="checkin-footer-icon-badge"><svg class="checkin-footer-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
           <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
         </div>
         </div>
@@ -623,6 +657,24 @@ gone, `.anchor-pin`'s computed opacity is 0, segment count/labels update correct
 an ArrowLeft step, and `localStorage` persistence still works, plus a weasyprint render of an isolated
 copy of the card (forced visible, segments/ticks/pins statically inlined at the default 3h state)
 confirming the casing/segmented-bar/chip layout matches business-hours-05's look.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest
+card/icon styling sitewide, `.checkin-card` swapped its opaque paper background and solid grey
+border for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter:
+blur(10px) saturate(160%)`) and soft fuzzy box-shadow used on page 01's `.desk-check-card` — this
+card has no hover/selected state (its on/off switch is its own control, not a card-level state), so
+no `:hover`/`.checked` variant was needed; `overflow: hidden` was kept unchanged (an element's own
+`overflow` never clips its own box-shadow, only descendants). Separately, both of this page's bare
+content icons were wrapped in a new white/accent-bordered icon badge, sized 64px/56px (vs page 01's
+60px/34.5px) to keep both glyphs at their original 56px: `.checkin-card-icon` became
+`.checkin-card-icon-badge`/`.checkin-card-icon-glyph` (header clock-with-breakaway-arrow), and
+`.checkin-footer-icon` became `.checkin-footer-icon-badge`/`.checkin-footer-icon-glyph` (footer
+plain clock face). Neither icon has a `fill-opacity="0.15"` highlight shape alongside a canvas rect,
+so neither matched business-hours-05's "Style 1" convention and both were in scope. As the only
+header/footer icons on this page's single card (not a repeating option group), both kept plain
+`var(--accent)` blue rather than a palette colour. Verified via an inline HTMLParser tag-balance
+check (`python3 /tmp/validate.py`) and `node --check` on the extracted script block (untouched —
+markup/CSS-only change).
 -->
 
 <script>
