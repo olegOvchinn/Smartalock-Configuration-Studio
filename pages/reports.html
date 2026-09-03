@@ -614,6 +614,38 @@ User groups review
 </main>
 
 
+<!--
+  NOTE for Oleg: this is the Project Report page, styled via ../css/styles.css, ../css/landing.css
+  (the shared `.feature-card` rule lives here), and this page's own ../css/reports.css (the
+  `.report-box`/`.report-line`/`.progress-container`/`.config-box`/`.status-good`/`.status-warning`
+  content styling inside each card).
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished
+  on floorsense-reservation-types-01.html, checked whether this page's 6 `.feature-card` sections
+  (Project Summary, Implementation Progress, Locker Policy Summary, Access Configuration, Technical
+  Configuration, Validation Status) are genuinely the same repeating card type before touching them
+  — they are: all 6 are plain static report-display panels (no links, no multi-select state), just
+  with different inner content per section. `.feature-card`'s shared base rule in css/landing.css
+  (previously a flat opaque `background:#ffffff` with no border) picked up the same translucent-glass
+  background/two-layer box-shadow pattern used elsewhere. That same stylesheet's separate "CLICKABLE
+  FEATURE CARDS" rule (a later, broader `.feature-card`/`.feature-card:hover` block adding
+  `cursor:pointer` and a hover lift — pre-existing and applied globally to every `.feature-card` on
+  the site, including these 6 non-interactive report cards, which is a pre-existing quirk left as-is
+  rather than fixed here) had its hover `box-shadow` recolored to the same blue-tinted variant used
+  by the reference page's `.desk-check-card:hover`, plus a lighter background tint on hover, for
+  visual consistency across every page sharing this rule. None of the 6 report sections contain any
+  icon markup, so no icon-badge work applied. Editing css/landing.css's base `.feature-card` rule
+  only visually affects this page: `pages/project-home.html` (the only other page using this class)
+  defines its own higher-priority `.feature-card` override in its own inline `<style>` block, which
+  already received the equivalent glass treatment separately and continues to take precedence.
+  Verified via `node --check` on the extracted script block (untouched — CSS-only change, made in
+  css/landing.css, not this file's own markup). An inline HTMLParser tag-balance check flags a
+  pre-existing, unrelated markup bug predating this change: the first `.feature-card` ("Project
+  Summary") has one extra stray `</div>` right before its own `</section>`, left over from an extra
+  closing tag after its "Completion Date" `.report-box` — left as-is since fixing it is outside this
+  change's scope (styling only), flagged here for Oleg in case it should be cleaned up separately.
+-->
+
 
 <script src="../js/project.js"></script>
 
