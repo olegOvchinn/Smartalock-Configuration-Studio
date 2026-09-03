@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -114,7 +109,6 @@
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin: 0 auto 22px; max-width: 760px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
@@ -294,7 +288,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
         <h1 class="hero-title">Desk Allocation Method</h1>
         <p class="sub">Choose which desk reservation types this site should support.</p>
       </div>
@@ -303,10 +296,6 @@
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
 
       <div class="desk-check-grid" id="templateGrid">
         <div class="desk-check-card" data-template="fixed">
@@ -710,6 +699,8 @@ lift off the card without the icons looking like they're floating on glass thems
 an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and
 a weasyprint render confirming a visible short shadow beneath each badge (unlike the card's own larger
 shadow, this small blur radius renders fine in WeasyPrint).
+
+MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed both `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, and "Configure" in the section head. The hero's `.panel-intro` parent kept its `<h1>`/`<p>` content, so only its span was removed. The "Configure" span's parent `.section-head`, however, contained nothing else — a bare `<div class="section-head"><span class="eyebrow">Configure</span></div>` with no heading or paragraph — so per instruction that entire now-empty div was deleted rather than left as a shell. Also removed the base `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet (the general `.section-head`/`.section-head p` rules were left in place, unrelated to `.eyebrow`). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 -->
 
 <script>
