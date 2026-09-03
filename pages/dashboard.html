@@ -212,7 +212,7 @@ class="summary-value">
 
 <div class="section-title">
 
-<div class="section-icon">
+<div class="section-icon badge-blue">
 
 <!-- SVG inserted by JS -->
 
@@ -287,17 +287,17 @@ class="configuration-card">
 <section class="configuration-section">
 
     <div class="section-title">
-    
-    <div class="section-icon">
-    
+
+    <div class="section-icon badge-pink">
+
     <!-- SVG inserted by JS -->
-    
+
     </div>
-    
+
     <div>
-    
+
     <h2>
-    
+
     Floorsense Configuration
     
     </h2>
@@ -389,9 +389,40 @@ class="configuration-card">
     </div>
     
     </section>
-    
-    
-    
+
+
+<!--
+  NOTE for Oleg: this is the printable Configuration Summary/dashboard, styled via the shared
+  ../css/styles.css plus this page's own ../css/dashboard.css. Its `.configuration-card` grids
+  (Smartalock and Floorsense) are populated at runtime by ../js/dashboard.js (createCard()/
+  buildSmartalock()/buildFloorsense()), and each `.configuration-section`'s `.section-icon` badge
+  is filled in by dashboard.js's loadSectionIcons() with a hardcoded-stroke inline SVG (padlock for
+  Smartalock, floorplan grid for Floorsense) — no JS was touched by this change.
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card/icon-badge styling
+  already finished on floorsense-reservation-types-01.html, `.configuration-card` (css/dashboard.css)
+  changed from a flat opaque white background with no border to the same translucent-glass pattern
+  used elsewhere: `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`,
+  explicit `border: none`, and a two-layer box-shadow standing in for depth; its existing
+  `:hover { transform: translateY(-4px); box-shadow: ...; }` lift (these cards read as interactive
+  even though they're plain content panels, not links) was kept and its shadow recolored to the same
+  blue-tinted hover shadow used on the reference page's `.desk-check-card:hover`, plus a lighter
+  background tint on hover. `.section-icon` (previously a flat `#E8F4FD` light-blue square with no
+  border) became a white-background/colored-border icon badge with a short drop shadow, matching the
+  `.desk-icon-badge` pattern; its 2 instances (Smartalock, Floorsense — the only icons on this page)
+  form a small repeating group, so each got its own modifier class (`badge-blue` on the Smartalock
+  section, `badge-pink` on the Floorsense section, added directly on the `.section-icon` div in this
+  file's markup) rather than one shared color. Since dashboard.js's inline SVGs set a hardcoded
+  `stroke="#0077B6"` presentation attribute rather than `stroke="currentColor"`, the badge's color
+  is applied via a plain CSS descendant rule (`.section-icon.badge-blue svg { stroke: #4A8DF0; }`)
+  which overrides the SVG's own presentation attribute per the CSS cascade (presentation attributes
+  have the lowest specificity) — no change to dashboard.js was needed. `.configuration-card`'s print
+  media-query override (a flat `border: 1px solid #d9e2ec` with `box-shadow: none`, used since glass
+  blur/shadow don't print) was left as-is. Verified via an inline HTMLParser tag-balance check and
+  `node --check` on the extracted script block (untouched — CSS/markup-only change).
+-->
+
+
     <script src="../js/project.js"></script>
     
     <script src="../js/dashboard.js"></script>
