@@ -246,23 +246,22 @@
   .kiosk-toggle-row.on { border-color: var(--accent); background: var(--accent-wash); }
   .kiosk-toggle-row .ttl { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 3px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   /* ---------- kiosk-icon-badge: wraps each toggle row's raster icon in the site-wide white-canvas,
-     accent-bordered badge box. The 8 toggle rows form a repeating option list (not a lone icon), so
-     this cycles the established blue/pink/purple/teal/amber palette in TOGGLES order, wrapping back
-     to blue after 5 — matching the convention from floorsense-reservation-types-01.html. Sized to
-     comfortably contain the existing 32px icon image plus a little padding. Note: .kiosk-toggle-row
-     itself is a smaller var(--radius-md) sub-panel, out of scope for the card-glass treatment — only
-     the icon inside it is in scope here. ---------- */
+     accent-bordered badge box. Previously cycled an arbitrary blue/pink/purple/teal/amber palette
+     across the 8 toggle rows; per a follow-up request that each badge's border match the icon
+     symbol inside it, sampled all 8 icon PNGs (median RGB via PIL) and found every single one is the
+     exact same site accent blue (#0071E3) — these are a consistent monochrome-blue icon set, not a
+     multi-color one, so the palette-cycling was removed in favor of one fixed color. That color
+     already matches the base rule's own `border: 1.5px solid var(--accent)`, so no modifier class
+     is needed at all anymore — see the MOST RECENT CHANGE note below. Sized to comfortably contain
+     the existing 32px icon image plus a little padding. Note: .kiosk-toggle-row itself is a smaller
+     var(--radius-md) sub-panel, out of scope for the card-glass treatment — only the icon inside it
+     is in scope here. ---------- */
   .kiosk-icon-badge {
     width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     background: #fff; border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .kiosk-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .kiosk-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .kiosk-icon-badge.badge-purple { border-color: #9B6BEC; }
-  .kiosk-icon-badge.badge-teal { border-color: #2FBF9F; }
-  .kiosk-icon-badge.badge-amber { border-color: #F2A154; }
   .kiosk-toggle-row .ttl-icon { width: 32px; height: 32px; flex-shrink: 0; }
   .kiosk-toggle-row .dsc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; margin: 0; max-width: 34ch; }
 
@@ -569,6 +568,22 @@
   gradient art), so the tablet mockup and everything else is unchanged.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page, with judgment calls on scope. No CARD TREATMENT was applied: this page has no primary large var(--radius-lg) bordered card — .kiosk-toggle-row/.kiosk-toggle-subfields/.kiosk-field-row are all smaller var(--radius-md) sub-panels (explicitly out of scope), and .tablet/.preview-screen are a device mockup and a Lottie preview stage respectively, not option/content cards, so both were left untouched to preserve their intended look. For ICON TREATMENT: each of the 8 toggle rows' raster <img class="ttl-icon"> (built dynamically in buildToggleList()) was wrapped in a new <span class="kiosk-icon-badge"> — a 56x56px white-canvas, accent-bordered badge sized to comfortably contain the existing 32px icon — cycling the established blue/pink/purple/teal/amber palette in TOGGLES array order (wrapping back to blue for the 6th-8th rows) since these 8 icons form a repeating option group; only the JS template string gained the wrapping span (a new BADGE_PALETTE array plus an index passed into the existing forEach), no toggle/save/switch logic changed. The existing 46x46px .preview-fallback .glyph box (a lone fallback shown only if the Lottie animation fails to load, no repeating group) was judged to already be a badge-like box per the task brief, so it just had its border recoloured from --line grey to --accent blue and gained the standard short drop-shadow, keeping plain blue rather than a palette colour. .sidebar-icons (refresh/person/map inside the simulated kiosk tablet's left panel) were deliberately left untouched — they render the physical kiosk device's own on-screen iconography inside the .tablet mockup, not a Configuration Studio content card, so wrapping them in the Studio's white/blue badge style would misrepresent what's actually shown on a real kiosk screen. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted non-src script block (toggle/switch/save logic untouched).
+
+MOST RECENT CHANGE: per a follow-up request that each icon badge's border color match the icon
+symbol inside it, sampled all 8 toggle icon PNGs (icon-kiosk-logo.png, icon-kiosk-banner.png,
+icon-kiosk-open-existing.png, icon-kiosk-get-locker.png, icon-kiosk-scan-qr.png,
+icon-kiosk-place-card.png, icon-kiosk-change-pin.png, icon-kiosk-add-card.png) via a PIL script
+(median RGB of each icon's saturated, non-wash pixels) and found every one is the exact same site
+accent blue, `#0071E3` — this is a consistent monochrome-blue icon set, unlike the multi-color icon
+sets on other pages. Since the base `.kiosk-icon-badge` rule already uses `border: 1.5px solid
+var(--accent)` (which resolves to that same `#0071E3`), the arbitrary `BADGE_PALETTE` cycling (blue/
+pink/purple/teal/amber) was removed entirely from `buildToggleList()` in the `<script>` block — the
+template string now emits a bare `<span class="kiosk-icon-badge">` with no modifier class, since
+none is needed. The `.badge-blue`/`.badge-pink`/`.badge-purple`/`.badge-teal`/`.badge-amber` CSS
+rules were removed as now-unused. `.preview-fallback .glyph` (the lone Lottie-failure fallback icon,
+which has no icon image of its own to sample) was left untouched, still plain accent blue. Verified
+via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (only the
+BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched).
 -->
 
 <script>
@@ -716,19 +731,16 @@ MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from
   }
   window.addEventListener('resize', fitTablet);
 
-  const BADGE_PALETTE = ['badge-blue', 'badge-pink', 'badge-purple', 'badge-teal', 'badge-amber'];
-
   function buildToggleList(){
     toggleList.innerHTML = '';
     TOGGLES.forEach((t, i) => {
       const item = document.createElement('div');
       item.className = 'kiosk-toggle-item';
-      const badgeClass = BADGE_PALETTE[i % BADGE_PALETTE.length];
 
       const row = document.createElement('div');
       row.className = 'kiosk-toggle-row' + (state[t.key] ? ' on' : '');
       row.innerHTML = `
-        <div><p class="ttl"><span class="kiosk-icon-badge ${badgeClass}"><img class="ttl-icon" src="../assets/images/${t.icon}" alt=""></span>${t.label}</p><p class="dsc">${t.desc}</p></div>
+        <div><p class="ttl"><span class="kiosk-icon-badge"><img class="ttl-icon" src="../assets/images/${t.icon}" alt=""></span>${t.label}</p><p class="dsc">${t.desc}</p></div>
         <button type="button" class="switch${state[t.key] ? ' on' : ''}" data-key="${t.key}" aria-label="Toggle ${t.label}"></button>
       `;
       item.appendChild(row);
