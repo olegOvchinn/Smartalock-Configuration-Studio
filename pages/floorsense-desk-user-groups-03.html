@@ -115,14 +115,13 @@
      since the two topics are independent and of similar length — each column keeps the exact same
      section-head/grid/subfields/notice stack that used to run down the page sequentially. Falls
      back to a single stacked column below 900px so the checkbox cards don't get too cramped. ---------- */
-  .groups-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  .groups-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
   @media (max-width: 900px) {
     .groups-columns { grid-template-columns: 1fr; gap: 28px; }
   }
   .groups-column .section-head,
   .groups-column .group-check-grid,
-  .groups-column .group-subfields,
-  .groups-column .setup-notice { max-width: none; }
+  .groups-column .group-subfields { max-width: none; }
 
   /* ---------- each column wrapped in its own glass card — propagates
      floorsense-reservation-types-01.html's later "transparent glass" card treatment here: a
@@ -137,29 +136,22 @@
     padding: 24px 24px 26px;
     box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
     transition: box-shadow .2s, background .2s;
+    display: flex; flex-direction: column;
   }
   .groups-card .section-head:first-child { margin-top: 0; }
+  /* ---------- with the two columns now stretched to equal height (.groups-columns'
+     align-items: stretch), the Desk Group / User Group intro copy runs to different lengths, so
+     the option cards below it would otherwise start at different heights in each column. Pushing
+     .group-check-grid down with margin-top: auto (the card is now a flex column) anchors the
+     options — and the conditional .group-subfields panel below them — to the bottom of both cards
+     instead, so they always line up with each other regardless of how much intro text sits above. ---------- */
+  .groups-card .group-check-grid { margin-top: auto; }
 
   .section-head { margin-bottom: 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
-
-  /* ---------- amber caution notice, ported verbatim from floorsense-setup-path-00.html's
-     .setup-notice — used here to flag that extra policy overrides complicate setup/maintenance,
-     per the brief's explicit caution. ---------- */
-  .setup-notice {
-    display: flex; gap: 12px; align-items: flex-start; max-width: 640px; margin: 14px 0 0;
-    background: #FFF8E6; border: 1px solid #F0D793; border-radius: var(--radius-md); padding: 14px 16px;
-  }
-  .setup-notice svg { width: 20px; height: 20px; flex-shrink: 0; color: #B36B00; margin-top: 1px; }
-  .setup-notice p { margin: 0; font-size: 13.12px; line-height: 1.55; color: #7A4B00; }
-
-  /* ---------- page-top-notice: the single amber caution now shown once at the top of the page
-     instead of repeated at the bottom of each column — full page width rather than the 640px cap
-     used when it sat inside a column/section. ---------- */
-  .page-top-notice { max-width: none; margin: 0 0 28px; }
 
   /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods-02.html's
      .desk-check-card — reused here (renamed .group-check-card) for both the Desk Group and User
@@ -325,11 +317,6 @@
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="setup-notice page-top-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-        <p>You don't need to set up Desk Groups unless you want different booking rules for a specific area. Likewise, extra User Groups are optional — only add them if your policy really needs different rules for different groups of users, as each one adds a bit more setup complexity.</p>
-      </div>
 
       <div class="groups-columns">
 
@@ -735,6 +722,27 @@ option columns, with no banner image in between. `desk-user-groups-illustration-
 original, already-unreferenced `desk-user-groups-illustration.png`) were left in place rather than
 deleted. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
 script block (untouched — markup/CSS-only change, no JS affected).
+
+MOST RECENT CHANGE: three follow-up layout requests handled together. (1) Per a request to remove
+the amber caution notice, deleted the `.setup-notice.page-top-notice` block (icon svg + its "You
+don't need to set up Desk Groups... setup complexity" copy) along with the now-unused `.setup-notice`/
+`.setup-notice svg`/`.setup-notice p`/`.page-top-notice` CSS rules, and dropped the dead
+`.setup-notice` reference from the combined `.groups-column .section-head, .group-check-grid,
+.group-subfields, .setup-notice { max-width: none; }` selector (confirmed via grep this was the only
+`.setup-notice` element left on the page). The page now goes straight from the hero intro into
+`.groups-columns`. (2) Per a request to make the two cards the same height, `.groups-columns` changed
+from `align-items: start` to `align-items: stretch`, so both `.groups-card` columns now match the
+taller column's height regardless of how much intro copy each one has (standard CSS Grid stretch
+behaviour, confirmed via an isolated test). (3) Per a request to align each card's options to the
+bottom, `.groups-card` became a flex column (`display: flex; flex-direction: column;`) and its
+`.group-check-grid` child got `margin-top: auto`, pushing the options (and the conditional
+`.group-subfields` panel below them) down to the bottom of the card so they line up across both
+columns regardless of intro-text length. This is standard, universally-supported CSS Flexbox
+behaviour; note WeasyPrint (used elsewhere in this project for static visual verification) does not
+render `margin-top: auto` push-to-edge correctly even in a minimal isolated test, so this change was
+verified against the CSS spec and real-browser behaviour rather than a WeasyPrint render. Verified via
+an inline HTMLParser tag-balance check and `node --check` on the extracted script block (all
+markup/CSS-only changes, no JS affected).
 -->
 
 
