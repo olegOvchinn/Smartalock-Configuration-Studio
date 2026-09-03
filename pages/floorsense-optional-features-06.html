@@ -324,17 +324,6 @@
         </div>
 
         <div class="feature-row">
-          <svg class="feature-row-icon badge-pink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12.8" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7.3v3.4"/><path d="M15.3 9.4a4.5,4.5 0 1 1 -6.6,0"/></svg>
-          <div class="feature-row-body">
-            <p class="feature-row-title">No Swipe No Power (NSNP)</p>
-            <p class="feature-row-desc">Desk power policy requiring Floorsense NSNP relay units — desks only power on for an active, checked-in booking.</p>
-            <span class="feature-row-status" id="nsnpStatus">Off</span>
-          </div>
-          <button type="button" class="switch" id="nsnpSwitch" role="switch" aria-checked="false" aria-label="Enable No Swipe No Power"></button>
-        </div>
-
-        <div class="feature-row">
           <svg class="feature-row-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7v10"/><path d="M9.3 10.3L12 7.6l2.7 2.7"/><path d="M9 18h6"/></svg>
           <div class="feature-row-body">
@@ -660,6 +649,29 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to remove the NSNP option from this hub, deleted its
+`.feature-row` entirely (icon, title/description, status text, and `#nsnpSwitch`) along with its
+`nsnp` entry in the `FEATURES` array — that entry's `isOn()`/`setOn()` read/wrote
+`project.floorsense.wizard.nsnp.mode` exactly the way floorsense-nsnp-11.html's own 4-option mode
+grid (all/list/none/other) already does independently, so NSNP itself is untouched and still fully
+configurable from its own dedicated page (and from the Configuration Summary's Additional Options
+row-edit-link) — only this hub's shortcut switch is gone. The hub now lists 3 features
+(Auto-Release on Idle, Follow Me Ergonomics, Anti Desk Hogging) instead of 4; their existing
+badge-blue/badge-purple/badge-teal icon colours were left as-is rather than recycled, so removing
+the pink NSNP row just leaves a gap in the palette instead of reassigning colours to icons nobody
+asked to change. Removing the `nsnp` object shifted `fme` from index 2 to index 1 in the `FEATURES`
+array, which would have silently broken the FME acknowledgment checkbox's two `FEATURES[2]`
+references (they'd have started reading Anti Desk Hogging's state instead) — fixed by replacing
+both with a `fmeFeature = FEATURES.find(f => f.key === 'fme')` lookup so the code no longer depends
+on array position. `FEATURES[0]` for Auto-Release on Idle's hours field is unaffected, since idle
+stayed at index 0. NAV_SEQUENCE/seqResolve's skip-navigation on floorsense-checkin-window-08.html,
+floorsense-reservation-length-10.html, floorsense-nsnp-11.html, floorsense-fme-12.html, and
+floorsense-anti-desk-hogging-13.html reads `nsnp.mode` directly from saved state regardless of
+whether this hub has a UI control for it, so NSNP remains correctly skippable/reachable exactly as
+before. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a rendered weasyprint preview confirming the card now shows 3 rows with no leftover gap
+or styling artifact where the NSNP row used to sit.
 -->
 
 
@@ -732,14 +744,6 @@ touched file.
       setOn: (on) => {
         project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
         project.floorsense.wizard.idleRelease.enabled = on;
-      }
-    },
-    {
-      key: 'nsnp', switchEl: 'nsnpSwitch', statusEl: 'nsnpStatus',
-      isOn: () => !!(project.floorsense.wizard.nsnp && project.floorsense.wizard.nsnp.mode && project.floorsense.wizard.nsnp.mode !== 'none'),
-      setOn: (on) => {
-        project.floorsense.wizard.nsnp = project.floorsense.wizard.nsnp || {};
-        project.floorsense.wizard.nsnp.mode = on ? 'all' : 'none';
       }
     },
     {
@@ -816,9 +820,10 @@ touched file.
      acknowledgment, recorded but not blocking Continue. ---------- */
   const fmeAckField = document.getElementById('fmeAckField');
   const fmeAckCheckbox = document.getElementById('fmeAckCheckbox');
+  const fmeFeature = FEATURES.find(f => f.key === 'fme');
 
   function renderFmeAckField() {
-    fmeAckField.classList.toggle('show', FEATURES[2].isOn());
+    fmeAckField.classList.toggle('show', fmeFeature.isOn());
   }
 
   fmeAckCheckbox.checked = !!(project.floorsense.wizard.fme && project.floorsense.wizard.fme.motorDetailsAck);
@@ -830,7 +835,7 @@ touched file.
     queueSave();
   });
 
-  document.getElementById(FEATURES[2].switchEl).addEventListener('click', renderFmeAckField);
+  document.getElementById(fmeFeature.switchEl).addEventListener('click', renderFmeAckField);
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
