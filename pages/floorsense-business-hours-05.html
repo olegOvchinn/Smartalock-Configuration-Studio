@@ -356,12 +356,12 @@
                 <div class="timeline-zone" id="businessHoursZone"></div>
                 <div class="timeline-ticks" id="timelineTicks"></div>
               </div>
-              <div class="timeline-node" id="arrivalNode" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="360" aria-valuemax="1320">
+              <div class="timeline-node" id="arrivalNode" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
                 <div class="label-time" id="arrivalTime">9:00 AM</div>
                 <div class="label-desc">Arrives</div>
               </div>
-              <div class="timeline-node" id="departureNode" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="360" aria-valuemax="1320">
+              <div class="timeline-node" id="departureNode" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
                 <div class="label-time primary" id="departureTime">5:00 PM</div>
                 <div class="label-desc">Departs</div>
@@ -823,6 +823,15 @@ than a rectangle with hard corners). Verified via an inline HTMLParser tag-balan
 on the extracted script block (untouched — CSS-only change), and a rendered screenshot (headless
 Chromium) confirming the grey panel now sits with visible white margin on both sides instead of
 touching the card boundary.
+
+MOST RECENT CHANGE: per a request that "the earliest arrivals should be 4:30 not 6am", `RAIL_START_MIN`
+changed from `6 * 60` (6:00 AM) to `4 * 60 + 30` (4:30 AM) — the single constant `minutesToPercent()`,
+`renderTicks()`, and both pins' `clampMinutes()` all read from, so the rail's left edge, its first tick,
+and the Arrival pin's leftmost drag/keyboard-stepping limit all moved together. `RAIL_END_MIN` (10:00 PM)
+is unchanged. Both pins' `aria-valuemin` attributes updated from `"360"` to `"270"` to match. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
+test confirming repeated ArrowLeft presses on the Arrival pin now clamp at "4:30 AM" (aria-valuenow 270,
+left 0%) instead of "6:00 AM", and that the tick row now spans 4:30 AM–10:00 PM (36 half-hour ticks).
 -->
 
 
@@ -906,7 +915,7 @@ touching the card boundary.
     return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   }
 
-  const RAIL_START_MIN = 6 * 60;   // 6:00 AM
+  const RAIL_START_MIN = 4 * 60 + 30;   // 4:30 AM
   const RAIL_END_MIN = 22 * 60;    // 10:00 PM
   function minutesToPercent(minutes) {
     return Math.max(0, Math.min(100, ((minutes - RAIL_START_MIN) / (RAIL_END_MIN - RAIL_START_MIN)) * 100));
