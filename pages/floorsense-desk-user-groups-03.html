@@ -161,17 +161,6 @@
      used when it sat inside a column/section. ---------- */
   .page-top-notice { max-width: none; margin: 0 0 28px; }
 
-  /* ---------- groups-illustration: banner illustration shown once above the Desk/User Group
-     cards, depicting the HR / Client Care neighbourhood example used in this module's own copy
-     (see the Desk Group Setup examples below). Plain image card, full page width like
-     .page-top-notice, with a light border/background so the white illustration canvas doesn't
-     float directly on the panel background. ---------- */
-  .groups-illustration {
-    max-width: none; margin: 0 0 28px; border: 1px solid var(--line); border-radius: var(--radius-lg);
-    background: var(--paper); padding: 12px; text-align: center;
-  }
-  .groups-illustration img { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
-
   /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods-02.html's
      .desk-check-card — reused here (renamed .group-check-card) for both the Desk Group and User
      Group checkbox groups, since both need independently-tickable options rather than a
@@ -340,10 +329,6 @@
       <div class="setup-notice page-top-notice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
         <p>You don't need to set up Desk Groups unless you want different booking rules for a specific area. Likewise, extra User Groups are optional — only add them if your policy really needs different rules for different groups of users, as each one adds a bit more setup complexity.</p>
-      </div>
-
-      <div class="groups-illustration">
-        <img src="../assets/images/desk-user-groups-illustration-v2.png" alt="Example: an HR neighbourhood and a Client Care neighbourhood, each with their own desks, so bookings can be routed to the right area for each group.">
       </div>
 
       <div class="groups-columns">
@@ -740,6 +725,16 @@ policy:false}` for both grids with the User Group policy subfields hidden and no
 ticking "policy" reveals the subfields panel; and Reset restores the same default state and persists
 it to `localStorage`. Also re-validated via an inline HTMLParser tag-balance check and `node --check`
 on the extracted script block.
+
+MOST RECENT CHANGE: per a request to remove the illustration from this page, deleted the
+`.groups-illustration` banner (the `<img>` pointing at
+`assets/images/desk-user-groups-illustration-v2.png`, sitting between `.page-top-notice` and
+`.groups-columns`) along with its now-unused `.groups-illustration`/`.groups-illustration img` CSS
+rules. The page now goes straight from the amber caution notice at the top into the Desk/User Group
+option columns, with no banner image in between. `desk-user-groups-illustration-v2.png` (and the
+original, already-unreferenced `desk-user-groups-illustration.png`) were left in place rather than
+deleted. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
+script block (untouched — markup/CSS-only change, no JS affected).
 -->
 
 
