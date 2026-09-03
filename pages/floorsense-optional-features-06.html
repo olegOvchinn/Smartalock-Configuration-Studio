@@ -144,6 +144,7 @@
   .feature-row-icon.badge-pink { color: #EC6BA5; }
   .feature-row-icon.badge-purple { color: #9B6BEC; }
   .feature-row-icon.badge-teal { color: #2FBF9F; }
+  .feature-row-icon.badge-amber { color: #F2A154; }
   .feature-row-body { flex: 1; min-width: 0; }
   .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
   .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
@@ -203,6 +204,23 @@
   .relay-confirm-row input:checked ~ .relay-confirm-tick { background: var(--accent); border-color: var(--accent); }
   .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
+
+  /* ---------- Recurring Bookings' own inline day-of-week picker, shown only once that feature's
+     switch is on — same show/hide convention as Auto-Release on Idle's .feature-row-hours and
+     FME's .feature-row-ack above. Reuses project.floorsense.wizard.outOfBoxPolicy.recurringEnabled,
+     the same field floorsense-out-of-box-policy.html's own core-policy card already toggles, so this
+     switch and that page's "Recurring bookings" toggle always agree — this hub just adds the day
+     selection on top via a new recurringDays field that page doesn't display. ---------- */
+  .recur-days-field { display: none; margin-top: 10px; }
+  .recur-days-field.show { display: block; }
+  .recur-days-label { font-size: 12.6px; font-weight: 600; color: var(--ink); display: block; margin-bottom: 7px; }
+  .recur-day-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .recur-day-pill {
+    font-family: var(--font-text); font-size: 11.8px; font-weight: 600; color: var(--ink-soft);
+    background: var(--paper-soft); border: 1px solid var(--line); border-radius: 8px;
+    padding: 5px 10px; cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+  }
+  .recur-day-pill.on { background: var(--accent-wash); border-color: var(--accent); color: var(--accent-deep); }
 
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
@@ -350,6 +368,40 @@
             <span class="feature-row-status" id="adhStatus">Off</span>
           </div>
           <button type="button" class="switch" id="adhSwitch" role="switch" aria-checked="false" aria-label="Enable Anti Desk Hogging"></button>
+        </div>
+
+        <div class="feature-row">
+          <svg class="feature-row-icon badge-pink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="13.6" r="4.2" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.4 13.6l1.7 1.7l3.6-4.4"/><circle cx="14.3" cy="9" r="0.55" fill="currentColor" stroke="none"/><path d="M15.4 8a2.3,2.3 0 0 1 1.3 2.1"/><path d="M16.6 6.9a4.2,4.2 0 0 1 2.3 3.7"/></svg>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Remote Booking Confirmation</p>
+            <p class="feature-row-desc">Lets end users confirm their booking remotely with a tap, any time — no need to check in at the desk itself.</p>
+            <span class="feature-row-status" id="remoteConfirmStatus">Off</span>
+          </div>
+          <button type="button" class="switch" id="remoteConfirmSwitch" role="switch" aria-checked="false" aria-label="Enable Remote Booking Confirmation"></button>
+        </div>
+
+        <div class="feature-row">
+          <svg class="feature-row-icon badge-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.4 9.6a4.4,4.4 0 0 1 7.6,1.7"/><path d="M16.4 10.3l-0.4 -2.4l-2.3 0.7"/><path d="M15.6 14.4a4.4,4.4 0 0 1 -7.6,-1.7"/><path d="M7.6 13.7l0.4 2.4l2.3 -0.7"/></svg>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Recurring Bookings</p>
+            <p class="feature-row-desc">Lets users set up a repeating booking for chosen days of the week — e.g. Monday to Friday — instead of booking one day at a time. Repeats continue for as long as the advance booking window allows.</p>
+            <span class="feature-row-status" id="recurringStatus">Off</span>
+            <div class="recur-days-field" id="recurDaysField">
+              <span class="recur-days-label">Repeats on</span>
+              <div class="recur-day-row">
+                <button type="button" class="recur-day-pill" data-day="mon">Mon</button>
+                <button type="button" class="recur-day-pill" data-day="tue">Tue</button>
+                <button type="button" class="recur-day-pill" data-day="wed">Wed</button>
+                <button type="button" class="recur-day-pill" data-day="thu">Thu</button>
+                <button type="button" class="recur-day-pill" data-day="fri">Fri</button>
+                <button type="button" class="recur-day-pill" data-day="sat">Sat</button>
+                <button type="button" class="recur-day-pill" data-day="sun">Sun</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="switch" id="recurringSwitch" role="switch" aria-checked="false" aria-label="Enable Recurring Bookings"></button>
         </div>
 
         <div class="feature-footer">
@@ -672,6 +724,54 @@ whether this hub has a UI control for it, so NSNP remains correctly skippable/re
 before. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
 block, and a rendered weasyprint preview confirming the card now shows 3 rows with no leftover gap
 or styling artifact where the NSNP row used to sit.
+
+MOST RECENT CHANGE: per a request to add two brand-new optional features, appended two more
+`.feature-row`s after Anti Desk Hogging (the hub now lists 5 rows): "Remote Booking Confirmation"
+and "Recurring Bookings". Both new icons follow the page's own "Style 1" canvas convention (a
+rounded-square `<rect x="4" y="4" width="16" height="16" rx="2"/>` stroke frame plus a
+`fill-opacity="0.15"` highlight shape behind a smaller full-opacity glyph) rather than inventing a
+different visual language: Remote Booking Confirmation is a checkmark with a small tap/signal
+ripple in the corner (confirm + "from anywhere"); Recurring Bookings is a circular two-arc
+repeat/sync glyph with small arrowheads — deliberately the *inverse* concept of Anti Desk Hogging's
+existing repeat-arrow-with-a-slash-through-it icon a few rows up (that one means "repeat blocked",
+this one means "repeat allowed"), so the two read as a matched pair rather than looking unrelated.
+The freed-up pink from the removed NSNP row went to Remote Booking Confirmation; a new
+`.feature-row-icon.badge-amber { color: #F2A154; }` rule (the amber already used elsewhere in the
+site's rotating badge palette, just not previously needed on this file) was added for Recurring
+Bookings.
+
+Remote Booking Confirmation is a plain on/off switch, off by default, with no sub-fields — it
+introduces a brand-new state key, `project.floorsense.wizard.remoteConfirm.enabled`, since nothing
+else on the site already tracks this concept.
+
+Recurring Bookings is on/off plus an inline day-of-week picker (seven `.recur-day-pill` buttons,
+Mon-Sun) shown only once its switch is on, the same show/hide convention as Auto-Release on Idle's
+`.feature-row-hours` and FME's `.feature-row-ack` above. Its on/off state deliberately reuses
+`project.floorsense.wizard.outOfBoxPolicy.recurringEnabled` — the exact same field
+floorsense-out-of-box-policy.html's own core-policy card already toggles for "Recurring bookings" —
+rather than introducing a duplicate flag, so this switch and that page's toggle always agree and
+stay in sync regardless of which one was last touched. The day selection itself
+(`outOfBoxPolicy.recurringDays`, an array of `'mon'`..`'sun'` keys) is a new field that page doesn't
+read or display yet — turning the switch on for the first time seeds it with a Mon-Fri default
+(matching the "ie monday friday" example in the request), and each pill toggles its own day in or
+out of the saved array independently. `getRecurringDays()` falls back to that same Mon-Fri default
+whenever the array is missing, without writing it to state until the switch is actually turned on
+or a pill is clicked, so an untouched project doesn't pick up a stray field. Reset now also restores
+`recurringDays` to Mon-Fri alongside switching every feature off.
+
+Neither new feature has (or was asked to have) its own dedicated full page the way Idle/NSNP/FME/
+Anti-Desk-Hogging do, so neither needed any NAV_SEQUENCE/seqResolve changes on other pages — both
+are entirely self-contained to this hub.
+
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+a jsdom test confirming: 5 `.feature-row`s exist; Remote Booking Confirmation toggles on/off and
+saves `remoteConfirm.enabled`; Recurring Bookings toggles `outOfBoxPolicy.recurringEnabled`, shows/
+hides the day picker, seeds Mon-Fri on first enable, and each pill independently adds/removes its
+own day from the saved `recurringDays` array; Reset restores both to off and the days to Mon-Fri;
+and the FME acknowledgment field (from the earlier `fmeFeature` lookup fix) still works correctly,
+confirming this addition didn't reintroduce the array-index fragility that fix addressed. Also
+confirmed via a rendered weasyprint preview (including a one-off test copy with the day picker
+forced open) that both new icons and the day-pill row render as intended.
 -->
 
 
@@ -761,6 +861,30 @@ or styling artifact where the NSNP row used to sit.
         project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
         project.floorsense.wizard.antiDeskHogging.mode = on ? 'enable' : 'none';
       }
+    },
+    {
+      key: 'remoteConfirm', switchEl: 'remoteConfirmSwitch', statusEl: 'remoteConfirmStatus',
+      isOn: () => !!(project.floorsense.wizard.remoteConfirm && project.floorsense.wizard.remoteConfirm.enabled),
+      setOn: (on) => {
+        project.floorsense.wizard.remoteConfirm = project.floorsense.wizard.remoteConfirm || {};
+        project.floorsense.wizard.remoteConfirm.enabled = on;
+      }
+    },
+    {
+      /* Reuses project.floorsense.wizard.outOfBoxPolicy.recurringEnabled — the SAME field
+         floorsense-out-of-box-policy.html's own core-policy card already toggles — rather than a
+         new duplicate flag, so this switch and that page's "Recurring bookings" toggle always
+         agree. Turning it on for the first time also seeds recurringDays (a field that page
+         doesn't read/write) with a sensible Mon-Fri default. */
+      key: 'recurringBookings', switchEl: 'recurringSwitch', statusEl: 'recurringStatus',
+      isOn: () => !!(project.floorsense.wizard.outOfBoxPolicy && project.floorsense.wizard.outOfBoxPolicy.recurringEnabled),
+      setOn: (on) => {
+        project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
+        project.floorsense.wizard.outOfBoxPolicy.recurringEnabled = on;
+        if (on && !Array.isArray(project.floorsense.wizard.outOfBoxPolicy.recurringDays)) {
+          project.floorsense.wizard.outOfBoxPolicy.recurringDays = ['mon','tue','wed','thu','fri'];
+        }
+      }
     }
   ];
 
@@ -837,6 +961,44 @@ or styling artifact where the NSNP row used to sit.
 
   document.getElementById(fmeFeature.switchEl).addEventListener('click', renderFmeAckField);
 
+  /* ---------------- Recurring Bookings' inline day-of-week picker: reads/writes
+     project.floorsense.wizard.outOfBoxPolicy.recurringDays, an array of 'mon'..'sun' keys. Falls
+     back to a Mon-Fri default whenever the saved array is missing, without persisting that default
+     until the switch is actually turned on or a pill is clicked, so a project that's never touched
+     this feature doesn't pick up a stray recurringDays field. ---------- */
+  const recurDaysField = document.getElementById('recurDaysField');
+  const recurringFeature = FEATURES.find(f => f.key === 'recurringBookings');
+  const DEFAULT_RECUR_DAYS = ['mon','tue','wed','thu','fri'];
+
+  function getRecurringDays() {
+    const oob = project.floorsense.wizard.outOfBoxPolicy;
+    return (oob && Array.isArray(oob.recurringDays)) ? oob.recurringDays : DEFAULT_RECUR_DAYS;
+  }
+
+  function renderRecurDays() {
+    recurDaysField.classList.toggle('show', recurringFeature.isOn());
+    const days = getRecurringDays();
+    recurDaysField.querySelectorAll('.recur-day-pill').forEach(pill => {
+      pill.classList.toggle('on', days.indexOf(pill.getAttribute('data-day')) !== -1);
+    });
+  }
+
+  recurDaysField.querySelectorAll('.recur-day-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
+      const day = pill.getAttribute('data-day');
+      const days = getRecurringDays().slice();
+      const idx = days.indexOf(day);
+      if (idx === -1) { days.push(day); } else { days.splice(idx, 1); }
+      project.floorsense.wizard.outOfBoxPolicy.recurringDays = days;
+      renderRecurDays();
+      queueSave();
+    });
+  });
+
+  renderRecurDays();
+  document.getElementById(recurringFeature.switchEl).addEventListener('click', renderRecurDays);
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
@@ -845,9 +1007,12 @@ or styling artifact where the NSNP row used to sit.
     project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
     project.floorsense.wizard.fme.motorDetailsAck = false;
     fmeAckCheckbox.checked = false;
+    project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
+    project.floorsense.wizard.outOfBoxPolicy.recurringDays = DEFAULT_RECUR_DAYS.slice();
     renderAll();
     renderIdleHoursField();
     renderFmeAckField();
+    renderRecurDays();
     queueSave();
   });
 
