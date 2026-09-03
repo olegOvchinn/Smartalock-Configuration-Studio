@@ -205,23 +205,6 @@
   .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
-  /* ---------- Recurring Bookings' own inline day-of-week picker, shown only once that feature's
-     switch is on — same show/hide convention as Auto-Release on Idle's .feature-row-hours and
-     FME's .feature-row-ack above. Reuses project.floorsense.wizard.outOfBoxPolicy.recurringEnabled,
-     the same field floorsense-out-of-box-policy.html's own core-policy card already toggles, so this
-     switch and that page's "Recurring bookings" toggle always agree — this hub just adds the day
-     selection on top via a new recurringDays field that page doesn't display. ---------- */
-  .recur-days-field { display: none; margin-top: 10px; }
-  .recur-days-field.show { display: block; }
-  .recur-days-label { font-size: 12.6px; font-weight: 600; color: var(--ink); display: block; margin-bottom: 7px; }
-  .recur-day-row { display: flex; gap: 6px; flex-wrap: wrap; }
-  .recur-day-pill {
-    font-family: var(--font-text); font-size: 11.8px; font-weight: 600; color: var(--ink-soft);
-    background: var(--paper-soft); border: 1px solid var(--line); border-radius: 8px;
-    padding: 5px 10px; cursor: pointer; transition: background .15s, border-color .15s, color .15s;
-  }
-  .recur-day-pill.on { background: var(--accent-wash); border-color: var(--accent); color: var(--accent-deep); }
-
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
      color: var(--accent)) so every icon on this page is now the same size/style. ---------- */
@@ -386,20 +369,8 @@
           " stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="12" y="12" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M8.1 9.6l0.9 0.9l1.7-2.1"/><path d="M13.1 14.6l0.9 0.9l1.7-2.1"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Recurring Bookings</p>
-            <p class="feature-row-desc">Lets users set up a repeating booking for chosen days of the week — e.g. Monday to Friday — instead of booking one day at a time. Repeats continue for as long as the advance booking window allows.</p>
+            <p class="feature-row-desc">Lets users set up a repeating booking instead of booking one day at a time. Repeats continue for as long as the advance booking window allows.</p>
             <span class="feature-row-status" id="recurringStatus">Off</span>
-            <div class="recur-days-field" id="recurDaysField">
-              <span class="recur-days-label">Repeats on</span>
-              <div class="recur-day-row">
-                <button type="button" class="recur-day-pill" data-day="mon">Mon</button>
-                <button type="button" class="recur-day-pill" data-day="tue">Tue</button>
-                <button type="button" class="recur-day-pill" data-day="wed">Wed</button>
-                <button type="button" class="recur-day-pill" data-day="thu">Thu</button>
-                <button type="button" class="recur-day-pill" data-day="fri">Fri</button>
-                <button type="button" class="recur-day-pill" data-day="sat">Sat</button>
-                <button type="button" class="recur-day-pill" data-day="sun">Sun</button>
-              </div>
-            </div>
           </div>
           <button type="button" class="switch" id="recurringSwitch" role="switch" aria-checked="false" aria-label="Enable Recurring Bookings"></button>
         </div>
@@ -850,6 +821,22 @@ use, rather than the one-off rounded-rect shape. The two chevrons themselves are
 symmetric about the canvas center. Verified via an inline HTMLParser tag-balance check and a
 rendered weasyprint preview confirming a clean up/down chevron pair inside the standard highlight
 circle.
+
+MOST RECENT CHANGE: per a request to remove the day-of-week detail entirely ("it should only be on
+or off"), deleted Recurring Bookings' inline `#recurDaysField` day-pill picker (markup, its
+`.recur-days-field`/`.recur-day-row`/`.recur-day-pill` CSS, and the JS that rendered/toggled it —
+`getRecurringDays()`, `renderRecurDays()`, the per-pill click handlers, and the switch's second
+click listener that showed/hid the field), along with the `recurringDays` seeding this feature's
+`setOn()` used to do on first enable and the Reset handler's `recurringDays` restore. Recurring
+Bookings is now a plain on/off switch like every other row on this hub, still reading/writing
+`project.floorsense.wizard.outOfBoxPolicy.recurringEnabled` — the same field
+floorsense-out-of-box-policy.html's own core-policy card already toggles — with no other change to
+that single-source-of-truth relationship. The row description was reworded to drop the "chosen days
+of the week — e.g. Monday to Friday" phrasing that no longer applies. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+confirming `#recurDaysField` no longer exists, the switch still toggles `recurringEnabled` and
+saves correctly with no `recurringDays` field written, the FME acknowledgment field (from the
+earlier `fmeFeature` lookup fix) still works, and Reset still restores the switch to off.
 -->
 
 
@@ -952,16 +939,12 @@ circle.
       /* Reuses project.floorsense.wizard.outOfBoxPolicy.recurringEnabled — the SAME field
          floorsense-out-of-box-policy.html's own core-policy card already toggles — rather than a
          new duplicate flag, so this switch and that page's "Recurring bookings" toggle always
-         agree. Turning it on for the first time also seeds recurringDays (a field that page
-         doesn't read/write) with a sensible Mon-Fri default. */
+         agree. Plain on/off, no sub-fields. */
       key: 'recurringBookings', switchEl: 'recurringSwitch', statusEl: 'recurringStatus',
       isOn: () => !!(project.floorsense.wizard.outOfBoxPolicy && project.floorsense.wizard.outOfBoxPolicy.recurringEnabled),
       setOn: (on) => {
         project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
         project.floorsense.wizard.outOfBoxPolicy.recurringEnabled = on;
-        if (on && !Array.isArray(project.floorsense.wizard.outOfBoxPolicy.recurringDays)) {
-          project.floorsense.wizard.outOfBoxPolicy.recurringDays = ['mon','tue','wed','thu','fri'];
-        }
       }
     }
   ];
@@ -1039,44 +1022,6 @@ circle.
 
   document.getElementById(fmeFeature.switchEl).addEventListener('click', renderFmeAckField);
 
-  /* ---------------- Recurring Bookings' inline day-of-week picker: reads/writes
-     project.floorsense.wizard.outOfBoxPolicy.recurringDays, an array of 'mon'..'sun' keys. Falls
-     back to a Mon-Fri default whenever the saved array is missing, without persisting that default
-     until the switch is actually turned on or a pill is clicked, so a project that's never touched
-     this feature doesn't pick up a stray recurringDays field. ---------- */
-  const recurDaysField = document.getElementById('recurDaysField');
-  const recurringFeature = FEATURES.find(f => f.key === 'recurringBookings');
-  const DEFAULT_RECUR_DAYS = ['mon','tue','wed','thu','fri'];
-
-  function getRecurringDays() {
-    const oob = project.floorsense.wizard.outOfBoxPolicy;
-    return (oob && Array.isArray(oob.recurringDays)) ? oob.recurringDays : DEFAULT_RECUR_DAYS;
-  }
-
-  function renderRecurDays() {
-    recurDaysField.classList.toggle('show', recurringFeature.isOn());
-    const days = getRecurringDays();
-    recurDaysField.querySelectorAll('.recur-day-pill').forEach(pill => {
-      pill.classList.toggle('on', days.indexOf(pill.getAttribute('data-day')) !== -1);
-    });
-  }
-
-  recurDaysField.querySelectorAll('.recur-day-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
-      const day = pill.getAttribute('data-day');
-      const days = getRecurringDays().slice();
-      const idx = days.indexOf(day);
-      if (idx === -1) { days.push(day); } else { days.splice(idx, 1); }
-      project.floorsense.wizard.outOfBoxPolicy.recurringDays = days;
-      renderRecurDays();
-      queueSave();
-    });
-  });
-
-  renderRecurDays();
-  document.getElementById(recurringFeature.switchEl).addEventListener('click', renderRecurDays);
-
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
@@ -1085,12 +1030,9 @@ circle.
     project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
     project.floorsense.wizard.fme.motorDetailsAck = false;
     fmeAckCheckbox.checked = false;
-    project.floorsense.wizard.outOfBoxPolicy = project.floorsense.wizard.outOfBoxPolicy || {};
-    project.floorsense.wizard.outOfBoxPolicy.recurringDays = DEFAULT_RECUR_DAYS.slice();
     renderAll();
     renderIdleHoursField();
     renderFmeAckField();
-    renderRecurDays();
     queueSave();
   });
 

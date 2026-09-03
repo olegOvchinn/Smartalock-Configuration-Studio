@@ -313,6 +313,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Re-centered the Remote Booking Confirmation icon, then simplified it further by removing the tap-signal motif entirely, leaving just a centered ticked circle. Redrew the Recurring Bookings icon as a literal 2x2 grid — a square split into four cells, two of them (diagonally opposite) shaded and ticked — replacing the earlier repeat-arrow glyph with a more literal "pick which days apply" symbol.
 - Redrew the Anti Desk Hogging icon as a solid-silhouette bird sitting in a nest (keeping its existing highlight circle unchanged), replacing the earlier repeat-arrow-with-a-slash glyph; nudged the bird down afterward so it visibly sits inside the nest bowl rather than perched above it.
 - Redrew the FME (Follow Me Ergonomics) icon on `floorsense-optional-features-06.html` as two separate vertical arrows, one up and one down, replacing the earlier single up-arrow-on-a-pole glyph; then simplified it further to just the two arrow tips inside the page's standard highlight circle, dropping the shafts and base line.
+- Removed Recurring Bookings' inline day-of-week picker from `floorsense-optional-features-06.html` — it's back to a plain on/off switch (still reusing `outOfBoxPolicy.recurringEnabled`), with the "chosen days of the week" wording dropped from its description.
 
 ## Status
 
