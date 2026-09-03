@@ -114,14 +114,6 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- policy-illustration: a hand-drawn line-art banner sitting above the policy card,
-     replacing the earlier photographic advance-booking-illustration.png crop. Pure outline SVG —
-     no fills anywhere except the text labels, no gradients, background left transparent (reads as
-     the page's own white). Sized to the same max-width as .policy-grid/.policy-card so it lines up
-     edge-to-edge with the card beneath it. ---------- */
-  .policy-illustration { max-width: 760px; margin: 0 auto 22px; color: var(--accent); }
-  .policy-illustration svg { display: block; width: 100%; height: auto; }
-
   /* ---------- policy-icon-img: a user-supplied pre-made icon asset (a rounded-square app-icon-style
      graphic — clock + calendar + "A" glyph with up-arrows, already self-contained with its own white
      canvas, rounded border, and light backdrop circle baked into the image itself), replacing the
@@ -265,45 +257,10 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="policy-illustration" aria-hidden="true">
-        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="75" y="55" width="50" height="56" rx="6"/>
-          <line x1="88" y1="45" x2="88" y2="65"/>
-          <line x1="112" y1="45" x2="112" y2="65"/>
-          <line x1="75" y1="76" x2="125" y2="76"/>
-          <line x1="87" y1="88" x2="97" y2="88"/>
-          <line x1="87" y1="99" x2="97" y2="99"/>
-          <line x1="103" y1="88" x2="113" y2="88"/>
-
-          <line x1="60" y1="170" x2="700" y2="170"/>
-          <path d="M690 162 L702 170 L690 178"/>
-
-          <line x1="100" y1="160" x2="100" y2="180" stroke-width="2.5"/>
-          <line x1="320" y1="160" x2="320" y2="180" stroke-width="2.5"/>
-          <line x1="660" y1="160" x2="660" y2="180" stroke-width="2.5"/>
-
-          <path d="M100 150 Q210 108 320 150"/>
-          <path d="M310 143 L322 150 L311 158"/>
-          <line x1="100" y1="144" x2="100" y2="156"/>
-          <line x1="320" y1="144" x2="320" y2="156"/>
-
-          <line x1="660" y1="150" x2="660" y2="120"/>
-          <circle cx="660" cy="114" r="6"/>
-
-          <g stroke="none" fill="currentColor" font-family="Inter, sans-serif">
-            <text x="100" y="205" font-size="13" font-weight="600" text-anchor="middle">Today</text>
-            <text x="320" y="205" font-size="13" font-weight="600" text-anchor="middle">Day 8</text>
-            <text x="660" y="205" font-size="13" font-weight="600" text-anchor="middle">Day 30</text>
-            <text x="210" y="90" font-size="12.5" font-weight="500" text-anchor="middle">Book up to 8 days ahead</text>
-            <text x="490" y="205" font-size="11" font-weight="500" text-anchor="middle" opacity="0.7">up to 30 days maximum</text>
-          </g>
-        </svg>
-      </div>
-
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <img class="policy-icon-img" src="../assets/images/icon-advance-booking.png" alt="">
+            <img class="policy-icon-img" src="../assets/images/icon-advance-booking-v2.png" alt="">
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -577,6 +534,17 @@ indigo one. New `.policy-icon-img` rule sizes it to 72px with the same short dro
 other icon badge on the site, keeping a consistent footprint even though the image supplies its own
 frame. The now-unused `.policy-icon-badge`/`.policy-icon-glyph` rules were removed. Verified via an
 inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
+markup/CSS-only change, no JS affected).
+
+MOST RECENT CHANGE: per a follow-up request, swapped in a second user-supplied icon image (a clock +
+calendar-grid variant of the same rounded-square app-icon style, still indigo line art on white) in
+place of the first one — since the original `assets/images/icon-advance-booking.png` couldn't be
+overwritten, the new image was saved alongside it as `assets/images/icon-advance-booking-v2.png` and
+`.policy-icon-img`'s `src` updated to point at it; the old file was left in place, unreferenced. The
+same request also removed the `.policy-illustration` banner entirely (both its markup — the hand-
+authored SVG timeline diagram sitting above `.policy-grid` — and its now-unused `.policy-illustration`
+CSS rules), so the page now shows only the single card with its icon, no banner above it. Verified via
+an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
 markup/CSS-only change, no JS affected).
 -->
 
