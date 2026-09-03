@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -115,7 +110,6 @@
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin-bottom: 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
@@ -395,7 +389,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">Auto-Release on Idle</h1>
         <p class="sub">Optionally free up desks that were reserved but never actually used — off by default.</p>
       </div>
@@ -675,6 +668,15 @@ header/footer icons on this page's single card (not a repeating option group), b
 `var(--accent)` blue rather than a palette colour. Verified via an inline HTMLParser tag-balance
 check (`python3 /tmp/validate.py`) and `node --check` on the extracted script block (untouched —
 markup/CSS-only change).
+
+MOST RECENT CHANGE: per a request to remove the decorative "eyebrow" pill labels site-wide across
+the Floorsense branch, removed the single `<span class="eyebrow">Additional Features · Optional</span>`
+above the hero title (its `.panel-intro` parent still had the `<h1>`/`<p class="sub">`, so only the
+span line was deleted, not the container). This page had no `.section-head` element carrying an
+eyebrow span, but its inline `<style>` block still had all three related CSS rulesets (the base
+`.eyebrow { ... }` rule, `.panel-intro .eyebrow`, and a now-dead `.section-head .eyebrow` modifier
+with no matching markup) — all three were removed. Verified via an HTML tag-balance check and `node
+--check` on the extracted `<script>` body (no syntax errors, JS untouched).
 -->
 
 <script>
