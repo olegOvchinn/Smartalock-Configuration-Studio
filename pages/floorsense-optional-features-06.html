@@ -117,9 +117,19 @@
   /* ---------- feature list card: one .feature-row per optional module, each with an icon, a
      title + one-line description, and a .switch on the right — same shell/card border treatment
      as floorsense-business-hours-05.html's .checkin-card, but repeated rows instead of one diagram. ---------- */
+  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+     glass" card treatment here too — see the MOST RECENT CHANGE note at the end of this file's NOTE
+     block. Plain static row-list card (no hover/selected state on the card itself — each row's own
+     .switch is the interactive control), so no new states were introduced; `overflow: hidden` is
+     kept so the rows/footer still clip to the rounded corners. ---------- */
   .feature-card {
-    max-width: 988px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg); overflow: hidden;
+    max-width: 988px; margin: 0 auto;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .feature-row {
     display: flex; align-items: center; gap: 22px; padding: 22px;
@@ -578,7 +588,20 @@ Validated via an inline HTMLParser tag-balance check, `node --check` on the extr
 (untouched -- markup/CSS-only change), and a WeasyPrint render confirming all 5 icons now read as
 consistent rounded-square canvases with plain-blue glyphs and a lighter blue highlight fill, matching
 page 05's icon precisely.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+treatment sitewide, `.feature-card` dropped its solid `border: 1.5px solid var(--line)` in favour of
+page 01's translucent-glass treatment: a translucent white background (`rgba(255,255,255,0.6)`) with
+`backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy `box-shadow` standing in for the
+border (`overflow: hidden` is unchanged, still needed so the rows/footer clip to the card's rounded
+corners). The card itself has no hover/selected state — each row's own `.switch` is the interactive
+control — so none was invented. Per explicit instruction, this page's `.feature-row-icon`/
+`.feature-footer-icon` (the "Style 1" rounded-square icons, deliberately preserved by name) were left
+untouched — card treatment only. Verified via the inline HTMLParser tag-balance check
+(python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-
+only change).
 -->
+
 
 <script>
 (function(){
