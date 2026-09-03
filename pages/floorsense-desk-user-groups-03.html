@@ -699,6 +699,27 @@ content, so only the span lines were deleted, not the containers. Also removed a
 rulesets from the inline <style> block: the base `.eyebrow { ... }` rule and the `.panel-intro
 .eyebrow` / `.section-head .eyebrow` modifier rules. Verified via an HTML tag-balance check and `node
 --check` on the extracted <script> body (no syntax errors, JS untouched).
+
+MOST RECENT CHANGE: per a request to check the Reset button, found and fixed a real state-desync
+bug in the `<script>` block. `resetBtn`'s click handler reassigned `state.deskGroups`/
+`state.userGroups` to brand-new objects (`state.deskGroups = Object.assign({}, DEFAULT_DESK_GROUPS)`),
+but `wireGroup(grid, groupState, subfieldsEl)` — called once at page load for each grid — closes over
+whatever object reference was passed in at that time (`groupState`), not `state.deskGroups`/
+`state.userGroups` themselves. Reassigning those to new objects left `wireGroup`'s internal
+`applyToDom()` and checkbox change-handlers still pointing at the old, now-orphaned objects. Confirmed
+via a jsdom repro before fixing: clicking Reset silently saved the correct defaults to localStorage
+(since `save()` happens to read `state.deskGroups.policyNotes` directly, unaffected by the stale
+closure) but left every checkbox showing its pre-reset state on screen, and — worse — any checkbox
+ticked after Reset stopped being saved at all, since the change handler was mutating the orphaned
+object while `save()` kept reading from the new one. Fixed by mutating the existing objects in place
+instead of reassigning them: `Object.assign(state.deskGroups, DEFAULT_DESK_GROUPS)` and
+`Object.assign(state.userGroups, DEFAULT_USER_GROUPS)`, which `wireGroup`'s closures still reference
+correctly. Re-ran the same jsdom repro against the fix: Reset now correctly restores both grids to
+their true defaults (Desk Groups back to "none" checked with the policy subfields hidden and its
+textarea cleared; User Groups back to "provide"+"policy" checked with the original policyNotes text
+restored), and checkboxes ticked after Reset now save correctly to localStorage in sync with the DOM.
+Also re-validated via python3 /tmp/validate.py (tag balance) and node --check on the extracted script
+block.
 -->
 
 
@@ -837,8 +858,14 @@ rulesets from the inline <style> block: the base `.eyebrow { ... }` rule and the
   userGroupPolicyNotes.addEventListener('input', queueSave);
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.deskGroups = Object.assign({}, DEFAULT_DESK_GROUPS);
-    state.userGroups = Object.assign({}, DEFAULT_USER_GROUPS);
+    // Mutate the existing state.deskGroups/state.userGroups objects in place (Object.assign(target, ...))
+    // rather than reassigning state.deskGroups/state.userGroups to brand-new objects. wireGroup() below
+    // closes over the original object references (groupState), so replacing them here would leave the
+    // checkbox change-handlers and applyToDom() still reading/writing the old, now-orphaned objects —
+    // the on-screen checkboxes wouldn't visually reset, and every checkbox click after Reset would
+    // silently stop being saved until the next full page load. See this file's NOTE for the bug report.
+    Object.assign(state.deskGroups, DEFAULT_DESK_GROUPS);
+    Object.assign(state.userGroups, DEFAULT_USER_GROUPS);
     applyState();
     queueSave();
   });
