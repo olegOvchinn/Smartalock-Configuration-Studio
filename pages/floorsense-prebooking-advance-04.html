@@ -163,6 +163,93 @@
   .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
   .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
 
+  /* ---------- advance-booking timeline: same segmented-rail/draggable-pin control as
+     floorsense-business-hours-05.html's Arrival/Departure diagram, adapted to a single value (days
+     ahead) with an implicit fixed 0-day anchor at the rail's left edge instead of two independently
+     draggable endpoints — one pin marks the current advance-booking limit, and the shaded zone runs
+     from 0 up to that pin. Every rail/zone/tick/pin/label class, color and dimension below is copied
+     verbatim from that page so the two controls feel and look identical. ---------- */
+  .timeline-card { background: var(--paper-soft); border-radius: var(--radius-md); padding: 22px 26px 30px; margin-top: 18px; }
+  .timeline-diagram-row { display: block; }
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 10px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
+  }
+  .timeline-zone {
+    position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
+
+  .timeline-node {
+    position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none;
+    padding: 16px; margin: -16px; cursor: grab; touch-action: none; z-index: 2;
+  }
+  .timeline-node:active, .timeline-node.dragging { cursor: grabbing; }
+  .timeline-node .anchor-pin {
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0;
+  }
+  .timeline-node:hover .anchor-pin, .timeline-node.dragging .anchor-pin {
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
+  }
+  .timeline-node.dragging .anchor-pin { transform: scale(1.12); }
+  .timeline-node:focus-visible .anchor-pin {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
+  }
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+  }
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .timeline-card.animate-in .label-time,
+  .timeline-card.animate-in .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .15s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
+  }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -268,21 +355,26 @@
         <div class="policy-card">
           <div class="policy-row">
             <div class="policy-icon-badge">
-              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="13" r="7"/>
-                <path d="M9 8.5v4.5l3 2"/>
-                <line x1="9" y1="4.7" x2="9" y2="6"/>
-                <line x1="9" y1="20" x2="9" y2="21.3"/>
-                <line x1="4.7" y1="13" x2="6" y2="13"/>
-                <line x1="12" y1="13" x2="13.3" y2="13"/>
-                <rect x="13.5" y="6.5" width="9" height="10" rx="1.4"/>
-                <line x1="16" y1="4.8" x2="16" y2="7.2"/>
-                <line x1="20" y1="4.8" x2="20" y2="7.2"/>
-                <line x1="13.5" y1="9.6" x2="22.5" y2="9.6"/>
-                <line x1="15.3" y1="12" x2="17" y2="12"/>
-                <line x1="18.6" y1="12" x2="20.3" y2="12"/>
-                <line x1="15.3" y1="14.4" x2="17" y2="14.4"/>
-                <line x1="18.6" y1="14.4" x2="20.3" y2="14.4"/>
+              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9.5" cy="13.5" r="7.2"/>
+                <line x1="9.5" y1="13.5" x2="9.5" y2="9.3"/>
+                <line x1="9.5" y1="13.5" x2="12.8" y2="15.6"/>
+                <line x1="9.5" y1="6.5" x2="9.5" y2="7.4"/>
+                <line x1="9.5" y1="19.6" x2="9.5" y2="20.5"/>
+                <line x1="2.3" y1="13.5" x2="3.2" y2="13.5"/>
+                <line x1="15.8" y1="13.5" x2="16.7" y2="13.5"/>
+                <line x1="4.6" y1="8.6" x2="5.2" y2="9.2"/>
+                <line x1="13.8" y1="17.8" x2="14.4" y2="18.4"/>
+                <line x1="14.4" y1="8.6" x2="13.8" y2="9.2"/>
+                <line x1="5.2" y1="17.8" x2="4.6" y2="18.4"/>
+                <rect x="13" y="6" width="9.4" height="10.4" rx="1.4"/>
+                <line x1="15.6" y1="4.4" x2="15.6" y2="6.8"/>
+                <line x1="19.8" y1="4.4" x2="19.8" y2="6.8"/>
+                <line x1="13" y1="9.2" x2="22.4" y2="9.2"/>
+                <line x1="16.1" y1="9.2" x2="16.1" y2="16.4"/>
+                <line x1="19.3" y1="9.2" x2="19.3" y2="16.4"/>
+                <line x1="13" y1="12.4" x2="22.4" y2="12.4"/>
+                <line x1="13" y1="14.4" x2="22.4" y2="14.4"/>
               </svg>
             </div>
             <div class="policy-card-body">
@@ -293,6 +385,22 @@
                 <span class="minute-suffix">days in advance (0 = off, max 30)</span>
               </div>
               <p class="policy-hint" id="prebookingStatusHint">Advance booking is on — users can book up to 8 days ahead.</p>
+            </div>
+          </div>
+
+          <div class="timeline-card">
+            <div class="timeline-diagram-row">
+              <div class="timeline-track-wrapper">
+                <div class="timeline-rail">
+                  <div class="timeline-zone" id="advanceZone"></div>
+                  <div class="timeline-ticks" id="advanceTicks"></div>
+                </div>
+                <div class="timeline-node" id="advanceNode" tabindex="0" role="slider" aria-label="Advance booking limit, days ahead" aria-valuemin="0" aria-valuemax="30">
+                  <div class="anchor-pin"></div>
+                  <div class="label-time primary" id="advanceNodeLabel">8 days</div>
+                  <div class="label-desc">Book ahead</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -585,6 +693,51 @@ now unused and was removed; both PNG icon assets from the two previous changes w
 unreferenced. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
 script block (untouched), and a standalone cairosvg render of the glyph at 240px confirming it reads
 clearly as a clock overlapping a calendar in clean blue line art.
+
+MOST RECENT CHANGE: per a follow-up request to more closely match a further user-supplied reference
+("advanced booking icon.png" — a lavender-circle-backdrop clock+calendar with more clock tick marks
+and a denser calendar grid than this page's hand-drawn version), the `.policy-icon-glyph` SVG was
+redrawn again: the clock face gained tick marks at all 8 compass points (N/S/E/W/NE/SE/SW/NW) instead
+of 4, and the calendar gained a denser 3-column/3-row grid of divider lines instead of the previous
+2x2 grid, both scaled up slightly (clock radius 7 to 7.2, calendar 9x10 to 9.4x10.4) to keep the
+denser detail legible at the badge's small size. The clock's hour/minute hands were also rebuilt as
+two separate `<line>` elements from the circle's center (rather than one connected two-segment
+`<path>`), fixing a rendering artifact discovered while iterating on this redesign: a single path with
+this stroke width and `stroke-linejoin="round"` filled in as a solid wedge shape at the obtuse angle
+between the hands instead of reading as two thin lines. Still pure open strokes in `--accent` blue, no
+fills, matching this page's established line-art convention. Verified via a standalone cairosvg render
+at both 480px (confirming the wedge artifact is gone and the extra ticks/grid lines are legible) and
+76px (the actual on-page badge-glyph size, confirming the extra detail doesn't turn to visual noise at
+that scale).
+
+MOST RECENT CHANGE: per a request to add a days-ahead timeline slider "just like on page
+floorsense-business-hours-05.html", added a second element below the existing icon/description/number
+-field row inside `.policy-card`: a `.timeline-card` panel containing the same segmented-rail/
+draggable-pin diagram as that page's Arrival/Departure control, copied class-for-class (`.timeline-
+track-wrapper`, `.timeline-rail`, `.timeline-zone`/`.timeline-zone-seg` with its glassy inset-glow/
+gloss-sheen treatment, `.timeline-ticks`, `.timeline-node`/`.anchor-pin`, the floating pill
+`.label-time`/`.label-desc`, and the `ci-fade`/`ci-grow` scroll-in reveal animation) so the two
+controls are visually and behaviorally identical. Since this page has only one value (days ahead,
+0-`PREBOOKING_MAX_DAYS`) rather than business hours' two independent endpoints, the rail's 0-day mark
+is a fixed implicit anchor at the left edge (not a second draggable pin) and the shaded zone always
+runs from there up to the single `#advanceNode` pin, segmented into one glass block per day
+(`renderZoneSegments()`/`lerpColor()` ported verbatim, same `#0058B0`-to-`#5AC8FA` gradient) and ticked
+once per day with a taller mark every 5 days (`renderTicks()`, adapted from the 30-minute/hourly tick
+pattern). The pin's floating label reads "N day(s)" or "Off" at 0, with a "Book ahead" caption below,
+using the same `.label-time.primary` blue chip and small-caps caption styling as the reference page.
+Dragging the pin (`dayFromClientX()`/pointer handlers, ported from `makeDraggableNode()`) and its
+arrow-key stepping (±1 day) both write straight into the existing `#prebookingAdvanceDays` number
+input and route through the already-established `clampPrebookingDays()`/`save()`/`queueSave()`
+functions, so the slider, the numeric field, the status hint, and localStorage persistence can never
+drift out of sync with each other — typing in the field or clicking Reset likewise calls the new
+`renderAdvanceDiagram()` so the pin/zone/label reflect whatever value wins. Verified via a jsdom test
+driving synthetic `pointerdown`/`pointermove`/`pointerup`/`keydown`/`input` events: dragging to the
+rail's midpoint lands on exactly 15 days (of 30) with 15 glass segments, dragging to the rail's left
+edge shows "Off" with zero segments, typing 22 directly into the field moves the pin/label/segments to
+match, an ArrowRight key press steps from 22 to 23, Reset restores 8 days/8 segments and persists
+`{ prebookingAdvanceDays: 8 }` to `localStorage`, and the tick row renders the expected 31 marks
+(one every day from 0 to 30) — zero runtime errors throughout. Also validated via the inline
+HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 
 
@@ -665,11 +818,119 @@ clearly as a clock overlapping a calendar in clean blue line art.
       : 'Advance booking is on — users can book up to ' + days + (days === 1 ? ' day' : ' days') + ' ahead.';
   }
 
+  /* ---------------- advance-booking timeline: same segmented-rail/draggable-pin diagram as
+     floorsense-business-hours-05.html, adapted to a single value (days ahead, 0-PREBOOKING_MAX_DAYS)
+     with a fixed 0-day anchor at the rail's left edge rather than two independently draggable
+     endpoints. Kept in sync with the existing numeric field in both directions: dragging the pin
+     updates #prebookingAdvanceDays (and so shares its clamping/save/status-hint plumbing above), and
+     typing in the field or hitting Reset re-renders the pin/zone via renderAdvanceDiagram(). ---------- */
+  const RAIL_START_DAY = 0;
+  const RAIL_END_DAY = PREBOOKING_MAX_DAYS;
+  function dayToPercent(day) {
+    return Math.max(0, Math.min(100, ((day - RAIL_START_DAY) / (RAIL_END_DAY - RAIL_START_DAY)) * 100));
+  }
+
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+
+  const advanceNode = document.getElementById('advanceNode');
+  const advanceZone = document.getElementById('advanceZone');
+  const advanceNodeLabel = document.getElementById('advanceNodeLabel');
+  const advanceTicksEl = document.getElementById('advanceTicks');
+  const timelineTrackWrapper = document.querySelector('.timeline-track-wrapper');
+
+  function renderZoneSegments(days) {
+    const segCount = Math.max(0, Math.round(days));
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    advanceZone.innerHTML = html;
+  }
+
+  function renderTicks() {
+    let html = '';
+    for (let d = RAIL_START_DAY; d <= RAIL_END_DAY; d += 1) {
+      const percent = dayToPercent(d);
+      const isMajor = d % 5 === 0;
+      html += `<div class="timeline-tick${isMajor ? ' hour' : ''}" style="left:${percent}%"></div>`;
+    }
+    advanceTicksEl.innerHTML = html;
+  }
+  renderTicks();
+
+  function renderAdvanceDiagram(days) {
+    const percent = dayToPercent(days);
+    advanceNode.style.left = percent + '%';
+    advanceZone.style.left = '0%';
+    advanceZone.style.width = percent + '%';
+    renderZoneSegments(days);
+    advanceNodeLabel.textContent = days === 0 ? 'Off' : days + (days === 1 ? ' day' : ' days');
+    advanceNode.setAttribute('aria-valuenow', days);
+    advanceNode.setAttribute('aria-valuetext', days === 0 ? 'Off' : days + (days === 1 ? ' day' : ' days') + ' ahead');
+  }
+
+  /* ---------------- draggable pin: same pointer/keyboard drag pattern as
+     floorsense-business-hours-05.html's makeDraggableNode(), snapped to whole days instead of
+     30-minute steps, and routed through the existing clampPrebookingDays()/queueSave() plumbing so
+     the numeric field, status hint, and save-dot all stay in lockstep with the pin. ---------- */
+  function dayFromClientX(clientX) {
+    const rect = timelineTrackWrapper.getBoundingClientRect();
+    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const day = RAIL_START_DAY + (rawPercent / 100) * (RAIL_END_DAY - RAIL_START_DAY);
+    return Math.max(0, Math.min(PREBOOKING_MAX_DAYS, Math.round(day)));
+  }
+  function onAdvancePointerMove(e) {
+    prebookingAdvanceDays.value = dayFromClientX(e.clientX);
+    clampPrebookingDays();
+    renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
+  }
+  function onAdvancePointerUp() {
+    advanceNode.classList.remove('dragging');
+    document.removeEventListener('pointermove', onAdvancePointerMove);
+    document.removeEventListener('pointerup', onAdvancePointerUp);
+    queueSave();
+  }
+  advanceNode.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    advanceNode.classList.add('dragging');
+    advanceNode.focus();
+    document.addEventListener('pointermove', onAdvancePointerMove);
+    document.addEventListener('pointerup', onAdvancePointerUp);
+  });
+  advanceNode.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      prebookingAdvanceDays.value = clampPrebookingDays() + 1;
+      clampPrebookingDays();
+      renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
+      queueSave();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      prebookingAdvanceDays.value = clampPrebookingDays() - 1;
+      clampPrebookingDays();
+      renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
+      queueSave();
+    }
+  });
+
   function save() {
     state.prebookingAdvanceDays = clampPrebookingDays();
     project.floorsense.wizard.prebookingAdvance = state;
     saveProject(project);
     renderStatusHint(state.prebookingAdvanceDays);
+    renderAdvanceDiagram(state.prebookingAdvanceDays);
   }
 
   function queueSave() {
@@ -681,11 +942,33 @@ clearly as a clock overlapping a calendar in clean blue line art.
   function applyState() {
     prebookingAdvanceDays.value = state.prebookingAdvanceDays;
     renderStatusHint(state.prebookingAdvanceDays);
+    renderAdvanceDiagram(state.prebookingAdvanceDays);
   }
   applyState();
 
+  /* ---------------- reveal animation: plays once when the diagram scrolls into view, same
+     IntersectionObserver pattern as floorsense-business-hours-05.html ---------- */
+  const timelineCard = document.querySelector('.timeline-card');
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (timelineCard && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            timelineCard.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      revealObserver.observe(timelineCard);
+    } else {
+      timelineCard.classList.add('animate-in');
+    }
+  }
+
   prebookingAdvanceDays.addEventListener('input', () => {
     clampPrebookingDays();
+    renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
     queueSave();
   });
 
