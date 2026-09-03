@@ -383,7 +383,7 @@
 
         <div class="feature-row">
           <svg class="feature-row-icon badge-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.4 9.6a4.4,4.4 0 0 1 7.6,1.7"/><path d="M16.4 10.3l-0.4 -2.4l-2.3 0.7"/><path d="M15.6 14.4a4.4,4.4 0 0 1 -7.6,-1.7"/><path d="M7.6 13.7l0.4 2.4l2.3 -0.7"/></svg>
+          " stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="12" y="12" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M8.1 9.6l0.9 0.9l1.7-2.1"/><path d="M13.1 14.6l0.9 0.9l1.7-2.1"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Recurring Bookings</p>
             <p class="feature-row-desc">Lets users set up a repeating booking for chosen days of the week — e.g. Monday to Friday — instead of booking one day at a time. Repeats continue for as long as the advance booking window allows.</p>
@@ -785,6 +785,19 @@ Idle's clock hands and Recurring Bookings' repeat arcs are both centered on (12,
 same two concepts (confirm + remote/tap), just recomposed. Verified via an inline HTMLParser
 tag-balance check and a rendered weasyprint preview confirming the icon now sits visually centered
 within its canvas.
+
+MOST RECENT CHANGE: per a follow-up that the Recurring Bookings icon should instead show "a square
+with split in four, two of which are ticked," replaced the circular repeat-arrow glyph entirely
+with a literal 2x2 grid: a 10x10 square (`<rect x="7" y="7" width="10" height="10"/>`) divided into
+four equal cells by one vertical and one horizontal line through its center, with the top-left and
+bottom-right cells shaded (`fill-opacity="0.15"`, diagonally opposite for visual balance) and each
+carrying a small checkmark to read as "ticked" — directly illustrating "pick which days apply" as a
+4-cell selector rather than an abstract repeat/sync symbol. Both the grid and its two ticked cells
+are symmetric about the canvas center (12,12), consistent with this page's centering convention.
+The `badge-amber` colour is unchanged. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (markup/CSS-only change, no JS touched), and a
+rendered weasyprint preview confirming the four-cell grid with two ticked/shaded corners renders as
+intended.
 -->
 
 
