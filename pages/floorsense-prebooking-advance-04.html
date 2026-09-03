@@ -114,13 +114,29 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- policy-thumb: illustration thumbnail replacing this page's single
-     .policy-icon-img line icon — same pattern as floorsense-reservation-types-01.html and
-     floorsense-checkin-methods-02.html, using a user-supplied reference image depicting the
-     "book up to 30 days in advance" concept this lone card configures. Sized by width since this
-     crop is landscape (~1.39:1), well under its ~640px native width so it stays crisp. Only one
-     card exists on this page, so .policy-icon-img is now fully unused and was removed. ---------- */
-  .policy-thumb { width: 260px; height: auto; flex-shrink: 0; border-radius: 10px; }
+  /* ---------- policy-illustration: a hand-drawn line-art banner sitting above the policy card,
+     replacing the earlier photographic advance-booking-illustration.png crop. Pure outline SVG —
+     no fills anywhere except the text labels, no gradients, background left transparent (reads as
+     the page's own white) — matching the "basic icon" language used for .policy-icon-badge below.
+     Sized to the same max-width as .policy-grid/.policy-card so it lines up edge-to-edge with the
+     card beneath it. ---------- */
+  .policy-illustration { max-width: 760px; margin: 0 auto 22px; color: var(--accent); }
+  .policy-illustration svg { display: block; width: 100%; height: auto; }
+
+  /* ---------- policy-icon-badge: replaces the removed .policy-thumb photo with a small symbolic
+     glyph in the same flat white-canvas/blue-border badge language used for lone icons elsewhere on
+     the site (e.g. floorsense-checkin-window-08.html, floorsense-idle-release-09.html) — plain
+     accent blue, since this page only ever has one icon in isolation rather than a repeating
+     multi-option group. ---------- */
+  .policy-icon-badge {
+    width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .policy-icon-glyph { width: 38px; height: 38px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -255,10 +271,56 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
+      <div class="policy-illustration" aria-hidden="true">
+        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="75" y="55" width="50" height="56" rx="6"/>
+          <line x1="88" y1="45" x2="88" y2="65"/>
+          <line x1="112" y1="45" x2="112" y2="65"/>
+          <line x1="75" y1="76" x2="125" y2="76"/>
+          <line x1="87" y1="88" x2="97" y2="88"/>
+          <line x1="87" y1="99" x2="97" y2="99"/>
+          <line x1="103" y1="88" x2="113" y2="88"/>
+
+          <line x1="60" y1="170" x2="700" y2="170"/>
+          <path d="M690 162 L702 170 L690 178"/>
+
+          <line x1="100" y1="160" x2="100" y2="180" stroke-width="2.5"/>
+          <line x1="320" y1="160" x2="320" y2="180" stroke-width="2.5"/>
+          <line x1="660" y1="160" x2="660" y2="180" stroke-width="2.5"/>
+
+          <path d="M100 150 Q210 108 320 150"/>
+          <path d="M310 143 L322 150 L311 158"/>
+          <line x1="100" y1="144" x2="100" y2="156"/>
+          <line x1="320" y1="144" x2="320" y2="156"/>
+
+          <line x1="660" y1="150" x2="660" y2="120"/>
+          <circle cx="660" cy="114" r="6"/>
+
+          <g stroke="none" fill="currentColor" font-family="Inter, sans-serif">
+            <text x="100" y="205" font-size="13" font-weight="600" text-anchor="middle">Today</text>
+            <text x="320" y="205" font-size="13" font-weight="600" text-anchor="middle">Day 8</text>
+            <text x="660" y="205" font-size="13" font-weight="600" text-anchor="middle">Day 30</text>
+            <text x="210" y="90" font-size="12.5" font-weight="500" text-anchor="middle">Book up to 8 days ahead</text>
+            <text x="490" y="205" font-size="11" font-weight="500" text-anchor="middle" opacity="0.7">up to 30 days maximum</text>
+          </g>
+        </svg>
+      </div>
+
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <img class="policy-thumb" src="../assets/images/advance-booking-illustration.png" alt="">
+            <div class="policy-icon-badge">
+              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="13" height="15" rx="2"/>
+                <line x1="7" y1="3" x2="7" y2="7"/>
+                <line x1="12" y1="3" x2="12" y2="7"/>
+                <line x1="3" y1="10" x2="16" y2="10"/>
+                <line x1="6.5" y1="14" x2="9" y2="14"/>
+                <line x1="6.5" y1="17" x2="9" y2="17"/>
+                <path d="M17 14l4 3-4 3"/>
+                <line x1="21" y1="17" x2="16.5" y2="17"/>
+              </svg>
+            </div>
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -498,6 +560,28 @@ HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on th
 block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed both `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, and "Configure" in the section head. The hero's `.panel-intro` parent kept its `<h1>`/`<p>` content, so only its span was removed. The "Configure" span's parent `.section-head`, however, already contained nothing else (an earlier edit had already stripped this page's `<h2 class="section-title">` and intro paragraph, leaving the eyebrow as the div's sole child — see the note above), so removing the span would have left a completely empty `.section-head` shell; that entire now-empty div was deleted rather than left behind. Also removed the base `.eyebrow` and `.section-head .eyebrow` CSS rulesets from the inline stylesheet (the general `.section-head`/`.section-head p` rules were left in place, unrelated to `.eyebrow`). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
+
+MOST RECENT CHANGE: per a request to remove the photographic `.policy-thumb` illustration
+(assets/images/advance-booking-illustration.png) from the card and replace it with a small basic
+icon matching the rest of the site's icon styling, plus a new full-width illustration sitting above
+the card, two things changed. First, the card's icon: `<img class="policy-thumb">` was replaced with
+a `.policy-icon-badge`/`.policy-icon-glyph` pair — the same flat white-canvas, blue-border,
+short-drop-shadow badge language used for lone content icons elsewhere (e.g.
+floorsense-checkin-window-08.html, floorsense-idle-release-09.html) — wrapping a new hand-drawn
+calendar-with-forward-arrow glyph (a calendar frame with two hanger tabs, a header divider, two day
+lines, and a small arrow pointing out of it) symbolizing "book a desk some number of days ahead."
+`.policy-thumb` is now fully unused and was removed from the stylesheet; the old PNG was left in
+place, unreferenced, per site convention. Second, a new `.policy-illustration` banner was added
+directly above `.policy-grid`: a hand-authored inline SVG timeline diagram (viewBox 760x260, matching
+`.policy-grid`/`.policy-card`'s own 760px max-width so it lines up edge-to-edge with the card below)
+showing a calendar glyph at "Today," a rail running out to "Day 30," a bracket arc labeled "Book up
+to 8 days ahead" spanning Today to a "Day 8" tick (this page's current default), and a flag marker at
+"Day 30" labeled "up to 30 days maximum." Per the request, the whole illustration uses only open
+strokes in the page's `--accent` blue (via `color: var(--accent)` + `stroke="currentColor"`) — no
+shape fills, no gradients, and no background fill of its own (transparent, so it reads as plain white
+against the page) — only the text labels use `fill` to render, which is unavoidable for legible SVG
+text and isn't a decorative shape fill. Verified via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 
