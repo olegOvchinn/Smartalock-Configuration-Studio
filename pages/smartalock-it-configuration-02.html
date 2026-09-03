@@ -136,12 +136,39 @@
   .visual-tab:last-child:hover .visual-tab-tip { transform: translateX(0) translateY(0); }
 
   /* ---------- question cards ---------- */
+  /* ---------- glass card: per the site-wide propagation of the treatment finished on
+     floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
+     in favour of a translucent white background + backdrop blur + soft fuzzy box-shadow standing in
+     for the border — see the MOST RECENT CHANGE note below. This card has no hover/selected state of
+     its own, so only the base treatment applies. ---------- */
   .qcard {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 22px 24px; margin-bottom: 18px; max-width: 560px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
+  /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
+     with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern.
+     The 4 icons here (SSO, SCIM, API, Gallagher) form a repeating group of question cards, so each
+     gets its own palette color in DOM order rather than one shared blue — see the MOST RECENT CHANGE
+     note below. The badge only colors its own border; the raster icon images are left untouched. ---------- */
+  .qcard-icon-badge {
+    width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .qcard-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .qcard-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .qcard-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .qcard-icon-badge.badge-teal { border-color: #2FBF9F; }
   .qcard-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
@@ -248,7 +275,7 @@
         <div class="page-text">
 
           <div class="qcard">
-            <h3><img class="qcard-icon" src="../assets/images/icon-sso.png" alt="">SSO Authentication</h3>
+            <h3><div class="qcard-icon-badge badge-blue"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>SSO Authentication</h3>
             <p class="qdesc">Select how users will authenticate with the Smartalock system, if SSO is required.</p>
             <label>Authentication method</label>
             <select id="ssoMethod">
@@ -265,7 +292,7 @@
           </div>
 
           <div class="qcard">
-            <h3><img class="qcard-icon" src="../assets/images/icon-scim.png" alt="">SCIM User Provisioning</h3>
+            <h3><div class="qcard-icon-badge badge-pink"><img class="qcard-icon" src="../assets/images/icon-scim.png" alt=""></div>SCIM User Provisioning</h3>
             <p class="qdesc">Configure automatic user provisioning and deprovisioning, if required.</p>
             <label>SCIM provisioning</label>
             <select id="scimProvisioning">
@@ -280,14 +307,14 @@
           </div>
 
           <div class="qcard">
-            <h3><img class="qcard-icon" src="../assets/images/icon-api.png" alt="">API / Integration Requirements <span class="qcard-tag">Optional</span></h3>
+            <h3><div class="qcard-icon-badge badge-purple"><img class="qcard-icon" src="../assets/images/icon-api.png" alt=""></div>API / Integration Requirements <span class="qcard-tag">Optional</span></h3>
             <p class="qdesc">Specify any external systems that need to integrate with Smartalock, if applicable.</p>
             <label>Integration requirements</label>
             <textarea id="apiRequirements" placeholder="Describe any API or integration requirements..."></textarea>
           </div>
 
           <div class="qcard">
-            <h3><img class="qcard-icon" src="../assets/images/icon-gallagher.png" alt="">Gallagher Integration <span class="qcard-tag">Optional</span></h3>
+            <h3><div class="qcard-icon-badge badge-teal"><img class="qcard-icon" src="../assets/images/icon-gallagher.png" alt=""></div>Gallagher Integration <span class="qcard-tag">Optional</span></h3>
             <p class="qdesc">Specify whether Gallagher access control integration is required.</p>
             <label>Gallagher integration</label>
             <select id="gallagherIntegration">
@@ -366,6 +393,8 @@
   (was a same-folder link) and its next-arrow/Continue destination is now pick-a-product.html (was
   ../index.html), both same-folder links since this page never moved.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .qcard dropped its solid `border: 1.5px solid var(--line)` in favor of a translucent white background (rgba(255,255,255,0.6)), backdrop-filter blur/saturate, and a soft fuzzy box-shadow standing in for the border, with a box-shadow/background transition added; this card has no hover or checked/selected state, so only the base treatment was needed (no :hover or .checked rules to convert). Each of the 4 raster `.qcard-icon` `<img>` icons (SSO, SCIM, API, Gallagher) was wrapped in a new `.qcard-icon-badge` div (92px, white background, colored border, matching page 01's `.desk-icon-badge` proportions but sized up to comfortably fit this page's larger 76px icons) — since the 4 question cards read as a repeating group, the badges cycle through the same blue/pink/purple/teal palette used on page 01, one color per card in DOM order. Only the badge's border color was set per icon; the icon images themselves (icon-sso.png, icon-scim.png, icon-api.png, icon-gallagher.png) were not modified in any way. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 <script>
