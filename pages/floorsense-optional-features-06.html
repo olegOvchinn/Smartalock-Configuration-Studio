@@ -361,7 +361,7 @@
 
         <div class="feature-row">
           <svg class="feature-row-icon badge-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M15.4 9.2a4.2,4.2 0 0 0 -6.6,1.1"/><path d="M8.6 14.8a4.2,4.2 0 0 0 6.6,-1.1"/><line x1="7.5" y1="16.5" x2="16.5" y2="7.5" stroke-width="0.8"/></svg>
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7.1 15.6Q7.4 14.5 9.2 14.7Q9.7 14.3 12 14.3Q14.3 14.3 14.8 14.7Q16.6 14.5 16.9 15.6Q16.6 16.6 12 16.6Q7.4 16.6 7.1 15.6Z" fill="currentColor" stroke="none"/><ellipse cx="11.6" cy="11.3" rx="2.5" ry="2" fill="currentColor" stroke="none"/><circle cx="13.9" cy="9.6" r="1.05" fill="currentColor" stroke="none"/><path d="M14.9 9.4l1.3 -0.15l-0.55 1.15z" fill="currentColor" stroke="none"/><circle cx="14.1" cy="9.3" r="0.18" fill="#fff" stroke="none"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Anti Desk Hogging</p>
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
@@ -807,6 +807,21 @@ by the other circular-highlight icons on this page (e.g. Recurring Bookings' ear
 glyph, Anti Desk Hogging before its own redesign). Same colour (badge-pink), just a plainer glyph.
 Verified via an inline HTMLParser tag-balance check and a rendered weasyprint preview confirming a
 clean, centered ticked circle.
+
+MOST RECENT CHANGE: per a follow-up request to refine the Anti Desk Hogging icon into "a nest and a
+bird inside," replaced the circular repeat-arrow-with-a-slash glyph with a bird-in-nest silhouette,
+keeping the existing highlight circle (`cx="12" cy="12" r="4.6"`, `fill-opacity="0.15"`) unchanged
+per the explicit instruction to leave it. Per a further clarification ("only a silhouette"), the
+new glyph is built entirely from solid `fill="currentColor" stroke="none"` shapes rather than this
+page's usual stroked line-art — a body ellipse + a smaller head circle + a small filled beak
+triangle (with a tiny white dot for the eye) forming the bird, sitting above a separate scalloped
+bowl-shaped path forming the nest, with a deliberate ~1-unit gap between the two so they read as
+two distinct stacked shapes rather than merging into one blob (an earlier draft with a tail
+triangle on the bird and no gap above the nest looked ambiguous — reads more like a mound with two
+symmetric ears — so the tail was dropped and the gap added). Both shapes stay within the highlight
+circle's footprint. `badge-teal` colour is unchanged. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block (markup/CSS-only, no JS touched), and a rendered
+weasyprint preview confirming a clearly readable bird-sitting-in-a-nest silhouette.
 -->
 
 
