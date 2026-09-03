@@ -122,13 +122,28 @@
   /* ---------- access method checkbox grid ---------- */
   .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; }
   @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
+  /* ---------- glass card: per the site-wide glass-card treatment introduced on
+     floorsense-reservation-types-01.html, .access-check-card dropped its solid `border: 1.5px solid
+     var(--line)` in favour of a translucent white background, backdrop-filter blur, and a soft fuzzy
+     box-shadow standing in for the border. The existing hover/`.checked` states (previously shown via
+     `border-color: var(--accent)` + a solid `--accent-wash` background) now read through the shadow's
+     tint/spread and a translucent background tint instead — see the MOST RECENT CHANGE note below. ---------- */
   .access-check-card {
     padding: 18px 20px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .access-check-card:hover { border-color: var(--accent); }
-  .access-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .access-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .access-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   .access-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .access-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .access-tick {
@@ -143,7 +158,23 @@
     opacity: 0; transition: opacity .15s;
   }
   .access-check-card.checked .access-tick::after { opacity: 1; }
-  .access-icon-img { width: 56px; height: 56px; flex-shrink: 0; margin-top: 2px; }
+  .access-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
+  /* ---------- access-icon-badge: wraps each raster <img class="access-icon-img"> in a white square
+     badge with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge
+     pattern. The 4 access-method cards form a repeating option group, so badges cycle through the
+     blue/pink/purple/teal palette rather than sharing one blue — see the MOST RECENT CHANGE note
+     below. Only the badge's border is colored; the raster icon images are left untouched. ---------- */
+  .access-icon-badge {
+    width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .access-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .access-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .access-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .access-icon-badge.badge-teal { border-color: #2FBF9F; }
   .access-card-body { min-width: 0; flex: 1; }
   .access-title { display: block; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin-bottom: 8px; }
   .access-desc { display: block; font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; }
@@ -285,7 +316,7 @@
           <label class="access-row">
             <input type="checkbox" value="card">
             <span class="access-tick" aria-hidden="true"></span>
-            <img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt="">
+            <span class="access-icon-badge badge-blue"><img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt=""></span>
             <div class="access-card-body">
               <span class="access-title">Building access cards</span>
               <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
@@ -307,7 +338,7 @@
           <label class="access-row">
             <input type="checkbox" value="pin">
             <span class="access-tick" aria-hidden="true"></span>
-            <img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt="">
+            <span class="access-icon-badge badge-pink"><img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt=""></span>
             <div class="access-card-body">
               <span class="access-title">PIN number at touchscreen</span>
               <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
@@ -334,7 +365,7 @@
           <label class="access-row">
             <input type="checkbox" value="app">
             <span class="access-tick" aria-hidden="true"></span>
-            <img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt="">
+            <span class="access-icon-badge badge-purple"><img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt=""></span>
             <div class="access-card-body">
               <span class="access-title">Floorsense app</span>
               <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
@@ -346,7 +377,7 @@
           <label class="access-row">
             <input type="checkbox" value="qr">
             <span class="access-tick" aria-hidden="true"></span>
-            <img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt="">
+            <span class="access-icon-badge badge-teal"><img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt=""></span>
             <div class="access-card-body">
               <span class="access-title">QR code</span>
               <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
@@ -401,6 +432,7 @@
   there directly, same-folder link, no more ../) and smartalock-templates-00.html moved from pages/
   to the project root (this page's progress-seg link to it above gained a ../ prefix accordingly).
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. `.access-check-card`'s solid `border: 1.5px solid var(--line)` was removed in favour of a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border; the existing `:hover`/`.checked` states (previously `border-color: var(--accent)` plus a solid `--accent-wash` fill) now read through the shadow's tint/spread and a translucent background tint instead. Each of the 4 cards' raster `<img class="access-icon-img">` (56x56px: Building access cards, PIN, Floorsense app, QR code) was wrapped in a new `<span class="access-icon-badge">` — a 72x72px white-canvas, colour-bordered badge — cycling the blue/pink/purple/teal palette across the 4 cards in DOM order, since they form a repeating option group; only the badge border is coloured, the icon image files themselves are untouched. The separate `.access-tick` custom-checkbox marker was left as-is. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 -->
 
 <script>
