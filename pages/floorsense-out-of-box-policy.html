@@ -204,6 +204,13 @@
   .summary-row-top .label { font-family: var(--font-text); font-size: 12.1px; font-weight: 600; color: var(--ink); }
   .summary-row-top .value-group { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
   .summary-row-top .value { font-family: var(--font-text); font-size: 12.1px; font-weight: 600; color: var(--accent-deep); text-align: right; white-space: nowrap; }
+  /* ---------- multi-value rows (e.g. several reservation types selected at once on
+     floorsense-reservation-types-01.html) can produce a value string too long to sit on one
+     nowrap line beside its label without overflowing the card — this modifier stacks the value
+     below the label instead of beside it, and lets the value wrap onto multiple lines rather than
+     force a single line past the edge of the page. ---------- */
+  .summary-row-top.wrap { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .summary-row-top.wrap .value { white-space: normal; text-align: left; }
   .row-edit-link {
     font-family: var(--font-text); font-size: 9.6px; font-weight: 600; color: var(--accent-deep);
     text-decoration: none; border: 1px solid var(--line); border-radius: 100px; padding: 3px 10px;
@@ -605,7 +612,7 @@
           <a class="edit-link" href="floorsense-reservation-types-01.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
-          <div class="summary-row-top">
+          <div class="summary-row-top wrap">
             <span class="label">Reservation types</span>
             <span class="value" id="reservationTypesSummaryValue">Reserved by User as Needed</span>
           </div>
@@ -1883,6 +1890,24 @@ Verified via a jsdom test across three states: a fresh project (renders "Reserve
 an explicit two-type selection ("Reserved by User as Needed · Team Leader Allocated" with a joined
 description), and an explicit empty selection ("None selected"). Also validated via an inline
 HTMLParser tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: per a report that content in this section didn't fit properly, found that
+`#reservationTypesSummaryValue`'s text could overflow the page: `.summary-row-top .value` is
+`white-space: nowrap`, and if several reservation types are selected on page 01,
+`renderReservationTypesSummary()` joins all their labels with " · " into one long string (e.g. all
+5 types joined runs well past 100 characters) — on a single nowrap line that string ran past the
+column's right edge and visually overlapped the "Reservation types" label to its left, unlike every
+other row on this page whose value is always short. Fixed with a new `.summary-row-top.wrap`
+modifier (`flex-direction: column; align-items: flex-start; gap: 4px`, with its `.value` switched to
+`white-space: normal; text-align: left`) applied only to this row's `.summary-row-top` — the value
+now sits on its own line(s) below the label and wraps normally instead of forcing one nowrap line,
+while every other row's layout (which never needs to hold more than a short single value) is
+untouched. Verified via a static render comparing the "all 5 types selected" case before and after:
+before, the value overlapped the label and ran off the left edge of the container; after, it wraps
+cleanly onto two lines directly under the "Reservation types" label with no overlap or overflow. The
+single-default-value case ("Reserved by User as Needed") is unaffected in substance, just now stacked
+below its label instead of beside it. Also re-validated via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 
