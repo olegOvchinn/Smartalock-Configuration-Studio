@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -115,7 +110,6 @@
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin: 0 auto 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
@@ -336,7 +330,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">Anti Desk Hogging</h1>
         <p class="sub">Restrict users from booking the same desk on repeat, to encourage cross-team interaction.</p>
       </div>
@@ -347,7 +340,6 @@
     <div class="panel-inner">
 
       <div class="section-head">
-        <span class="eyebrow">Configure</span>
         <h2 class="section-title">Would you like to enable Anti Desk Hogging?</h2>
         <p>Floorsense has a feature to restrict users from booking the same desk multiple days in a row. Some customers enable this to encourage cross-team interaction and to prevent a return to a quasi-fixed-desk way of working. It works by setting a time window — e.g. 2 days — and the number of times within that window a user can book the same desk.</p>
       </div>
@@ -496,6 +488,8 @@
   Verified via jsdom that clicking Continue still saves `moduleStatus` and triggers navigation to
   the new target with no runtime errors.
 MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head and .path-check-grid (max-width: 640px) gained margin: 0 auto, and .adh-settings (max-width: 760px, the time-drum settings block shown once a path is selected) gained margin: 20px auto 0, so the heading, option grid, and settings block are all horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+
+MOST RECENT CHANGE: per a request to remove the decorative "eyebrow" pill labels site-wide across the Floorsense branch, removed both `<span class="eyebrow">` instances on this page ("Additional Features · Optional" in .panel-intro above the hero title, and "Configure" in .section-head above the section title) — both parent containers still had their heading/paragraph content, so only the span lines were deleted, not the containers. Also removed all three related CSS rulesets from the inline <style> block: the base `.eyebrow { ... }` rule and the `.panel-intro .eyebrow` / `.section-head .eyebrow` modifier rules. Verified via an HTML tag-balance check (all tags still properly nested/closed) and `node --check` on the extracted <script> body (no syntax errors, JS untouched).
 
 MOST RECENT CHANGE: per the site-wide icon-size unification and semantic review, this page's icons were already bare 56x56px (matching floorsense-reservation-types-01.html's .desk-icon-img), so only the 'We will enable this feature' icon needed a redesign — it previously used a generic circle-with-checkmark glyph shared with several other 'confirmed/on' states across the site. Replaced it with the same circular repeat-arrow-with-a-slash-through-it glyph now used for Anti Desk Hogging on floorsense-optional-features-06.html, directly depicting 'repeated same-desk bookings are blocked' rather than a generic on/confirmed signal. The 'We will NOT enable this feature' icon (a circle with a diagonal slash, a clear and already-consistent 'off' glyph) was left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
