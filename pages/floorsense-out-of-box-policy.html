@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -114,7 +109,6 @@
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin-bottom: 22px; max-width: 640px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
@@ -564,7 +558,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Getting Started</span>
         <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
         <p class="sub" id="pageHeroSub">Here's what's included so far — review it below and adjust anything that needs to change for your workplace.</p>
       </div>
@@ -573,10 +566,6 @@
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <span class="eyebrow">Review</span>
-      </div>
 
       <div class="summary-columns" id="summaryColumns">
 
@@ -779,7 +768,6 @@
 
       <div class="policies-section" id="policiesSection">
         <div class="section-head policies-section-head">
-          <span class="eyebrow">Neighbourhood Policies</span>
           <h2 class="section-title">Additional Policies</h2>
           <p>You told us you'd like different booking policy for specific Desk Groups and/or User Groups. Duplicate the core policy above under a name like "Finance" or "Help Desk," then adjust it — up to 3 additional policies.</p>
         </div>
@@ -1856,6 +1844,8 @@ The lone `.download-card-icon` (View/Print Guide card) and all 6 `.summary-icon`
 `.submit-guides-icon` (the small solid-blue-circle checkmark in the post-submit confirmation panel) was deliberately left untouched, despite being one of this file's three assigned icon classes. It's already a small circular badge with a white glyph on a solid accent background — a success/confirmation status glyph, not a card-identifying content icon — matching this page's own earlier documented convention (see the icon-size-unification MOST RECENT CHANGE note above) of treating it, along with other warning/info/status glyphs, as UI chrome rather than a content icon; converting it to the flat white-canvas/colored-border badge pattern would strip its established "solid confirmation checkmark" meaning without adding anything the reader needs. `.info-notice`/`.policies-intro`/`.policies-precedence-notice` icons and every chevron/switch/checkbox glyph on this page were left alone for the same reason (also outside this file's assigned icon-class list).
 
 Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — this page's summary-text builder reads `.summary-group-head h3`, not any of the icon/card classes touched here, so the markup restructure doesn't affect it; confirmed no JS selector anywhere in this file queries `.summary-icon`, `.download-card-icon`, or `.summary-group`'s own classList).
+
+MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed all 3 `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, "Review" above the summary columns, and "Neighbourhood Policies" above the "Additional Policies" section heading. The hero's `.panel-intro` parent kept its `<h1>`/`<p>` content, so only its span was removed. The "Neighbourhood Policies" span's parent (`.section-head.policies-section-head`) also kept its `<h2 class="section-title">`/`<p>`, so only its span was removed too. The "Review" span's parent `.section-head`, however, contained nothing else — it was a bare `<div class="section-head"><span class="eyebrow">Review</span></div>` — so per instruction that entire now-empty `.section-head` div was deleted rather than left as an empty shell. Also removed the `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet (`.policies-section-head`'s own margin rule targets the section-head element itself, not `.eyebrow`, so it was left as-is). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 -->
 
 
