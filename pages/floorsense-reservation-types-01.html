@@ -133,12 +133,32 @@
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
+  /* ---------- glass card: per a request to remove the grey card border and instead read as a
+     panel of translucent glass floating above the page, .desk-check-card dropped its solid
+     `border: 1.5px solid var(--line)` entirely. In its place: a translucent white background
+     (rgba, not opaque `var(--paper)`) with `backdrop-filter: blur()` so anything behind the card
+     shows through softly, and a soft/fuzzy `box-shadow` (large blur radius, low opacity, no hard
+     edge) standing in for the border to give the card its own depth/separation from the page —
+     as if the icon and text inside are casting a gentle shadow down onto the background rather
+     than being boxed in by a hard outline. Hover/selected states, previously shown via
+     `border-color`, now read through the shadow's spread/tint and the background tint instead —
+     see the MOST RECENT CHANGE note below. ---------- */
   .desk-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 26px; transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 22px 26px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .desk-check-card:hover { border-color: var(--accent); }
-  .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .desk-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .desk-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   /* ---------- tick-box marker removed per a request to drop it while keeping the whole card
      clickable — see the MOST RECENT CHANGE note below. The row is still a <label> wrapping the
      hidden checkbox, so clicking anywhere on the card (icon, title, description, whitespace) still
@@ -631,6 +651,26 @@ values are untouched from the prior change — only the badge container simplifi
 themselves. Validated via an inline HTMLParser tag-balance check, `node --check` on the extracted
 script block (untouched), and a weasyprint render (currentColor swapped for its resolved hex for
 preview purposes) confirming clean flat white-canvas/blue-border badges with the same glyph shapes.
+
+MOST RECENT CHANGE: Per a request to "remove grey card borders, instead do fuzzy shadow as if each
+card is transparent glass so icons and text on the card sends show to the background",
+`.desk-check-card`'s solid `border: 1.5px solid var(--line)` was removed entirely. In its place: a
+translucent white background (`rgba(255,255,255,0.6)`, not the previous opaque `var(--paper)`) with
+`backdrop-filter: blur(10px) saturate(160%)` so whatever sits behind the card shows through softly
+(the "transparent glass" look), and a soft, fuzzy `box-shadow` (large blur radius, no hard edge,
+low-opacity navy) standing in for the old border to give the card its own separation/depth from the
+page — as if the icon and text inside are casting a gentle shadow down onto the background rather
+than being boxed in by a hard outline. The `:hover` and `.checked` states, previously shown by
+switching `border-color` to `var(--accent)`, now read through the shadow instead: hover tints the
+shadow blue and spreads it slightly further; `.checked` tints both the shadow (more strongly) and
+the translucent background (toward `--accent-wash`) rather than changing a border color that no
+longer exists. Validated via an inline HTMLParser tag-balance check and `node --check` on the
+extracted script block (untouched — markup/CSS-only change). A weasyprint render was attempted but
+is not a meaningful visual check here: WeasyPrint renders neither `box-shadow` blur/spread nor
+`backdrop-filter` at all (both documented limitations noted elsewhere on this site), so the cards
+appear to have no visible edge whatsoever in that static render — the fuzzy shadow and glass blur
+this change relies on only render correctly in a real browser, which is where this should be
+reviewed.
 -->
 
 <script>
