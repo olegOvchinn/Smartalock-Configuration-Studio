@@ -333,6 +333,24 @@
 
 </main>
 
+<!--
+  NOTE for Oleg: this is Implementation Ready, the Smartalock deployment-template picker (Fixed
+  Lockers / Long-Term Adhoc / Daily Adhoc), styled via ../css/styles.css plus this page's own
+  dedicated ../css/templates.css (`.template-card` and friends, used only by this file).
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished
+  on floorsense-reservation-types-01.html, `.template-card` (in css/templates.css) swapped its
+  `border: 2px solid transparent` for the same translucent-glass background/box-shadow pattern used
+  elsewhere: `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, and
+  `border: none`. Its existing `:hover`/`.selected` states (previously shown via `border-color:
+  #0077B6` plus a background/shadow swap) were converted to the shadow-lift + background-tint
+  pattern, keeping the existing `translateY(-6px)` hover lift. No icon markup exists anywhere on
+  this page (each card is just an `<h3>`/`<p>` pair plus its own locker-bank assignment form), so no
+  icon-badge work applied. Verified via an inline HTMLParser tag-balance check and `node --check` on
+  the extracted script block (untouched — this page's script lives in a separate
+  ../js/smartalock-templates.js file, itself unmodified; CSS-only change).
+-->
+
 <footer class="page-footer">
 
 <p>
