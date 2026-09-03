@@ -114,15 +114,22 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- policy-icon-img: a user-supplied pre-made icon asset (a rounded-square app-icon-style
-     graphic — clock + calendar + "A" glyph with up-arrows, already self-contained with its own white
-     canvas, rounded border, and light backdrop circle baked into the image itself), replacing the
-     earlier hand-drawn .policy-icon-badge/.policy-icon-glyph SVG pair. Since the image already
-     carries its own frame/border, it's placed directly with no extra wrapping badge div (that would
-     double up the border/background); just sized consistently with this page's other single-icon
-     footprint and given the same short drop-shadow used on every other icon badge for a bit of lift.
-     ---------- */
-  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; box-shadow: 0 3px 6px rgba(16,42,67,0.10); }
+  /* ---------- policy-icon-badge: per a request for "your own separate version" of the user-supplied
+     clock+calendar reference icon rather than using their raster PNG directly, this is a hand-drawn
+     SVG re-creation of that same clock-overlapping-calendar composition, redrawn in the site's own
+     flat white-canvas/blue-border badge language (matching floorsense-checkin-window-08.html's/
+     floorsense-idle-release-09.html's lone-icon convention) instead of the reference's rounded-square
+     app-icon frame and indigo line color. Plain accent blue, since this page only ever has one icon
+     in isolation. ---------- */
+  .policy-icon-badge {
+    width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .policy-icon-glyph { width: 38px; height: 38px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -260,7 +267,24 @@
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <img class="policy-icon-img" src="../assets/images/icon-advance-booking-v2.png" alt="">
+            <div class="policy-icon-badge">
+              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="13" r="7"/>
+                <path d="M9 8.5v4.5l3 2"/>
+                <line x1="9" y1="4.7" x2="9" y2="6"/>
+                <line x1="9" y1="20" x2="9" y2="21.3"/>
+                <line x1="4.7" y1="13" x2="6" y2="13"/>
+                <line x1="12" y1="13" x2="13.3" y2="13"/>
+                <rect x="13.5" y="6.5" width="9" height="10" rx="1.4"/>
+                <line x1="16" y1="4.8" x2="16" y2="7.2"/>
+                <line x1="20" y1="4.8" x2="20" y2="7.2"/>
+                <line x1="13.5" y1="9.6" x2="22.5" y2="9.6"/>
+                <line x1="15.3" y1="12" x2="17" y2="12"/>
+                <line x1="18.6" y1="12" x2="20.3" y2="12"/>
+                <line x1="15.3" y1="14.4" x2="17" y2="14.4"/>
+                <line x1="18.6" y1="14.4" x2="20.3" y2="14.4"/>
+              </svg>
+            </div>
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -546,6 +570,21 @@ authored SVG timeline diagram sitting above `.policy-grid` — and its now-unuse
 CSS rules), so the page now shows only the single card with its icon, no banner above it. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
 markup/CSS-only change, no JS affected).
+
+MOST RECENT CHANGE: per a request for "your own separate version" of the icon rather than using the
+second uploaded reference image directly, hand-drew an SVG re-creation of that same
+clock-overlapping-calendar composition (a 7-radius clock circle with hour/minute hand and four tick
+marks, overlapped by a small calendar — rounded-rect body, two hanger-loop lines, a header divider,
+and a 2x2 grid of short day-marks) instead of using `icon-advance-booking-v2.png`. Reverted from the
+plain `<img class="policy-icon-img">` back to the `.policy-icon-badge`/`.policy-icon-glyph` wrapper
+pattern (white canvas, `1.5px solid var(--accent)` border, short drop-shadow) established earlier on
+this page and used for lone icons elsewhere on the site, so the redrawn glyph now renders in the
+site's own blue rather than the reference's indigo, with no fills anywhere (open strokes only,
+`stroke-width: 1.4`, round caps/joins, matching this page's other line-art). `.policy-icon-img` is
+now unused and was removed; both PNG icon assets from the two previous changes were left in place,
+unreferenced. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block (untouched), and a standalone cairosvg render of the glyph at 240px confirming it reads
+clearly as a clock overlapping a calendar in clean blue line art.
 -->
 
 
