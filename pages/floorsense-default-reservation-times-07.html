@@ -223,58 +223,77 @@
      each rail so a dragged pin's position can be read against the grid at a glance — the same
      granularity the old time drums stepped in. ---------- */
   .timeline-diagram-row { display: block; }
-  .timeline-track-wrapper { position: relative; height: 3px; margin: 90px 6px 40px; }
-  .timeline-rail { position: absolute; inset: 0; border-radius: 3px; background: var(--line); }
-  .timeline-zone { position: absolute; top: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-
-  /* ---------- 30-minute tick marks along each rail, generated in JS from that card's own scale
-     (card 1: full-day linear; cards 2/3: the shared ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/
-     endPercentForOffset() scale). ---------- */
-  .timeline-ticks { position: absolute; inset: 0; pointer-events: none; }
-  .timeline-tick {
-    position: absolute; top: 50%; width: 1px; height: 6px; background: var(--header-grey-light);
-    transform: translate(-50%, -50%); opacity: 0.6;
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 10px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
   }
-  .timeline-tick.hour { height: 10px; background: var(--header-grey); opacity: 0.85; }
+  /* ---------- segmented zone: ported from floorsense-business-hours-05.html's finalized style —
+     the shaded start-end span renders as a row of individually rounded 30-minute blocks (flex
+     children, small gap between each), each colored via a per-segment lerpColor() interpolation
+     from a deep to a lighter blue, so the run of separate blocks reads as one continuous gradient
+     rather than a flat bar. Card 1 has no zone (a single point in time, not a span). ---------- */
+  .timeline-zone {
+    position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+
+  /* ---------- 30-minute tick marks below each rail, generated in JS from that card's own scale
+     (card 1: full-day linear; cards 2/3: the shared ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/
+     endPercentForOffset() scale) — ported from floorsense-business-hours-05.html's finalized style,
+     where ticks sit as a row of dots under the rail instead of crossing through it. ---------- */
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
 
   .timeline-node { position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none; }
-  .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; }
+  .timeline-node.draggable { padding: 16px; margin: -16px; cursor: grab; touch-action: none; z-index: 2; }
   .timeline-node.draggable:active, .timeline-node.draggable.dragging { cursor: grabbing; }
   .timeline-node .anchor-pin {
-    width: 15px; height: 15px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s, transform .15s;
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0; /* invisible drag handle — ported from floorsense-business-hours-05.html; the large
+      invisible padding/margin hit-target on draggable nodes and the floating label-time chip below
+      still make each pin fully usable and readable without a visible knob. */
   }
   .timeline-node.draggable:hover .anchor-pin, .timeline-node.draggable.dragging .anchor-pin {
-    box-shadow: 0 0 0 6px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .timeline-node.draggable.dragging .anchor-pin { transform: scale(1.06); }
+  .timeline-node.draggable.dragging .anchor-pin { transform: scale(1.12); }
   .timeline-node.draggable:focus-visible .anchor-pin {
-    box-shadow: 0 0 0 4px var(--accent-wash), 0 1px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 10px;
-    font-size: 13.5px; font-weight: 700; color: var(--accent-deep); white-space: nowrap;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .timeline-node .label-time.primary { color: #102A43; }
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
   .timeline-node .label-desc {
-    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
-    font-size: 11.48px; color: var(--ink-soft); text-align: center; white-space: nowrap;
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
-  /* ---------- enlarged "start" pin: card 1's own node is centered on its solo timeline
-     (.center-node, left:50%, exactly the same size as floorsense-checkin-window-08.html's
-     "Booking start" pin); cards 2/3 reuse the same pin/label sizing via .big-anchor for their
-     start reference node, but that node's `left` is set from JS instead of fixed at 50%, since
-     it shares the rail with a second, normal-sized "end" node driven by that card's own drum. ---------- */
-  .center-node { left: 50%; }
-  .center-node .anchor-pin,
-  .big-anchor .anchor-pin { width: 66px; height: 66px; border-width: 12px; }
-  .center-node .label-time.primary,
-  .big-anchor .label-time.primary {
-    font-family: var(--font-display); font-size: 22.5px; font-weight: 200; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .center-node .label-desc,
-  .big-anchor .label-desc { font-size: 12.5px; font-weight: 700; margin-top: 14px; }
 
   /* ---------- reveal animation: plays once when the example scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
@@ -282,16 +301,9 @@
      (same constraint as floorsense-checkin-window-08.html's diagram). Row B is staggered slightly
      behind Row A so the two comparisons read as a sequence rather than firing all at once. ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ci-pop-handle {
-    from { opacity: 0; transform: scale(0.4); }
-    to { opacity: 1; transform: scale(1); }
-  }
   @keyframes ci-grow {
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
-  }
-  .timeline-card.animate-in .anchor-pin {
-    animation: ci-pop-handle .4s cubic-bezier(.34,1.56,.64,1) both;
   }
   .timeline-card.animate-in .label-time,
   .timeline-card.animate-in .label-desc {
@@ -459,7 +471,7 @@
                     <div class="timeline-rail">
                       <div class="timeline-ticks" id="card1Ticks"></div>
                     </div>
-                    <div class="timeline-node center-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
+                    <div class="timeline-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
                       <div class="anchor-pin"></div>
                       <div class="label-time primary" id="card1StartTime">8:30 AM</div>
                       <div class="label-desc">Custom start</div>
@@ -501,7 +513,7 @@
                         <div class="label-time" id="durationStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node big-anchor draggable" id="durationEndNode" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="960">
+                      <div class="timeline-node draggable" id="durationEndNode" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="960">
                         <div class="anchor-pin"></div>
                         <div class="label-time primary" id="durationEndTime">5:30 PM</div>
                         <div class="label-desc">Ends</div>
@@ -540,7 +552,7 @@
                         <div class="label-time" id="fixedEndStartTime">8:30 AM</div>
                         <div class="label-desc">Starts</div>
                       </div>
-                      <div class="timeline-node big-anchor draggable" id="fixedEndEndNode" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="960">
+                      <div class="timeline-node draggable" id="fixedEndEndNode" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="960">
                         <div class="anchor-pin"></div>
                         <div class="label-time primary" id="fixedEndEndTime">5:00 PM</div>
                         <div class="label-desc">Ends</div>
@@ -955,6 +967,41 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to make this page's three timeline diagrams "the same as page 05"
+(floorsense-business-hours-05.html), all three (`#card1StartNode`'s solo full-day pin, and cards 2/3's
+start+end pairs) were re-skinned with that page's finalized visual treatment, ported as directly as
+each card's own scale allows. `.timeline-track-wrapper` grew from a thin 3px line to a 36px pill-
+shaped rail (white fill, thin border, inset shadow, border-radius:999px). Cards 2/3's `.timeline-zone`
+changed from one solid CSS-gradient bar to a row of individually rounded `.timeline-zone-seg` flex
+children (30-minute blocks, 3px gaps, glass-style inset shadows + a glossy `::before` sheen), each
+colored via a new `lerpColor()` helper interpolating from `#0058B0` to `#5AC8FA` — a new
+`renderZoneSegmentsInto(containerEl, segCount)` function (segCount computed per card: duration/30 for
+card 2, (end-start)/30 for card 3) builds these and is called from `updateDurationDiagram()`/
+`updateFixedEndDiagram()` alongside the existing left/width positioning of the outer `.timeline-zone`.
+Card 1 has no zone (a single point in time), so it only picked up the rail/pin/tick restyle. Every
+`.anchor-pin` (15px visible navy dot before) is now a 19px fully invisible (`opacity:0`) drag handle
+that only reveals itself (navy fill + wash glow) on hover/drag/focus, matching page 05 exactly — the
+large invisible padding/margin hit-target plus the floating `.label-time` chip keep every pin fully
+usable without a visible knob. `.label-time` changed from plain colored text above the pin to a white-
+on-navy pill chip (`background:var(--accent-deep); border-radius:999px; padding:4px 11px`), and
+`.label-desc` picked up page 05's small-caps treatment (uppercase, letter-spacing, bold). The old
+enlarged "start"/"end" pin treatment — `.center-node` (card 1, 66px pin + 22.5px display-font label,
+fixed at left:50%) and `.big-anchor` (cards 2/3's end pins, same 66px sizing) — was removed entirely
+along with its CSS block and its classes on `#card1StartNode`/`#durationEndNode`/`#fixedEndEndNode`,
+since page 05 uses one uniform pin size for every node; card 1's pin position is already set purely
+from JS (`left` inline style), so dropping its `left:50%` default class rule had no effect on where it
+actually renders. 30-minute tick marks moved from crossing through the rail (`.timeline-ticks{inset:0}`,
+thin vertical lines) to a row of small dots sitting below it (`.timeline-ticks{top:100%}`, 2px dots /
+4px hour dashes) — `renderTicksInto()` itself needed no change, since it already only sets `left`/an
+`hour` class and the new look comes entirely from CSS. The now-unused `ci-pop-handle` keyframes/rule
+(previously popping the visible 15px pin into view) was removed along with the pin it animated.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+jsdom smoke test confirming all three diagrams render with the expected segment counts/colors and
+that pointer/keyboard-driven changes to each pin still update state, labels, and (for cards 2/3) the
+live segment count correctly, and a WeasyPrint render confirming no layout/CSS errors (WeasyPrint does
+not run JS, so the pins/segments themselves are not visible in that static render — expected, as with
+every other JS-driven diagram on this site).
 -->
 
 <script>
@@ -1093,6 +1140,30 @@ touched file.
     return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
   }
 
+  // Segmented zone colors — ported verbatim from floorsense-business-hours-05.html so cards 2/3's
+  // shaded start-end span renders with the exact same deep-to-light blue gradient treatment: each
+  // 30-minute block is a separate flex child colored via lerpColor() rather than one solid fill.
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+  function renderZoneSegmentsInto(containerEl, segCount) {
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    containerEl.innerHTML = html;
+  }
+
   const card1StartLabel = document.getElementById('card1StartLabel');
   const card1StartTime = document.getElementById('card1StartTime');
   const card1StartNode = document.getElementById('card1StartNode');
@@ -1134,6 +1205,7 @@ touched file.
     durationEndNode.style.left = endPercent + '%';
     durationZone.style.left = ROW_EDGE_PERCENT + '%';
     durationZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    renderZoneSegmentsInto(durationZone, Math.max(0, Math.round(durationMinutes / 30)));
     durationStartTime.textContent = formatMinutesAs12Hour(startMinutes);
     durationEndTime.textContent = formatMinutesAs12Hour(startMinutes + durationMinutes);
     durationLabel.textContent = formatDurationMinutes(durationMinutes);
@@ -1149,6 +1221,7 @@ touched file.
     fixedEndEndNode.style.left = endPercent + '%';
     fixedEndZone.style.left = ROW_EDGE_PERCENT + '%';
     fixedEndZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    renderZoneSegmentsInto(fixedEndZone, Math.max(0, Math.round((endMinutes - startMinutes) / 30)));
     fixedEndStartTime.textContent = formatMinutesAs12Hour(startMinutes);
     fixedEndEndTime.textContent = formatMinutesAs12Hour(endMinutes);
     fixedEndLabel.textContent = formatMinutesAs12Hour(endMinutes);
