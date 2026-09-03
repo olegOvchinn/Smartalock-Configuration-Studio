@@ -153,12 +153,38 @@
   .download-btn svg { width: 15px; height: 15px; }
 
   /* ---------- summary groups ---------- */
+  /* ---------- glass card: per the site-wide glass-card treatment introduced on
+     floorsense-reservation-types-01.html, .summary-group dropped its solid `border: 1.5px solid
+     var(--line)` for a translucent white background, backdrop-filter blur, and a soft fuzzy
+     box-shadow standing in for the border. These read-only summary groups have no hover/selected
+     state, so only the base glass treatment applies — see the MOST RECENT CHANGE note below. ---------- */
   .summary-group {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 20px 22px; margin-bottom: 18px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
   .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
+  /* ---------- summary-icon-badge: wraps each group heading's raster icon in the site-wide
+     white-canvas, accent-bordered badge box. The 8 summary groups form a repeating set of section
+     icons down the page, so this cycles the established blue/pink/purple/teal/amber palette in DOM
+     order (wrapping back to blue after 5) rather than one shared accent colour. Sized to comfortably
+     contain the existing 40px icon image plus a little padding. ---------- */
+  .summary-group-head h3 .summary-icon-badge {
+    width: 70px; height: 70px; border-radius: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .summary-group-head h3 .summary-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .summary-group-head h3 .summary-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .summary-group-head h3 .summary-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .summary-group-head h3 .summary-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .summary-group-head h3 .summary-icon-badge.badge-amber { border-color: #F2A154; }
   .summary-group-head h3 .summary-icon { width: 40px; height: 40px; flex-shrink: 0; }
   .status-pill {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
@@ -345,7 +371,7 @@
       <!-- IT Configuration & Integrations -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-it-configuration.png" alt="">IT Configuration &amp; Integrations</h3>
+          <h3><span class="summary-icon-badge badge-blue"><img class="summary-icon" src="../assets/images/icon-it-configuration.png" alt=""></span>IT Configuration &amp; Integrations</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-it">—</span>
             <a class="edit-link" href="smartalock-it-configuration-02.html">Edit</a>
@@ -357,7 +383,7 @@
       <!-- Initial Locker Access Methods -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-access-card.png" alt="">Initial Locker Access Methods</h3>
+          <h3><span class="summary-icon-badge badge-pink"><img class="summary-icon" src="../assets/images/icon-access-card.png" alt=""></span>Initial Locker Access Methods</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-access">—</span>
             <a class="edit-link" href="smartalock-access-methods-09.html">Edit</a>
@@ -369,7 +395,7 @@
       <!-- Locker Door Behaviour -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-locker-door-behaviour.png" alt="">Locker Door Behaviour</h3>
+          <h3><span class="summary-icon-badge badge-purple"><img class="summary-icon" src="../assets/images/icon-locker-door-behaviour.png" alt=""></span>Locker Door Behaviour</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-behaviour">—</span>
             <a class="edit-link" href="smartalock-locker-behaviour-03.html">Edit</a>
@@ -381,7 +407,7 @@
       <!-- Reservation Type -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-reservation-type.png" alt="">Reservation Type</h3>
+          <h3><span class="summary-icon-badge badge-teal"><img class="summary-icon" src="../assets/images/icon-reservation-type.png" alt=""></span>Reservation Type</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-reservation">—</span>
             <a class="edit-link" href="smartalock-reservation-type-01.html">Edit</a>
@@ -393,7 +419,7 @@
       <!-- Locker Policy -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-release-when-idle.png" alt="">Locker Policy</h3>
+          <h3><span class="summary-icon-badge badge-amber"><img class="summary-icon" src="../assets/images/icon-release-when-idle.png" alt=""></span>Locker Policy</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-locker">—</span>
             <a class="edit-link" href="smartalock-locker-policy-05.html">Edit</a>
@@ -405,7 +431,7 @@
       <!-- User Policy -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-who-can-use-lockers.png" alt="">User Policy</h3>
+          <h3><span class="summary-icon-badge badge-blue"><img class="summary-icon" src="../assets/images/icon-who-can-use-lockers.png" alt=""></span>User Policy</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-user">—</span>
             <a class="edit-link" href="smartalock-user-policy-06.html">Edit</a>
@@ -417,7 +443,7 @@
       <!-- Kiosk Customisation -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-kiosk-customisation.png" alt="">Kiosk Customisation</h3>
+          <h3><span class="summary-icon-badge badge-pink"><img class="summary-icon" src="../assets/images/icon-kiosk-customisation.png" alt=""></span>Kiosk Customisation</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-kiosk">—</span>
             <a class="edit-link" href="smartalock-kiosk-customisation-07.html">Edit</a>
@@ -429,7 +455,7 @@
       <!-- Locker Types -->
       <div class="summary-group">
         <div class="summary-group-head">
-          <h3><img class="summary-icon" src="../assets/images/icon-locker-types-summary.png" alt="">Locker Types</h3>
+          <h3><span class="summary-icon-badge badge-purple"><img class="summary-icon" src="../assets/images/icon-locker-types-summary.png" alt=""></span>Locker Types</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-locker-type">—</span>
             <a class="edit-link" href="smartalock-locker-types-04.html">Edit</a>
@@ -534,6 +560,7 @@
   with `target="_blank"`, and clicking "Save & Email Me Summary" still disables the button and
   shows the confirmation panel with no runtime errors.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. Each of the 8 `.summary-group` cards (IT Configuration & Integrations, Initial Locker Access Methods, Locker Door Behaviour, Reservation Type, Locker Policy, User Policy, Kiosk Customisation, Locker Types) dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border — these are read-only summary groups with no hover/selected state, so only the base glass treatment applies. Each group heading's raster `<img class="summary-icon">` (40x40px) was wrapped in a new `<span class="summary-icon-badge">` — a 70x70px white-canvas, accent-bordered badge sized to comfortably contain the icon plus padding — cycling the established blue/pink/purple/teal/amber palette across the 8 groups in DOM order (wrapping back to blue for User Policy, pink for Kiosk Customisation, purple for Locker Types), since the 8 section icons form a repeating set down the page. The `.progress-card`/`.download-card` (both smaller `var(--radius-md)`/`var(--paper-soft)` panels, not the assigned card class) and `.submit-guides-panel` (a distinct accent-tinted callout banner) were deliberately left untouched — out of scope for this pass. Icon image assets themselves were untouched. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 -->
 
 <script>
