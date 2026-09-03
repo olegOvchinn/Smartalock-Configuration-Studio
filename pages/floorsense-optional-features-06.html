@@ -135,6 +135,15 @@
      badge/background/photo). Replaces the per-row photo crops (.feature-row-thumb, removed) used
      briefly on this page — see the MOST RECENT CHANGE note below. ---------- */
   .feature-row-icon { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- per-row icon colour cycling: matches the blue/pink/purple/teal/amber palette cycle
+     already applied to the icon badges on floorsense-reservation-types-01.html and
+     floorsense-checkin-methods-02.html, so each of this page's 4 rows reads as a distinct feature
+     rather than 4 identical blue icons. Applied directly to .feature-row-icon (no separate badge
+     wrapper on this page, per its "Style 1" bare-icon treatment) using the exact same hex values. ---------- */
+  .feature-row-icon.badge-blue { color: #4A8DF0; }
+  .feature-row-icon.badge-pink { color: #EC6BA5; }
+  .feature-row-icon.badge-purple { color: #9B6BEC; }
+  .feature-row-icon.badge-teal { color: #2FBF9F; }
   .feature-row-body { flex: 1; min-width: 0; }
   .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
   .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
@@ -304,7 +313,7 @@
       <div class="feature-card">
 
         <div class="feature-row">
-          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
@@ -319,7 +328,7 @@
         </div>
 
         <div class="feature-row">
-          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-pink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12.8" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7.3v3.4"/><path d="M15.3 9.4a4.5,4.5 0 1 1 -6.6,0"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">No Swipe No Power (NSNP)</p>
@@ -330,7 +339,7 @@
         </div>
 
         <div class="feature-row">
-          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7v10"/><path d="M9.3 10.3L12 7.6l2.7 2.7"/><path d="M9 18h6"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
@@ -348,7 +357,7 @@
         </div>
 
         <div class="feature-row">
-          <svg class="feature-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M15.4 9.2a4.2,4.2 0 0 0 -6.6,1.1"/><path d="M8.6 14.8a4.2,4.2 0 0 0 6.6,-1.1"/><line x1="7.5" y1="16.5" x2="16.5" y2="7.5" stroke-width="0.8"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Anti Desk Hogging</p>
@@ -623,6 +632,25 @@ here and its Continue button already pointed to the summary, so it still works c
 who reaches it directly via the progress bar. Verified via an inline HTMLParser tag-balance check,
 `node --check` on the extracted script block, and a jsdom check confirming the button's label and the
 next-arrow's href.
+
+MOST RECENT CHANGE: per a request that this page's icons follow the same distinct-colour rule already
+applied to floorsense-reservation-types-01.html and floorsense-checkin-methods-02.html, each of the 4
+`.feature-row-icon` SVGs (previously all plain `color: var(--accent)` blue) gained a `badge-COLOR`
+modifier class cycling blue/pink/purple/teal in DOM order — Auto-Release on Idle (blue), NSNP (pink),
+FME (purple), Anti Desk Hogging (teal) — matching the exact hex values (`#4A8DF0`/`#EC6BA5`/`#9B6BEC`/
+`#2FBF9F`) already used by `.summary-icon-badge`/`.desk-icon-badge` elsewhere. This page has no
+separate badge wrapper (its "Style 1" bare-icon treatment was deliberately preserved by an earlier
+explicit instruction — see the MOST RECENT CHANGE note above about `.feature-card`'s glass-card pass),
+so the modifier classes are applied directly to `.feature-row-icon` itself rather than to a wrapper div.
+Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
+(markup/CSS-only change, no JS touched). Note: WeasyPrint does not resolve `currentColor` against an
+inherited `color` set via a compound class selector on the SVG element or an ancestor — confirmed via
+two isolated minimal tests (a plain `.icon.blue` class and a `.wrap.blue .icon` descendant selector,
+both literal hex, no CSS variables involved) where the icon stayed black in both cases — so this
+change could not be visually confirmed via the project's usual WeasyPrint render and was verified
+against the CSS/SVG spec instead; this is the same `currentColor`-in-SVG limitation already documented
+elsewhere in this project (e.g. the icon badges on floorsense-out-of-box-policy.html use the identical
+technique and pattern).
 -->
 
 
