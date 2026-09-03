@@ -372,7 +372,7 @@
 
         <div class="feature-row">
           <svg class="feature-row-icon badge-pink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.1" r="4.2" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.35 13.6l1.7 1.7l3.6-4.4"/><circle cx="12" cy="8.3" r="0.55" fill="currentColor" stroke="none"/><path d="M10.5 7.3a2.1,2.1 0 0 1 3,0"/><path d="M9.4 6a4,4 0 0 1 5.2,0"/></svg>
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.3 12l1.8 1.8l3.6-4.4"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Remote Booking Confirmation</p>
             <p class="feature-row-desc">Lets end users confirm their booking remotely with a tap, any time — no need to check in at the desk itself.</p>
@@ -798,6 +798,15 @@ The `badge-amber` colour is unchanged. Verified via an inline HTMLParser tag-bal
 `node --check` on the extracted script block (markup/CSS-only change, no JS touched), and a
 rendered weasyprint preview confirming the four-cell grid with two ticked/shaded corners renders as
 intended.
+
+MOST RECENT CHANGE: per a follow-up to simplify the Remote Booking Confirmation icon, removed the
+tap/signal motif (the dot and its two concentric arcs) entirely, leaving just the ticked circle —
+a highlight circle with a checkmark inside, both recentred at (12,12) now that there's no signal
+glyph above it to leave room for. Radius grew from 4.2 to 4.6 to match the same size already used
+by the other circular-highlight icons on this page (e.g. Recurring Bookings' earlier repeat-arc
+glyph, Anti Desk Hogging before its own redesign). Same colour (badge-pink), just a plainer glyph.
+Verified via an inline HTMLParser tag-balance check and a rendered weasyprint preview confirming a
+clean, centered ticked circle.
 -->
 
 
