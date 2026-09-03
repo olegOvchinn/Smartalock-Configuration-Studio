@@ -36,6 +36,11 @@
     organisation-policy toggle — now that it's a concrete relay-driven behaviour a desk user would
     directly notice (power off until check-in), it's genuinely end-user-relevant when turned on, so
     it's included here conditionally rather than left out altogether.
+  - Remote Booking Confirmation (new row) <- project.floorsense.wizard.remoteConfirm.enabled,
+    default false; same pattern as NSNP/Sit-stand (row when on, not-on-box entry when off). Added
+    the same day this feature itself was added to floorsense-optional-features-06.html's hub, since
+    it directly changes how an end user confirms a booking — clearly end-user-relevant, unlike
+    Auto-Release on Idle below.
   - Sit-stand / FME (new row) <- project.floorsense.wizard.fme { mode }; only shown when mode isn't
     'none'; moves into the not-on-box when off, same as the static guide already did.
   - Recurring bookings <- project.floorsense.wizard.outOfBoxPolicy.recurringEnabled, default false;
@@ -79,6 +84,24 @@ in a document meant to print cleanly as a PDF, so `.row-icon` only gained the sa
 `box-shadow` as `.hero-icon-badge` for a subtle, consistent lift — its background/color values
 (including `.warm`) are unchanged. Verified via an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block (untouched — CSS/markup-only change).
+
+MOST RECENT CHANGE: per a request to check this guide reflects today's changes on
+floorsense-optional-features-06.html, added a new conditional row for the brand-new "Remote Booking
+Confirmation" feature added there today — `#row-remote-confirm`, under the "Tapping In & Out"
+section (right after the NSNP row, since it's another way the tap-in step itself changes), reading
+`project.floorsense.wizard.remoteConfirm.enabled` the same way NSNP/Sit-stand/Recurring already do:
+shown only when on, added to the "Not switched on yet" list when off. Icon is a plain checkmark-in-
+circle (not the `.warm` amber treatment used for NSNP/DND, matching Sit-stand's plain-blue tier
+since this is a convenience feature, not something that needs extra attention). The header
+documentation comment at the top of this file was updated to list the new row alongside the others.
+Reviewed the hub's other two changes today for impact here: removing NSNP's switch from the hub
+doesn't change `project.floorsense.wizard.nsnp` itself, which this page already reads directly, so
+the NSNP row needed no changes; and the brief add-then-remove of Recurring Bookings' day-of-week
+picker never touched `outOfBoxPolicy.recurringEnabled` (the only field this page's Recurring row
+ever read), so that row needed no changes either. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and a jsdom test confirming the new row stays
+hidden with remote confirmation off, appears with the right copy when on, and is added to/removed
+from the "Not switched on yet" list correctly.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -297,6 +320,14 @@ in a document meant to print cleanly as a PDF, so `.row-icon` only gained the sa
       </div>
     </div>
 
+    <div class="row" id="row-remote-confirm" hidden>
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5-6"/></svg></div>
+      <div class="row-body">
+        <h3>Or just confirm your booking remotely</h3>
+        <p>No need to tap in at the desk itself — you can confirm your booking remotely with a tap, any time, from the app.</p>
+      </div>
+    </div>
+
     <div class="section-eyebrow">Ways to Check In</div>
 
     <div class="row">
@@ -478,6 +509,10 @@ in a document meant to print cleanly as a PDF, so `.row-icon` only gained the sa
     document.getElementById('row-nsnp').hidden = false;
   }
 
+  /* ---------------- remote booking confirmation ---------------- */
+  const remoteConfirmOn = !!(wizard.remoteConfirm && wizard.remoteConfirm.enabled);
+  if (remoteConfirmOn) document.getElementById('row-remote-confirm').hidden = false;
+
   /* ---------------- sit-stand / FME ---------------- */
   const fme = wizard.fme || {};
   const sitStandOn = fme.mode === 'all' || fme.mode === 'list';
@@ -499,6 +534,7 @@ in a document meant to print cleanly as a PDF, so `.row-icon` only gained the sa
 
   /* ---------------- not-switched-on-yet box ---------------- */
   const notOnItems = [];
+  if (!remoteConfirmOn) notOnItems.push('Remote booking confirmation');
   if (!sitStandOn) notOnItems.push('Sit-stand desk controls');
   if (!recurringOn) notOnItems.push('Recurring (repeating) bookings');
   if (!dndOn) notOnItems.push('Do Not Disturb status');
