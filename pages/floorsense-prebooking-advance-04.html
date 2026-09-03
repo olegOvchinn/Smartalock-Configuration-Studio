@@ -121,15 +121,7 @@
      floorsense-idle-release-09.html's lone-icon convention) instead of the reference's rounded-square
      app-icon frame and indigo line color. Plain accent blue, since this page only ever has one icon
      in isolation. ---------- */
-  .policy-icon-badge {
-    width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .policy-icon-glyph { width: 38px; height: 38px; color: var(--accent); position: relative; z-index: 1; }
+  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; box-shadow: 0 3px 6px rgba(16,42,67,0.10); }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -354,29 +346,7 @@
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <div class="policy-icon-badge">
-              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9.5" cy="13.5" r="7.2"/>
-                <line x1="9.5" y1="13.5" x2="9.5" y2="9.3"/>
-                <line x1="9.5" y1="13.5" x2="12.8" y2="15.6"/>
-                <line x1="9.5" y1="6.5" x2="9.5" y2="7.4"/>
-                <line x1="9.5" y1="19.6" x2="9.5" y2="20.5"/>
-                <line x1="2.3" y1="13.5" x2="3.2" y2="13.5"/>
-                <line x1="15.8" y1="13.5" x2="16.7" y2="13.5"/>
-                <line x1="4.6" y1="8.6" x2="5.2" y2="9.2"/>
-                <line x1="13.8" y1="17.8" x2="14.4" y2="18.4"/>
-                <line x1="14.4" y1="8.6" x2="13.8" y2="9.2"/>
-                <line x1="5.2" y1="17.8" x2="4.6" y2="18.4"/>
-                <rect x="13" y="6" width="9.4" height="10.4" rx="1.4"/>
-                <line x1="15.6" y1="4.4" x2="15.6" y2="6.8"/>
-                <line x1="19.8" y1="4.4" x2="19.8" y2="6.8"/>
-                <line x1="13" y1="9.2" x2="22.4" y2="9.2"/>
-                <line x1="16.1" y1="9.2" x2="16.1" y2="16.4"/>
-                <line x1="19.3" y1="9.2" x2="19.3" y2="16.4"/>
-                <line x1="13" y1="12.4" x2="22.4" y2="12.4"/>
-                <line x1="13" y1="14.4" x2="22.4" y2="14.4"/>
-              </svg>
-            </div>
+            <img class="policy-icon-img" src="../assets/images/icon-dates.png" alt="A calendar icon on a pale amber circular backdrop">
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -766,6 +736,21 @@ CSS rule was removed again in favour of the restored `.policy-icon-badge`/`.poli
 original upload) and was left in place, now simply unreferenced again like the two earlier icon
 assets. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
 script block (untouched — markup/CSS-only change, no JS affected).
+
+MOST RECENT CHANGE: per a request to "use icon-dates.png instead," swapped this page's icon again —
+from the hand-drawn `.policy-icon-badge`/`.policy-icon-glyph` SVG restored in the change above to
+`assets/images/icon-dates.png`, the plain calendar-on-pale-amber-circle icon already used for
+"Project Dates" on `smartalock-templates-00.html`. Since that artwork already bakes in its own
+circular backdrop and color, it's placed directly as a plain `<img class="policy-icon-img">` with no
+wrapping badge div, the same pattern used for this page's earlier raster-icon swaps — wrapping it in
+another white/blue-bordered square would have doubled up the framing and clashed with the image's own
+amber circle. `.policy-icon-badge`/`.policy-icon-glyph` are now unused again and were removed; a
+`.policy-icon-img` rule (72px, same short drop-shadow used elsewhere on this page) was reinstated.
+`icon-dates.png` itself is untouched (this page now simply references an existing sitewide asset
+rather than adding a new one), and every other icon asset previously used on this page
+(`icon-advance-booking.png`, `-v2.png`, `-v3.png`) remains in place, unreferenced. Verified via an
+inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
+markup/CSS-only change, no JS affected).
 -->
 
 
