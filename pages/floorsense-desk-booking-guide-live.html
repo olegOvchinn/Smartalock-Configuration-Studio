@@ -49,6 +49,36 @@
   distinct thing an end user needs to be told about; flag if it should get its own row.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's hardcoded green values (which, unlike the wizard pages, aren't driven by CSS variables) were swapped one-for-one using this page's own Smartalock parallel (smartalock-locker-guide-live.html) as the reference: #1FAA59 -> #0071E3, #146B3A -> #0058B0, #E6F7ED -> #E8F1FC, #178A48 -> #0058B0. Covers the toolbar's primary button, the hero gradient, section-eyebrow headings, and the row-icon badges. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: per a site-wide request to propagate the glass-card/icon-badge styling already
+finished on floorsense-reservation-types-01.html, reviewed this page for large `var(--radius-lg)`-
+style bordered CARD elements to convert — found none: `.not-on-box` uses an intentionally *dashed*
+1.5px border specifically to signal "these features aren't switched on yet" (the same
+placeholder/off-state visual language used elsewhere on this site for empty/unconfigured states),
+and `.footer-note` is a small flat disclaimer strip, not a large content card — converting either to
+the solid glass-card look would blur that "off/incidental" signal, so both were deliberately left
+untouched and this page got icon treatment only, as anticipated. `.hero-icon-badge` (the 4 icons in
+the hero banner) was already a badge-like `<span>` wrapper (translucent white circle on the blue
+hero gradient) — rather than re-wrapping it, it just gained a `border` (previously none) and the
+standard short `box-shadow: 0 3px 6px rgba(16,42,67,0.10)`, plus 4 new `badge-blue`/`badge-pink`/
+`badge-purple`/`badge-teal` modifier classes (one per icon, in DOM order: clock, calendar, ID
+card, alert) that recolor each badge's border to the site's standard palette hex — the glyphs
+themselves stay white rather than switching to `currentColor`-matched hues, since a blue glyph on
+this page's own blue gradient hero would disappear; a colored ring around an otherwise-identical
+white icon reads as the intended "each topic gets its own accent" cue without that contrast problem.
+`.row-icon` (13 instances across the 4 content sections, one per topic — Check-in Window, Plan
+Ahead, Duration, Max Desks, Tap In/Out, Sitting Elsewhere, NSNP, Check-in Methods, Sit-Stand,
+Recurring, DND) was deliberately left in its existing plain-blue treatment rather than palette-
+cycled: unlike the wizard's multi-select option cards (where each rainbow color helps distinguish
+sibling *choices* in one decision), these rows are sequential facts in a linear end-user guide, and
+this page already has its own established two-tier color language — plain blue for a normal
+informational row, and the existing `.row-icon.warm` amber modifier (already applied to the NSNP and
+DND rows) to flag something that specifically deserves extra attention. Introducing a 5-color
+rainbow across 13 rows would compete with that existing warm/normal distinction and read as noisy
+in a document meant to print cleanly as a PDF, so `.row-icon` only gained the same short
+`box-shadow` as `.hero-icon-badge` for a subtle, consistent lift — its background/color values
+(including `.warm`) are unchanged. Verified via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block (untouched — CSS/markup-only change).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -115,7 +145,13 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   .hero-icon-badge {
     width: 52px; height: 52px; border-radius: 13px; background: rgba(255,255,255,0.16);
     display: flex; align-items: center; justify-content: center; color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .hero-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .hero-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .hero-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .hero-icon-badge.badge-teal { border-color: #2FBF9F; }
   .hero-icon-badge svg { width: 24px; height: 24px; }
 
   /* ---------- body ---------- */
@@ -133,6 +169,7 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
   .row-icon {
     width: 52px; height: 52px; border-radius: 13px; background: #E8F1FC; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center; color: #0058B0;
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
   .row-icon.warm { background: #FCF1DE; color: #B36B00; }
   .row-icon svg { width: 22px; height: 22px; }
@@ -190,10 +227,10 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
     <h1>Everything you need to know about booking a desk</h1>
     <p class="sub">A quick, plain-English guide to how check-in, booking and privacy work — no jargon, just the essentials.</p>
     <div class="hero-icons">
-      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></span>
-      <span class="hero-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></span>
+      <span class="hero-icon-badge badge-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      <span class="hero-icon-badge badge-pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      <span class="hero-icon-badge badge-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></span>
+      <span class="hero-icon-badge badge-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></span>
     </div>
   </div>
 
