@@ -359,7 +359,7 @@
         </div>
 
         <div class="feature-footer">
-          <p class="feature-footer-text">Switch on any feature you'd like to configure, then use Continue to work through just those pages — anything left off is skipped entirely. Each feature's own page still has full detail and can be revisited any time from the progress bar above.</p>
+          <p class="feature-footer-text">Switch on any feature you'd like to configure, then use Continue to work through just those pages — anything left off is skipped entirely. Each feature's own page still has full detail and can be revisited any time from the progress bar above. This is the last of the core selections — Continue takes you to your Configuration Summary next.</p>
         </div>
 
       </div>
@@ -368,7 +368,7 @@
         <a class="page-nav-btn" href="floorsense-business-hours-05.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn next" href="floorsense-out-of-box-policy.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -381,7 +381,7 @@
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Selection saved automatically</span></div>
       <div style="display:flex; gap:10px;">
         <button class="ghost" id="resetBtn" type="button">Reset</button>
-        <button class="primary" id="continueBtn" type="button">Save &amp; continue</button>
+        <button class="primary" id="continueBtn" type="button">Continue to Summary</button>
       </div>
     </div>
   </div>
@@ -605,6 +605,24 @@ removed, not the parent. Also removed the now-unused `.eyebrow` and `.panel-intr
 rulesets from the inline stylesheet (this page never had a `.section-head .eyebrow` rule). Verified
 via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
 (untouched).
+
+MOST RECENT CHANGE: per a request to exclude floorsense-setup-path-00.html from the wizard's linear
+flow, this page is now the last of the core selections. The next-arrow and `#continueBtn` (relabelled
+from "Save & continue" to "Continue to Summary", matching the label floorsense-setup-path-00.html
+already used for the same transition) both now go straight to floorsense-out-of-box-policy.html
+instead of floorsense-setup-path-00.html; the `feature-footer-text` copy gained a trailing sentence —
+"This is the last of the core selections — Continue takes you to your Configuration Summary next." —
+so it's clear before clicking. floorsense-out-of-box-policy.html's own back-arrow was updated to match,
+now pointing here instead of floorsense-setup-path-00.html, so back-navigation from the summary no
+longer routes through the now-bypassed page. Per an explicit scope decision, the progress bar itself
+(including its "Core Complete" segment linking to floorsense-setup-path-00.html) was left untouched on
+every page, including this one — it still shows the full module map so that page, and every other
+module, stays directly reachable by clicking its segment; only the enforced Continue/back-arrow flow
+changed. floorsense-setup-path-00.html itself was not modified — its own back-arrow already pointed
+here and its Continue button already pointed to the summary, so it still works correctly for anyone
+who reaches it directly via the progress bar. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, and a jsdom check confirming the button's label and the
+next-arrow's href.
 -->
 
 
@@ -796,7 +814,7 @@ via an inline HTMLParser tag-balance check and `node --check` on the extracted s
     markModuleSaved('optional-features');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-setup-path-00.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-out-of-box-policy.html'; }, 500);
   });
 })();
 </script>

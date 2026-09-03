@@ -817,7 +817,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-setup-path-00.html">
+        <a class="page-nav-btn" href="floorsense-optional-features-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <span class="page-nav-btn next disabled">
@@ -1926,6 +1926,16 @@ wrapper's own outer shadow, reading as if each row's content had no breathing ro
 Updated the older NOTE above (which claimed the override already zeroed every box-model property) to
 mention box-shadow explicitly. Verified via an inline HTMLParser tag-balance check and `node --check`
 on the extracted script block (markup/CSS-only change, no JS touched).
+
+MOST RECENT CHANGE: per a request to exclude floorsense-setup-path-00.html from the wizard's linear
+flow (see floorsense-optional-features-06.html's own NOTE for the full reasoning), this page's back-
+arrow changed from floorsense-setup-path-00.html to floorsense-optional-features-06.html, since
+Optional Features is now the actual last core-selection step feeding into this summary. The progress
+bar's own "Core Complete" segment (still linking to floorsense-setup-path-00.html) was left untouched,
+per an explicit scope decision — that page stays directly reachable from the progress bar on every
+Floorsense page, it's just no longer part of the enforced Continue/back-arrow path. Markup/CSS-only
+change; verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script
+block.
 -->
 
 
