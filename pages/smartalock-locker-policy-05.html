@@ -176,9 +176,9 @@
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .qcard-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .qcard-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .qcard-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .qcard-icon-badge.badge-blue { border-color: #2552CF; }
+  .qcard-icon-badge.badge-green { border-color: #0D8217; }
+  .qcard-icon-badge.badge-purple { border-color: #472ABC; }
   .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
   .qcard label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
   .qcard select, .qcard textarea, .qcard input[type="text"] {
@@ -336,7 +336,7 @@
       </div>
 
       <div class="qcard" id="qcard-limits" data-visual="limits">
-        <h3><div class="qcard-icon-badge badge-pink"><img class="qcard-icon" src="../assets/images/icon-locker-limits.png" alt=""></div>Lockers per User</h3>
+        <h3><div class="qcard-icon-badge badge-green"><img class="qcard-icon" src="../assets/images/icon-locker-limits.png" alt=""></div>Lockers per User</h3>
         <p class="qdesc">Define how many lockers a user can reserve.</p>
         <label>Maximum lockers per user</label>
         <select id="lockerLimit">
@@ -397,6 +397,8 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .qcard dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; the existing `.visual-active` state (previously `border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash);`, toggled on card focus/click to sync the side visual image) was converted to read through a stronger shadow tint plus a light blue background tint instead, the same conversion used for `.checked`/`.chosen` states on other propagated pages. Each of the 3 raster `.qcard-icon` `<img>` icons (Release when reserved but unused, Lockers per User, Release Behaviour) was wrapped in a new `.qcard-icon-badge` div (88px, white background, colored border, sized to comfortably fit the existing 72px icons) — since the 3 cards form a repeating option group, the badges use blue/pink/purple in DOM order. IMPORTANT, to distinguish this from an earlier attempt on this exact page that was explicitly reverted because it recolored the icons' own green/purple/blue hues: this change touches ONLY the new badge div's border-color — the `<img>` elements themselves, their `src` attributes, and the underlying icon-release-when-idle.png / icon-locker-limits.png / icon-release-behaviour.png files were left 100% byte-for-byte untouched; no image file was opened, recolored, or resaved. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change), plus a diff confirming the 3 PNG assets are bit-for-bit identical to before this change.
+
+MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette rotation on the 3 `.qcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). Release when reserved but unused (`icon-release-when-idle.png`) stayed blue but tightened from `#4A8DF0` to the sampled `#2552CF` (class name `badge-blue` unchanged). Lockers per User (`icon-locker-limits.png`) changed from the rotation's `#EC6BA5` pink to its sampled true color, `#0D8217` green (class renamed `badge-pink` -> `badge-green`). Release Behaviour (`icon-release-behaviour.png`) stayed purple but tightened from `#9B6BEC` to the sampled `#472ABC` (class name `badge-purple` unchanged). Only the badge border-color CSS and the markup's modifier class were touched — same as before, the `<img>` elements, their `src` attributes, and the underlying PNG files were left 100% byte-for-byte untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 
 <script>
