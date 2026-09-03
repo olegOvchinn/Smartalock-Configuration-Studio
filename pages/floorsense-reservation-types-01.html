@@ -119,16 +119,30 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
   /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
-     a simple blue border, per a request to drop the glass/glow treatment (backdrop blur, inset
+     a simple colored border, per a request to drop the glass/glow treatment (backdrop blur, inset
      highlight/shadow/glow layers, sheen overlay) while keeping the icon shapes themselves unchanged
-     — see the MOST RECENT CHANGE note below. ---------- */
+     — see the MOST RECENT CHANGE note below. Each of the 5 cards now gets its own light accent
+     colour (blue, pink, purple, teal, amber) via a modifier class, rather than one shared
+     `var(--accent)` blue, per a later "light colour touch" request, and a short, light drop shadow
+     per a follow-up request — see the MOST RECENT CHANGE notes further down. ---------- */
   .desk-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
     border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .desk-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .desk-icon-badge.badge-blue .desk-icon-glyph { color: #4A8DF0; }
+  .desk-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .desk-icon-badge.badge-pink .desk-icon-glyph { color: #EC6BA5; }
+  .desk-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .desk-icon-badge.badge-purple .desk-icon-glyph { color: #9B6BEC; }
+  .desk-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .desk-icon-badge.badge-teal .desk-icon-glyph { color: #2FBF9F; }
+  .desk-icon-badge.badge-amber { border-color: #F2A154; }
+  .desk-icon-badge.badge-amber .desk-icon-glyph { color: #F2A154; }
   .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
@@ -298,7 +312,7 @@
         <div class="desk-check-card" data-template="fixed">
           <label class="desk-row">
             <input type="checkbox" value="fixed">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.12"/><circle cx="12" cy="9" r="2.6"/></svg></div>
+            <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.12"/><circle cx="12" cy="9" r="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
               <p class="desk-desc">Give someone their own permanent desk. Common for senior staff who need the same seat every day.</p>
@@ -316,7 +330,7 @@
         <div class="desk-check-card" data-template="adhoc">
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1.2" fill="currentColor" fill-opacity="0.15"/><path d="M11.1 11.6l0.85 0.85 1.5-1.6" stroke-width="1.1"/><rect x="16" y="9" width="5.5" height="5.5" rx="1.2"/></svg></div>
+            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1.2" fill="currentColor" fill-opacity="0.15"/><path d="M11.1 11.6l0.85 0.85 1.5-1.6" stroke-width="1.1"/><rect x="16" y="9" width="5.5" height="5.5" rx="1.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -327,7 +341,7 @@
         <div class="desk-check-card" data-template="team-leader">
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
+            <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
               <p class="desk-desc">Lets a team leader book several desks in one go without naming who each is for — desks simply show as reserved for the team. A team leader can optionally also book on behalf of their team members, but that's time-consuming to do desk by desk, so isn't meant for frequent use. Either way, desks must be checked in or claimed by the user, or the booking expires.</p>
@@ -338,7 +352,7 @@
         <div class="desk-check-card" data-template="booked-on-behalf">
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.1"/></svg></div>
+            <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
               <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has allocated them to book for. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
@@ -349,7 +363,7 @@
         <div class="desk-check-card" data-template="ai-agent">
           <label class="desk-row">
             <input type="checkbox" value="ai-agent">
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.08"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.1"/></svg></div>
+            <div class="desk-icon-badge badge-amber"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.08"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked</h3>
               <p class="desk-desc">An AI agent automatically prebooks a desk for the user ahead of time, based on your organisation's policy rules — no manual booking needed.</p>
@@ -671,6 +685,31 @@ is not a meaningful visual check here: WeasyPrint renders neither `box-shadow` b
 appear to have no visible edge whatsoever in that static render — the fuzzy shadow and glass blur
 this change relies on only render correctly in a real browser, which is where this should be
 reviewed.
+
+MOST RECENT CHANGE: Per a request to "apply light colour touch to the icons: first icon blueish
+next pinkish, purplish itc", each of the 5 `.desk-icon-badge` cards got its own light accent colour
+instead of sharing one `var(--accent)` blue border/glyph colour, via 5 new modifier classes applied
+in card order: `.badge-blue` (`#4A8DF0`, Dedicated Workstations), `.badge-pink` (`#EC6BA5`, Reserved
+by User as Needed), `.badge-purple` (`#9B6BEC`, Team Leader Allocated), `.badge-teal` (`#2FBF9F`,
+Booked on Behalf), `.badge-amber` (`#F2A154`, AI Agent Auto-Prebooked) — the last two colours weren't
+explicitly named in the request ("itc" = "etc") so were chosen to continue the same light pastel
+progression across the remaining two cards. Each modifier sets both the badge's `border-color` and
+the nested `.desk-icon-glyph`'s `color` (so the glyph strokes/fills match their own badge's border
+rather than all still reading blue via `currentColor`); icon shapes, sizes, and the flat white
+background/no-glow badge treatment are otherwise unchanged. Validated via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block (untouched), and a weasyprint render
+(with `currentColor` swapped for each icon's own resolved hex, since WeasyPrint can't resolve
+`currentColor` against an inherited class-based color inside embedded SVG) confirming all 5 badges
+render with their own distinct light border/glyph colour in the intended blue → pink → purple → teal
+→ amber order.
+
+MOST RECENT CHANGE: Per a follow-up request that "each icon should drop short light shadow",
+`.desk-icon-badge` gained a small `box-shadow: 0 3px 6px rgba(16,42,67,0.10)` — a short, low-opacity
+drop shadow (unlike `.desk-check-card`'s much larger, fuzzy glass-shadow) giving each badge a subtle
+lift off the card without the icons looking like they're floating on glass themselves. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and
+a weasyprint render confirming a visible short shadow beneath each badge (unlike the card's own larger
+shadow, this small blur radius renders fine in WeasyPrint).
 -->
 
 <script>
