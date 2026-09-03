@@ -129,12 +129,19 @@
   .groups-column .group-subfields,
   .groups-column .setup-notice { max-width: none; }
 
-  /* ---------- each column wrapped in its own bordered card, matching the .checkin-card/
-     .feature-card treatment every other Floorsense page uses for its main content block, so this
-     page's two-column layout still reads as "cards" consistent with the rest of the wizard. ---------- */
+  /* ---------- each column wrapped in its own glass card — propagates
+     floorsense-reservation-types-01.html's later "transparent glass" card treatment here: a
+     translucent white background with backdrop-filter blur instead of a solid grey border, and a
+     soft fuzzy box-shadow standing in for the border. Plain static container (no hover/selected
+     state), so no extra states were introduced. ---------- */
   .groups-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 24px 24px 26px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .groups-card .section-head:first-child { margin-top: 0; }
 
@@ -176,12 +183,26 @@
      Group checkbox groups, since both need independently-tickable options rather than a
      single-select radio. ---------- */
   .group-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+     glass" card treatment here too — see the MOST RECENT CHANGE note at the end of this file's NOTE
+     block. Hover/checked, previously shown via border-color, now read through the shadow's
+     spread/tint and the background tint instead. ---------- */
   .group-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 18px 20px; transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .group-check-card:hover { border-color: var(--accent); }
-  .group-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .group-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .group-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   .group-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .group-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .group-tick {
@@ -662,7 +683,24 @@ in place rather than deleted. Verified via an inline HTMLParser tag-balance chec
 the extracted script block (untouched -- markup-only change), and a WeasyPrint render of the banner
 in its actual `.groups-illustration` card treatment confirming the simplified, blue-toned
 illustration reads cleanly at its 640px display width.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+treatment sitewide, both `.groups-card` (the two column wrappers) and `.group-check-card` (the
+per-option checkbox cards inside each column) dropped their solid `border: 1.5px solid var(--line)`
+in favour of page 01's translucent-glass treatment: a translucent white background
+(`rgba(255,255,255,0.6)`) with `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy
+`box-shadow` standing in for the border. `.group-check-card`'s `:hover`/`.checked` states (previously
+`border-color: var(--accent)` / `background: var(--accent-wash)`) now read through the shadow's
+tint/spread and a translucent background tint instead, matching page 01 exactly; `.groups-card` has
+no hover/selected state (it's a plain static column wrapper) so none was invented. This page's
+`.group-check-card` rows carry no icon markup at all (the earlier per-option `.group-icon-img` icons
+were removed once the banner illustration above the cards was added — see the earlier MOST RECENT
+CHANGE note above), so the icon-badge treatment from page 01/02 wasn't applicable here and nothing
+icon-related was touched. Verified via the inline HTMLParser tag-balance check
+(python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-
+only change).
 -->
+
 
 <script>
 (function(){
