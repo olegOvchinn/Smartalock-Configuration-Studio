@@ -720,6 +720,26 @@ textarea cleared; User Groups back to "provide"+"policy" checked with the origin
 restored), and checkboxes ticked after Reset now save correctly to localStorage in sync with the DOM.
 Also re-validated via python3 /tmp/validate.py (tag balance) and node --check on the extracted script
 block.
+
+MOST RECENT CHANGE: per a request that "We will not use User Groups feature initially (will rely on
+Desk Group and General policy)" be preselected by default, with the other two User Group options
+unticked, `DEFAULT_USER_GROUPS` changed from `{ none: false, provide: true, policy: true,
+policyNotes: "Only Client Care can book desks in the Client Care area; Only HR can book desks in the
+HR area" }` to `{ none: true, provide: false, policy: false, policyNotes: "" }` — matching
+`DEFAULT_DESK_GROUPS`'s existing shape exactly (which already defaulted to "none" and needed no
+change). This resolves a long-standing mismatch between this file's own "Recommended" pill note above
+(which claimed "none" was already each grid's default-checked choice) and the actual code, which had
+User Groups defaulting to "provide"+"policy" checked with the brief's real Client Care/HR example
+prefilled. Since the initial-state fallback (`Object.assign({}, DEFAULT_USER_GROUPS, saved.userGroups
+|| {})`) and the Reset handler (`Object.assign(state.userGroups, DEFAULT_USER_GROUPS)`) both already
+read from this one constant, no other code changed — a fresh page load and pressing Reset both now
+show "none" ticked, "provide"/"policy" unticked, the policy subfields panel hidden, and the notes
+textarea empty (falling back to its existing generic placeholder) for both Desk Groups and User
+Groups alike. Verified via a jsdom test: a fresh load shows `{none:true, provide:false,
+policy:false}` for both grids with the User Group policy subfields hidden and notes empty; manually
+ticking "policy" reveals the subfields panel; and Reset restores the same default state and persists
+it to `localStorage`. Also re-validated via an inline HTMLParser tag-balance check and `node --check`
+on the extracted script block.
 -->
 
 
@@ -752,10 +772,7 @@ block.
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
   const DEFAULT_DESK_GROUPS = { none: true, provide: false, policy: false, policyNotes: "" };
-  const DEFAULT_USER_GROUPS = {
-    none: false, provide: true, policy: true,
-    policyNotes: "Only Client Care can book desks in the Client Care area; Only HR can book desks in the HR area"
-  };
+  const DEFAULT_USER_GROUPS = { none: true, provide: false, policy: false, policyNotes: "" };
 
   const saved = project.floorsense.wizard.deskUserGroups || {};
   const state = {
