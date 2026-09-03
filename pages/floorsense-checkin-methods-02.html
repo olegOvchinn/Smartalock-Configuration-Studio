@@ -169,18 +169,6 @@
   }
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .desk-tick {
-    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .desk-check-card.checked .desk-tick { border-color: var(--accent); background: var(--accent); }
-  .desk-tick::after {
-    content: ''; width: 6px; height: 10px; margin-top: -1px;
-    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
-    opacity: 0; transition: opacity .15s;
-  }
-  .desk-check-card.checked .desk-tick::after { opacity: 1; }
   .desk-card-body { min-width: 0; flex: 1; }
   .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .desk-tag {
@@ -311,7 +299,6 @@
         <div class="desk-check-card" data-method="card">
           <label class="desk-row">
             <input type="checkbox" value="card">
-            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="3" y="9" width="18" height="3" fill="currentColor" fill-opacity="0.15"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Building Access Cards at Desk</h3>
@@ -326,7 +313,6 @@
         <div class="desk-check-card" data-method="prebooking">
           <label class="desk-row">
             <input type="checkbox" value="prebooking">
-            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.2" y="3.5" width="14" height="10.5" rx="1.5"/><line x1="2.2" y1="6.8" x2="16.2" y2="6.8"/><rect x="12.5" y="9.5" width="8" height="12.5" rx="2" fill="#fff" stroke="currentColor"/><line x1="15" y1="19.2" x2="18" y2="19.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
@@ -338,7 +324,6 @@
         <div class="desk-check-card" data-method="qr">
           <label class="desk-row">
             <input type="checkbox" value="qr">
-            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="4.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="15.5" y="2.5" width="6" height="6" rx="1"/><rect x="17.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="2.5" y="15.5" width="6" height="6" rx="1"/><rect x="4.3" y="17.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="13.4" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="13.4" y="17.3" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="17.3" width="2.6" height="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">QR Code at Desk</h3>
@@ -350,7 +335,6 @@
         <div class="desk-check-card" data-method="wallet">
           <label class="desk-row">
             <input type="checkbox" value="wallet">
-            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
@@ -637,6 +621,21 @@ were deleted, not the containers. Also removed all three related CSS rulesets fr
 <style> block: the base `.eyebrow { ... }` rule and the `.panel-intro .eyebrow` / `.section-head
 .eyebrow` modifier rules. Verified via an HTML tag-balance check and `node --check` on the extracted
 <script> body (no syntax errors, JS untouched).
+
+MOST RECENT CHANGE: per a report of "thick boxes" on this page, found this was the last page still
+shipping the old `.desk-tick` checkbox square (22x22px, 3px border) next to each `.desk-icon-badge` —
+floorsense-reservation-types-01.html already dropped this exact element in an earlier pass (see that
+file's own NOTE), since a card's `.checked` state is already shown clearly enough through its own
+background tint and stronger box-shadow, making the separate tick square redundant. Removed the 4
+`<span class="desk-tick" aria-hidden="true"></span>` markers (one per `.desk-check-card`) and the
+now-unused `.desk-tick`, `.desk-check-card.checked .desk-tick`, `.desk-tick::after`, and
+`.desk-check-card.checked .desk-tick::after` CSS rules, matching page 01 exactly. Each row is still a
+`<label class="desk-row">` wrapping its (visually hidden) `<input type="checkbox">`, so clicking
+anywhere on a card still toggles it; the JS selects checkboxes via `data-method` and
+`input[type="checkbox"]`, never the tick element, so nothing in the checkbox-wiring logic changed.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and
+a weasyprint render confirming the icon badges now sit flush at each card's left edge with no leftover
+checkbox square.
 -->
 
 
