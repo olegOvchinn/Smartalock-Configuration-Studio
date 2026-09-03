@@ -117,26 +117,20 @@
   /* ---------- policy-illustration: a hand-drawn line-art banner sitting above the policy card,
      replacing the earlier photographic advance-booking-illustration.png crop. Pure outline SVG —
      no fills anywhere except the text labels, no gradients, background left transparent (reads as
-     the page's own white) — matching the "basic icon" language used for .policy-icon-badge below.
-     Sized to the same max-width as .policy-grid/.policy-card so it lines up edge-to-edge with the
-     card beneath it. ---------- */
+     the page's own white). Sized to the same max-width as .policy-grid/.policy-card so it lines up
+     edge-to-edge with the card beneath it. ---------- */
   .policy-illustration { max-width: 760px; margin: 0 auto 22px; color: var(--accent); }
   .policy-illustration svg { display: block; width: 100%; height: auto; }
 
-  /* ---------- policy-icon-badge: replaces the removed .policy-thumb photo with a small symbolic
-     glyph in the same flat white-canvas/blue-border badge language used for lone icons elsewhere on
-     the site (e.g. floorsense-checkin-window-08.html, floorsense-idle-release-09.html) — plain
-     accent blue, since this page only ever has one icon in isolation rather than a repeating
-     multi-option group. ---------- */
-  .policy-icon-badge {
-    width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .policy-icon-glyph { width: 38px; height: 38px; color: var(--accent); position: relative; z-index: 1; }
+  /* ---------- policy-icon-img: a user-supplied pre-made icon asset (a rounded-square app-icon-style
+     graphic — clock + calendar + "A" glyph with up-arrows, already self-contained with its own white
+     canvas, rounded border, and light backdrop circle baked into the image itself), replacing the
+     earlier hand-drawn .policy-icon-badge/.policy-icon-glyph SVG pair. Since the image already
+     carries its own frame/border, it's placed directly with no extra wrapping badge div (that would
+     double up the border/background); just sized consistently with this page's other single-icon
+     footprint and given the same short drop-shadow used on every other icon badge for a bit of lift.
+     ---------- */
+  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; box-shadow: 0 3px 6px rgba(16,42,67,0.10); }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -309,18 +303,7 @@
       <div class="policy-grid single">
         <div class="policy-card">
           <div class="policy-row">
-            <div class="policy-icon-badge">
-              <svg class="policy-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="5" width="13" height="15" rx="2"/>
-                <line x1="7" y1="3" x2="7" y2="7"/>
-                <line x1="12" y1="3" x2="12" y2="7"/>
-                <line x1="3" y1="10" x2="16" y2="10"/>
-                <line x1="6.5" y1="14" x2="9" y2="14"/>
-                <line x1="6.5" y1="17" x2="9" y2="17"/>
-                <path d="M17 14l4 3-4 3"/>
-                <line x1="21" y1="17" x2="16.5" y2="17"/>
-              </svg>
-            </div>
+            <img class="policy-icon-img" src="../assets/images/icon-advance-booking.png" alt="">
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
@@ -582,6 +565,19 @@ shape fills, no gradients, and no background fill of its own (transparent, so it
 against the page) — only the text labels use `fill` to render, which is unavoidable for legible SVG
 text and isn't a decorative shape fill. Verified via an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block (untouched — markup/CSS-only change).
+
+MOST RECENT CHANGE: per a follow-up request, replaced the hand-drawn `.policy-icon-badge`/
+`.policy-icon-glyph` calendar SVG (added in the previous change above) with a user-supplied icon
+image instead — a rounded-square app-icon-style graphic (clock + calendar + "A" glyph with up-arrows
+in indigo/purple line art) saved to `assets/images/icon-advance-booking.png`. Since this artwork
+already bakes in its own white canvas, rounded border, and light backdrop circle, it's placed
+directly as a plain `<img class="policy-icon-img">` with no extra wrapping badge div — wrapping it in
+another white/blue-bordered square would have doubled up the border and clashed with the image's own
+indigo one. New `.policy-icon-img` rule sizes it to 72px with the same short drop-shadow used on every
+other icon badge on the site, keeping a consistent footprint even though the image supplies its own
+frame. The now-unused `.policy-icon-badge`/`.policy-icon-glyph` rules were removed. Verified via an
+inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
+markup/CSS-only change, no JS affected).
 -->
 
 
