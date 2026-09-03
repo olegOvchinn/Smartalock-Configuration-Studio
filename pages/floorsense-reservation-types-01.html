@@ -701,6 +701,23 @@ a weasyprint render confirming a visible short shadow beneath each badge (unlike
 shadow, this small blur radius renders fine in WeasyPrint).
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed both `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, and "Configure" in the section head. The hero's `.panel-intro` parent kept its `<h1>`/`<p>` content, so only its span was removed. The "Configure" span's parent `.section-head`, however, contained nothing else — a bare `<div class="section-head"><span class="eyebrow">Configure</span></div>` with no heading or paragraph — so per instruction that entire now-empty div was deleted rather than left as a shell. Also removed the base `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet (the general `.section-head`/`.section-head p` rules were left in place, unrelated to `.eyebrow`). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
+
+MOST RECENT CHANGE: Per a request that "Reserved by User as Needed" (data-template="adhoc") be
+preselected by default, added a `DEFAULT_RESERVATION_TYPES = ['adhoc']` constant used in two places:
+the initial `state.selected` now falls back to it (instead of an empty array) whenever
+`reservationTypes` has never been saved yet, and the Reset button now restores it too (instead of
+clearing every card) — checking `adhoc`'s card/checkbox and unchecking every other card by name
+rather than blanket-unchecking all five. Since the existing checkbox-wiring loop already reads
+`state.selected.includes(type)` to set each card's initial checked/`.checked` state, no other markup
+changed — a user who leaves the page untouched now sees "Reserved by User as Needed" already
+selected, `continueBtn` already enabled, and pressing "Save & continue" persists `selected: ['adhoc']`
+to `project.floorsense.wizard.reservationTypes`. floorsense-out-of-box-policy.html's summary page
+gained a matching "Desk Allocation Method" group/row (see that file's own NOTE) so this default shows
+up there too. Verified via a jsdom test: a fresh page load shows "adhoc" pre-checked with Continue
+already enabled; pressing Save & continue untouched persists `['adhoc']`; manually deselecting adhoc
+and selecting a different card, then pressing Reset, restores exactly `['adhoc']` (adhoc checked, the
+other card unchecked) and persists it. Also validated via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block.
 -->
 
 <script>
@@ -731,9 +748,16 @@ MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every 
   project.floorsense.wizard = project.floorsense.wizard || {};
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
+  /* "Reserved by User as Needed" (data-template="adhoc") is this page's default reservation type —
+     the sensible out-of-the-box choice for a typical hybrid/flexible workplace. It's pre-selected
+     whenever no reservationTypes state has ever been saved yet (a brand-new project, or one where
+     this page hasn't been visited/saved), so a user who leaves the page untouched and presses
+     Save & continue still gets a real selection persisted (and shown on the configuration summary
+     page) rather than nothing. See DEFAULT_RESERVATION_TYPES below, also reused by Reset. */
+  const DEFAULT_RESERVATION_TYPES = ['adhoc'];
   const saved = project.floorsense.wizard.reservationTypes || {};
   const state = {
-    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    selected: Array.isArray(saved.selected) ? saved.selected : DEFAULT_RESERVATION_TYPES.slice(),
     dedicatedSpreadsheetName: saved.dedicatedSpreadsheetName || ""
   };
 
@@ -808,11 +832,13 @@ MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every 
   dedicatedSpreadsheet.addEventListener('change', queueSave);
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.selected = [];
+    state.selected = DEFAULT_RESERVATION_TYPES.slice();
     state.dedicatedSpreadsheetName = "";
     grid.querySelectorAll('.desk-check-card').forEach(card => {
-      card.classList.remove('checked');
-      card.querySelector('input[type="checkbox"]').checked = false;
+      const type = card.getAttribute('data-template');
+      const isDefault = state.selected.includes(type);
+      card.classList.toggle('checked', isDefault);
+      card.querySelector('input[type="checkbox"]').checked = isDefault;
     });
     dedicatedSubfields.classList.remove('show');
     dedicatedSpreadsheet.value = '';
