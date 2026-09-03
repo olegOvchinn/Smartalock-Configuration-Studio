@@ -349,6 +349,18 @@
   icon-badge work applied. Verified via an inline HTMLParser tag-balance check and `node --check` on
   the extracted script block (untouched — this page's script lives in a separate
   ../js/smartalock-templates.js file, itself unmodified; CSS-only change).
+
+  MOST RECENT CHANGE: per a follow-up request to review this page specifically, found one more
+  card that had been missed: `.summary-card` (the "Selected Templates" panel at the bottom of the
+  page, in css/templates.css) was still a flat opaque white card (`background:#FFFFFF`, a plain
+  `box-shadow:0 10px 28px rgba(16,42,67,.08)`, no border to begin with). For visual consistency with
+  `.template-card` above it, gave it the same translucent-glass treatment: `background:
+  rgba(255,255,255,0.6)` plus `backdrop-filter: blur(10px) saturate(160%)`, and widened its shadow to
+  the reference two-layer `box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px
+  rgba(16,42,67,0.06)`. It has no hover/selected state (a static summary panel, not a clickable
+  option), so no state conversion was needed. Still no icon markup anywhere on this page. Verified
+  via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
+  (untouched — CSS-only change, made in css/templates.css).
 -->
 
 <footer class="page-footer">
