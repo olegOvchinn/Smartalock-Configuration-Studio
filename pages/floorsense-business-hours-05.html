@@ -132,7 +132,7 @@
   .checkin-card-icon { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
-  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; margin: 0 22px; border-radius: 14px; }
 
   /* ---------- diagram row: a single day-scale rail with two directly-draggable pins (Arrival/
      Departure). Ticks mark every 30-minute segment along the rail so a dragged pin's position can
@@ -811,8 +811,19 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
--->
 
+MOST RECENT CHANGE: per a report that the grey timeline zone was "overlapping the edge of the card",
+`.timeline-card` (the light-grey `--paper-soft` panel holding the diagram) had no horizontal margin of
+its own, so its background spanned the full width of the outer `.checkin-card`, touching its left/right
+edges directly with no gutter — unlike `.checkin-card-header`/`.checkin-footer`, which read as inset
+because their own padding (not a colored background) creates the margin. Added `margin: 0 22px;`
+(matching the header/footer's existing 22px horizontal inset) and `border-radius: 14px;` (since it's no
+longer edge-to-edge, it now needs rounded corners of its own to read as a proper floating panel rather
+than a rectangle with hard corners). Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block (untouched — CSS-only change), and a rendered screenshot (headless
+Chromium) confirming the grey panel now sits with visible white margin on both sides instead of
+touching the card boundary.
+-->
 
 
 
