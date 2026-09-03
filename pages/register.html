@@ -179,6 +179,25 @@ Register
 </main>
 
 
+<!--
+  NOTE for Oleg: this is the Project Registration page (Company Details / Contacts / Project Dates
+  form), styled via the shared ../css/styles.css plus this page's own ../css/landing.css
+  (.register-card and friends), rather than an inline <style> block like the newer wizard pages.
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished
+  on floorsense-reservation-types-01.html to every other page, `.register-card` (defined in
+  css/landing.css, used only on this page) changed from a flat opaque `background: white` with no
+  border to the same translucent-glass pattern used elsewhere on the site: `rgba(255,255,255,0.6)`
+  background with `backdrop-filter: blur(10px) saturate(160%)`, explicit `border: none` (it had no
+  border to begin with, so this is just documenting intent), and its existing soft drop-shadow
+  strengthened to match the reference page's two-layer `box-shadow` plus a `transition` on
+  box-shadow/background. This card is a static form container (not a link or multi-select tile), so
+  no `:hover`/`.checked` state was added — its padding (45px) and border-radius (24px, this file's
+  own value rather than the newer `var(--radius-lg)` token since css/landing.css defines no CSS
+  custom properties) were left untouched. Verified via an inline HTMLParser tag-balance check and
+  `node --check` on the extracted script block (untouched — CSS-only change, in css/landing.css, not
+  this file's own markup).
+-->
 
 
 
