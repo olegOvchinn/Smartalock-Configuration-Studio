@@ -239,6 +239,31 @@ approach for every project.
 
 
 
+<!--
+  NOTE for Oleg: this is Project Home, the post-registration hub linking into the Floorsense/
+  Smartalock configuration engines and the AI Policy Workshop, styled via ../css/styles.css and
+  ../css/landing.css plus this page's own inline <style> block below (its `.feature-card` rule
+  lives here, not in an external stylesheet).
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished
+  on floorsense-reservation-types-01.html, the 3 `.feature-card` tiles (FLOORSENSE, SMARTALOCK, AI
+  Policy Workshop — each a clickable `onclick="window.location.href=...")` div) swapped their solid
+  light-blue background and `2px solid #0077B6` border for the same translucent-glass pattern used
+  elsewhere: `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, and
+  `border: none`, with a two-layer `box-shadow` standing in for the old border. The existing
+  `:hover { transform: translateY(-4px); background: #E8F4FF; border-color: #005F8F; ... }` state
+  (these are genuinely clickable link-like cards) was converted to a shadow-lift + lighter
+  background-tint pair, matching the reference page's `.desk-check-card:hover` treatment, while
+  keeping the existing translateY lift. No icons appear anywhere on this page (each card is just an
+  `<h2>`/`<p>` pair), so no icon-badge work was needed. Verified via `node --check` on the
+  extracted script block (untouched — CSS-only change). An inline HTMLParser tag-balance check on
+  this file reports a pre-existing, unrelated markup bug predating this change: the `.hero-content`
+  `<div>` opened above (before the Project Registration Information block) is never explicitly
+  closed before `</header>`, leaving `div`/`header`/`body`/`html` all unbalanced — left as-is since
+  fixing it is outside this change's scope (styling only, no markup-structure fixes), flagging it
+  here in case Oleg wants it fixed separately.
+-->
+
 <!-- =========================================
      PAGE STYLES
 ========================================= -->
@@ -490,23 +515,26 @@ flex:1;
 
 padding:40px;
 
-background:#EEF7FF;
+background:rgba(255,255,255,0.6);
 
-border:2px solid #0077B6;
+-webkit-backdrop-filter:blur(10px) saturate(160%);
+
+backdrop-filter:blur(10px) saturate(160%);
+
+border:none;
 
 border-radius:24px;
 
 box-shadow:
-    0 15px 45px
-    rgba(0,119,182,.18);
+    0 14px 34px -10px rgba(16,42,67,0.16),
+    0 2px 10px rgba(16,42,67,0.06);
 
 cursor:pointer;
 
 transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
+    background 0.2s ease;
 
 }
 
@@ -515,13 +543,11 @@ transition:
 
 transform:translateY(-4px);
 
-background:#E8F4FF;
-
-border-color:#005F8F;
+background:rgba(255,255,255,0.78);
 
 box-shadow:
-    0 18px 40px
-    rgba(0,119,182,.22);
+    0 16px 40px -8px rgba(0,113,227,0.22),
+    0 3px 12px rgba(16,42,67,0.08);
 
 }
 
