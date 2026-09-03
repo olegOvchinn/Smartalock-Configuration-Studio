@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -297,7 +292,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">Optional Features</h1>
         <p class="sub">Turn on any features you'd like to configure — everything here is off by default, and the wizard skips straight past any switched-off feature's page.</p>
       </div>
@@ -600,6 +594,14 @@ control — so none was invented. Per explicit instruction, this page's `.featur
 untouched — card treatment only. Verified via the inline HTMLParser tag-balance check
 (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-
 only change).
+
+MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page,
+removed the single `<span class="eyebrow">Additional Features · Optional</span>` above the hero
+title. Its parent `.panel-intro` still had the hero title and sub paragraph, so only the span was
+removed, not the parent. Also removed the now-unused `.eyebrow` and `.panel-intro .eyebrow` CSS
+rulesets from the inline stylesheet (this page never had a `.section-head .eyebrow` rule). Verified
+via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
+(untouched).
 -->
 
 
