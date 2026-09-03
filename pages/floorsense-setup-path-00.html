@@ -116,10 +116,22 @@
 
   /* ---------- completion card: replaces the old 4-mode path-select grid now that this page is a
      card-free confirmation/transition step rather than a decision point — single explainer card,
-     same shell (.checkin-card-header-style icon+description) used elsewhere in the wizard. ---------- */
+     same shell (.checkin-card-header-style icon+description) used elsewhere in the wizard. Per a
+     site-wide propagation of the glass-card treatment introduced on
+     floorsense-reservation-types-01.html's .desk-check-card, the old opaque `var(--paper)`
+     background + solid `border: 1.5px solid var(--line)` were replaced with a translucent
+     backdrop-blurred background and a soft fuzzy shadow standing in for the border — see the
+     MOST RECENT CHANGE note below. This card has no selected/hover state (plain static content),
+     so no `:hover`/`.checked` variant was needed, unlike the interactive cards this pattern
+     originated on. ---------- */
   .complete-card {
-    max-width: 720px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg); padding: 26px 28px 28px;
+    max-width: 720px; margin: 0 auto;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); padding: 26px 28px 28px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   /* ---------- complete-card-banner: a user-supplied illustration summarizing everything this
      page's copy describes as done (desk config with checkmarks, groups configured, business
@@ -132,12 +144,25 @@
   .complete-card-banner { margin: -2px 0 20px; }
   .complete-card-banner img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
   .complete-card-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
-  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
-     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — this used to be a 48px
-     accent-green circle badge with a 24px white checkmark inside, which read as a generic
-     "success" glyph rather than something specific to a policy being ready. Redesigned as a
-     clipboard-with-checkmark (a completed policy document) instead. ---------- */
-  .complete-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- content icon badge: this used to be a bare 56px svg (no wrapper), matching
+     floorsense-reservation-types-01.html's pre-badge .desk-icon-img treatment. Per the site-wide
+     propagation of page01's icon-badge pattern, the bare glyph was wrapped in a square white
+     badge with a thin accent border (this icon's SVG has a canvas-like `<rect rx="2">` but no
+     accompanying `fill-opacity="0.15"` highlight shape, so it doesn't match the separate "Style 1"
+     glass-canvas treatment used on floorsense-business-hours-05.html and was in scope for this
+     change). It's a single lone icon on this page, not part of a repeating multi-option group, so
+     it kept plain `var(--accent)` blue rather than a palette colour. Sized 64px/56px (vs page01's
+     60px/34.5px) to keep the glyph itself at its original 56px rather than shrinking it, per the
+     "different base size" sizing guidance — see the MOST RECENT CHANGE note below. ---------- */
+  .complete-card-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .complete-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .complete-card-title { font-family: var(--font-display); font-weight: 500; font-size: 19.5px; color: var(--header-grey); margin: 4px 0 0; }
   .complete-card p { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 0 0 14px; }
   .complete-card p:last-of-type { margin-bottom: 0; }
@@ -259,7 +284,7 @@
           <img src="../assets/images/core-complete-illustration.png" alt="">
         </div>
         <div class="complete-card-header">
-          <svg class="complete-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="9" y="1" width="6" height="3" rx="1"/><path d="M8.3 12.6l2.3 2.3L15.8 9.8"/></svg>
+          <div class="complete-card-icon-badge"><svg class="complete-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="9" y="1" width="6" height="3" rx="1"/><path d="M8.3 12.6l2.3 2.3L15.8 9.8"/></svg></div>
           <h2 class="complete-card-title">The core policy is ready</h2>
         </div>
         <p>You've now configured the core of the system that will apply to everyone by default — desk allocation, check-in methods, desk &amp; user groups, prebooking window, business hours, and any optional features you switched on.</p>
@@ -450,6 +475,8 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card/icon styling sitewide, `.complete-card` swapped its opaque paper background and solid grey `border: 1.5px solid var(--line)` for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy `box-shadow` used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/`.checked` variant was needed, just the base glass treatment. Separately, `.complete-card-icon`'s bare 56px svg (no wrapper) was wrapped in a new `.complete-card-icon-badge` (64px, white background, `1.5px solid var(--accent)` border, short drop shadow) matching page 01's `.desk-icon-badge`, sized slightly larger than page 01's 60px/34.5px pairing so the glyph itself could stay at its original 56px rather than shrinking it. The icon's own `<rect rx="2">` shape was checked against business-hours-05's "Style 1" canvas-icon convention (a `rect rx="2"` canvas plus a `fill-opacity="0.15"` highlight shape) but has no accompanying opacity-15 highlight, so it didn't qualify for that exemption and was in scope for the badge treatment. As a single lone icon (not part of a repeating multi-option card group), it kept plain `var(--accent)` blue rather than being assigned one of the palette colours used for page 01's 5-card option group. Verified via an inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 -->
 
 <script>
