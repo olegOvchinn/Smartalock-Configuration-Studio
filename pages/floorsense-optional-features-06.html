@@ -361,7 +361,7 @@
 
         <div class="feature-row">
           <svg class="feature-row-icon badge-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7.1 15.6Q7.4 14.5 9.2 14.7Q9.7 14.3 12 14.3Q14.3 14.3 14.8 14.7Q16.6 14.5 16.9 15.6Q16.6 16.6 12 16.6Q7.4 16.6 7.1 15.6Z" fill="currentColor" stroke="none"/><ellipse cx="11.6" cy="11.3" rx="2.5" ry="2" fill="currentColor" stroke="none"/><circle cx="13.9" cy="9.6" r="1.05" fill="currentColor" stroke="none"/><path d="M14.9 9.4l1.3 -0.15l-0.55 1.15z" fill="currentColor" stroke="none"/><circle cx="14.1" cy="9.3" r="0.18" fill="#fff" stroke="none"/></svg>
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7.1 15.6Q7.4 14.5 9.2 14.7Q9.7 14.3 12 14.3Q14.3 14.3 14.8 14.7Q16.6 14.5 16.9 15.6Q16.6 16.6 12 16.6Q7.4 16.6 7.1 15.6Z" fill="currentColor" stroke="none"/><ellipse cx="11.6" cy="12.6" rx="2.5" ry="2.1" fill="currentColor" stroke="none"/><circle cx="13.9" cy="10.9" r="1.05" fill="currentColor" stroke="none"/><path d="M14.9 10.7l1.3 -0.15l-0.55 1.15z" fill="currentColor" stroke="none"/><circle cx="14.1" cy="10.6" r="0.18" fill="#fff" stroke="none"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Anti Desk Hogging</p>
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
@@ -822,6 +822,14 @@ symmetric ears — so the tail was dropped and the gap added). Both shapes stay 
 circle's footprint. `badge-teal` colour is unchanged. Verified via an inline HTMLParser tag-balance
 check, `node --check` on the extracted script block (markup/CSS-only, no JS touched), and a rendered
 weasyprint preview confirming a clearly readable bird-sitting-in-a-nest silhouette.
+
+MOST RECENT CHANGE: per a follow-up that the bird should actually sit *in* the nest rather than
+perched above it with a visible gap, moved the bird (body ellipse, head circle, beak, eye) down by
+1.3 units so its lower body now overlaps the nest bowl's interior instead of floating just above
+its rim. The nest itself is unchanged, so its scalloped rim still extends visibly past the bird's
+own width on both sides, reading as the nest wrapping around the bird's lower half rather than the
+two shapes merging into one indistinct blob. Verified via an inline HTMLParser tag-balance check and
+a rendered weasyprint preview confirming the bird now visibly nests down into the bowl.
 -->
 
 
