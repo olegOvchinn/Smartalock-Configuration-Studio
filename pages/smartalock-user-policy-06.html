@@ -157,15 +157,17 @@
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   /* ---------- qcard-icon-badge: wraps the heading's raster icon image in the same white-canvas,
      accent-border badge box used site-wide for icon treatment — this card is the only one on the
-     page (not a repeating multi-color option group), so it gets plain var(--accent) blue rather than
-     a palette colour, per the icon-badge convention. Sized to comfortably contain the existing
-     72x72px icon image (untouched) plus a little padding. ---------- */
+     page (not a repeating multi-color option group). Originally plain var(--accent) blue per the
+     "lone icon keeps plain blue" convention, but now overridden with `.badge-teal` to match this
+     icon's own sampled color — see the MOST RECENT CHANGE note below. Sized to comfortably contain
+     the existing 72x72px icon image (untouched) plus a little padding. ---------- */
   .qcard h3 .qcard-icon-badge {
     width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
     display: inline-flex; align-items: center; justify-content: center;
     background: #fff; border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .qcard h3 .qcard-icon-badge.badge-teal { border-color: #0E8F8F; }
   .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
   .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
   .qcard label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
@@ -321,7 +323,7 @@
         <div class="page-text">
 
       <div class="qcard">
-        <h3><span class="qcard-icon-badge"><img class="qcard-icon" src="../assets/images/icon-who-can-use-lockers.png" alt=""></span>Who Can Use Lockers</h3>
+        <h3><span class="qcard-icon-badge badge-teal"><img class="qcard-icon" src="../assets/images/icon-who-can-use-lockers.png" alt=""></span>Who Can Use Lockers</h3>
         <p class="qdesc">Define which users are permitted to access lockers.</p>
         <label>Access policy</label>
         <select id="userAccessPolicy">
@@ -389,6 +391,7 @@
   under the branding instead. No image lived in this page's nav pane, so content is otherwise unchanged.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (established on floorsense-reservation-types-01.html) to this page. `.qcard` dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border — this card has no hover/selected state, so only the base glass treatment applies (no hover/`.checked` variant needed). The heading's raster `<img class="qcard-icon">` (72x72px, the only icon on this single-card page, not a repeating option group) was wrapped in a new `<span class="qcard-icon-badge">` — a 92x92px white-canvas box with a plain `var(--accent)` blue border and short drop-shadow, sized to comfortably contain the existing icon plus padding — matching the site's icon-badge convention without introducing a palette colour, since this isn't a multi-option group. The image asset itself was untouched. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
+MOST RECENT CHANGE: Overrode the lone `.qcard-icon-badge`'s plain `var(--accent)` blue border with a new `.badge-teal` modifier class, border-color `#0E8F8F`, sampled directly from `icon-who-can-use-lockers.png`'s own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels) — the actual icon is teal, not blue, so the original "lone icon keeps plain blue" convention no longer applies once real icon colors are being matched. Only the badge's border-color CSS and the span's class list were touched; the icon image file, sizing, and JS logic are untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 
 <script>
