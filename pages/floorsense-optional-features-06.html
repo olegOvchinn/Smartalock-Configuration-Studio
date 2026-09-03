@@ -343,7 +343,7 @@
 
         <div class="feature-row">
           <svg class="feature-row-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><rect x="10.9" y="7.5" width="2.2" height="9" rx="1.1" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7v10"/><path d="M9.3 10.3L12 7.6l2.7 2.7"/><path d="M9 18h6"/></svg>
+          " stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="7" width="8" height="10" rx="1.2" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.5 16V8"/><path d="M8.2 10.3L9.5 8L10.8 10.3"/><path d="M14.5 8V16"/><path d="M13.2 13.7L14.5 16L15.8 13.7"/><path d="M7.5 18h9"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Follow Me Ergonomics (FME)</p>
             <p class="feature-row-desc">Lets end users save and apply their own sit/stand desk height presets via the Floorsense mobile app or handset. Requires motor integration with a Floorsense handset.</p>
@@ -830,6 +830,17 @@ its rim. The nest itself is unchanged, so its scalloped rim still extends visibl
 own width on both sides, reading as the nest wrapping around the bird's lower half rather than the
 two shapes merging into one indistinct blob. Verified via an inline HTMLParser tag-balance check and
 a rendered weasyprint preview confirming the bird now visibly nests down into the bowl.
+
+MOST RECENT CHANGE: per a request that the FME icon "should show two arrows, one up other down,"
+replaced the single up-arrow-on-a-pole glyph with two separate vertical arrows side by side — a
+left arrow pointing up (`M9.5 16V8` plus an upward chevron head) and a right arrow pointing down
+(`M14.5 8V16` plus a downward chevron head) — both symmetric about the canvas center (x=9.5 and
+x=14.5 average to 12), sitting on the same desk-surface base line as before (widened to span both
+arrows). This reads more literally as "the desk moves both up and down" than the previous single
+up-only arrow. The highlight shape widened from a narrow vertical bar behind the one arrow to a
+wider rounded rect behind both. `badge-purple` colour is unchanged. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block (markup/CSS-only, no JS
+touched), and a rendered weasyprint preview confirming two clear, symmetric up/down arrows.
 -->
 
 
