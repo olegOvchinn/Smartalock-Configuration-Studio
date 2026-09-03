@@ -122,12 +122,22 @@
     display: flex; align-items: center; gap: 18px; max-width: 640px; margin: 0 0 22px;
     background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
   }
-  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
-     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 40px pale-green
-     circle badge with a 20px accent-deep icon inside. Left the Smartalock branch's identical
-     download-card component (smartalock-configuration-summary-08.html) untouched, since this
-     icon pass is scoped to the Floorsense branch only. ---------- */
-  .download-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- download-card-icon-badge: per the site-wide icon-badge propagation from
+     floorsense-reservation-types-01.html, the bare 56x56px .download-card-icon glyph (itself
+     matching .desk-icon-img) was wrapped in a flat white/blue-bordered square badge — a lone icon
+     (this is the only download card on the page), so it kept plain accent blue rather than a
+     palette colour. Left the Smartalock branch's identical download-card component
+     (smartalock-configuration-summary-08.html) untouched, since this icon pass is scoped to the
+     Floorsense branch only. See the MOST RECENT CHANGE note below. ---------- */
+  .download-card-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .download-card-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
   .download-card-body { flex: 1; min-width: 0; }
   .download-card-body h3 { margin: 0 0 3px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--ink); }
   .download-card-body p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
@@ -140,10 +150,21 @@
   .download-btn:hover { background: var(--accent-deep); }
   .download-btn svg { width: 15px; height: 15px; }
 
-  /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary-08.html) ---------- */
+  /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary-08.html).
+     NOTE: every actual .summary-group element on this page lives inside .core-policy-body, whose
+     higher-specificity ".core-policy-body .summary-group" rule below zeroes out background/border/
+     radius/padding/max-width, so this base glass treatment currently has no visible effect — kept
+     anyway for consistency with the rest of the site's glass-card propagation and in case a
+     .summary-group is ever rendered outside .core-policy-body. See the MOST RECENT CHANGE note
+     below. ---------- */
   .summary-group {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 20px 22px; margin-bottom: 18px; max-width: 640px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
   /* ---------- icon moved out of the h3 into its own heading wrapper so it can be a big bare
@@ -152,7 +173,30 @@
      to 23px in .compact mode, which this drops entirely (icons keep full size in both states, same
      principle already applied to this page's heading/paragraph text). ---------- */
   .summary-group-heading { display: flex; align-items: center; gap: 14px; min-width: 0; }
-  .summary-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- summary-icon-badge: per the site-wide icon-badge propagation from
+     floorsense-reservation-types-01.html, each bare 56x56px .summary-icon glyph was wrapped in a
+     flat white square badge with a light colored border, cycling the blue/pink/purple/teal/amber
+     palette across the 6 summary-group headings in DOM order (wrapping back to blue for the 6th).
+     See the MOST RECENT CHANGE note below. ---------- */
+  .summary-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .summary-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .summary-icon-badge.badge-blue .summary-icon-glyph { color: #4A8DF0; }
+  .summary-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .summary-icon-badge.badge-pink .summary-icon-glyph { color: #EC6BA5; }
+  .summary-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .summary-icon-badge.badge-purple .summary-icon-glyph { color: #9B6BEC; }
+  .summary-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .summary-icon-badge.badge-teal .summary-icon-glyph { color: #2FBF9F; }
+  .summary-icon-badge.badge-amber { border-color: #F2A154; }
+  .summary-icon-badge.badge-amber .summary-icon-glyph { color: #F2A154; }
+  .summary-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
   .summary-group-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0; color: var(--header-grey); }
   .edit-link {
     font-family: var(--font-text); font-size: 10.25px; font-weight: 600; color: var(--accent-deep);
@@ -237,8 +281,13 @@
      own individual border/background/max-width inside this card and instead become flush
      sections separated by a top border, like .policy-field-group on the additional-policy cards. */
   .core-policy-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .core-policy-summary {
     display: flex; align-items: center; justify-content: space-between; gap: 14px;
@@ -301,8 +350,13 @@
      rather than every card always showing its full form, which got noisy once several existed
      stacked below each other. ---------- */
   .policy-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .policy-card-summary {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -542,7 +596,7 @@
         <div class="core-policy-body" id="corePolicyBody">
 
       <div class="download-card">
-        <svg class="download-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <div class="download-card-icon-badge"><svg class="download-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         <div class="download-card-body">
           <h3>Explain this policy to your end users</h3>
           <p>A short, plain-English guide covering check-in, booking and privacy — automatically updated to match what's configured below, ready to print or save as a PDF.</p>
@@ -556,7 +610,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div class="summary-icon-badge badge-blue"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
             <h3>Prebooking &amp; Duration</h3>
           </div>
         </div>
@@ -579,7 +633,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <div class="summary-icon-badge badge-pink"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
             <h3>Check-in Window</h3>
           </div>
           <a class="edit-link" href="floorsense-checkin-window-08.html">Edit</a>
@@ -593,7 +647,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg>
+            <div class="summary-icon-badge badge-purple"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14.5" x2="10" y2="14.5"/></svg></div>
             <h3>Check-in Behaviour</h3>
           </div>
         </div>
@@ -616,7 +670,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg>
+            <div class="summary-icon-badge badge-teal"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></div>
             <h3>Access Methods</h3>
           </div>
           <a class="edit-link" href="floorsense-checkin-methods-02.html?return=summary">Edit</a>
@@ -630,7 +684,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11.5" cy="18" r="2.2" fill="currentColor" stroke="none"/></svg>
+            <div class="summary-icon-badge badge-amber"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="16" cy="12" r="2.2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="11.5" cy="18" r="2.2" fill="currentColor" stroke="none"/></svg></div>
             <h3>Additional Options</h3>
           </div>
         </div>
@@ -681,7 +735,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M14.7 20a5 5 0 0 1 8.3-3.7"/></svg>
+            <div class="summary-icon-badge badge-blue"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M14.7 20a5 5 0 0 1 8.3-3.7"/></svg></div>
             <h3>Configured Separately</h3>
           </div>
         </div>
@@ -1794,6 +1848,14 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 MOST RECENT CHANGE: Per a request to tie the Configured Separately group's Teams/Book on Behalf training tick boxes to floorsense-reservation-types-01.html's own selections, trainingTeams and trainingBookOnBehalf are now ticked automatically whenever "team-leader"/"booked-on-behalf" is present in project.floorsense.wizard.reservationTypes.selected — since a client actively using either reservation type clearly needs training on it. This is a live OR with the checkbox's own saved trainingRequested value, not a one-time default: as long as the type stays selected on page 01, the box here stays ticked even if unchecked (it snaps back), and only reverts to the last manually-saved value once the type is deselected there. Notifications has no page-01 equivalent and keeps its original manual-only behavior. Verified with a jsdom smoke test covering: only team-leader selected, only booked-on-behalf selected, both selected, neither selected, a manually-saved true with nothing selected on page 01 (stays true), and a manually-saved false with the type selected on page 01 (page 01 wins, stays ticked) — all six cases behaved as intended.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types-01.html to this page's three assigned card classes and two of its three assigned icon classes. `.summary-group`, `.core-policy-card`, and `.policy-card` all dropped their solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment; none of the three had a pre-existing hover/selected border-color state (each only toggles a `.expanded`/collapse state via its chevron, unrelated to the border), so only the base glass background+shadow was added, with no hover/checked variant. Note that `.summary-group`'s own box-model properties are currently fully overridden by the higher-specificity `.core-policy-body .summary-group` rule (which zeroes background/border/radius/padding/max-width so the six summary rows read as flush sections inside the single `.core-policy-card` "canvas") — every actual `.summary-group` element on this page lives inside `.core-policy-body`, so this glass update has no visible effect today, but was applied anyway for consistency with the rest of the site's propagation and in case `.summary-group` is ever rendered standalone, matching how `.info-card`/`.policy-card`/`.policy-diagram-frame` were converted on floorsense-default-reservation-times-07.html despite being dead CSS there too.
+
+The lone `.download-card-icon` (View/Print Guide card) and all 6 `.summary-icon`s (Prebooking & Duration, Check-in Window, Check-in Behaviour, Access Methods, Additional Options, Configured Separately) were bare 56x56px glyphs with no existing badge — each was wrapped in a new white/colored-border icon badge (`.download-card-icon-badge`/`.download-card-icon-glyph` and `.summary-icon-badge`/`.summary-icon-glyph` respectively, 60x60px canvas, 34.5px glyph), since neither class's SVGs contain the canvas-`<rect>`-plus-fill-opacity-highlight pattern that marks the site's separate Style 1 icon treatment. `.download-card-icon` is a single lone icon (only one download card on the page) so it kept plain accent blue rather than a palette colour. The 6 `.summary-icon`s read as a repeating group of same-role section icons, so they cycle the site's blue/pink/purple/teal/amber palette in DOM order, wrapping back to blue for the 6th (Configured Separately).
+
+`.submit-guides-icon` (the small solid-blue-circle checkmark in the post-submit confirmation panel) was deliberately left untouched, despite being one of this file's three assigned icon classes. It's already a small circular badge with a white glyph on a solid accent background — a success/confirmation status glyph, not a card-identifying content icon — matching this page's own earlier documented convention (see the icon-size-unification MOST RECENT CHANGE note above) of treating it, along with other warning/info/status glyphs, as UI chrome rather than a content icon; converting it to the flat white-canvas/colored-border badge pattern would strip its established "solid confirmation checkmark" meaning without adding anything the reader needs. `.info-notice`/`.policies-intro`/`.policies-precedence-notice` icons and every chevron/switch/checkbox glyph on this page were left alone for the same reason (also outside this file's assigned icon-class list).
+
+Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — this page's summary-text builder reads `.summary-group-head h3`, not any of the icon/card classes touched here, so the markup restructure doesn't affect it; confirmed no JS selector anywhere in this file queries `.summary-icon`, `.download-card-icon`, or `.summary-group`'s own classList).
 -->
 
 
