@@ -198,8 +198,8 @@
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .dcard-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .dcard-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .dcard-icon-badge.badge-blue { border-color: #0071E3; }
+  .dcard-icon-badge.badge-amber { border-color: #D98E00; }
   .dcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 18px 0; flex: 1; }
 
   /* ---------- scope panel ---------- */
@@ -374,7 +374,7 @@
             <div class="mini-lottie" id="lottiePush"></div>
             <div class="mini-unit" id="fallbackPush"><div class="mf"></div><div class="md"></div></div>
           </div>
-          <h3><div class="dcard-icon-badge badge-pink"><img class="dcard-icon-img" src="../assets/images/icon-push-to-open.png" alt=""></div>Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
+          <h3><div class="dcard-icon-badge badge-amber"><img class="dcard-icon-img" src="../assets/images/icon-push-to-open.png" alt=""></div>Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
           <p class="desc">The lock disengages but the door stays shut until deliberately pushed, within a 15 second window. Ideal for high-traffic banks.</p>
         </div>
       </div>
@@ -440,6 +440,8 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page's `.dcard` (Pop Open / Push to Open) cards only — `.scope-panel` (the smaller nested Push-to-Open sub-panel) was deliberately left untouched, since it's a distinct smaller sub-panel using `var(--radius-md)`, not a large card in scope for this treatment. `.dcard` dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; its existing `:hover` (previously `border-color: var(--accent)`) and `.chosen` (previously `background: var(--accent-wash); border-color: var(--accent); box-shadow: none;`) states were converted to read through the shadow tint/spread and background tint instead. Each of the 2 raster `.dcard-icon-img` icons (Pop Open, Push to Open) was wrapped in a new `.dcard-icon-badge` div (56px, white background, colored border, sized to comfortably fit the existing 40px icons) — since the two cards form a repeating option group, they use the same blue/pink palette order as page 01's first two cards. Only the badge border color was set; the icon image files (icon-pop-open.png, icon-push-to-open.png) were not modified. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
+
+MOST RECENT CHANGE: Replaced the arbitrary blue/pink palette rotation on the `.dcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). Pop Open's `icon-pop-open.png` stayed blue but its hex tightened from `#4A8DF0` to the sampled `#0071E3` (class name `badge-blue` unchanged). Push to Open's `icon-push-to-open.png` changed from the rotation's `#EC6BA5` pink to its sampled true color, `#D98E00` amber (class renamed `badge-pink` -> `badge-amber`). Only the badge border-color CSS and the markup's modifier class were touched; icon PNGs, sizing, and JS logic are untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 -->
 
 <script>
