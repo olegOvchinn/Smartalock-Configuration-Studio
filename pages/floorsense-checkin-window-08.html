@@ -120,13 +120,25 @@
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
+  /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ----------
+     NOTE: .policy-card/.policy-grid/.policy-diagram-frame/.policy-subgroup/.policy-icon-img below
+     are dead CSS with no matching markup on this page (per this file's own NOTE, left in place from
+     an earlier redesign in case a future section needs them). .policy-card/.policy-diagram-frame
+     were still converted to the glass-card treatment below for consistency with every other
+     var(--radius-lg) card rule on this page — see the MOST RECENT CHANGE note at the end of this
+     file. .policy-icon-img was left untouched since there's no actual icon markup to wrap in a
+     badge. ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 640px; }
   @media (max-width: 560px) { .policy-grid { grid-template-columns: 1fr; } }
   .policy-grid.single { grid-template-columns: 1fr; }
   .policy-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 18px 20px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .policy-row { display: flex; align-items: flex-start; gap: 14px; }
   .policy-icon-img { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
@@ -151,17 +163,41 @@
   }
   .time-input:focus { outline: none; border-color: var(--accent); background: #fff; }
 
-  /* ---------- check-in window: single explainer card (icon+desc, live example, footer) ---------- */
+  /* ---------- check-in window: single explainer card (icon+desc, live example, footer). Per the
+     site-wide glass-card propagation from floorsense-reservation-types-01.html, dropped the opaque
+     paper background and solid grey border for a translucent backdrop-blurred background and soft
+     fuzzy box-shadow; this card has no hover/selected state (static content), so no `:hover`/
+     `.checked` variant was needed — see the MOST RECENT CHANGE note below. ---------- */
   .checkin-card {
-    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg); overflow: hidden;
+    max-width: 760px; margin: 0 auto;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
-  /* ---------- big bare content icon, matching floorsense-reservation-types-01.html's
-     .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — was a 48px accent-green
-     circle badge with a 24px white checkmark inside; redesigned as a clock face with a highlighted
-     wedge to depict a specific window/range of time rather than a generic checkmark. ---------- */
-  .checkin-card-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- content icon badge: this used to be a bare 56px svg (no wrapper), matching
+     floorsense-reservation-types-01.html's pre-badge .desk-icon-img treatment. Per the site-wide
+     propagation of page01's icon-badge pattern, wrapped in a new .checkin-card-icon-badge (white
+     background, thin accent border, short drop shadow), sized 64px/56px (vs page01's 60px/34.5px)
+     to keep this glyph at its original 56px rather than shrinking it, per the "different base size"
+     sizing guidance — with the svg itself renamed to .checkin-card-icon-glyph. This icon's own
+     shapes (a circle + one pie-wedge path) have no accompanying `fill-opacity="0.15"` highlight
+     shape, so it doesn't match business-hours-05's "Style 1" canvas-icon convention and was in scope
+     for the badge treatment. It's the only header icon on this page's single .checkin-card (not part
+     of a repeating option group), so it kept plain var(--accent) blue rather than a palette colour —
+     see the MOST RECENT CHANGE note below. ---------- */
+  .checkin-card-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .checkin-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
   .checkin-inline-field {
     display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
@@ -301,15 +337,33 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  /* ---------- footer icon bumped to the same 56x56px bare size as every other content icon on
-     the page (was a 40px wrapper around a 34px svg). ---------- */
-  .checkin-footer-icon { width: 56px; height: 56px; flex-shrink: 0; color: var(--accent); }
+  /* ---------- footer icon badge: was a bare 56x56px svg (see the note this replaces, above). Per
+     the same site-wide icon-badge propagation, wrapped in a new .checkin-footer-icon-badge
+     (64px/56px, same sizing rationale as .checkin-card-icon-badge above), svg renamed to
+     .checkin-footer-icon-glyph. This icon (a clipboard with a checkmark) has no `fill-opacity="0.15"`
+     highlight shape alongside its `rx="2.5"` rect, so it doesn't match "Style 1" and was in scope. As
+     the lone footer icon on this page (not a repeating option group), it kept plain var(--accent)
+     blue. ---------- */
+  .checkin-footer-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .checkin-footer-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
   .policy-diagram-frame {
     max-width: 900px; margin: 0 0 20px; padding: 20px 22px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .policy-diagram-frame svg { width: 100%; height: auto; display: block; }
   .policy-diagram-frame + .policy-diagram-frame { margin-top: 0; margin-bottom: 28px; }
@@ -421,7 +475,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg>
+          <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg></div>
           <p class="checkin-card-desc">
             Users can confirm (check in) their desk booking at the desk within a window before and
             after the booking start time — drag either dot on the diagram below to set how wide that
@@ -458,7 +512,7 @@
         </div>
 
         <div class="checkin-footer">
-          <svg class="checkin-footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg>
+          <div class="checkin-footer-icon-badge"><svg class="checkin-footer-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg></div>
           <p class="checkin-footer-text">Check in using <span id="checkinMethodsList">any of the methods enabled</span>.</p>
         </div>
       </div>
@@ -964,6 +1018,29 @@ persistence still works, plus a weasyprint render of an isolated copy of the car
 statically inlined at the default 30-min-before/60-min-after state) confirming the casing/segmented-
 bar/chip layout — and the light-near-center/deep-at-edges gradient direction on both sides — matches
 business-hours-05's look.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest
+card/icon styling sitewide, `.checkin-card` (the page's single explainer card) swapped its opaque
+paper background and solid grey border for the same translucent glass background
+(`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy box-shadow
+used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/
+`.checked` variant was needed; `overflow: hidden` was kept unchanged (an element's own `overflow`
+never clips its own box-shadow, only descendants). `.policy-card` and `.policy-diagram-frame` — both
+dead CSS with no matching markup on this page, per this file's own earlier NOTE — were converted the
+same way for consistency in case they're ever reactivated; `.policy-icon-img` (also dead, unused)
+was left untouched since there's no icon markup on this page to wrap in a badge.
+
+Separately, this page's two bare content icons were each wrapped in a new white/accent-bordered icon
+badge, sized 64px/56px (vs page 01's 60px/34.5px) to keep both glyphs at their original 56px:
+`.checkin-card-icon` became `.checkin-card-icon-badge`/`.checkin-card-icon-glyph` (the header clock
+icon), and `.checkin-footer-icon` became `.checkin-footer-icon-badge`/`.checkin-footer-icon-glyph`
+(the footer clipboard-checkmark icon). Both icons' shapes were checked against business-hours-05's
+"Style 1" canvas-icon convention (a `rect`-style canvas plus a `fill-opacity="0.15"` highlight) but
+neither has an accompanying highlight shape, so neither qualified for that exemption. As the only
+header icon and the only footer icon on this page's single `.checkin-card` (neither is part of a
+repeating option group), both kept plain `var(--accent)` blue rather than a palette colour. Verified
+via an inline HTMLParser tag-balance check (`python3 /tmp/validate.py`) and `node --check` on the
+extracted script block (untouched — markup/CSS-only change).
 -->
 
 <script>
