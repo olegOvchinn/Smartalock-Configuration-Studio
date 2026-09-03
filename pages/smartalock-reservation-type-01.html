@@ -184,20 +184,19 @@
   .tcard-body { flex: 1; min-width: 0; }
   .tcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 8px; color: var(--tc); display: flex; align-items: center; gap: 10px; }
   /* ---------- tcard-icon-badge: wraps each raster <img class="tcard-icon-img"> in a white square
-     badge with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge
-     pattern. The 3 reservation-type cards form a repeating option group, so badges cycle through the
-     site's standard blue/pink/purple palette (independent of this page's own per-card --tc theme
-     colour used for the heading text/radio check) — see the MOST RECENT CHANGE note below. Only the
-     badge's border is coloured; the raster icon images are left untouched. ---------- */
+     badge with a colored border. Each badge's border color is sampled from its own icon's PNG
+     pixels rather than an arbitrary palette rotation (independent of this page's own per-card --tc
+     theme colour used for the heading text/radio check) — see the MOST RECENT CHANGE note below.
+     Only the badge's border is coloured; the raster icon images are left untouched. ---------- */
   .tcard h3 .tcard-icon-badge {
     width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     background: #fff; border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .tcard h3 .tcard-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .tcard h3 .tcard-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .tcard h3 .tcard-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .tcard h3 .tcard-icon-badge.badge-blue { border-color: #0071E3; }
+  .tcard h3 .tcard-icon-badge.badge-green { border-color: #1FAA59; }
+  .tcard h3 .tcard-icon-badge.badge-purple { border-color: #8B5CF6; }
   .tcard h3 .tcard-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
   .tcard h3 span.tag {
     font-family: var(--font-text); font-size: 9.92px; color: var(--ink-soft); font-weight: 500;
@@ -369,7 +368,7 @@
         <div class="tcard" id="card-user" data-type="user">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><span class="tcard-icon-badge badge-pink"><img class="tcard-icon-img" src="../assets/images/icon-user-self-allocated.png" alt=""></span>User Self-Allocated</h3>
+            <h3><span class="tcard-icon-badge badge-green"><img class="tcard-icon-img" src="../assets/images/icon-user-self-allocated.png" alt=""></span>User Self-Allocated</h3>
             <p class="desc">Users choose their own locker at the kiosk or app. The reservation never expires automatically and stays allocated until the user or an administrator releases it.</p>
 
             <div class="duration-panel" id="durationPanel">
@@ -465,6 +464,7 @@
   page or the other seven v4 modules — it's here purely for review of the concept.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. `.tcard`'s solid `border: 1.5px solid var(--line)` was removed in favour of a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border. This card pre-dates the propagation with its own per-type accent (`--tc`/`--tc-wash`, one of blue/green/purple per `data-type`), so rather than flattening the hover/`.chosen` glow to one fixed blue tint, a matching `--tc-glow`/`--tc-glow-strong` custom property pair was added per type so each card's shadow still tints in its own colour; `.maxed:hover` now resets to the plain base shadow instead of a grey border. Each of the 3 cards' raster `<img class="tcard-icon-img">` (56px: Allocated by Administrator, User Self-Allocated, Parcel Delivery) was wrapped in a new `<span class="tcard-icon-badge">` — a 72x72px white-canvas, colour-bordered badge — cycling the site's standard blue/pink/purple palette in DOM order (independent of each card's own `--tc` theme colour, matching how every other repeating icon group on the site uses the fixed palette); only the badge border is coloured, the icon image files themselves are untouched. `.duration-panel` (a smaller `var(--radius-md)` sub-panel) was deliberately left untouched, per the task's exclusion of nested sub-panels. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
+MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette-rotation on the 3 `.tcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB of saturated, non-background-wash pixels via PIL): Allocated by Administrator (`icon-admin-allocated.png`) badge-blue #4A8DF0 -> badge-blue #0071E3; User Self-Allocated (`icon-user-self-allocated.png`) badge-pink #EC6BA5 -> badge-green #1FAA59; Parcel Delivery (`icon-parcel-delivery.png`) badge-purple #9B6BEC -> badge-purple #8B5CF6. The old `badge-pink` rule was removed (replaced by a new `badge-green` rule) since no icon on this page uses pink anymore; `badge-blue`/`badge-purple` kept their names but got updated hex values. This is unrelated to and does not touch each card's own separate `--tc`/`--tc-wash` per-type theming of the card background/heading/radio-check. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 -->
 
 <script>
