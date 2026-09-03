@@ -96,12 +96,40 @@
   .qcard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; }
   @media (max-width: 720px) { .qcard-grid { grid-template-columns: 1fr; } }
   .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
+  /* ---------- glass card: per the site-wide propagation of the treatment finished on
+     floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
+     in favour of a translucent white background + backdrop blur + soft fuzzy box-shadow standing in
+     for the border — see the MOST RECENT CHANGE note below. This card has no hover/selected state of
+     its own, so only the base treatment applies. ---------- */
   .qcard {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
     padding: 22px 24px; margin-bottom: 18px; max-width: 640px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
+  /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
+     with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
+     (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
+     The 3 icons here (Company Details, Contacts, Project Dates) form a repeating group of question
+     cards, so each gets its own palette color in DOM order rather than one shared blue — see the
+     MOST RECENT CHANGE note below. The badge only colors its own border; the raster icon images are
+     left untouched. ---------- */
+  .qcard-icon-badge {
+    width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .qcard-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .qcard-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .qcard-icon-badge.badge-purple { border-color: #9B6BEC; }
   .qcard-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
@@ -203,7 +231,7 @@
 
       <div class="qcard-grid">
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="assets/images/icon-company.png" alt="">Company Details</h3>
+        <h3><div class="qcard-icon-badge badge-blue"><img class="qcard-icon" src="assets/images/icon-company.png" alt=""></div>Company Details</h3>
         <p class="qdesc">Basic details about the company and site this configuration is for.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -222,7 +250,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="assets/images/icon-contacts.png" alt="">Contacts <span class="qcard-tag">Optional</span></h3>
+        <h3><div class="qcard-icon-badge badge-pink"><img class="qcard-icon" src="assets/images/icon-contacts.png" alt=""></div>Contacts <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -253,7 +281,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><img class="qcard-icon" src="assets/images/icon-dates.png" alt="">Project Dates <span class="qcard-tag">Optional</span></h3>
+        <h3><div class="qcard-icon-badge badge-purple"><img class="qcard-icon" src="assets/images/icon-dates.png" alt=""></div>Project Dates <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -347,6 +375,22 @@
   a previously-saved value, an edit autosaves after the existing 450ms debounce, and Reset clears
   both the field and the persisted value — zero runtime errors.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
+
+MOST RECENT CHANGE: This root-level file was missed by the earlier sitewide propagation of
+floorsense-reservation-types-01.html's glass-card/icon-badge styling — the survey that drove that
+pass only looked inside pages/, and this page (the site's actual first-opened entry point, despite
+its pages/register.html-shaped name) lives one directory up. Per a follow-up request to refine its
+icon styling, and since its `.qcard` card was equally untouched, both were brought in line: `.qcard`
+swapped its solid `border: 1.5px solid var(--line)` for the same translucent glass background
+(`rgba(255,255,255,0.6)`) + `backdrop-filter: blur(10px) saturate(160%)` + fuzzy two-layer box-shadow
+used everywhere else (no hover/selected state exists on this static form card, so only the base
+treatment applies). Each of the 3 raster `.qcard-icon` `<img>` icons (Company Details, Contacts,
+Project Dates, all 76px) was wrapped in a new 92px `.qcard-icon-badge` div — the exact same pattern
+already used on smartalock-it-configuration-02.html's own qcards — cycling the blue/pink/purple
+palette in DOM order, since the 3 cards form a repeating group. The badge only colors its own
+border; the icon `<img>` elements and their underlying PNG files were left byte-for-byte untouched.
+Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
+(untouched — CSS/markup-only change).
 -->
 
 <script>
