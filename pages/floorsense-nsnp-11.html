@@ -83,12 +83,7 @@
   .progress-seg:last-child:hover .progress-seg-tip,
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
-  .eyebrow {
-    font-family: var(--font-text); font-size: 9.43px; letter-spacing: 0.1em; text-transform: uppercase;
-    display: inline-block; padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
-  }
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  .panel-intro .eyebrow { color: var(--accent-deep); background: var(--accent-wash); }
   h1.hero-title {
     font-family: 'Inter', sans-serif;
     font-size: 76px;
@@ -115,7 +110,6 @@
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
   .section-head { margin: 0 auto 22px; max-width: 640px; }
   .section-head + .section-head { margin-top: 36px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
   .section-head p:last-child { margin-bottom: 0; }
@@ -343,7 +337,6 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <span class="eyebrow">Additional Features · Optional</span>
         <h1 class="hero-title">No Swipe No Power</h1>
         <p class="sub">Automatically power a desk off until someone checks in.</p>
       </div>
@@ -354,7 +347,6 @@
     <div class="panel-inner">
 
       <div class="section-head">
-        <span class="eyebrow">Configure</span>
         <h2 class="section-title">No Swipe No Power (NSNP)</h2>
         <p>Power turns off again once the reservation ends — turn on a short grace period below to keep it on a little longer. Permanently assigned desks are the exception and stay powered on. This is entirely optional; choose how you'd like to roll it out, or skip it if you won't be using it.</p>
       </div>
@@ -637,6 +629,8 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types-01.html to this page. `.path-check-card` (the 4-mode NSNP grid) dropped its solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment, with hover and `.checked` now read through the shadow tint/background tint instead of a border-color change. `.nsnp-relay-confirm` (the relay-confirmation panel above the grid) got the same base glass treatment but with no hover/checked variant, since it's a static panel, not a selectable card — its own internal tick/checkbox state is unaffected. `.nsnp-grace-block` was deliberately left untouched per instruction, since it's a smaller nested sub-panel, not a primary card. All 4 bare `.path-icon-img` line icons (All desks, We will provide a list, We will not be using NSNP, Other) were wrapped in new `.path-icon-badge badge-COLOR` divs (60x60px white canvas, colored border) with their svg renamed to `.path-icon-glyph` (34.5px) — none of the 4 SVGs contain a canvas `<rect>`+fill-opacity highlight, so none qualified for the site's separate "Style 1" glass-icon treatment. Colors cycle in DOM order: blue (All desks), pink (list), purple (none), teal (Other). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change, no JS logic affected).
+
+MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed both `<span class="eyebrow">` instances on this page ("Additional Features · Optional" above the hero title, and "Configure" above the NSNP section heading) — both parent containers (`.panel-intro`, `.section-head`) still had other content (hero title/sub, section title/paragraph) so only the spans were removed, not their parents. Also removed the now-unused `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 -->
 
 <script>
