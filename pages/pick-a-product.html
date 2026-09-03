@@ -80,14 +80,19 @@
   /* ---------- product choice cards ---------- */
 
   .tcard {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 0; overflow: hidden; position: relative; transition: border-color .18s, background .18s, box-shadow .18s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 0; overflow: hidden; position: relative;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .18s, background .18s;
     display: flex; flex-direction: column; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .tcard[data-type="smartalock"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
   .tcard[data-type="floorsense"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
-  .tcard:hover { border-color: var(--tc); background: var(--tc-wash); }
-  .tcard.chosen { background: var(--tc-wash); border-color: var(--tc); box-shadow: none; }
+  .tcard:hover { background: var(--tc-wash); box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08); }
+  .tcard.chosen { background: var(--tc-wash); box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08); }
 
   .tcard-logo-bar { padding: 18px 24px 14px; }
   .tcard-brand-logo { height: 32px; width: auto; display: block; }
@@ -244,6 +249,8 @@ MOST RECENT CHANGE: Changed .tcard-visual-frame's aspect-ratio from 909/587 (the
 MOST RECENT CHANGE: Fixed the Smartalock crop cutting into the standalone cabinet/person group at the image's left edge while leaving extra bare floor visible on the right — since the source image's content already runs edge-to-edge with no dead margins, the default center object-position (50%) was cropping real content on the left and empty floor on the right in equal amounts, which reads as unbalanced because the two sides aren't equally "busy." Set object-position: 10% center on .tcard-visual-zoom (worked out by replicating the exact object-fit: cover + object-position + scale(1.2) crop math in a Python/PIL script and comparing candidate crops side by side) so the visible window shifts left, keeping the cabinet/person group intact with a small clean margin instead of clipping it.
 
 MOST RECENT CHANGE: Per a request that Floorsense branch cards use Smartalock's blue instead of green (confirmed via follow-up to apply "everywhere," including this page), `.tcard[data-type="floorsense"]` changed from `{ --tc: #1FAA59; --tc-wash: #E6F7ED; }` to `{ --tc: #0071E3; --tc-wash: #E8F1FC; }` — the same blue already used by `.tcard[data-type="smartalock"]`, so both product cards on this picker now share one accent color. `.tcard[data-type="user"]` on smartalock-reservation-type-01.html (an unrelated internal card variant that happened to reuse the same green hex) was deliberately left untouched, as it has nothing to do with Floorsense/Smartalock product branding. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block, and visually confirmed via a weasyprint render.
+
+MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished on floorsense-reservation-types-01.html to every other page, `.tcard`'s solid `background: var(--paper); border: 1.5px solid var(--line);` was replaced with the same translucent-glass pattern: a `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, `border: none`, and a soft `box-shadow` standing in for the old border. Since these two cards are the primary clickable choice for the whole site (Smartalock vs. Floorsense), the existing `:hover`/`.chosen` border-color swap (via each card's own `--tc`/`--tc-wash` custom properties) was converted to a shadow-lift + background-tint pair, matching the reference page's `.desk-check-card:hover`/`.desk-check-card.checked` treatment — hover now brightens the shadow and tints the background toward `--tc-wash`, and `.chosen` does the same more strongly, so the cards still read clearly as clickable/selectable with no border anywhere. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — CSS-only change).
 -->
 
 <script>
