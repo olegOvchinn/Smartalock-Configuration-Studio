@@ -322,10 +322,6 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
-        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
-        </a>
         </nav>
       </div>
     </div>
@@ -802,6 +798,19 @@ was deleted, not the container). Also removed both related CSS rulesets (the bas
 rule and the `.panel-intro .eyebrow` modifier) from the inline `<style>` block. Verified via an HTML
 tag-balance check and `node --check` on the extracted `<script>` body (no syntax errors, JS
 untouched).
+
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
+Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
+shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
+explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
+flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
+segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
+needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
+directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
+an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
+touched file.
 -->
 
 

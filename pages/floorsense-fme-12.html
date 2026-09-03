@@ -260,10 +260,6 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
-        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
-        </a>
         </nav>
       </div>
     </div>
@@ -425,6 +421,19 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types-01.html to this page. `.path-check-card` (the 3-mode FME grid) dropped its solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment, with hover and `.checked` now read through the shadow tint/background tint instead of a border-color change. All 3 bare `.path-icon-img` line icons (All sit-stand desks, We will provide a list of desk types, We will not enable mobile app FME) were wrapped in new `.path-icon-badge badge-COLOR` divs (60x60px white canvas, colored border) with their svg renamed to `.path-icon-glyph` (34.5px) — none of the 3 SVGs contain a canvas `<rect>`+fill-opacity highlight, so none qualified for the site's separate "Style 1" glass-icon treatment. Colors cycle in DOM order: blue (All sit-stand desks), pink (list), purple (none). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change, no JS logic affected).
 
 MOST RECENT CHANGE: per a request to remove the decorative "eyebrow" pill labels site-wide across the Floorsense branch, removed both `<span class="eyebrow">` instances on this page ("Additional Features · Optional" in .panel-intro above the hero title, and "Configure" in .section-head above the section title) — both parent containers still had their heading/paragraph content, so only the span lines were deleted, not the containers. Also removed all three related CSS rulesets from the inline <style> block: the base `.eyebrow { ... }` rule and the `.panel-intro .eyebrow` / `.section-head .eyebrow` modifier rules. Verified via an HTML tag-balance check and `node --check` on the extracted <script> body (no syntax errors, JS untouched).
+
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
+Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
+shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
+explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
+flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
+segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
+needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
+directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
+an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
+touched file.
 -->
 
 <script>

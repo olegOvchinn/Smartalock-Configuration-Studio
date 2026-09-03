@@ -254,10 +254,6 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
-        <a class="progress-seg current" data-module="setup-path" href="floorsense-setup-path-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
-        </a>
         </nav>
       </div>
     </div>
@@ -473,6 +469,19 @@ MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Sma
 MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card/icon styling sitewide, `.complete-card` swapped its opaque paper background and solid grey `border: 1.5px solid var(--line)` for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy `box-shadow` used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/`.checked` variant was needed, just the base glass treatment. Separately, `.complete-card-icon`'s bare 56px svg (no wrapper) was wrapped in a new `.complete-card-icon-badge` (64px, white background, `1.5px solid var(--accent)` border, short drop shadow) matching page 01's `.desk-icon-badge`, sized slightly larger than page 01's 60px/34.5px pairing so the glyph itself could stay at its original 56px rather than shrinking it. The icon's own `<rect rx="2">` shape was checked against business-hours-05's "Style 1" canvas-icon convention (a `rect rx="2"` canvas plus a `fill-opacity="0.15"` highlight shape) but has no accompanying opacity-15 highlight, so it didn't qualify for that exemption and was in scope for the badge treatment. As a single lone icon (not part of a repeating multi-option card group), it kept plain `var(--accent)` blue rather than being assigned one of the palette colours used for page 01's 5-card option group. Verified via an inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed the single `<span class="eyebrow">All Set</span>` above the hero title. Its parent `.panel-intro` still had the `<h1>` hero title and `<p class="sub">`, so only the span was removed, not the parent. Also removed the now-unused base `.eyebrow` and `.panel-intro .eyebrow` CSS rulesets from the inline stylesheet (this page never had a `.section-head .eyebrow` rule). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
+
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
+Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
+shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
+explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
+flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
+segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
+needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
+directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
+an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
+touched file.
 -->
 
 <script>
