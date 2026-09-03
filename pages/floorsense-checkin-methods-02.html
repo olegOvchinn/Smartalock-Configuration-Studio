@@ -125,24 +125,54 @@
   /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
      a simple blue border, matching floorsense-reservation-types-01.html's icon styling (no
      glass/glow treatment, just shape + blue border). Replaces the earlier per-option illustration
-     photo (.desk-thumb) — see the MOST RECENT CHANGE note below. ---------- */
+     photo (.desk-thumb) — see the MOST RECENT CHANGE note below. Per a site-wide propagation of
+     page 01's later "light colour touch" + drop-shadow icon treatment, each badge also gets its own
+     light accent colour (via a badge-COLOR modifier) and a short drop shadow — see the MOST RECENT
+     CHANGE note at the end of this comment block. ---------- */
   .desk-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
     border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .desk-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .desk-icon-badge.badge-blue .desk-icon-glyph { color: #4A8DF0; }
+  .desk-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .desk-icon-badge.badge-pink .desk-icon-glyph { color: #EC6BA5; }
+  .desk-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .desk-icon-badge.badge-purple .desk-icon-glyph { color: #9B6BEC; }
+  .desk-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .desk-icon-badge.badge-teal .desk-icon-glyph { color: #2FBF9F; }
+  .desk-icon-badge.badge-amber { border-color: #F2A154; }
+  .desk-icon-badge.badge-amber .desk-icon-glyph { color: #F2A154; }
   .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- desk reservation-method cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
+  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+     glass" card treatment sitewide — .desk-check-card drops its solid `border: 1.5px solid
+     var(--line)` in favour of a translucent white background with `backdrop-filter: blur()` and a
+     soft, fuzzy `box-shadow` standing in for the border. Hover/checked states, previously shown via
+     `border-color`, now read through the shadow's spread/tint and the background tint instead — see
+     the MOST RECENT CHANGE note at the end of this file's NOTE block. ---------- */
   .desk-check-card {
-    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius-lg);
-    padding: 22px 26px; transition: border-color .15s, background .15s;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 22px 26px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
-  .desk-check-card:hover { border-color: var(--accent); }
-  .desk-check-card.checked { border-color: var(--accent); background: var(--accent-wash); }
+  .desk-check-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  }
+  .desk-check-card.checked {
+    background: rgba(232,241,252,0.7);
+    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+  }
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-tick {
@@ -290,7 +320,7 @@
           <label class="desk-row">
             <input type="checkbox" value="card">
             <span class="desk-tick" aria-hidden="true"></span>
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="3" y="9" width="18" height="3" fill="currentColor" fill-opacity="0.15"/></svg></div>
+            <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="3" y="9" width="18" height="3" fill="currentColor" fill-opacity="0.15"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Building Access Cards at Desk</h3>
               <p class="desk-desc">Users swipe their existing building access card at any desk to reserve it for their session.</p>
@@ -305,7 +335,7 @@
           <label class="desk-row">
             <input type="checkbox" value="prebooking">
             <span class="desk-tick" aria-hidden="true"></span>
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.2" y="3.5" width="14" height="10.5" rx="1.5"/><line x1="2.2" y1="6.8" x2="16.2" y2="6.8"/><rect x="12.5" y="9.5" width="8" height="12.5" rx="2" fill="#fff" stroke="currentColor"/><line x1="15" y1="19.2" x2="18" y2="19.2"/></svg></div>
+            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.2" y="3.5" width="14" height="10.5" rx="1.5"/><line x1="2.2" y1="6.8" x2="16.2" y2="6.8"/><rect x="12.5" y="9.5" width="8" height="12.5" rx="2" fill="#fff" stroke="currentColor"/><line x1="15" y1="19.2" x2="18" y2="19.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
               <p class="desk-desc">Book and check in via the Floorsense mobile app or the my.floorsense.com.au desktop browser portal.</p>
@@ -317,7 +347,7 @@
           <label class="desk-row">
             <input type="checkbox" value="qr">
             <span class="desk-tick" aria-hidden="true"></span>
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="4.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="15.5" y="2.5" width="6" height="6" rx="1"/><rect x="17.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="2.5" y="15.5" width="6" height="6" rx="1"/><rect x="4.3" y="17.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="13.4" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="13.4" y="17.3" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="17.3" width="2.6" height="2.6"/></svg></div>
+            <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="4.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="15.5" y="2.5" width="6" height="6" rx="1"/><rect x="17.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="2.5" y="15.5" width="6" height="6" rx="1"/><rect x="4.3" y="17.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="13.4" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="13.4" y="17.3" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="17.3" width="2.6" height="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">QR Code at Desk</h3>
               <p class="desk-desc">Users scan a QR code displayed at the desk to reserve it for their session.</p>
@@ -329,7 +359,7 @@
           <label class="desk-row">
             <input type="checkbox" value="wallet">
             <span class="desk-tick" aria-hidden="true"></span>
-            <div class="desk-icon-badge"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
+            <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
               <p class="desk-desc">Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it.</p>
@@ -589,7 +619,25 @@ node --check on the extracted script block (untouched -- markup/CSS-only change)
 render (with currentColor swapped for its resolved hex for preview purposes) confirming all 4
 badges render as clean flat white-canvas/blue-border squares with sharp, thin, symbolic blue line
 icons.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+and icon treatment sitewide, `.desk-check-card` dropped its solid `border: 1.5px solid var(--line)`
+in favour of page 01's translucent-glass treatment: a translucent white background
+(`rgba(255,255,255,0.6)`) with `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy
+`box-shadow` standing in for the border. The `:hover` and `.checked` states (previously
+`border-color: var(--accent)` / `background: var(--accent-wash)`) now read through the shadow's
+tint/spread and a translucent background tint instead, matching page 01 exactly. Separately, each of
+the 4 `.desk-icon-badge` wrappers (already this page's existing flat white/bordered badge style, from
+an earlier "match page 01 icon styling" pass) gained its own light accent-colour modifier class in
+DOM order — `badge-blue` (Building Access Cards), `badge-pink` (Booking), `badge-purple` (QR Code),
+`badge-teal` (Wallet Pass) — plus the base `.desk-icon-badge` rule gained the short
+`box-shadow: 0 3px 6px rgba(16,42,67,0.10)` drop shadow, both copied verbatim from page 01's
+`badge-COLOR`/box-shadow rules so all Floorsense pages now share one consistent card/icon look. Icon
+shapes/paths/strokes were left untouched. Verified via the inline HTMLParser tag-balance check
+(python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-
+only change).
 -->
+
 
 
 <script>
