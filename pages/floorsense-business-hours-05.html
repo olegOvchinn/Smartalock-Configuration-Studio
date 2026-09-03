@@ -116,9 +116,19 @@
 
   /* ---------- business hours: single explainer card (icon+desc, live diagram, footer),
      same shell as floorsense-checkin-window-08.html's .checkin-card ---------- */
+  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+     glass" card treatment here too — see the MOST RECENT CHANGE note at the end of this file's NOTE
+     block. Plain static explainer card (no hover/selected state), so no new states were introduced;
+     `overflow: hidden` is kept since the footer/header still rely on it to clip to the rounded
+     corners. ---------- */
   .checkin-card {
-    max-width: 760px; margin: 0 auto; background: var(--paper); border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg); overflow: hidden;
+    max-width: 760px; margin: 0 auto;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+    transition: box-shadow .2s, background .2s;
   }
   .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
   /* ---------- checkin-card-icon: a basic square glyph replacing the header illustration this page
@@ -778,7 +788,19 @@ MOST RECENT CHANGE: Per a follow-up request to "make it instead same colour as t
 same value the base `.label-time` rule (i.e., the arrival chip) already uses — so the two floating
 time chips now match exactly rather than using two different blues. Verified via an inline HTMLParser
 tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+treatment sitewide, `.checkin-card` dropped its solid `border: 1.5px solid var(--line)` in favour of
+page 01's translucent-glass treatment: a translucent white background (`rgba(255,255,255,0.6)`) with
+`backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy `box-shadow` standing in for the
+border (`overflow: hidden` is unchanged, still needed so the header/timeline/footer clip to the
+card's rounded corners). This card has no hover/selected state, so none was invented. Per explicit
+instruction, this page's `.checkin-card-icon` (the "Style 1" rounded-square clock glyph) and
+`.timeline-rail` (a rail/track, not a card) were left untouched — card treatment only. Verified via
+the inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the
+extracted script block (untouched — markup/CSS-only change).
 -->
+
 
 
 

@@ -229,6 +229,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Per a request to propagate `floorsense-reservation-types-01.html`'s latest card/icon styling sitewide, `pages/floorsense-checkin-methods-02.html`'s `.desk-check-card` swapped its grey border for the same translucent-glass background/fuzzy-shadow treatment (with hover/checked read through the shadow instead of a border color), and its 4 `.desk-icon-badge` icons picked up page 01's per-icon light accent colours (blue/pink/purple/teal) plus its short drop shadow.
 - The same glass-card propagation was applied to `pages/floorsense-desk-user-groups-03.html`'s `.groups-card` (the two Desk/User Group column wrappers) and `.group-check-card` (the per-option checkbox cards inside them); this page's option rows carry no icon markup at all, so no icon changes were needed.
 - `pages/floorsense-prebooking-advance-04.html`'s single `.policy-card` also picked up the glass-card treatment (no hover/checked state existed to convert); its one `.policy-thumb` illustration is a large 260px photographic crop rather than a small symbolic glyph, so it was deliberately left out of the 60x60px icon-badge treatment used on pages 01/02 to avoid clipping/distorting the artwork.
+- `pages/floorsense-business-hours-05.html`'s `.checkin-card` also picked up the glass-card treatment; its `.checkin-card-icon` "Style 1" clock glyph and the unrelated `.timeline-rail` were deliberately left untouched, per an explicit request to preserve Style 1 by name.
 
 ## Status
 
