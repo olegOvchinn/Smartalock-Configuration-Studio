@@ -130,7 +130,13 @@ body {
 
 .overall-progress-card {
 
-    background:white;
+    background:rgba(255,255,255,0.6);
+
+    -webkit-backdrop-filter:blur(10px) saturate(160%);
+
+    backdrop-filter:blur(10px) saturate(160%);
+
+    border:none;
 
     border-radius:24px;
 
@@ -139,8 +145,10 @@ body {
     margin-bottom:35px;
 
     box-shadow:
-        0 12px 35px
-        rgba(16,42,67,.08);
+        0 14px 34px -10px rgba(16,42,67,0.16),
+        0 2px 10px rgba(16,42,67,0.06);
+
+    transition:box-shadow .2s ease, background .2s ease;
 
 }
 
@@ -2635,6 +2643,25 @@ oninput="markAnswered(this)">
 </div>
 
 </main>
+
+<!--
+  NOTE for Oleg: this is the Policy Workshop wizard, styled via ../css/styles.css and
+  ../css/landing.css plus its own inline <style> block above (`.overall-progress-card` and the
+  rest of the wizard chrome live there, not in an external stylesheet).
+
+  MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished
+  on floorsense-reservation-types-01.html, `.overall-progress-card` (the single "Overall
+  Configuration Progress" bar card at the top of the page) swapped its flat opaque `background:
+  white` for the same translucent-glass pattern used elsewhere: `rgba(255,255,255,0.6)` background,
+  `backdrop-filter: blur(10px) saturate(160%)`, explicit `border: none` (it had no border to begin
+  with), and its existing soft box-shadow strengthened to the reference page's two-layer style, plus
+  a transition. This is a single static progress-display panel with no click/selected state, so no
+  hover treatment was added. No icon markup exists on this page (assigned icon classes for this
+  page's task were none), so nothing else changed; the visually similar `.wizard-frame` panel and
+  the individual `.question` cards were deliberately left untouched since neither is the assigned
+  `.overall-progress-card` class. Verified via an inline HTMLParser tag-balance check and
+  `node --check` on the extracted script blocks (untouched — CSS-only change).
+-->
 
 <script src="../js/project.js"></script>
 <script src="../js/smartalock-wizard.js"></script>
