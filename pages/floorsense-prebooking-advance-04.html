@@ -126,16 +126,26 @@
      of this exact same icon-dates.png asset — that page samples the badge border color directly from
      each icon's own dominant glyph pixels rather than the site's generic rotating palette, since
      icon-dates.png already bakes in its own colored glyph + light wash background (amber, in this
-     case) rather than being neutral line art. `#D98E00` is the same sampled amber value used there. ---------- */
+     case) rather than being neutral line art. `#D98E00` is the same sampled amber value used there.
+     Sized/weighted to sit closer to floorsense-business-hours-05.html's bare "Style 1" 84px icon: the
+     overall badge shrank from 88px to 84px (matching that page's icon footprint exactly), the image
+     inside shrank from 72px to 58px so it leaves a ~13px margin on every side rather than sitting
+     nearly edge-to-edge (business-hours-05's own SVG canvas rect leaves a comparable ~14px margin
+     inside its 84px viewBox), the border thickened slightly from 1.5px to 2px to read with a similar
+     line weight to that page's stroke, and the radius eased down from 24px (27% of 88px, a noticeably
+     rounder "squircle") to 18px (~21% of 84px) so the canvas reads as a crisper rounded square rather
+     than a blob — still short of business-hours-05's own ~8% rect radius, since this badge also
+     carries a border + drop shadow that a bare stroked rect doesn't, and going that tight would look
+     undersized for a bordered/shadowed shape. ---------- */
   .policy-icon-badge {
-    width: 88px; height: 88px; border-radius: 24px; flex-shrink: 0;
+    width: 84px; height: 84px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
-    border: 1.5px solid #D98E00;
+    border: 2px solid #D98E00;
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .policy-icon-img { width: 72px; height: 72px; flex-shrink: 0; }
+  .policy-icon-img { width: 58px; height: 58px; flex-shrink: 0; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -586,6 +596,22 @@ border-radius/box-shadow it used to carry moved to the new wrapper, so there's n
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and a rendered weasyprint preview confirming the icon now sits inside a white canvas with a clean
 amber border line, with the drop shadow no longer bleeding past the badge's rounded corners.
+
+MOST RECENT CHANGE: per a follow-up request to refine the new icon badge's size/line-thickness to
+sit closer to floorsense-business-hours-05.html's bare "Style 1" icon (a rounded-square canvas drawn
+directly in its SVG, 84px overall, ~2.8px-equivalent stroke weight), while keeping this badge's own
+look/colour/content (the white-canvas + amber #D98E00 border wrapping icon-dates.png) unchanged:
+`.policy-icon-badge` shrank from 88px to 84px (matching business-hours-05's icon footprint exactly),
+its border-radius eased from 24px (27%, a rounder "squircle") to 18px (~21%, a crisper square) since
+this badge — unlike that page's bare stroked rect — also carries a border and drop shadow, so
+matching its ~8% radius literally would look undersized; its border thickened from 1.5px to 2px to
+read with a similar line weight. `.policy-icon-img` shrank from 72px to 58px, opening up a ~13px
+margin on every side that's much closer to the roughly 14px margin business-hours-05's own SVG
+canvas leaves inside its 84px viewBox, rather than the image sitting nearly edge-to-edge as before.
+Re-verified via the same tag-balance/`node --check` checks and a fresh weasyprint render comparing
+both pages' icons side by side — the badge now reads noticeably tighter, crisper and bolder-bordered,
+closer in scale and weight to page 05's icon, while remaining recognisably the same amber
+icon-dates.png badge.
 
 MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head (max-width: 640px) gained margin: 0 auto, and .policy-grid (max-width: 640px, rendered as a single column via its .single modifier on this page) gained margin: 0 auto, so the heading and the lone policy card are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
