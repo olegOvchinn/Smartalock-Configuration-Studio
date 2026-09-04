@@ -178,7 +178,7 @@
   .idle-body { display: none; }
   .idle-body.show { display: block; }
 
-  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; }
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 34px; margin: 0 22px; border-radius: 14px; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
 
   /* ---------- diagram row: a fixed "Reserved" pin at the rail's left edge and a directly-draggable
@@ -405,10 +405,9 @@
               </div>
               <div class="timeline-node" id="idleStartNode">
                 <div class="anchor-pin"></div>
-                <div class="label-time">0h</div>
-                <div class="label-desc">Reservation Start</div>
+                <div class="label-desc">Start</div>
               </div>
-              <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
+              <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="720">
                 <div class="anchor-pin"></div>
                 <div class="label-time primary" id="idleEndTime">3h</div>
                 <div class="label-desc">Released</div>
@@ -687,6 +686,39 @@ a generic "reserved" state; the "Released" label on the other pin was left as-is
 of this request. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
 script block (untouched by either change), and a rendered screenshot confirming the header now shows
 the plain clock, the footer has no icon, and the pin label reads "Reservation Start".
+
+MOST RECENT CHANGE: per a follow-up request, shortened the fixed pin's "Reservation Start" label to
+just "Start" and moved the pin itself to the rail's true left edge. Previously `idleStartNode` sat at
+`ROW_EDGE_PERCENT` (10%) — the same inset the draggable end pin's scale uses so its own label/pill
+never runs off the right edge — even though, as a fixed non-interactive marker, the start pin has no
+such constraint of its own. `updateDiagram()` now sets `idleStartNode.style.left`/`idleZone.style.left`
+to `'0%'` directly (leaving `ROW_EDGE_PERCENT`/`endPercentForOffset()`/the tick-mark scale untouched,
+since those still need the 10–90% inset for the draggable end pin's own math), and `idleZone`'s width
+is computed from that same 0% baseline. Separately, removed the redundant "0h" `.label-time` pill that
+sat above the fixed start pin — now that the pin is labelled "Start" below and always represents zero
+elapsed time, a floating "0h" chip above it added nothing. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, a jsdom test confirming
+`idleStartNode`/`idleZone` both compute to `left: 0%` and the label reads "Start", and a rendered
+screenshot confirming the "START" label now sits flush at the rail's left edge with no overlap against
+"RELEASED" and no stray "0h" chip above it.
+
+MOST RECENT CHANGE: per a report that this page's grey timeline panel had the same full-bleed,
+no-inset issue already fixed on floorsense-business-hours-05.html, applied the identical fix here:
+`.timeline-card` gained `margin: 0 22px;` (matching the header/footer's existing 22px horizontal
+inset) and `border-radius: 14px;`, so it now reads as an inset floating panel instead of a rectangle
+touching the outer card's left/right edges. Verified via an inline HTMLParser tag-balance check and a
+rendered screenshot confirming the panel now sits inset from the card boundary on both sides.
+
+MOST RECENT CHANGE: per a request to "make timeline 12 hour long," `DURATION_MAX_MINUTES` changed from
+`24 * 60` to `12 * 60` — the single constant `endPercentForOffset()`, the tick-mark loop, the draggable
+end pin's drag/keyboard clamping, and its own `aria-valuemax` (updated from `"1440"` to `"720"` on
+`#idleEndNode`) all read from, so the rail's scale, its 25 half-hour ticks, and the pin's maximum
+draggable/steppable value all moved together. `MIN_IDLE_MINUTES` (30min) and the default/reset idle
+duration (3h) are both comfortably inside the new range and needed no changes. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming
+`aria-valuemax` is now `720`, the tick row renders 25 ticks (12h at 30-minute steps), and repeated
+ArrowRight presses on the end pin now clamp at "12h" (90% — `ROW_EDGE_PERCENT`'s inset scale, unchanged)
+instead of continuing toward a 24h maximum.
 -->
 
 <script>
@@ -778,7 +810,7 @@ the plain clock, the footer has no icon, and the pin label reads "Reservation St
      floorsense-default-reservation-times-07.html's duration card, since idle release is a single
      elapsed-time value rather than two independent clock times. ---------------- */
   const ROW_EDGE_PERCENT = 10;
-  const DURATION_MAX_MINUTES = 24 * 60;
+  const DURATION_MAX_MINUTES = 12 * 60;
   function endPercentForOffset(offsetMinutes) {
     const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
     return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
@@ -820,10 +852,10 @@ the plain clock, the footer has no icon, and the pin label reads "Reservation St
   function updateDiagram() {
     const idleMinutes = Math.round((parseFloat(state.idleHours) || 0) * 60);
     const endPercent = endPercentForOffset(idleMinutes);
-    idleStartNode.style.left = ROW_EDGE_PERCENT + '%';
+    idleStartNode.style.left = '0%';
     idleEndNode.style.left = endPercent + '%';
-    idleZone.style.left = ROW_EDGE_PERCENT + '%';
-    idleZone.style.width = Math.max(0, endPercent - ROW_EDGE_PERCENT) + '%';
+    idleZone.style.left = '0%';
+    idleZone.style.width = Math.max(0, endPercent) + '%';
     renderZoneSegments(idleMinutes);
     const durLabel = formatDurationMinutes(idleMinutes);
     idleEndTime.textContent = durLabel;
