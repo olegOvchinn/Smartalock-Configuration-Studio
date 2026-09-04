@@ -407,7 +407,7 @@
                 <div class="anchor-pin"></div>
                 <div class="label-desc">Start</div>
               </div>
-              <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="720">
+              <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="300">
                 <div class="anchor-pin"></div>
                 <div class="label-time primary" id="idleEndTime">3h</div>
                 <div class="label-desc">Released</div>
@@ -719,6 +719,25 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, and 
 `aria-valuemax` is now `720`, the tick row renders 25 ticks (12h at 30-minute steps), and repeated
 ArrowRight presses on the end pin now clamp at "12h" (90% — `ROW_EDGE_PERCENT`'s inset scale, unchanged)
 instead of continuing toward a 24h maximum.
+
+MOST RECENT CHANGE: per a request that "the max value 12h should be in the very end of the timeline,"
+`endPercentForOffset()`'s upper bound changed from `100 - 2 * ROW_EDGE_PERCENT` (90%) to
+`100 - ROW_EDGE_PERCENT` (100%), so the draggable end pin now reaches the rail's true right edge at
+its maximum value, matching how the fixed start pin already sits at the true left edge (0%, per the
+earlier MOST RECENT CHANGE above) rather than mirroring it at a symmetric 10%/90% inset. The lower
+bound (`ROW_EDGE_PERCENT`, 10%) is unchanged, since only the maximum end was reported as needing to
+reach the edge — this also means the tick row's last mark (at `DURATION_MAX_MINUTES`) now lands at
+100% too, aligning with the pin. `minutesFromClientX()`'s inverse mapping was updated to match
+(denominator changed from `100 - 2 * ROW_EDGE_PERCENT` to `100 - ROW_EDGE_PERCENT`), so dragging still
+converts pointer position back to the correct duration under the new, no-longer-symmetric scale.
+Separately, per a follow-up request to "make maximum 5 hours," `DURATION_MAX_MINUTES` changed again
+from `12 * 60` to `5 * 60`, with `#idleEndNode`'s `aria-valuemax` updated from `"720"` to `"300"` to
+match; `MIN_IDLE_MINUTES` (30min) and the default/reset duration (3h) both remain comfortably inside
+the new range. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block, and a jsdom test confirming `aria-valuemax` is now `300`, the tick row renders 11 ticks
+(5h at 30-minute steps) spanning 10%–100%, a 3h duration positions the pin at 64% (matching the new
+asymmetric scale), and repeated ArrowRight presses clamp at "5h" with the pin landing at exactly
+`left: 100%`.
 -->
 
 <script>
@@ -810,10 +829,10 @@ instead of continuing toward a 24h maximum.
      floorsense-default-reservation-times-07.html's duration card, since idle release is a single
      elapsed-time value rather than two independent clock times. ---------------- */
   const ROW_EDGE_PERCENT = 10;
-  const DURATION_MAX_MINUTES = 12 * 60;
+  const DURATION_MAX_MINUTES = 5 * 60;
   function endPercentForOffset(offsetMinutes) {
     const t = Math.max(0, Math.min(DURATION_MAX_MINUTES, offsetMinutes)) / DURATION_MAX_MINUTES;
-    return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
+    return ROW_EDGE_PERCENT + t * (100 - ROW_EDGE_PERCENT);
   }
 
   /* ---------------- segmented zone colors: matches floorsense-business-hours-05.html's
@@ -886,7 +905,7 @@ instead of continuing toward a 24h maximum.
   function minutesFromClientX(clientX) {
     const rect = idleTrackWrapper.getBoundingClientRect();
     const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-    let minutes = ((rawPercent - ROW_EDGE_PERCENT) / (100 - 2 * ROW_EDGE_PERCENT)) * DURATION_MAX_MINUTES;
+    let minutes = ((rawPercent - ROW_EDGE_PERCENT) / (100 - ROW_EDGE_PERCENT)) * DURATION_MAX_MINUTES;
     minutes = Math.round(minutes / 30) * 30;
     return Math.max(MIN_IDLE_MINUTES, Math.min(DURATION_MAX_MINUTES, minutes));
   }
