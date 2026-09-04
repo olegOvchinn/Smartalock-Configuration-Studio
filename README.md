@@ -320,6 +320,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Fixed `floorsense-business-hours-05.html`'s grey timeline panel touching the outer card's left/right edges with no gutter — `.timeline-card` now has a 22px horizontal margin (matching the header/footer's inset) and its own 14px border-radius, so it reads as an inset floating panel instead of a full-bleed rectangle.
 - Moved `floorsense-business-hours-05.html`'s earliest selectable Arrival time from 6:00 AM to 4:30 AM by changing the shared `RAIL_START_MIN` constant, which also shifted the rail's first tick and the Arrival pin's drag/keyboard clamp floor to match. Departure's latest time (10:00 PM) is unchanged.
 - Restored the "Core Complete" progress-bar segment (linking back to `floorsense-setup-path-00.html`) to `floorsense-out-of-box-policy.html`'s own progress bar, ahead of its "Configuration Summary" segment — this segment had been removed sitewide in an earlier change; it's now brought back on the summary page specifically so there's a way back to the wizard from there, while the other 14 Floorsense wizard pages keep the segment removed.
+- Repointed that restored first segment away from `floorsense-setup-path-00.html` (now excluded from the wizard's linear flow) to `floorsense-reservation-types-01.html` instead — the actual first wizard step — matching that module's own data-module/href/tip exactly so it also tracks that module's real saved/current state.
 
 ## Status
 

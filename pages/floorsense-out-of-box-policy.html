@@ -551,9 +551,9 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Core Complete</span>
+          <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
         <a class="progress-seg current" data-module="out-of-box-policy" href="floorsense-out-of-box-policy.html">
           <span class="progress-seg-fill"></span>
@@ -1990,6 +1990,18 @@ the wizard) would otherwise have no progress-bar way back to floorsense-setup-pa
 changes needed — `renderProgressBar()` already reads segments dynamically via
 `document.querySelectorAll('.progress-seg[data-module]')`. Verified via an inline HTMLParser
 tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: per a follow-up that the restored first segment "should not link to
+floorsense-setup-path-00.html anymore", repointed it to floorsense-reservation-types-01.html instead —
+the actual first step of the wizard now that floorsense-setup-path-00.html is excluded from its linear
+flow (see floorsense-optional-features-06.html's own NOTE history for that exclusion). `data-module`
+changed from `"setup-path"` to `"reservation-types"` and the tip text from "Core Complete" to "Desk
+Allocation Method", matching that module's own segment verbatim (same data-module/href/tip) as it
+appears on every other Floorsense wizard page's progress bar — this also means the segment now
+correctly reflects that module's own saved/current state via the existing
+`project.floorsense.wizard.moduleStatus.reservation-types` flag, rather than tracking a "setup-path"
+key nothing else in the wizard ever set. Verified via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block.
 -->
 
 
