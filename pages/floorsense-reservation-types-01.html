@@ -315,7 +315,7 @@
         <div class="desk-check-card" data-template="adhoc">
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
-            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1.2" fill="currentColor" fill-opacity="0.15"/><path d="M11.1 11.6l0.85 0.85 1.5-1.6" stroke-width="1.1"/><rect x="16" y="9" width="5.5" height="5.5" rx="1.2"/></svg></div>
+            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="7" y="7" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="12" y="12" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M8.1 9.6l0.9 0.9l1.7-2.1" stroke-width="1.1"/><path d="M13.1 14.6l0.9 0.9l1.7-2.1" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -727,6 +727,25 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to "replace icon for reserved by user on page 01 with
+feature-row-icon badge-amber," the "Reserved by User as Needed" card's glyph was swapped from the old
+three-desk-tiles-with-checkmark design to the ticked-grid glyph used by floorsense-optional-features-06.html's
+"Recurring Bookings" `.feature-row-icon.badge-amber` icon (a rounded-square canvas split into four
+quadrants by a crosshair, with the top-left and bottom-right quadrants highlighted and ticked). Since
+page 01 uses its own `.desk-icon-badge`/`.desk-icon-glyph` wrapper-div convention (not page 06's bare
+`.feature-row-icon` class-on-svg convention), only the glyph's path content was ported over, adapted to
+this file's own SVG attribute style (`stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"`
+on the svg element, with `stroke-width="1.1"` overrides on the two checkmark paths to match this card's
+prior checkmark weight) rather than page 06's `stroke-width="0.8"`/round caps. On color: the request
+named "badge-amber," but this page's 5 desk-type cards were deliberately each given their own distinct
+accent colour (blue/pink/purple/teal/amber, one per card — see the earlier NOTE on that change), and
+`badge-amber` is already used by the "AI Agent Auto-Prebooked" card. Applying amber here too would have
+put two cards in the same 5-card grid on an identical colour and left none on pink, so per the user's
+own choice when asked, the new glyph keeps this card's existing `badge-pink` colouring instead of
+switching to amber — only the icon's shape changed. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block (untouched), and a Playwright screenshot of the
+card confirming the new ticked-grid glyph renders correctly in pink.
 -->
 
 <script>
