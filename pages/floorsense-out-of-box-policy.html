@@ -116,22 +116,6 @@
     display: flex; align-items: center; gap: 18px; max-width: 640px; margin: 0 0 22px;
     background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px 18px;
   }
-  /* ---------- download-card-icon-badge: per the site-wide icon-badge propagation from
-     floorsense-reservation-types-01.html, the bare 56x56px .download-card-icon glyph (itself
-     matching .desk-icon-img) was wrapped in a flat white/blue-bordered square badge — a lone icon
-     (this is the only download card on the page), so it kept plain accent blue rather than a
-     palette colour. Left the Smartalock branch's identical download-card component
-     (smartalock-configuration-summary-08.html) untouched, since this icon pass is scoped to the
-     Floorsense branch only. See the MOST RECENT CHANGE note below. ---------- */
-  .download-card-icon-badge {
-    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .download-card-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
   .download-card-body { flex: 1; min-width: 0; }
   .download-card-body h3 { margin: 0 0 3px; font-family: var(--font-display); font-weight: 600; font-size: 14.76px; color: var(--ink); }
   .download-card-body p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
@@ -592,7 +576,6 @@
         <div class="core-policy-body" id="corePolicyBody">
 
       <div class="download-card">
-        <div class="download-card-icon-badge"><svg class="download-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         <div class="download-card-body">
           <h3>Explain this policy to your end users</h3>
           <p>A short, plain-English guide covering check-in, booking and privacy — automatically updated to match what's configured below, ready to print or save as a PDF.</p>
@@ -2019,6 +2002,18 @@ incremental-rollout precedent already documented elsewhere in this file. Verifie
 HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
 confirming both end-modes render the correct value/description text from custom saved
 `defaultReservationTimes` state.
+
+MOST RECENT CHANGE: per a request to remove the icon from the "Explain this policy to your end
+users" download-card, deleted the `<div class="download-card-icon-badge">` (a download-arrow glyph)
+markup and its `.download-card-icon-badge`/`.download-card-icon-glyph` CSS rules — no JS selector
+anywhere in this file referenced either class, so this was a pure markup/CSS removal. `.download-card`
+itself (`display:flex; align-items:center; gap:18px;`) needed no changes; with the icon gone it now
+just lays out `.download-card-body` (title + description) and the "View / Print Guide" button side by
+side. The Smartalock branch's identical download-card component
+(smartalock-configuration-summary-08.html) was left untouched, since this request was scoped to this
+page only. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block (untouched), and a rendered screenshot confirming the card reads cleanly with just text and the
+button, no icon.
 -->
 
 
