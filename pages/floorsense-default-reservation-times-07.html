@@ -460,7 +460,8 @@
             <div class="path-card-body">
               <h3 class="path-title">Start time if booked in advance</h3>
               <p class="path-desc">
-                If someone books ahead without picking their own time, their reservation starts at:
+                If someone books ahead without picking their own time, their reservation starts at
+                <strong id="card1StartDescTime">8:30 AM</strong>.
               </p>
               <div class="timeline-card nested">
                 <div class="timeline-header">
@@ -497,7 +498,7 @@
               <svg class="path-icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
               <div class="path-card-body">
                 <h3 class="path-title">Reservation ends after a fixed number of hours</h3>
-                <p class="path-desc">Every booking lasts the same length, no matter what time it starts — book at 8:30 AM or 1:00 PM and either way you get the full duration below.</p>
+                <p class="path-desc" id="durationExampleDesc">Every booking lasts the same length, no matter what time it starts — for example, a booking at 8:30 AM would run until 5:30 PM.</p>
                 <div class="timeline-card nested">
                   <div class="timeline-header">
                     <p class="timeline-subtitle">Fixed duration: <strong id="durationLabel">9h</strong></p>
@@ -1002,6 +1003,27 @@ that pointer/keyboard-driven changes to each pin still update state, labels, and
 live segment count correctly, and a WeasyPrint render confirming no layout/CSS errors (WeasyPrint does
 not run JS, so the pins/segments themselves are not visible in that static render — expected, as with
 every other JS-driven diagram on this site).
+
+MOST RECENT CHANGE: per a request to "show default start and end time values dynamically" in the
+prebooking and duration cards, both cards' `.path-desc` prose now embeds the live configured values
+inline instead of only showing them in the diagram below. Card 1 ("Start time if booked in advance")
+gained a `<strong id="card1StartDescTime">` in its sentence ("...their reservation starts at 8:30
+AM."), updated from `updateCard1Diagram()` alongside the existing `card1StartLabel`/`card1StartTime`
+targets. Card 2 ("Reservation ends after a fixed number of hours") had its previous static example —
+"book at 8:30 AM or 1:00 PM and either way you get the full duration below" — replaced with a fully
+dynamic sentence computed in `updateDurationDiagram()` from the real `state.defaultStartTime` and
+`state.defaultDurationHours` (`durationExampleDesc.textContent = 'Every booking lasts the same
+length, no matter what time it starts — for example, a booking at ' + formatMinutesAs12Hour(startMinutes)
++ ' would run until ' + formatMinutesAs12Hour(startMinutes + durationMinutes) + '.'`), so it always
+reflects the client's actual configured start time and duration rather than two arbitrary illustrative
+times. Card 3 (fixed-end) was left untouched — its own prose never contained a hardcoded time example.
+Also checked floorsense-checkin-window-08.html's own start-time example per the same request ("use
+actual start value chosen by the client") and confirmed via a jsdom test that it already reads
+`project.floorsense.wizard.defaultReservationTimes.defaultStartTime` live on load (documented in that
+file's own earlier NOTE history) — no change was needed there. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming both new
+dynamic descriptions render the configured values on load and stay in sync after dragging/keyboard-
+stepping Card 1's start pin.
 -->
 
 <script>
@@ -1166,6 +1188,7 @@ every other JS-driven diagram on this site).
 
   const card1StartLabel = document.getElementById('card1StartLabel');
   const card1StartTime = document.getElementById('card1StartTime');
+  const card1StartDescTime = document.getElementById('card1StartDescTime');
   const card1StartNode = document.getElementById('card1StartNode');
   const card1TicksEl = document.getElementById('card1Ticks');
 
@@ -1176,6 +1199,7 @@ every other JS-driven diagram on this site).
   const durationEndTime = document.getElementById('durationEndTime');
   const durationZone = document.getElementById('durationZone');
   const durationHint = document.getElementById('durationHint');
+  const durationExampleDesc = document.getElementById('durationExampleDesc');
   const durationTicksEl = document.getElementById('durationTicks');
 
   const fixedEndLabel = document.getElementById('fixedEndLabel');
@@ -1192,6 +1216,7 @@ every other JS-driven diagram on this site).
     const startLabel = formatMinutesAs12Hour(startMinutes);
     card1StartLabel.textContent = startLabel;
     card1StartTime.textContent = startLabel;
+    card1StartDescTime.textContent = startLabel;
     card1StartNode.style.left = (startMinutes / 1440 * 100) + '%';
     card1StartNode.setAttribute('aria-valuenow', startMinutes);
     card1StartNode.setAttribute('aria-valuetext', startLabel);
@@ -1211,6 +1236,8 @@ every other JS-driven diagram on this site).
     durationLabel.textContent = formatDurationMinutes(durationMinutes);
     durationHint.textContent = 'A booking made without a chosen time lasts ' + formatDurationMinutes(durationMinutes) +
       ', starting from the custom start time above.';
+    durationExampleDesc.textContent = 'Every booking lasts the same length, no matter what time it starts — for example, a booking at ' +
+      formatMinutesAs12Hour(startMinutes) + ' would run until ' + formatMinutesAs12Hour(startMinutes + durationMinutes) + '.';
   }
 
   function updateFixedEndDiagram() {
