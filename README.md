@@ -328,6 +328,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Follow-ups on `floorsense-idle-release-09.html`'s timeline: shortened "Reservation Start" to "Start" and moved that fixed pin to the rail's true left edge (was inset 10% like the draggable end pin); removed the redundant "0h" chip that floated above it; gave the grey timeline panel the same 22px inset + rounded corners already applied to `floorsense-business-hours-05.html`'s panel; and shortened the draggable duration's maximum range from 24 hours to 12 hours, then to 5 hours, with the maximum value now reaching the rail's true right edge (previously inset 10% to mirror the start pin).
 - Removed the icon from `floorsense-out-of-box-policy.html`'s "Explain this policy to your end users" download-card — it now shows just the title/description and the "View / Print Guide" button, no icon badge.
 - On `floorsense-reservation-types-01.html`, swapped the "Reserved by User as Needed" card's icon for the ticked-grid glyph used by `floorsense-optional-features-06.html`'s "Recurring Bookings" icon, adapted to this page's own icon-badge SVG style; kept the card's existing pink accent colour rather than switching to amber, since amber is already used by the "AI Agent Auto-Prebooked" card in this page's deliberately 5-distinct-colours icon scheme.
+- Applied that same ticked-grid glyph to `floorsense-out-of-box-policy.html`'s "Desk Allocation Method" summary group icon, replacing its older three-desk-tiles glyph and keeping the group's existing pink badge colour.
 
 ## Status
 
