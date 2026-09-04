@@ -2058,6 +2058,19 @@ each group's `<div class="summary-icon-badge ...">` changed; icon glyph shapes w
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
 and a full-page Playwright screenshot confirming all 7 groups now show visually distinct colours with
 no repeats anywhere on the page.
+
+MOST RECENT CHANGE: per a request to add floorsense-business-hours-05.html as a source of values for
+the "Default reservation duration" row, `renderDefaultDurationSummary()` now reads
+`project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` before falling back to
+`defaultReservationTimes.defaultStartTime`/`defaultEndTime` (then the 8:30/17:00 defaults) — since
+page 05's Arrival/Departure and page 07's reservation start/end now share the same underlying values
+(see page 07's own NOTE), this ensures the row reflects whichever of the two pages the user edited most
+recently, not just page 07. floorsense-desk-booking-guide-live.html's "Plan ahead" sentence was updated
+to read businessHours first too, for the same reason (it would otherwise have gone stale relative to
+this row). Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a jsdom test seeding only `businessHours: { arrivalTime: '06:00', departureTime: '20:00' }`
+(with a stale, different `defaultReservationTimes.defaultStartTime` of 9:00 AM also present) and
+confirming this row shows "6:00 AM" — the businessHours value — not the stale 9:00 AM.
 -->
 
 
@@ -2381,13 +2394,17 @@ no repeats anywhere on the page.
 
   (function renderDefaultDurationSummary() {
     const savedDuration = project.floorsense.wizard.defaultReservationTimes || {};
+    const savedBusinessHours = project.floorsense.wizard.businessHours || {};
     const endMode = savedDuration.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
-    const startTime = savedDuration.defaultStartTime || '08:30';
+    // Reservation start/end share their values with floorsense-business-hours-05.html's
+    // Arrival/Departure pins, so businessHours is read first — this way, whichever of the two pages
+    // (05 or 07) the user edited most recently is what shows up here.
+    const startTime = savedBusinessHours.arrivalTime || savedDuration.defaultStartTime || '08:30';
     const [startH, startM] = startTime.split(':').map(Number);
     const startMinutes = (Number.isFinite(startH) ? startH : 8) * 60 + (Number.isFinite(startM) ? startM : 30);
     const startClock = formatCheckinClock(startMinutes);
     if (endMode === 'fixed-end') {
-      const endTime = savedDuration.defaultEndTime || '17:00';
+      const endTime = savedBusinessHours.departureTime || savedDuration.defaultEndTime || '17:00';
       const [endH, endM] = endTime.split(':').map(Number);
       const endClock = formatCheckinClock((Number.isFinite(endH) ? endH : 17) * 60 + (Number.isFinite(endM) ? endM : 0));
       document.getElementById('defaultDurationSummaryValue').textContent = startClock + ' – ' + endClock;

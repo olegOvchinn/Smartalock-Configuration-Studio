@@ -121,6 +121,17 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 a jsdom test confirming the sentence renders the correct start/duration text in "duration" mode and
 the correct start/end text in "fixed-end" mode, using a custom saved `defaultReservationTimes` value
 in both cases.
+
+MOST RECENT CHANGE: per a request to add floorsense-business-hours-05.html as a source of values for
+the default-reservation text (applied to floorsense-out-of-box-policy.html's summary row first — see
+that file's own NOTE), this page's "Plan ahead" sentence above now reads
+`project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` before falling back to
+`defaultReservationTimes.defaultStartTime`/`defaultEndTime`, for the same reason: page 05's Arrival/
+Departure and page 07's reservation start/end now share the same underlying values, and this sentence
+would otherwise show a stale start/end time if only page 05 (not page 07) had been edited since the
+project was created. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a jsdom test confirming the sentence reflects a `businessHours`-only value
+rather than a stale `defaultReservationTimes` one.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -455,12 +466,16 @@ in both cases.
   // floorsense-default-reservation-times-07.html writes, so this sentence always reflects whatever
   // the client actually configured there, not a hardcoded example.
   const defaultReservationTimes = wizard.defaultReservationTimes || {};
-  const [defStartH, defStartM] = (defaultReservationTimes.defaultStartTime || '08:30').split(':').map(Number);
+  // Reservation start/end share their values with floorsense-business-hours-05.html's Arrival/
+  // Departure pins (project.floorsense.wizard.businessHours), so businessHours is read first here
+  // too, matching floorsense-out-of-box-policy.html's summary row.
+  const defaultBusinessHours = wizard.businessHours || {};
+  const [defStartH, defStartM] = (defaultBusinessHours.arrivalTime || defaultReservationTimes.defaultStartTime || '08:30').split(':').map(Number);
   const defStartMinutes = (Number.isFinite(defStartH) ? defStartH : 8) * 60 + (Number.isFinite(defStartM) ? defStartM : 30);
   const defStartClock = formatClock(defStartMinutes);
   let defaultTimeSentence;
   if (defaultReservationTimes.endMode === 'fixed-end') {
-    const [defEndH, defEndM] = (defaultReservationTimes.defaultEndTime || '17:00').split(':').map(Number);
+    const [defEndH, defEndM] = (defaultBusinessHours.departureTime || defaultReservationTimes.defaultEndTime || '17:00').split(':').map(Number);
     const defEndMinutes = (Number.isFinite(defEndH) ? defEndH : 17) * 60 + (Number.isFinite(defEndM) ? defEndM : 0);
     defaultTimeSentence = 'If you don\'t pick a time yourself, your booking defaults to starting at ' + defStartClock +
       ' and always ends at ' + formatClock(defEndMinutes) + '.';

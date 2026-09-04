@@ -1024,6 +1024,22 @@ file's own earlier NOTE history) — no change was needed there. Verified via an
 tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming both new
 dynamic descriptions render the configured values on load and stay in sync after dragging/keyboard-
 stepping Card 1's start pin.
+
+MOST RECENT CHANGE: per a request that "the business hours values (arrival and departure) on page 05
+are same values that used for booking start and end on page 07" and should be editable from either
+page — with whichever page was edited most recently winning — `state.defaultStartTime`/`defaultEndTime`
+now read `project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` first on load (falling
+back to this page's own previously-saved `defaultReservationTimes` fields, then the 8:30/17:00
+defaults, for projects saved before this change). `save()` now also writes `state.defaultStartTime`/
+`defaultEndTime` back into `project.floorsense.wizard.businessHours` alongside its existing
+`defaultReservationTimes` write, so floorsense-business-hours-05.html picks up this page's edits too —
+this fires from every path that calls `save()`/`queueSave()`: dragging or keyboard-stepping Card 1's
+start pin or the fixed-end pin, and the Reset button. `defaultDurationHours` and `endMode` remain
+exclusive to this page, since business-hours-05.html has no equivalent concept for either. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and jsdom tests
+confirming: a project seeded with only `businessHours` shows those values as this page's Card 1 start
+on load, and clicking Continue (which calls `save()`) writes the current `defaultStartTime`/
+`defaultEndTime` into `businessHours` in localStorage.
 -->
 
 <script>
@@ -1055,9 +1071,14 @@ stepping Card 1's start pin.
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
   const saved = project.floorsense.wizard.defaultReservationTimes || {};
+  const savedBusinessHours = project.floorsense.wizard.businessHours || {};
   const state = {
-    defaultStartTime: saved.defaultStartTime || '08:30',
-    defaultEndTime: saved.defaultEndTime || '17:00',
+    // Reservation start/end share their values with floorsense-business-hours-05.html's
+    // Arrival/Departure pins (project.floorsense.wizard.businessHours), so businessHours is read
+    // first here and only falls back to this page's own previously-saved fields (or the 8:30/17:00
+    // defaults) for older projects saved before the two pages shared state.
+    defaultStartTime: savedBusinessHours.arrivalTime || saved.defaultStartTime || '08:30',
+    defaultEndTime: savedBusinessHours.departureTime || saved.defaultEndTime || '17:00',
     defaultDurationHours: Number.isFinite(saved.defaultDurationHours) ? saved.defaultDurationHours : 9,
     endMode: saved.endMode === 'fixed-end' ? 'fixed-end' : 'duration'
   };
@@ -1091,6 +1112,11 @@ stepping Card 1's start pin.
 
   function save() {
     project.floorsense.wizard.defaultReservationTimes = state;
+    // Push the shared start/end values back into businessHours too, so floorsense-business-hours-05.html
+    // (and anything else reading businessHours directly) sees whichever page was edited most recently.
+    project.floorsense.wizard.businessHours = project.floorsense.wizard.businessHours || {};
+    project.floorsense.wizard.businessHours.arrivalTime = state.defaultStartTime;
+    project.floorsense.wizard.businessHours.departureTime = state.defaultEndTime;
     saveProject(project);
   }
 

@@ -832,6 +832,20 @@ is unchanged. Both pins' `aria-valuemin` attributes updated from `"360"` to `"27
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
 test confirming repeated ArrowLeft presses on the Arrival pin now clamp at "4:30 AM" (aria-valuenow 270,
 left 0%) instead of "6:00 AM", and that the tick row now spans 4:30 AM–10:00 PM (36 half-hour ticks).
+
+MOST RECENT CHANGE: per a request that Arrival/Departure share their values with
+floorsense-default-reservation-times-07.html's reservation start/end (since both represent "the
+same" start-of-day/end-of-day time from the client's point of view), this page's own state was
+already the intended single source (`project.floorsense.wizard.businessHours = { arrivalTime,
+departureTime }`) — page 07 was updated to read businessHours first on load and write back into it
+on save (see that file's own NOTE), so editing here and then opening page 07 (or the summary/guide
+pages) shows this page's latest values with no change needed on this side. Only this page's own
+*default* values were aligned to match page 07's existing 8:30 AM default (was 9:00 AM) so a brand-new
+project shows the same start time everywhere before either page has been touched — `departureTime`'s
+5:00 PM default already matched. Updated both `state`'s initial fallback and the Reset button's reset
+value. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a jsdom test confirming a project seeded with only `businessHours: { arrivalTime: '06:15',
+departureTime: '19:45' }` shows "6:15 AM" as page 07's Card 1 start time on load.
 -->
 
 
@@ -866,7 +880,10 @@ left 0%) instead of "6:00 AM", and that the tick row now spans 4:30 AM–10:00 P
 
   const saved = project.floorsense.wizard.businessHours || {};
   const state = {
-    arrivalTime: saved.arrivalTime || '09:00',
+    // Arrival/Departure share their values with floorsense-default-reservation-times-07.html's
+    // reservation start/end (project.floorsense.wizard.defaultReservationTimes), so the shared
+    // 8:30/17:00 default matches that page's own defaults for a brand-new project.
+    arrivalTime: saved.arrivalTime || '08:30',
     departureTime: saved.departureTime || '17:00'
   };
 
@@ -1090,7 +1107,7 @@ left 0%) instead of "6:00 AM", and that the tick row now spans 4:30 AM–10:00 P
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.arrivalTime = '09:00';
+    state.arrivalTime = '08:30';
     state.departureTime = '17:00';
     renderDiagram();
     queueSave();
