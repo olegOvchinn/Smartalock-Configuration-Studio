@@ -280,21 +280,6 @@
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  /* ---------- footer icon badge: was a bare 56x56px svg (see the note this replaces, above). Per
-     the same site-wide icon-badge propagation, wrapped in a new .checkin-footer-icon-badge
-     (64px/56px, same sizing rationale as .checkin-card-icon-badge above), svg renamed to
-     .checkin-footer-icon-glyph. This icon (a plain clock face) has no `fill-opacity="0.15"`
-     highlight, so it doesn't match "Style 1" and was in scope. As the lone footer icon on this page
-     (not a repeating option group), it kept plain var(--accent) blue. ---------- */
-  .checkin-footer-icon-badge {
-    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .checkin-footer-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- prev / next page nav ---------- */
@@ -396,7 +381,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="12" r="7"/><path d="M10 8v4l2.2 1.4"/><path d="M17 15l4.5 4.5M21.5 15.5v4h-4"/></svg></div>
+          <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
           <div style="flex:1; min-width:0;">
             <p class="checkin-card-desc">
               This is an optional feature, off by default. If turned on, a desk that sits unclaimed
@@ -421,7 +406,7 @@
               <div class="timeline-node" id="idleStartNode">
                 <div class="anchor-pin"></div>
                 <div class="label-time">0h</div>
-                <div class="label-desc">Reserved</div>
+                <div class="label-desc">Reservation Start</div>
               </div>
               <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="1440">
                 <div class="anchor-pin"></div>
@@ -434,7 +419,6 @@
         </div>
 
         <div class="checkin-footer">
-          <div class="checkin-footer-icon-badge"><svg class="checkin-footer-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
           <p class="checkin-footer-text">This can happen at any time of day, independent of the reservation window on the previous step — it just keeps desks from sitting reserved but empty.</p>
         </div>
         </div>
@@ -686,6 +670,23 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to "swap icons, the icon from the bottom will replace one on the
+top, no need the icon on the bottom anymore," the header's `.checkin-card-icon-badge` glyph (a
+clock-with-breakaway-arrow, `<circle cx="10" cy="12" r="7"/><path d="M10 8v4l2.2 1.4"/><path d="M17
+15l4.5 4.5M21.5 15.5v4h-4"/>`) was replaced with the footer's plain clock-face glyph (`<circle
+cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>`), and the footer icon itself was removed entirely: the
+`<div class="checkin-footer-icon-badge">` markup and its `.checkin-footer-icon-badge`/
+`.checkin-footer-icon-glyph` CSS rules were deleted, leaving `.checkin-footer` (`display:flex;
+gap:16px`, otherwise unchanged) with only its `<p class="checkin-footer-text">` child — the same
+"icon-less footer" pattern already used on floorsense-business-hours-05.html. Also, per a follow-up
+request, the diagram's fixed left-hand pin label changed from "Reserved" to "Reservation Start"
+(`<div class="label-desc">`, plain static markup — the pin itself is fixed/non-interactive and this
+text is never touched by JS) so it reads more explicitly as the point a reservation begins rather than
+a generic "reserved" state; the "Released" label on the other pin was left as-is, since it wasn't part
+of this request. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block (untouched by either change), and a rendered screenshot confirming the header now shows
+the plain clock, the footer has no icon, and the pin label reads "Reservation Start".
 -->
 
 <script>
