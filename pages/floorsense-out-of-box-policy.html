@@ -637,9 +637,9 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Default reservation duration</span>
-            <span class="value-group"><span class="value" id="defaultDurationSummaryValue">9 hours</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html">Edit</a></span>
+            <span class="value-group"><span class="value" id="defaultDurationSummaryValue">8:30 AM – 5:30 PM (9 hours)</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html">Edit</a></span>
           </div>
-          <p class="summary-desc" id="defaultDurationSummaryDesc">A reservation lasts 9 hours by default.</p>
+          <p class="summary-desc" id="defaultDurationSummaryDesc">If someone books without choosing a time, their reservation defaults to starting at 8:30 AM and lasting 9 hours (until 5:30 PM).</p>
         </div>
       </div>
 
@@ -2002,6 +2002,23 @@ correctly reflects that module's own saved/current state via the existing
 `project.floorsense.wizard.moduleStatus.reservation-types` flag, rather than tracking a "setup-path"
 key nothing else in the wizard ever set. Verified via an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: per a request to also show the start time in the "Default reservation duration"
+row, `renderDefaultDurationSummary()` now reads `defaultReservationTimes.defaultStartTime` (falling
+back to '08:30', same convention as the other fields it already reads) and folds it into both the
+value badge and the description in both end-modes: duration mode now shows "8:30 AM – 5:30 PM (9
+hours)" (the end clock computed as start + duration, via the existing `formatCheckinClock()` helper)
+and a description reading "If someone books without choosing a time, their reservation defaults to
+starting at 8:30 AM and lasting 9 hours (until 5:30 PM)."; fixed-end mode now shows "8:30 AM – 5:00
+PM" and "...defaults to starting at 8:30 AM and always ends at 5:00 PM, regardless of when it
+starts." The row's static HTML placeholder text was updated to match for consistency, though it's
+always overwritten on load. The per-Desk/User-Group additional-policy override card's own "Default
+reservation duration" field (a plain hours-only number input, no start-time concept) was deliberately
+left untouched — extending it to support a start time is a larger, separate UI decision, matching the
+incremental-rollout precedent already documented elsewhere in this file. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+confirming both end-modes render the correct value/description text from custom saved
+`defaultReservationTimes` state.
 -->
 
 
@@ -2326,19 +2343,26 @@ key nothing else in the wizard ever set. Verified via an inline HTMLParser tag-b
   (function renderDefaultDurationSummary() {
     const savedDuration = project.floorsense.wizard.defaultReservationTimes || {};
     const endMode = savedDuration.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
+    const startTime = savedDuration.defaultStartTime || '08:30';
+    const [startH, startM] = startTime.split(':').map(Number);
+    const startMinutes = (Number.isFinite(startH) ? startH : 8) * 60 + (Number.isFinite(startM) ? startM : 30);
+    const startClock = formatCheckinClock(startMinutes);
     if (endMode === 'fixed-end') {
       const endTime = savedDuration.defaultEndTime || '17:00';
       const [endH, endM] = endTime.split(':').map(Number);
       const endClock = formatCheckinClock((Number.isFinite(endH) ? endH : 17) * 60 + (Number.isFinite(endM) ? endM : 0));
-      document.getElementById('defaultDurationSummaryValue').textContent = 'Ends at ' + endClock;
+      document.getElementById('defaultDurationSummaryValue').textContent = startClock + ' – ' + endClock;
       document.getElementById('defaultDurationSummaryDesc').textContent =
-        'Every reservation ends at ' + endClock + ', regardless of when it starts.';
+        'If someone books without choosing a time, their reservation defaults to starting at ' + startClock +
+        ' and always ends at ' + endClock + ', regardless of when it starts.';
     } else {
       const hours = Number.isFinite(savedDuration.defaultDurationHours) ? savedDuration.defaultDurationHours : 9;
       const hoursLabel = hours + (hours === 1 ? ' hour' : ' hours');
-      document.getElementById('defaultDurationSummaryValue').textContent = hoursLabel;
+      const endClock = formatCheckinClock(startMinutes + Math.round(hours * 60));
+      document.getElementById('defaultDurationSummaryValue').textContent = startClock + ' – ' + endClock + ' (' + hoursLabel + ')';
       document.getElementById('defaultDurationSummaryDesc').textContent =
-        'A reservation lasts ' + hoursLabel + ' by default.';
+        'If someone books without choosing a time, their reservation defaults to starting at ' + startClock +
+        ' and lasting ' + hoursLabel + ' (until ' + endClock + ').';
     }
   })();
 

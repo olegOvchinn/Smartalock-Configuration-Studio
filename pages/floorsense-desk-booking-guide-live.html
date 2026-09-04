@@ -20,7 +20,11 @@
   - Check-in window (title/paragraph/worked example) <- project.floorsense.wizard.checkinWindow
     { checkInEarlyMinutes, checkInLateMinutes }, defaults 30/60.
   - Plan-ahead days <- project.floorsense.wizard.prebookingAdvance { prebookingAdvanceDays },
-    default 8.
+    default 8. Also appends a sentence naming the client's actual configured default start time (and
+    either its fixed duration or its shared end time) for bookings made without picking a time,
+    read from project.floorsense.wizard.defaultReservationTimes { defaultStartTime, endMode,
+    defaultDurationHours, defaultEndTime } — the same key floorsense-default-reservation-times-07.html
+    writes.
   - Booking duration <- project.floorsense.wizard.reservationLength { reservationLengthMode,
     reservationLengthFixedDescription }, default mode 'release'.
   - Desks-per-user <- project.floorsense.wizard.maxDesksPerUser { mode, otherValue,
@@ -102,6 +106,21 @@ ever read), so that row needed no changes either. Verified via an inline HTMLPar
 check, `node --check` on the extracted script block, and a jsdom test confirming the new row stays
 hidden with remote confirmation off, appears with the right copy when on, and is added to/removed
 from the "Not switched on yet" list correctly.
+
+MOST RECENT CHANGE: per a request to also show the default reservation start time (alongside the
+already-shown Configuration Summary duration) and keep it dynamically in sync here, the "Plan ahead"
+row's paragraph now appends a second sentence naming the client's actual configured default start
+time for bookings made without picking a time, plus either its fixed duration or its shared end time
+— read from `project.floorsense.wizard.defaultReservationTimes` (the same key
+floorsense-default-reservation-times-07.html writes and floorsense-out-of-box-policy.html's own
+"Default reservation duration" row already reads). Reused this page's own existing `formatClock()`
+helper for the start/end times; added inline duration-label logic (hours-only when the configured
+duration lands on a whole hour, "Xh Ym" otherwise) rather than reusing `formatMinutes()`, since that
+helper only handles whole-hour/whole-minute cases and this field can be fractional (e.g. 6.5 hours).
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and
+a jsdom test confirming the sentence renders the correct start/duration text in "duration" mode and
+the correct start/end text in "fixed-end" mode, using a custom saved `defaultReservationTimes` value
+in both cases.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -429,8 +448,34 @@ from the "Not switched on yet" list correctly.
   const prebookingAdvance = wizard.prebookingAdvance || {};
   const advanceDays = Number.isFinite(prebookingAdvance.prebookingAdvanceDays) ? prebookingAdvance.prebookingAdvanceDays : 8;
   document.getElementById('planAheadTitle').textContent = 'Plan up to ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') + ' ahead';
+
+  // If you book ahead without picking your own time, the reservation falls back to the client's
+  // configured default start time (and either a fixed duration or a shared end time) — read from
+  // the same project.floorsense.wizard.defaultReservationTimes key
+  // floorsense-default-reservation-times-07.html writes, so this sentence always reflects whatever
+  // the client actually configured there, not a hardcoded example.
+  const defaultReservationTimes = wizard.defaultReservationTimes || {};
+  const [defStartH, defStartM] = (defaultReservationTimes.defaultStartTime || '08:30').split(':').map(Number);
+  const defStartMinutes = (Number.isFinite(defStartH) ? defStartH : 8) * 60 + (Number.isFinite(defStartM) ? defStartM : 30);
+  const defStartClock = formatClock(defStartMinutes);
+  let defaultTimeSentence;
+  if (defaultReservationTimes.endMode === 'fixed-end') {
+    const [defEndH, defEndM] = (defaultReservationTimes.defaultEndTime || '17:00').split(':').map(Number);
+    const defEndMinutes = (Number.isFinite(defEndH) ? defEndH : 17) * 60 + (Number.isFinite(defEndM) ? defEndM : 0);
+    defaultTimeSentence = 'If you don\'t pick a time yourself, your booking defaults to starting at ' + defStartClock +
+      ' and always ends at ' + formatClock(defEndMinutes) + '.';
+  } else {
+    const defDurationHours = Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9;
+    const defDurationMinutes = Math.round(defDurationHours * 60);
+    const defDurationLabel = defDurationMinutes % 60 === 0
+      ? (defDurationMinutes / 60) + ((defDurationMinutes / 60) === 1 ? ' hour' : ' hours')
+      : Math.floor(defDurationMinutes / 60) + 'h ' + (defDurationMinutes % 60) + 'm';
+    defaultTimeSentence = 'If you don\'t pick a time yourself, your booking defaults to starting at ' + defStartClock +
+      ' and lasting ' + defDurationLabel + '.';
+  }
   document.getElementById('planAheadText').textContent =
-    'Need to plan your week? You can book a desk as much as ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') + ' before you need it.';
+    'Need to plan your week? You can book a desk as much as ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') +
+    ' before you need it. ' + defaultTimeSentence;
 
   /* ---------------- duration ---------------- */
   const reservationLength = wizard.reservationLength || {};
