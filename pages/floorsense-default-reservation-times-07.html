@@ -157,7 +157,11 @@
 
   /* ---------- end-mode choice: two selectable cards, same radio-card pattern used for the
      Relaxed/Strict presets on floorsense-setup-path-00.html ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; margin: 4px 0 26px; }
+  .end-mode-section {
+    background: var(--accent-wash); border: 1.5px solid rgba(0,113,227,0.3);
+    border-radius: var(--radius-lg); padding: 22px 24px 24px; margin: 4px 0 26px;
+  }
+  .path-check-grid { display: flex; flex-direction: column; gap: 14px; margin: 0; }
   .path-check-card {
     background: rgba(255,255,255,0.6);
     backdrop-filter: blur(10px) saturate(160%);
@@ -211,9 +215,7 @@
   }
   .info-row { display: flex; align-items: flex-start; gap: 14px; }
   .section-choice-label {
-    font-size: 20.25px; font-weight: 600; color: var(--header-grey); margin: 4px 0 14px;
-    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md);
-    padding: 14px 18px;
+    font-size: 20.25px; font-weight: 600; color: var(--accent-deep); margin: 0 0 16px;
   }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 26px; }
@@ -488,6 +490,7 @@
           </div>
         </div>
 
+        <div class="end-mode-section">
         <p class="section-choice-label">Choose below how the reservation's end time should be worked out:</p>
 
         <div class="path-check-grid" id="endModeGrid">
@@ -569,6 +572,7 @@
               </div>
             </label>
           </div>
+        </div>
         </div>
 
         <div class="footer-hint">
@@ -1055,6 +1059,21 @@ inset instead of double-applying it. No markup changed, only the existing rule. 
 HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a
 Playwright screenshot confirming the label now renders as a bordered, larger-text box above the
 end-mode cards.
+
+MOST RECENT CHANGE: per a follow-up that the box should stand out more and extend to cover both
+end-mode options below it (not just the label), replaced the standalone label box with a new
+`.end-mode-section` wrapper (`background: var(--accent-wash)`, a `rgba(0,113,227,0.3)` accent-tinted
+border, `var(--radius-lg)` corners, `22px 24px 24px` padding) that now contains both the label and the
+whole `#endModeGrid` two-card grid, so the question and its two answers read as one cohesive, clearly-
+bounded section instead of a small label floating above plain page background. `.section-choice-label`
+itself dropped its own background/border (now redundant) and switched from `var(--header-grey)` to
+`var(--accent-deep)` text so it reads as this section's own heading against the new blue wash;
+`.path-check-grid`'s bottom margin moved onto the new wrapper's padding instead, avoiding doubled
+spacing. The two `.path-check-card`s keep their existing translucent white/blur styling, so they still
+read as distinct clickable cards floating on top of the accent wash rather than blending into it.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched), and a Playwright screenshot confirming the label and both option cards now sit inside one
+visually distinct accent-coloured section.
 -->
 
 <script>
