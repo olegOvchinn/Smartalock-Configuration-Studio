@@ -210,7 +210,11 @@
     transition: box-shadow .2s, background .2s;
   }
   .info-row { display: flex; align-items: flex-start; gap: 14px; }
-  .section-choice-label { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 4px 4px 10px; }
+  .section-choice-label {
+    font-size: 20.25px; font-weight: 600; color: var(--header-grey); margin: 4px 0 14px;
+    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-md);
+    padding: 14px 18px;
+  }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 26px; }
   .timeline-card.nested { margin-top: 14px; border-radius: 14px; padding: 20px 22px 22px; }
@@ -1040,6 +1044,17 @@ an inline HTMLParser tag-balance check, `node --check` on the extracted script b
 confirming: a project seeded with only `businessHours` shows those values as this page's Card 1 start
 on load, and clicking Continue (which calls `save()`) writes the current `defaultStartTime`/
 `defaultEndTime` into `businessHours` in localStorage.
+
+MOST RECENT CHANGE: per a request to put "Choose below how the reservation's end time should be worked
+out:" into a text box and increase its font size by 50%, `.section-choice-label` gained a light boxed
+treatment — `background: var(--paper-soft)`, a `var(--line)` border, and `var(--radius-md)` rounded
+corners with `14px 18px` padding, matching the page's existing soft-panel convention (e.g.
+`.timeline-card`) — and its `font-size` increased from `13.5px` to `20.25px` (13.5 × 1.5). Margins
+adjusted from `4px 4px 10px` to `4px 0 14px` so the new box's own padding supplies the left/right
+inset instead of double-applying it. No markup changed, only the existing rule. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a
+Playwright screenshot confirming the label now renders as a bordered, larger-text box above the
+end-mode cards.
 -->
 
 <script>
