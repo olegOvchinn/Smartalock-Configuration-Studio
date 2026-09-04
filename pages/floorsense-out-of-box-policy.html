@@ -551,6 +551,10 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
+        <a class="progress-seg" data-module="setup-path" href="floorsense-setup-path-00.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Core Complete</span>
+        </a>
         <a class="progress-seg current" data-module="out-of-box-policy" href="floorsense-out-of-box-policy.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Configuration Summary</span>
@@ -1974,6 +1978,18 @@ never touched by that detour) — needed no changes here at all. Verified via an
 tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming the
 new toggle initializes off, flips on/off and persists to `remoteConfirm.enabled` on click, and
 doesn't interfere with the adjacent Recurring bookings/Privacy toggles.
+
+MOST RECENT CHANGE: per a report that this page's progress bar used to have a first segment linking
+back to the wizard, restored the "Core Complete" segment (`data-module="setup-path"`, linking to
+floorsense-setup-path-00.html) immediately before this page's own "Configuration Summary" segment —
+the exact markup removed sitewide in commit 7db5293 ("Remove page 00's progress-bar segment
+sitewide"). That sitewide removal is left in place on the other 14 Floorsense wizard pages; per this
+explicit request, only this summary page's copy of the bar gets its back-link restored, since this is
+the one place a reader landing on the summary (via the "Pre-Configured" shortcut or after finishing
+the wizard) would otherwise have no progress-bar way back to floorsense-setup-path-00.html. No JS
+changes needed — `renderProgressBar()` already reads segments dynamically via
+`document.querySelectorAll('.progress-seg[data-module]')`. Verified via an inline HTMLParser
+tag-balance check and `node --check` on the extracted script block.
 -->
 
 
