@@ -329,6 +329,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the icon from `floorsense-out-of-box-policy.html`'s "Explain this policy to your end users" download-card — it now shows just the title/description and the "View / Print Guide" button, no icon badge.
 - On `floorsense-reservation-types-01.html`, swapped the "Reserved by User as Needed" card's icon for the ticked-grid glyph used by `floorsense-optional-features-06.html`'s "Recurring Bookings" icon, adapted to this page's own icon-badge SVG style; kept the card's existing pink accent colour rather than switching to amber, since amber is already used by the "AI Agent Auto-Prebooked" card in this page's deliberately 5-distinct-colours icon scheme.
 - Applied that same ticked-grid glyph to `floorsense-out-of-box-policy.html`'s "Desk Allocation Method" summary group icon, replacing its older three-desk-tiles glyph and keeping the group's existing pink badge colour.
+- Replaced that ticked-grid glyph on both `floorsense-reservation-types-01.html`'s "Reserved by User as Needed" card and `floorsense-out-of-box-policy.html`'s "Desk Allocation Method" summary icon with a plain checkbox-with-checkmark ("tick box") design, keeping both badges pink; confirmed pink stays non-colliding under each page's own colour-adjacency rule.
 
 ## Status
 

@@ -589,7 +589,7 @@
       <div class="summary-group">
         <div class="summary-group-head">
           <div class="summary-group-heading">
-            <div class="summary-icon-badge badge-pink"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="12" y="12" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M8.1 9.6l0.9 0.9l1.7-2.1"/><path d="M13.1 14.6l0.9 0.9l1.7-2.1"/></svg></div>
+            <div class="summary-icon-badge badge-pink"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fill-opacity="0.12"/><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.4l2.6 2.6l5.2-5.6"/></svg></div>
             <h3>Desk Allocation Method</h3>
           </div>
           <a class="edit-link" href="floorsense-reservation-types-01.html?return=summary">Edit</a>
@@ -2025,6 +2025,20 @@ per-path overrides needed since the file-wide round caps already suit the checkm
 change — no JS touched. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block (untouched), and a Playwright screenshot confirming the new glyph renders
 correctly in the group header.
+
+MOST RECENT CHANGE: per a follow-up request to use a "tick box symbol" instead, replaced the
+ticked-grid glyph above with a plain checkbox-with-checkmark design — a rounded-square canvas
+(`rx="3"`, light `fill-opacity="0.12"` fill plus its own stroke border) with a single tick path drawn
+inside, matching this file's `stroke-width="1.6"` round-cap/round-join svg-level convention (no
+per-path override needed). Checked the colour against this page's styling rule before leaving it
+unchanged: this summary page cycles 5 badge colours across its 7 groups and already reuses colours at
+non-adjacent positions (e.g. `badge-blue` appears on both "Prebooking & Duration" and "Configured
+Separately"), so the rule in practice is "no two adjacent groups share a colour," not "each colour used
+once page-wide." "Desk Allocation Method" (`badge-pink`) sits between no other pink group — its neighbours
+are `badge-blue` ("Prebooking & Duration") below it — so the existing pink stays compliant with that
+rule even though "Check-in Window" further down also uses pink. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block (untouched), and a Playwright
+screenshot confirming the tick-box glyph renders cleanly in the group header.
 -->
 
 

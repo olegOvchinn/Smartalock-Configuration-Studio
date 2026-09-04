@@ -315,7 +315,7 @@
         <div class="desk-check-card" data-template="adhoc">
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
-            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="7" y="7" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="12" y="12" width="5" height="5" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/><path d="M8.1 9.6l0.9 0.9l1.7-2.1" stroke-width="1.1"/><path d="M13.1 14.6l0.9 0.9l1.7-2.1" stroke-width="1.1"/></svg></div>
+            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fill-opacity="0.12"/><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.4l2.6 2.6l5.2-5.6" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -746,6 +746,19 @@ own choice when asked, the new glyph keeps this card's existing `badge-pink` col
 switching to amber — only the icon's shape changed. Verified via an inline HTMLParser tag-balance
 check, `node --check` on the extracted script block (untouched), and a Playwright screenshot of the
 card confirming the new ticked-grid glyph renders correctly in pink.
+
+MOST RECENT CHANGE: per a follow-up request to use a "tick box symbol" instead, replaced the
+ticked-grid glyph above with a plain checkbox-with-checkmark design — a rounded-square canvas
+(`rx="3"`, light `fill-opacity="0.12"` fill plus its own stroke border) with a single tick path drawn
+inside, matching this file's `stroke-width="1.3"` / butt-cap / miter-join svg-level convention (the tick
+path itself keeps the same `stroke-width="1.1"` override this card's checkmarks have always used).
+Checked the colour against this page's styling rule before leaving it unchanged: the file's 5
+`.desk-icon-badge` cards are deliberately colour-differentiated (see the earlier "5 distinct colours"
+NOTE), and this card was already confirmed to keep `badge-pink` in the prior change (to avoid colliding
+with the "AI Agent Auto-Prebooked" card's `badge-amber`) — that reasoning still holds since only the
+glyph's shape changed here, not its colour, so `badge-pink` remains correct and non-colliding. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
+and a Playwright screenshot confirming the tick-box glyph renders cleanly in pink.
 -->
 
 <script>
