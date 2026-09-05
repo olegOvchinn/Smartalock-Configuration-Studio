@@ -81,20 +81,14 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; font-weight: 400; line-height: 1.6; margin: 0; }
 
-  /* ---------- shared text-with-visual layout (image to the right) ---------- */
-  .content-with-visual { display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
-  @media (max-width: 1080px) { .content-with-visual { grid-template-columns: 1fr; } }
-  .page-visual { position: static; }
-  .page-visual-frame {
-    width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden;
-    border: 1.5px solid var(--line); background: var(--paper-soft); box-shadow: var(--shadow);
-  }
-  .page-visual-frame img { display: block; width: 100%; height: auto; }
-  .page-visual-caption { font-size: 9.43px; color: var(--ink-soft); text-align: center; margin: 10px 4px 0; line-height: 1.5; }
+  /* ---------- content layout: single column (this page's side visual/illustration was removed,
+     so the text column no longer needs to share the row with a fixed-width image rail) ---------- */
+  .content-with-visual { display: block; }
 
-  /* ---------- question cards ---------- */
-  .qcard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; }
-  @media (max-width: 720px) { .qcard-grid { grid-template-columns: 1fr; } }
+  /* ---------- question cards: enlarged 20% (max-width, padding, icon/badge, and type sizes all
+     scaled by 1.2 from their original values) now that removing the side visual freed up the
+     width for larger cards ---------- */
+  .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 22px; max-width: 1080px; }
   .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
      floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
@@ -106,12 +100,12 @@
     backdrop-filter: blur(10px) saturate(160%);
     -webkit-backdrop-filter: blur(10px) saturate(160%);
     border: none; border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 18px; max-width: 640px;
+    padding: 26.4px 28.8px; margin-bottom: 21.6px; max-width: 768px;
     box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
     transition: box-shadow .2s, background .2s;
   }
-  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
+  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 25.58px; margin: 0 0 7.2px; color: var(--header-grey); display: flex; align-items: center; gap: 9.6px; }
+  .qcard h3 .qcard-icon { width: 91.2px; height: 91.2px; flex-shrink: 0; }
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
      with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
      (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
@@ -124,7 +118,7 @@
      assigned from the site's generic rotating palette — see the MOST RECENT CHANGE note below. The
      badge only colors its own border; the raster icon images are left untouched. ---------- */
   .qcard-icon-badge {
-    width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
+    width: 110.4px; height: 110.4px; border-radius: 31.2px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
@@ -135,10 +129,10 @@
   .qcard-icon-badge.badge-teal { border-color: #0E8F8F; }
   .qcard-icon-badge.badge-amber { border-color: #D98E00; }
   .qcard-tag {
-    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
+    font-family: var(--font-text); font-size: 9.84px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3.6px 9.6px; border-radius: 100px;
   }
-  .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
+  .qcard p.qdesc { font-size: 17.71px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 19.2px; }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
@@ -302,13 +296,6 @@
 
       </div>
 
-      <div class="page-visual">
-        <div class="page-visual-frame show-image">
-          <img src="assets/images/registration-process-illustration.png" alt="Registration steps: company details, key contacts, project dates, then ready to configure">
-        </div>
-        <p class="page-visual-caption">From company details to go-live in four steps.</p>
-      </div>
-
       </div>
 
       <div class="page-nav">
@@ -407,6 +394,28 @@ icon-dates.png's is `#D98E00` (a burnt amber/orange — new `.badge-amber` repla
 `.badge-purple`). Verified visually by opening each source PNG directly and confirming the sampled
 hex reads as the same color as its glyph line-art, plus an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block (untouched — CSS/markup-only change).
+
+MOST RECENT CHANGE: per a request to remove the image placeholder/illustration, collapse the page to
+one column, and enlarge the cards 20%: deleted the `<div class="page-visual">` block entirely (the
+`registration-process-illustration.png` `<img>`, its frame, and its caption — the PNG file itself was
+left untouched, just unreferenced here now) along with its now-dead `.page-visual`/`.page-visual-frame`/
+`.page-visual-caption` CSS rules. `.content-with-visual` (previously a `grid-template-columns: 1fr
+400px` split for the text column + this image rail, with a responsive collapse below 1080px) simplified
+to `display: block` now that there's only ever one child (`.page-text`) — the responsive media query
+was removed as dead code along with it. `.qcard-grid` also dropped its nominal `1fr 1fr` column
+definition (and its own now-dead `@media (max-width: 720px)` collapse rule) in favour of a plain
+`1fr` single column — this was already the effective visual result since every `.qcard` carries its own
+inline `grid-column: 1 / -1`, but the declaration was misleading dead weight once the page's only
+layout is a single column throughout. Every `.qcard`-related size was scaled by exactly 1.2 (20%
+larger) from its original value: `.qcard-grid` max-width 900px -> 1080px, gap 18px -> 22px; `.qcard`
+max-width 640px -> 768px, padding 22px/24px -> 26.4px/28.8px, margin-bottom 18px -> 21.6px; `.qcard h3`
+font-size 21.32px -> 25.58px; `.qcard h3 .qcard-icon` 76px -> 91.2px; `.qcard-icon-badge` 92px ->
+110.4px (border-radius 26px -> 31.2px); `.qcard-tag` font-size 8.2px -> 9.84px (padding 3px/8px ->
+3.6px/9.6px); `.qcard p.qdesc` font-size 14.76px -> 17.71px. Form fields inside each card (labels,
+inputs, textarea) were left at their original size, since the request was scoped to the cards
+themselves, not their form contents. Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block (untouched), and a full-page Playwright screenshot confirming the
+illustration is gone, the page reads as a single column, and all three cards render visibly larger.
 -->
 
 <script>

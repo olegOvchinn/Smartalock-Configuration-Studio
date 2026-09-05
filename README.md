@@ -334,6 +334,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Unified `floorsense-business-hours-05.html`'s Arrival/Departure values with `floorsense-default-reservation-times-07.html`'s reservation start/end: both now read/write the same `project.floorsense.wizard.businessHours` field, so editing either page updates the other, and `floorsense-out-of-box-policy.html`'s "Default reservation duration" summary row and the end-user guide's "Plan ahead" sentence both now read from `businessHours` first so they always reflect whichever page was edited most recently. Also aligned page 05's default arrival time to 8:30 AM (was 9:00 AM) to match page 07's existing default.
 - On `floorsense-default-reservation-times-07.html`, put "Choose below how the reservation's end time should be worked out:" into a bordered, soft-background text box and increased its font size 50% (13.5px → 20.25px).
 - Refined that box into a standout accent-blue `.end-mode-section` that now wraps both end-mode option cards as well as the label, so the whole question-and-choices group reads as one cohesive, clearly-bounded section.
+- On `smartalock-templates-00.html`, removed the side illustration/image placeholder and collapsed the page to a single column, then enlarged all three question cards 20% (dimensions, padding, icon/badge size, and type all scaled by 1.2).
 
 ## Status
 
