@@ -337,6 +337,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-templates-00.html`, removed the side illustration/image placeholder and collapsed the page to a single column, then enlarged all three question cards 20% (dimensions, padding, icon/badge size, and type all scaled by 1.2).
 - Removed the "Configure" eyebrow pill (and its now-empty parent div) from `smartalock-templates-00.html`.
 - Aborted the 20% card enlargement on `smartalock-templates-00.html` — reverted all `.qcard`-related sizes back to their original values, keeping the illustration removal, single-column layout, and eyebrow removal in place.
+- Centered the question cards on `smartalock-templates-00.html` (added `margin: 0 auto` to `.qcard-grid`), which had been sitting flush left since the side illustration was removed.
 
 ## Status
 

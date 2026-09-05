@@ -82,8 +82,9 @@
      so the text column no longer needs to share the row with a fixed-width image rail) ---------- */
   .content-with-visual { display: block; }
 
-  /* ---------- question cards ---------- */
-  .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 900px; }
+  /* ---------- question cards: centered within the page now that the single column has the full
+     panel width to itself (no longer sharing the row with a side visual) ---------- */
+  .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 900px; margin: 0 auto; }
   .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
      floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
@@ -431,6 +432,16 @@ size from the previous change back to its original value: `.qcard-grid` max-widt
 collapsing the page to a single column, and removing the "Configure" eyebrow — were left in place;
 only the enlargement itself was undone. Verified via an inline HTMLParser tag-balance check and
 `node --check` on the extracted script block (untouched).
+
+MOST RECENT CHANGE: per a request to align the content to the centre of the page, added
+`margin: 0 auto` to `.qcard-grid`. With the side illustration gone and `.content-with-visual` now a
+plain single-column block, the grid's own `max-width: 900px` was capping its width without any
+centering margin, so it sat flush against the left edge of the wider `.panel-inner` (1120px) —
+visually lopsided now that nothing fills the right side. `margin: 0 auto` centers it the same way
+`.panel-intro` (the hero title/sub above it) is already centered. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block (untouched), and a full-page
+Playwright screenshot confirming the three cards now sit centered under the hero text instead of
+hugging the left edge.
 -->
 
 <script>
