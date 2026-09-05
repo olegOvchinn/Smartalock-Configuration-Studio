@@ -335,6 +335,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `floorsense-default-reservation-times-07.html`, put "Choose below how the reservation's end time should be worked out:" into a bordered, soft-background text box and increased its font size 50% (13.5px → 20.25px).
 - Refined that box into a standout accent-blue `.end-mode-section` that now wraps both end-mode option cards as well as the label, so the whole question-and-choices group reads as one cohesive, clearly-bounded section.
 - On `smartalock-templates-00.html`, removed the side illustration/image placeholder and collapsed the page to a single column, then enlarged all three question cards 20% (dimensions, padding, icon/badge size, and type all scaled by 1.2).
+- Removed the "Configure" eyebrow pill (and its now-empty parent div) from `smartalock-templates-00.html`.
 
 ## Status
 

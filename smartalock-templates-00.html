@@ -76,10 +76,7 @@
   .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 640px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 14.76px; font-weight: 400; line-height: 1.6; margin: 0; }
 
   /* ---------- content layout: single column (this page's side visual/illustration was removed,
      so the text column no longer needs to share the row with a fixed-width image rail) ---------- */
@@ -219,10 +216,6 @@
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
 
       <div class="content-with-visual">
       <div class="page-text">
@@ -416,6 +409,19 @@ inputs, textarea) were left at their original size, since the request was scoped
 themselves, not their form contents. Verified via an inline HTMLParser tag-balance check, `node --check`
 on the extracted script block (untouched), and a full-page Playwright screenshot confirming the
 illustration is gone, the page reads as a single column, and all three cards render visibly larger.
+
+MOST RECENT CHANGE: per a request to remove the "Configure" eyebrow, deleted the
+`<div class="section-head"><span class="eyebrow">Configure</span></div>` block — this page's
+`.section-head` contained nothing but that one eyebrow span (no heading or paragraph), so per the same
+precedent used elsewhere in this codebase (e.g. floorsense-reservation-types-01.html's own eyebrow
+removal), the entire now-empty div was deleted rather than left as a shell. Removed the now-dead
+`.section-head`/`.section-head .eyebrow`/`.section-head p` CSS rules too, since nothing on this page
+uses that class anymore (the shared base `.eyebrow` rule and `.panel-intro .eyebrow` were left alone —
+out of scope for this request, and `.panel-intro` doesn't currently contain an eyebrow span anyway).
+`h2.section-title` was left in place even though it's also currently unused, since it wasn't part of
+what was removed. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block (untouched), and a full-page Playwright screenshot confirming the page now flows directly
+from the intro into the first card with no eyebrow pill above it.
 -->
 
 <script>
