@@ -336,6 +336,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Refined that box into a standout accent-blue `.end-mode-section` that now wraps both end-mode option cards as well as the label, so the whole question-and-choices group reads as one cohesive, clearly-bounded section.
 - On `smartalock-templates-00.html`, removed the side illustration/image placeholder and collapsed the page to a single column, then enlarged all three question cards 20% (dimensions, padding, icon/badge size, and type all scaled by 1.2).
 - Removed the "Configure" eyebrow pill (and its now-empty parent div) from `smartalock-templates-00.html`.
+- Aborted the 20% card enlargement on `smartalock-templates-00.html` — reverted all `.qcard`-related sizes back to their original values, keeping the illustration removal, single-column layout, and eyebrow removal in place.
 
 ## Status
 

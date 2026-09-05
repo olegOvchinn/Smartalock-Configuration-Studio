@@ -82,10 +82,8 @@
      so the text column no longer needs to share the row with a fixed-width image rail) ---------- */
   .content-with-visual { display: block; }
 
-  /* ---------- question cards: enlarged 20% (max-width, padding, icon/badge, and type sizes all
-     scaled by 1.2 from their original values) now that removing the side visual freed up the
-     width for larger cards ---------- */
-  .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 22px; max-width: 1080px; }
+  /* ---------- question cards ---------- */
+  .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 900px; }
   .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
      floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
@@ -97,12 +95,12 @@
     backdrop-filter: blur(10px) saturate(160%);
     -webkit-backdrop-filter: blur(10px) saturate(160%);
     border: none; border-radius: var(--radius-lg);
-    padding: 26.4px 28.8px; margin-bottom: 21.6px; max-width: 768px;
+    padding: 22px 24px; margin-bottom: 18px; max-width: 640px;
     box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
     transition: box-shadow .2s, background .2s;
   }
-  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 25.58px; margin: 0 0 7.2px; color: var(--header-grey); display: flex; align-items: center; gap: 9.6px; }
-  .qcard h3 .qcard-icon { width: 91.2px; height: 91.2px; flex-shrink: 0; }
+  .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
+  .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
      with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
      (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
@@ -115,7 +113,7 @@
      assigned from the site's generic rotating palette — see the MOST RECENT CHANGE note below. The
      badge only colors its own border; the raster icon images are left untouched. ---------- */
   .qcard-icon-badge {
-    width: 110.4px; height: 110.4px; border-radius: 31.2px; flex-shrink: 0;
+    width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
@@ -126,10 +124,10 @@
   .qcard-icon-badge.badge-teal { border-color: #0E8F8F; }
   .qcard-icon-badge.badge-amber { border-color: #D98E00; }
   .qcard-tag {
-    font-family: var(--font-text); font-size: 9.84px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent-deep); background: var(--accent-wash); padding: 3.6px 9.6px; border-radius: 100px;
+    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
   }
-  .qcard p.qdesc { font-size: 17.71px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 19.2px; }
+  .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
@@ -422,6 +420,17 @@ out of scope for this request, and `.panel-intro` doesn't currently contain an e
 what was removed. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
 script block (untouched), and a full-page Playwright screenshot confirming the page now flows directly
 from the intro into the first card with no eyebrow pill above it.
+
+MOST RECENT CHANGE: per a request to abort the 20% card enlargement, reverted every `.qcard`-related
+size from the previous change back to its original value: `.qcard-grid` max-width 1080px -> 900px, gap
+22px -> 18px; `.qcard` max-width 768px -> 640px, padding 26.4px/28.8px -> 22px/24px, margin-bottom
+21.6px -> 18px; `.qcard h3` font-size 25.58px -> 21.32px (margin/gap reverted to match); `.qcard h3
+.qcard-icon` 91.2px -> 76px; `.qcard-icon-badge` 110.4px -> 92px (border-radius 31.2px -> 26px);
+`.qcard-tag` font-size 9.84px -> 8.2px (padding 3.6px/9.6px -> 3px/8px); `.qcard p.qdesc` font-size
+17.71px -> 14.76px. The other changes from the same earlier commit — removing the side illustration,
+collapsing the page to a single column, and removing the "Configure" eyebrow — were left in place;
+only the enlargement itself was undone. Verified via an inline HTMLParser tag-balance check and
+`node --check` on the extracted script block (untouched).
 -->
 
 <script>
