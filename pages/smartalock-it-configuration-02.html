@@ -99,42 +99,6 @@
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; height: auto; }
 
-  /* ---------- visual mode switcher (thin segments, same style as the top progress bar) ---------- */
-  .visual-tabs {
-    display: flex; gap: 5px; margin: 0 0 10px; list-style: none; padding: 0; max-width: 480px;
-  }
-  .visual-tab {
-    position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
-    border: none; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  }
-  .visual-tab-fill {
-    position: absolute; inset: 0; border-radius: 5px; background: var(--line);
-    transition: background .18s, box-shadow .18s;
-  }
-  .visual-tab.active .visual-tab-fill { background: var(--accent-deep); box-shadow: 0 0 0 3px var(--accent-wash); }
-  .visual-tab:hover .visual-tab-fill { background: var(--accent-deep); }
-
-  .visual-tab-tip {
-    position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px);
-    background: var(--ink); color: #fff; font-family: var(--font-text); font-size: 9.43px; font-weight: 500;
-    padding: 6px 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
-    transition: opacity .15s, transform .15s; box-shadow: var(--shadow); z-index: 2;
-  }
-  .visual-tab-tip::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--ink);
-  }
-  .visual-tab:hover .visual-tab-tip,
-  .visual-tab:focus-visible .visual-tab-tip {
-    opacity: 1; transform: translateX(-50%) translateY(0);
-  }
-  .visual-tab:first-child .visual-tab-tip { left: 0; transform: translateX(0) translateY(4px); }
-  .visual-tab:first-child .visual-tab-tip::after { left: 14px; }
-  .visual-tab:first-child:hover .visual-tab-tip { transform: translateX(0) translateY(0); }
-  .visual-tab:last-child .visual-tab-tip { left: auto; right: 0; transform: translateX(0) translateY(4px); }
-  .visual-tab:last-child .visual-tab-tip::after { left: auto; right: 14px; transform: none; }
-  .visual-tab:last-child:hover .visual-tab-tip { transform: translateX(0) translateY(0); }
-
   /* ---------- question cards ---------- */
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
      floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
@@ -329,20 +293,6 @@
         </div>
 
         <div class="page-visual">
-          <nav class="visual-tabs" id="visualTabs" aria-label="Architecture diagram view">
-            <button class="visual-tab" type="button" data-mode="sso">
-              <span class="visual-tab-fill"></span>
-              <span class="visual-tab-tip">SSO Authentication</span>
-            </button>
-            <button class="visual-tab" type="button" data-mode="scim">
-              <span class="visual-tab-fill"></span>
-              <span class="visual-tab-tip">SCIM Provisioning</span>
-            </button>
-            <button class="visual-tab" type="button" data-mode="api">
-              <span class="visual-tab-fill"></span>
-              <span class="visual-tab-tip">API / Integrations</span>
-            </button>
-          </nav>
           <div class="page-visual-frame show-image">
             <img id="archVisual" src="../assets/images/it-configuration-architecture-sso.png" alt="IT integration architecture diagram">
           </div>
@@ -409,6 +359,23 @@ non-wash-background pixels). Results: icon-sso.png -> `#0655D1` (blue), icon-sci
 of the four icons (SSO and API) both happen to land on a shade of blue, which the old generic naming
 couldn't express. Verified visually against each source PNG, plus an inline HTMLParser tag-balance
 check and `node --check` on the extracted script block (untouched — CSS/markup-only change).
+
+MOST RECENT CHANGE: per a request to remove the image selector bar above the architecture diagram and
+instead switch the diagram on card hover, deleted `<nav class="visual-tabs" id="visualTabs">` (the row
+of 3 click-to-switch tab buttons: SSO Authentication / SCIM Provisioning / API Integrations) along with
+its now-dead `.visual-tabs`/`.visual-tab`/`.visual-tab-fill`/`.visual-tab-tip` CSS rules. In JS, removed
+the `visualTabs` NodeList and its click-listener loop, and `applyArchVisual()` no longer toggles a
+`.active` class on any tab (nothing left to toggle). Added `wireHoverVisual(fieldEl, mode)`, called once
+per matching card (SSO/SCIM/API — Gallagher has no matching diagram, so it's left unwired) via each
+card's own form field (`ssoMethod`, `scimProvisioning`, `apiRequirements`) walked up to its `.qcard`
+ancestor: `mouseenter` on that card calls `applyArchVisual(mode)` to preview its diagram, `mouseleave`
+calls `applyArchVisual()` with no argument to revert to whatever `computeArchMode()` says the actual
+configured state is — so unlike the old tab-click behaviour (a persistent manual override), hovering is
+purely a transient preview and the diagram always settles back to reflecting real saved state once the
+mouse leaves. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block, a jsdom test dispatching mouseenter/mouseleave on each of the 3 wired cards and confirming
+`#archVisual`'s src changes and reverts correctly, and a Playwright screenshot confirming a real hover
+over the SCIM card's field swaps the diagram with no tab row above it.
 -->
 
 <script>
@@ -462,7 +429,6 @@ check and `node --check` on the extracted script block (untouched — CSS/markup
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
   const archVisual = document.getElementById('archVisual');
-  const visualTabs = document.querySelectorAll('.visual-tab');
 
   function applySSOVisibility() {
     const show = state.ssoMethod !== "";
@@ -487,12 +453,21 @@ check and `node --check` on the extracted script block (untouched — CSS/markup
     const mode = modeOverride || computeArchMode();
     const visual = ARCH_VISUAL[mode];
     archVisual.src = visual.src;
-    visualTabs.forEach(tab => tab.classList.toggle('active', tab.getAttribute('data-mode') === mode));
   }
 
-  visualTabs.forEach(tab => {
-    tab.addEventListener('click', () => applyArchVisual(tab.getAttribute('data-mode')));
-  });
+  /* Hovering a card previews that card's architecture diagram; leaving it reverts to whatever the
+     actual configured state computes (computeArchMode()) rather than the tab-click override this
+     replaced. The Gallagher card has no matching diagram (only SSO/SCIM/API do), so it's left
+     unwired — hovering it simply leaves whichever diagram was already showing in place. */
+  function wireHoverVisual(fieldEl, mode) {
+    const card = fieldEl && fieldEl.closest('.qcard');
+    if (!card) return;
+    card.addEventListener('mouseenter', () => applyArchVisual(mode));
+    card.addEventListener('mouseleave', () => applyArchVisual());
+  }
+  wireHoverVisual(ssoMethod, 'sso');
+  wireHoverVisual(scimProvisioning, 'scim');
+  wireHoverVisual(apiRequirements, 'api');
 
   ssoMethod.value = state.ssoMethod;
   scimProvisioning.value = state.scimProvisioning;

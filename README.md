@@ -338,6 +338,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the "Configure" eyebrow pill (and its now-empty parent div) from `smartalock-templates-00.html`.
 - Aborted the 20% card enlargement on `smartalock-templates-00.html` — reverted all `.qcard`-related sizes back to their original values, keeping the illustration removal, single-column layout, and eyebrow removal in place.
 - Centered the question cards on `smartalock-templates-00.html` (added `margin: 0 auto` to `.qcard-grid`), which had been sitting flush left since the side illustration was removed.
+- On `pages/smartalock-it-configuration-02.html`, removed the click-to-switch tab bar above the architecture diagram and replaced it with hover-triggered switching: hovering the SSO/SCIM/API card previews that card's diagram, reverting to the actual configured diagram on mouseleave. The Gallagher card has no matching diagram, so it's unaffected.
 
 ## Status
 
