@@ -94,7 +94,7 @@
   .page-visual-frame svg { width: 40px; height: 40px; opacity: 0.4; }
   .page-visual-frame img { display: none; width: 100%; height: 100%; object-fit: cover; }
   .page-visual-frame.show-image {
-    border-style: solid; border-color: var(--line); box-shadow: var(--shadow); aspect-ratio: auto; padding: 0;
+    border: none; box-shadow: var(--shadow); aspect-ratio: auto; padding: 0;
   }
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; height: auto; }
@@ -376,6 +376,17 @@ mouse leaves. Verified via an inline HTMLParser tag-balance check, `node --check
 script block, a jsdom test dispatching mouseenter/mouseleave on each of the 3 wired cards and confirming
 `#archVisual`'s src changes and reverts correctly, and a Playwright screenshot confirming a real hover
 over the SCIM card's field swaps the diagram with no tab row above it.
+
+MOST RECENT CHANGE: per a request to remove the image placeholder edge line, dropped
+`.page-visual-frame.show-image`'s `border-style: solid; border-color: var(--line);` in favour of
+`border: none;` — the frame is always rendered with the `show-image` class (the diagram is shown from
+first load, per `applyArchVisual()`), so this is the only border declaration that actually mattered
+visually; the base `.page-visual-frame`'s `1.5px dashed var(--line)` (meant for an empty/no-image
+placeholder state) never renders here since `.show-image` always overrides it. Left `box-shadow: var
+(--shadow)` in place, since that's a soft blurred shadow rather than a hard edge line, giving the frame
+some visual definition without an outline. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched), a computed-style check confirming `border:
+0px none`, and a Playwright screenshot zoomed on the frame's corner confirming no border line remains.
 -->
 
 <script>
