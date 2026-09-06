@@ -101,7 +101,7 @@
     transition: box-shadow .2s, background .2s;
   }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  .qcard h3 .qcard-icon { width: 76px; height: 76px; flex-shrink: 0; }
+  .qcard h3 .qcard-icon { width: 53.2px; height: 53.2px; flex-shrink: 0; }
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
      with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
      (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
@@ -114,7 +114,7 @@
      assigned from the site's generic rotating palette — see the MOST RECENT CHANGE note below. The
      badge only colors its own border; the raster icon images are left untouched. ---------- */
   .qcard-icon-badge {
-    width: 92px; height: 92px; border-radius: 26px; flex-shrink: 0;
+    width: 64.4px; height: 64.4px; border-radius: 18.2px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
@@ -442,6 +442,14 @@ visually lopsided now that nothing fills the right side. `margin: 0 auto` center
 tag-balance check, `node --check` on the extracted script block (untouched), and a full-page
 Playwright screenshot confirming the three cards now sit centered under the hero text instead of
 hugging the left edge.
+
+MOST RECENT CHANGE: per a request (also applied to smartalock-it-configuration-02.html's own qcards)
+to make the option cards' icons 30% smaller, scaled both `.qcard h3 .qcard-icon` (76px -> 53.2px) and
+`.qcard-icon-badge` (92px -> 64.4px, border-radius 26px -> 18.2px) by 0.7. Nothing else in the card —
+padding, title/description font sizes, badge border width — was touched, since the request was scoped
+to the icons specifically. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched), and a Playwright screenshot confirming the icon renders visibly
+smaller within its badge while the rest of the card is unchanged.
 -->
 
 <script>
