@@ -766,7 +766,7 @@
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">Notifications</span><span class="value">Subject to creation</span></div>
-          <p class="summary-desc">Notification rules aren't configured out of the box — set up separately based on your preferences.</p>
+          <p class="summary-desc">Notification rules aren't configured out of the box — set up separately based on your preferences. Not all notification types can be configured; check with the Smartalock team first.</p>
           <label class="training-check">
             <input type="checkbox" id="trainingNotifications">
             <span class="training-check-tick" aria-hidden="true"></span>
@@ -2071,6 +2071,13 @@ this row). Verified via an inline HTMLParser tag-balance check, `node --check` o
 block, and a jsdom test seeding only `businessHours: { arrivalTime: '06:00', departureTime: '20:00' }`
 (with a stale, different `defaultReservationTimes.defaultStartTime` of 9:00 AM also present) and
 confirming this row shows "6:00 AM" — the businessHours value — not the stale 9:00 AM.
+
+MOST RECENT CHANGE: per a request to flag that not every notification type is actually configurable,
+the Configured Separately group's "Notifications" row description gained a second sentence: "Not all
+notification types can be configured; check with the Smartalock team first." Plain static text —
+no state, JS, or markup structure changed, only the copy inside the existing `.summary-desc`
+paragraph. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
+script block (untouched — text-only change).
 -->
 
 
