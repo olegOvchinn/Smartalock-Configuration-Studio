@@ -327,7 +327,6 @@
         <p class="qdesc">Define which users are permitted to access lockers.</p>
         <label>Access policy</label>
         <select id="userAccessPolicy">
-          <option value="">Anyone</option>
           <option value="all">All registered users</option>
           <option value="groups">Selected user groups</option>
         </select>
@@ -392,6 +391,7 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (established on floorsense-reservation-types-01.html) to this page. `.qcard` dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border — this card has no hover/selected state, so only the base glass treatment applies (no hover/`.checked` variant needed). The heading's raster `<img class="qcard-icon">` (72x72px, the only icon on this single-card page, not a repeating option group) was wrapped in a new `<span class="qcard-icon-badge">` — a 92x92px white-canvas box with a plain `var(--accent)` blue border and short drop-shadow, sized to comfortably contain the existing icon plus padding — matching the site's icon-badge convention without introducing a palette colour, since this isn't a multi-option group. The image asset itself was untouched. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: Overrode the lone `.qcard-icon-badge`'s plain `var(--accent)` blue border with a new `.badge-teal` modifier class, border-color `#0E8F8F`, sampled directly from `icon-who-can-use-lockers.png`'s own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels) — the actual icon is teal, not blue, so the original "lone icon keeps plain blue" convention no longer applies once real icon colors are being matched. Only the badge's border-color CSS and the span's class list were touched; the icon image file, sizing, and JS logic are untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
+MOST RECENT CHANGE: per a request to remove the "Anyone" choice from the Access policy select, deleted `<option value="">Anyone</option>`, leaving just "All registered users" (`all`) and "Selected user groups" (`groups`). The default `state.userAccessPolicy` changed from `""` to `"all"` (both in the initial state object and the Reset handler), and a saved project with the old `""` value persisted from before this change is normalized up to `"all"` on load rather than left to render as a blank/invalid `<select>` value. The now-unused `''` entry (and its `access-anyone.png` reference, unused anywhere else in the repo) was removed from `ACCESS_VISUAL_SRC`; the `accessPolicyChosen`/`visualKey` fallback logic that already defaulted the illustration to "All Registered Users" before anything was explicitly chosen was left as-is since it's now simply consistent with the new default rather than needing to diverge from it. `smartalock-configuration-summary-08.html`'s own `accessLabels` map and fallback string were updated the same way, so a legacy `""` value there also displays as "All registered users" instead of a now-nonexistent "Anyone". Verified via an inline HTMLParser tag-balance check, `node --check` on both files' extracted script blocks, and a jsdom test covering a fresh load, a legacy saved `""` value, and a saved `"groups"` value on both this page and the summary page.
 -->
 
 <script>
@@ -425,11 +425,15 @@ MOST RECENT CHANGE: Overrode the lone `.qcard-icon-badge`'s plain `var(--accent)
   const savedUserPolicy = project.smartalock.wizard.user || {};
   let accessPolicyChosen = Object.prototype.hasOwnProperty.call(savedUserPolicy, 'userAccessPolicy');
   const state = Object.assign({
-    userAccessPolicy: "",
+    userAccessPolicy: "all",
     lockerGroupName: "",
     userGroupName: "",
     allocationDetails: ""
   }, savedUserPolicy);
+  // "Anyone" (userAccessPolicy: "") was removed as an access-policy choice — a saved project from
+  // before that removal may still have "" persisted, so it's normalized up to "all" here rather than
+  // left to render as a blank/invalid <select> value.
+  if (state.userAccessPolicy === "") state.userAccessPolicy = "all";
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -463,7 +467,6 @@ MOST RECENT CHANGE: Overrode the lone `.qcard-icon-badge`'s plain `var(--accent)
   const saveDot = document.getElementById('saveDot');
   const accessPolicyVisualImg = document.getElementById('accessPolicyVisualImg');
   const ACCESS_VISUAL_SRC = {
-    '': { src: '../assets/images/access-anyone.png', alt: 'Anyone' },
     all: { src: '../assets/images/access-all-registered.png', alt: 'All Registered Users' },
     groups: { src: '../assets/images/access-selected-groups.png', alt: 'Selected User Groups' }
   };
@@ -494,12 +497,12 @@ MOST RECENT CHANGE: Overrode the lone `.qcard-icon-badge`'s plain `var(--accent)
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.userAccessPolicy = '';
+    state.userAccessPolicy = 'all';
     state.lockerGroupName = '';
     state.userGroupName = '';
     state.allocationDetails = '';
     accessPolicyChosen = false;
-    userAccessPolicy.value = '';
+    userAccessPolicy.value = 'all';
     lockerGroupName.value = '';
     userGroupName.value = '';
     allocationDetails.value = '';

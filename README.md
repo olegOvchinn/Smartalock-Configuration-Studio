@@ -348,6 +348,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a "Setting up the Floorsense mobile app" box to the bottom of `floorsense-desk-booking-guide-live.html`, linking to one of two Floorsense-hosted installation guides (Non-SSO or SSO) depending on the SSO choice made on `smartalock-it-configuration-02.html`.
 - Moved that mobile-app-guide box up to a new "Floorsense User App" section right after "Your Privacy" on `floorsense-desk-booking-guide-live.html`, renamed its heading to "Floorsense App Installation and User Manual", removed the "Not switched on yet at your workplace" and "This guide reflects..." boxes that used to follow it, and added a note to follow the guide's installation steps exactly and check its troubleshooting section if needed.
 - Added the same "Floorsense User App" installation guide section to `smartalock-locker-guide-live.html`, placed below "Locker Types Available", reading the same SSO choice from `smartalock-it-configuration-02.html`; removed that page's "This guide reflects your workplace's current Smartalock configuration..." footer note (the separate "Not available at this kiosk" box is unrelated and untouched).
+- Removed "Anyone" from `smartalock-user-policy-06.html`'s Access policy select, leaving "All registered users" (now the default) and "Selected user groups"; a legacy saved `""` value is normalized to "all" on load, and `smartalock-configuration-summary-08.html`'s "Who Can Use Lockers" row shows "All registered users" for both.
 
 ## Status
 
