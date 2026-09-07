@@ -346,6 +346,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a red-tinted safety warning callout below `floorsense-fme-12.html`'s option cards, cautioning that letting users move a desk up/down remotely via the mobile app is a safety risk.
 - Added a single representative icon in front of each card's own section title on `floorsense-desk-user-groups-03.html` — a blue floorplan glyph for "Desk Group Setup" and a purple two-person glyph for "User Group Setup" — rather than icons on the individual checkbox options below.
 - Added a "Setting up the Floorsense mobile app" box to the bottom of `floorsense-desk-booking-guide-live.html`, linking to one of two Floorsense-hosted installation guides (Non-SSO or SSO) depending on the SSO choice made on `smartalock-it-configuration-02.html`.
+- Moved that mobile-app-guide box up to a new "Floorsense User App" section right after "Your Privacy" on `floorsense-desk-booking-guide-live.html`, renamed its heading to "Floorsense App Installation and User Manual", removed the "Not switched on yet at your workplace" and "This guide reflects..." boxes that used to follow it, and added a note to follow the guide's installation steps exactly and check its troubleshooting section if needed.
 
 ## Status
 

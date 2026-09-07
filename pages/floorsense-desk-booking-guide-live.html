@@ -152,6 +152,25 @@ throwing. Verified via an inline HTMLParser tag-balance check, `node --check` on
 block, a jsdom test covering three cases (`ssoMethod: ""`, `ssoMethod: "okta"`, and no `smartalock`
 key present at all) confirming the correct URL/link text/body text in each, and a full-page
 Playwright screenshot confirming the new box renders correctly at the bottom of the page.
+
+MOST RECENT CHANGE: per a follow-up request, moved the mobile-app-guide box up to right after the
+"Your Privacy" section (rather than sitting at the very bottom below two other boxes), under a new
+`.section-eyebrow` labelled "Floorsense User App" — its own named section rather than an
+unlabelled box tacked onto the end. The box's own heading changed from "Setting up the Floorsense
+mobile app" to "Floorsense App Installation and User Manual". The two boxes that used to sit between
+Your Privacy and this one — `.not-on-box` ("Not switched on yet at your workplace", built from
+`notOnItems`/`remoteConfirmOn`/`sitStandOn`/`recurringOn`/`dndOn`) and `.footer-note` ("This guide
+reflects your workplace's current Floorsense configuration...") — were both removed entirely
+(markup, their now-unused CSS rules, and the `notOnItems`/`notOnList` JS block that only existed to
+populate the former); `remoteConfirmOn`/`sitStandOn`/`recurringOn`/`dndOn` themselves are still used
+elsewhere (toggling each row's own `hidden`) so those weren't touched. The guide-box description text
+also gained a new closing sentence for both the SSO and Non-SSO variants: "Please follow the
+installation steps exactly as explained in the guide, and pay close attention to the troubleshooting
+section at the end of the guide if you run into any problems." Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, the existing jsdom test (still
+covering all 3 SSO cases) confirming the new closing sentence appears in both variants' body text,
+and a full-page Playwright screenshot confirming the new "Floorsense User App" section now sits
+directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on the page.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -250,27 +269,8 @@ Playwright screenshot confirming the new box renders correctly at the bottom of 
   .row-body p { font-size: 12.8px; line-height: 1.62; margin: 0; color: #48484A; }
   .row-body p.example { margin-top: 6px; color: #1D1D1F; font-weight: 600; }
 
-  /* ---------- "not switched on yet" box ---------- */
-  .not-on-box {
-    border: 1.5px dashed #C7C7CC; border-radius: 16px; padding: 24px 28px; margin: 30px 0 26px;
-    page-break-inside: avoid;
-  }
-  .not-on-title {
-    font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
-    color: #9A9A9E; margin: 0 0 14px;
-  }
-  .not-on-box ul { margin: 0 0 14px; padding-left: 18px; color: #6E6E73; font-size: 12.8px; line-height: 1.85; }
-  .not-on-box .note { color: #6E6E73; font-size: 12px; margin: 0; }
-
-  /* ---------- footer disclaimer ---------- */
-  .footer-note {
-    display: flex; gap: 12px; align-items: flex-start; background: #F5F5F7; border-radius: 14px;
-    padding: 20px 24px; margin: 6px 0 30px; page-break-inside: avoid;
-  }
-  .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
-  .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
-
-  /* ---------- mobile app installation guide link, sits at the very bottom of the page ---------- */
+  /* ---------- mobile app installation guide link, "Floorsense User App" section right after
+     Your Privacy ---------- */
   .app-guide-box {
     display: flex; gap: 16px; align-items: flex-start; background: #E8F1FC; border-radius: 14px;
     padding: 20px 24px; margin: 0 0 30px; page-break-inside: avoid;
@@ -432,23 +432,14 @@ Playwright screenshot confirming the new box renders correctly at the bottom of 
       </div>
     </div>
 
-    <div class="not-on-box">
-      <p class="not-on-title">Not switched on yet at your workplace</p>
-      <ul id="notOnList"></ul>
-      <p class="note">If your workplace turns any of these on, they'll arrange training so you know how it works.</p>
-    </div>
-
-    <div class="footer-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-      <p>This guide reflects your workplace's current Floorsense configuration as of today. If something here doesn't match what you see in the app, check with your workplace or IT team.</p>
-    </div>
+    <div class="section-eyebrow">Floorsense User App</div>
 
     <div class="app-guide-box">
       <div class="app-guide-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
       </div>
       <div>
-        <p class="app-guide-title">Setting up the Floorsense mobile app</p>
+        <p class="app-guide-title">Floorsense App Installation and User Manual</p>
         <p class="app-guide-text" id="appGuideText"></p>
         <a class="app-guide-link" id="appGuideLink" href="#" target="_blank" rel="noopener">Get the mobile app installation guide</a>
       </div>
@@ -641,15 +632,6 @@ Playwright screenshot confirming the new box renders correctly at the bottom of 
   const dndOn = outOfBoxPolicy.dndEnabled !== false;
   if (dndOn) document.getElementById('row-dnd').hidden = false;
 
-  /* ---------------- not-switched-on-yet box ---------------- */
-  const notOnItems = [];
-  if (!remoteConfirmOn) notOnItems.push('Remote booking confirmation');
-  if (!sitStandOn) notOnItems.push('Sit-stand desk controls');
-  if (!recurringOn) notOnItems.push('Recurring (repeating) bookings');
-  if (!dndOn) notOnItems.push('Do Not Disturb status');
-  notOnItems.push('Team bookings, booking on behalf of a colleague, and custom notifications');
-  document.getElementById('notOnList').innerHTML = notOnItems.map(item => '<li>' + item + '</li>').join('');
-
   /* ---------------- mobile app installation guide ----------------
      Links to one of two Floorsense-hosted guides depending on whether the client chose SSO on
      smartalock-it-configuration-02.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
@@ -658,9 +640,10 @@ Playwright screenshot confirming the new box renders correctly at the bottom of 
   const usesSSO = !!smartalockIt.ssoMethod;
   const NON_SSO_GUIDE_URL = 'https://floorsense.notion.site/Non-SSO-mobile-app-registration-and-installation-guide-cf55346b44d2418eaaef2d876bdf6e58';
   const SSO_GUIDE_URL = 'https://floorsense.notion.site/SSO-Single-Sign-On-floorsense-mobile-app-installation-guide-b796174cf26e4c82839fea6ef8b922a0';
-  document.getElementById('appGuideText').textContent = usesSSO
+  const APP_GUIDE_FOLLOW_STEPS = ' Please follow the installation steps exactly as explained in the guide, and pay close attention to the troubleshooting section at the end of the guide if you run into any problems.';
+  document.getElementById('appGuideText').textContent = (usesSSO
     ? 'Your workplace signs in to the Floorsense mobile app with Single Sign-On. Follow the guide below to register and install the app.'
-    : 'Follow the guide below to register and install the Floorsense mobile app on your phone.';
+    : 'Follow the guide below to register and install the Floorsense mobile app on your phone.') + APP_GUIDE_FOLLOW_STEPS;
   const appGuideLink = document.getElementById('appGuideLink');
   appGuideLink.href = usesSSO ? SSO_GUIDE_URL : NON_SSO_GUIDE_URL;
   appGuideLink.textContent = usesSSO
