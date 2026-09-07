@@ -141,17 +141,6 @@
   }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .path-tick {
-    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .path-check-card.checked .path-tick { border-color: var(--accent); }
-  .path-tick::after {
-    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
-    opacity: 0; transition: opacity .15s;
-  }
-  .path-check-card.checked .path-tick::after { opacity: 1; }
   /* ---------- path-icon-badge: matches floorsense-reservation-types-01.html's .desk-icon-badge —
      a flat white square canvas with a light colored border per option, replacing the old bare
      56x56px accent-blue line icon. See the MOST RECENT CHANGE note below. ---------- */
@@ -284,7 +273,6 @@
         <div class="path-check-card" data-mode="all">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="all">
-            <span class="path-tick" aria-hidden="true"></span>
             <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">All sit-stand desks</h3>
@@ -296,7 +284,6 @@
         <div class="path-check-card" data-mode="list">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="list">
-            <span class="path-tick" aria-hidden="true"></span>
             <div class="path-icon-badge badge-pink"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will provide a list of desk types</h3>
@@ -308,7 +295,6 @@
         <div class="path-check-card" data-mode="none">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="none">
-            <span class="path-tick" aria-hidden="true"></span>
             <div class="path-icon-badge badge-purple"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will not enable mobile app FME</h3>
@@ -434,6 +420,17 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to remove the radio buttons, removed the `<span class="path-tick"
+aria-hidden="true"></span>` circular radio-dot indicator from all 3 option cards (`data-mode="all"`/
+`"list"`/`"none"`), plus the associated `.path-tick`/`.path-tick::after`/`.path-check-card.checked
+.path-tick`/`.path-check-card.checked .path-tick::after` CSS rules — matching the same "no visible
+indicator" treatment already applied to floorsense-nsnp-11.html's identical `.path-check-card` pattern
+(kept `.path-check-card input[type="radio"]`'s visually-hidden rule and `.path-check-card.checked`'s
+own background/shadow highlight, which already carries the "this one's selected" signal on its own).
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched), and a Playwright screenshot confirming no dot renders on any card while the checked
+card's blue background/shadow highlight still reads clearly.
 -->
 
 <script>
