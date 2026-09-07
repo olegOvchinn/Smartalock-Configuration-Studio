@@ -344,6 +344,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reduced the icon size 30% on `floorsense-prebooking-advance-04.html` (`.policy-icon-badge` 84px → 58.8px, `.policy-icon-img` 58px → 40.6px).
 - Removed the radio-dot indicator from `floorsense-fme-12.html`'s 3 option cards, matching the "no visible indicator" treatment already applied to `floorsense-nsnp-11.html`'s identical card pattern; the checked card's background/shadow highlight still shows which option is selected.
 - Added a red-tinted safety warning callout below `floorsense-fme-12.html`'s option cards, cautioning that letting users move a desk up/down remotely via the mobile app is a safety risk.
+- Added a single representative icon in front of each card's own section title on `floorsense-desk-user-groups-03.html` — a blue floorplan glyph for "Desk Group Setup" and a purple two-person glyph for "User Group Setup" — rather than icons on the individual checkbox options below.
 
 ## Status
 
