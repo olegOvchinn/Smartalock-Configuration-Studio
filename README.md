@@ -341,6 +341,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `pages/smartalock-it-configuration-02.html`, removed the click-to-switch tab bar above the architecture diagram and replaced it with hover-triggered switching: hovering the SSO/SCIM/API card previews that card's diagram, reverting to the actual configured diagram on mouseleave. The Gallagher card has no matching diagram, so it's unaffected.
 - Removed the border/edge line around the architecture diagram's image frame on `pages/smartalock-it-configuration-02.html`, keeping its soft drop shadow.
 - Made the option cards' icons 30% smaller on both `smartalock-templates-00.html` and `pages/smartalock-it-configuration-02.html` (`.qcard-icon` 76px → 53.2px, `.qcard-icon-badge` 92px → 64.4px).
+- Reduced the icon size 30% on `floorsense-prebooking-advance-04.html` (`.policy-icon-badge` 84px → 58.8px, `.policy-icon-img` 58px → 40.6px).
 
 ## Status
 

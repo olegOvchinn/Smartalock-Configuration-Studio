@@ -138,14 +138,14 @@
      carries a border + drop shadow that a bare stroked rect doesn't, and going that tight would look
      undersized for a bordered/shadowed shape. ---------- */
   .policy-icon-badge {
-    width: 84px; height: 84px; border-radius: 18px; flex-shrink: 0;
+    width: 58.8px; height: 58.8px; border-radius: 12.6px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
     border: 2px solid #D98E00;
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .policy-icon-img { width: 58px; height: 58px; flex-shrink: 0; }
+  .policy-icon-img { width: 40.6px; height: 40.6px; flex-shrink: 0; }
 
   /* ---------- static policy cards (icon + title + desc + numeric field, not selectable) ---------- */
   .policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
@@ -817,6 +817,13 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to reduce the icon size 30%, scaled both `.policy-icon-badge` (84px
+-> 58.8px, border-radius 18px -> 12.6px) and `.policy-icon-img` (58px -> 40.6px) by 0.7. The badge's
+2px amber border width, background, shadow, and everything else on the page were left untouched, since
+the request was scoped to the icon's size. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched), and a Playwright screenshot confirming the
+icon renders visibly smaller within its card.
 -->
 
 
