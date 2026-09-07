@@ -64,6 +64,27 @@
   short drop-shadow as `.hero-icon-badge`, with its background/color (including `.warm`) unchanged.
   Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script
   block (untouched — CSS/markup-only change).
+
+  MOST RECENT CHANGE: per a request to add the same Floorsense mobile app installation guide section
+  already added to floorsense-desk-booking-guide-live.html (see that file's own NOTE for the fuller
+  history), added an identical `.app-guide-box` here too, under a new `.section-eyebrow` labelled
+  "Floorsense User App", placed directly below the "Locker Types Available" section — this page's
+  last content section, so the new one now closes out the guide. Its heading reads "Floorsense App
+  Installation and User Manual", matching the Floorsense guide's wording verbatim (the Smartalock
+  branch's own access-methods row already references "the Floorsense app" as one of its login
+  methods, so the same Floorsense-branded guide applies here too). It links to one of the same two
+  Floorsense-hosted Notion guides depending on whether the client chose SSO on
+  smartalock-it-configuration-02.html — `project.smartalock.wizard.it.ssoMethod`, the exact same
+  state key both pages' own IT Configuration step already writes, since this is the same
+  `configurationProject` project record shared across both product branches. The old `.footer-note`
+  ("This guide reflects your workplace's current Smartalock configuration as of today...") was
+  removed entirely (markup + its now-unused CSS); the *other* dashed-border box on this page,
+  `.not-on-box`/`#kioskNotOnBox` ("Not available at this kiosk"), is unrelated and was left untouched.
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+  jsdom test covering three cases (No SSO, an SSO method selected, and no `it` key present at all)
+  confirming the correct URL/link text/body text in each and that `.footer-note` no longer exists
+  while `#kioskNotOnBox` still does, and a full-page Playwright screenshot confirming the new section
+  renders correctly directly below Locker Types Available.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -173,13 +194,24 @@
   }
   .not-on-box ul { margin: 0; padding-left: 18px; color: #6E6E73; font-size: 12.8px; line-height: 1.85; }
 
-  /* ---------- footer disclaimer ---------- */
-  .footer-note {
-    display: flex; gap: 12px; align-items: flex-start; background: #F5F5F7; border-radius: 14px;
-    padding: 20px 24px; margin: 6px 0 30px; page-break-inside: avoid;
+  /* ---------- mobile app installation guide link, "Floorsense User App" section right after
+     Locker Types Available ---------- */
+  .app-guide-box {
+    display: flex; gap: 16px; align-items: flex-start; background: #E8F1FC; border-radius: 14px;
+    padding: 20px 24px; margin: 0 0 30px; page-break-inside: avoid;
   }
-  .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
-  .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
+  .app-guide-icon {
+    width: 44px; height: 44px; border-radius: 12px; background: #fff; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #0058B0;
+    border: 1.5px solid #4A8DF0; box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .app-guide-icon svg { width: 22px; height: 22px; }
+  .app-guide-title { font-size: 14.5px; font-weight: 800; margin: 2px 0 6px; color: #1D1D1F; }
+  .app-guide-text { font-size: 12.8px; line-height: 1.6; margin: 0 0 10px; color: #48484A; }
+  .app-guide-link {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.8px; font-weight: 700;
+    color: #0058B0; text-decoration: none; border-bottom: 1.5px solid #0058B0; padding-bottom: 1px;
+  }
 
   @media print {
     html, body { background: #fff; }
@@ -301,9 +333,17 @@
       </div>
     </div>
 
-    <div class="footer-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
-      <p>This guide reflects your workplace's current Smartalock configuration as of today. If something here doesn't match what you see at the kiosk, check with your workplace or IT team.</p>
+    <div class="section-eyebrow">Floorsense User App</div>
+
+    <div class="app-guide-box">
+      <div class="app-guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      </div>
+      <div>
+        <p class="app-guide-title">Floorsense App Installation and User Manual</p>
+        <p class="app-guide-text" id="appGuideText"></p>
+        <a class="app-guide-link" id="appGuideLink" href="#" target="_blank" rel="noopener">Get the mobile app installation guide</a>
+      </div>
     </div>
 
   </div>
@@ -462,6 +502,26 @@
   document.getElementById('lockerTypesText').textContent = typeNames.length
     ? 'This site offers the following locker types: ' + typeNames.join(', ') + '.'
     : 'Locker types for this site haven\'t been finalised yet — check with your workplace team.';
+
+  /* ---------------- mobile app installation guide ----------------
+     Links to one of two Floorsense-hosted guides depending on whether the client chose SSO on
+     smartalock-it-configuration-02.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
+     and a non-empty string ("okta"/"azure"/"other"/etc.) once any SSO option is selected there.
+     Same behaviour and same source key as floorsense-desk-booking-guide-live.html's own "Floorsense
+     User App" section, since both guides read from the same project.smartalock.wizard.it state. */
+  const smartalockIt = wizard.it || {};
+  const usesSSO = !!smartalockIt.ssoMethod;
+  const NON_SSO_GUIDE_URL = 'https://floorsense.notion.site/Non-SSO-mobile-app-registration-and-installation-guide-cf55346b44d2418eaaef2d876bdf6e58';
+  const SSO_GUIDE_URL = 'https://floorsense.notion.site/SSO-Single-Sign-On-floorsense-mobile-app-installation-guide-b796174cf26e4c82839fea6ef8b922a0';
+  const APP_GUIDE_FOLLOW_STEPS = ' Please follow the installation steps exactly as explained in the guide, and pay close attention to the troubleshooting section at the end of the guide if you run into any problems.';
+  document.getElementById('appGuideText').textContent = (usesSSO
+    ? 'Your workplace signs in to the Floorsense mobile app with Single Sign-On. Follow the guide below to register and install the app.'
+    : 'Follow the guide below to register and install the Floorsense mobile app on your phone.') + APP_GUIDE_FOLLOW_STEPS;
+  const appGuideLink = document.getElementById('appGuideLink');
+  appGuideLink.href = usesSSO ? SSO_GUIDE_URL : NON_SSO_GUIDE_URL;
+  appGuideLink.textContent = usesSSO
+    ? 'Get the SSO mobile app installation guide'
+    : 'Get the mobile app installation guide';
 
   /* ---------------- toolbar ---------------- */
   document.getElementById('printBtn').addEventListener('click', () => window.print());
