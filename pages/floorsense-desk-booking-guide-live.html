@@ -132,6 +132,26 @@ would otherwise show a stale start/end time if only page 05 (not page 07) had be
 project was created. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block, and a jsdom test confirming the sentence reflects a `businessHours`-only value
 rather than a stale `defaultReservationTimes` one.
+
+MOST RECENT CHANGE: per a request to add a link to the Floorsense mobile app installation guide at
+the bottom of this page, added a new `.app-guide-box` (same visual language as `.footer-note` above
+it but accent-blue instead of grey, matching this page's `.row-icon` badge treatment) as the very
+last element in `.body-content`, after the existing disclaimer. It links to one of two
+Floorsense-hosted Notion guides depending on whether the client chose SSO on
+`smartalock-it-configuration-02.html`: `project.smartalock.wizard.it.ssoMethod` is `""` for "No SSO"
+(the page's `<select id="ssoMethod">` default option) and a non-empty string once any SSO option is
+selected there. `""` links to the Non-SSO guide
+(https://floorsense.notion.site/Non-SSO-mobile-app-registration-and-installation-guide-cf55346b44d2418eaaef2d876bdf6e58);
+any non-empty value links to the SSO guide
+(https://floorsense.notion.site/SSO-Single-Sign-On-floorsense-mobile-app-installation-guide-b796174cf26e4c82839fea6ef8b922a0)
+— both link text and the short paragraph above it change to match which guide is linked. This is the
+first place this page reads from `project.smartalock` rather than only `project.floorsense`; both
+reads are defensively guarded (`project.smartalock && project.smartalock.wizard && ...`) so a project
+with no Smartalock branch configured yet still falls back correctly to the Non-SSO guide rather than
+throwing. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, a jsdom test covering three cases (`ssoMethod: ""`, `ssoMethod: "okta"`, and no `smartalock`
+key present at all) confirming the correct URL/link text/body text in each, and a full-page
+Playwright screenshot confirming the new box renders correctly at the bottom of the page.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -249,6 +269,24 @@ rather than a stale `defaultReservationTimes` one.
   }
   .footer-note svg { width: 18px; height: 18px; color: #9A9A9E; flex-shrink: 0; margin-top: 2px; }
   .footer-note p { margin: 0; font-size: 12px; line-height: 1.6; color: #6E6E73; }
+
+  /* ---------- mobile app installation guide link, sits at the very bottom of the page ---------- */
+  .app-guide-box {
+    display: flex; gap: 16px; align-items: flex-start; background: #E8F1FC; border-radius: 14px;
+    padding: 20px 24px; margin: 0 0 30px; page-break-inside: avoid;
+  }
+  .app-guide-icon {
+    width: 44px; height: 44px; border-radius: 12px; background: #fff; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #0058B0;
+    border: 1.5px solid #4A8DF0; box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .app-guide-icon svg { width: 22px; height: 22px; }
+  .app-guide-title { font-size: 14.5px; font-weight: 800; margin: 2px 0 6px; color: #1D1D1F; }
+  .app-guide-text { font-size: 12.8px; line-height: 1.6; margin: 0 0 10px; color: #48484A; }
+  .app-guide-link {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.8px; font-weight: 700;
+    color: #0058B0; text-decoration: none; border-bottom: 1.5px solid #0058B0; padding-bottom: 1px;
+  }
 
   @media print {
     html, body { background: #fff; }
@@ -403,6 +441,17 @@ rather than a stale `defaultReservationTimes` one.
     <div class="footer-note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>
       <p>This guide reflects your workplace's current Floorsense configuration as of today. If something here doesn't match what you see in the app, check with your workplace or IT team.</p>
+    </div>
+
+    <div class="app-guide-box">
+      <div class="app-guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      </div>
+      <div>
+        <p class="app-guide-title">Setting up the Floorsense mobile app</p>
+        <p class="app-guide-text" id="appGuideText"></p>
+        <a class="app-guide-link" id="appGuideLink" href="#" target="_blank" rel="noopener">Get the mobile app installation guide</a>
+      </div>
     </div>
 
   </div>
@@ -600,6 +649,23 @@ rather than a stale `defaultReservationTimes` one.
   if (!dndOn) notOnItems.push('Do Not Disturb status');
   notOnItems.push('Team bookings, booking on behalf of a colleague, and custom notifications');
   document.getElementById('notOnList').innerHTML = notOnItems.map(item => '<li>' + item + '</li>').join('');
+
+  /* ---------------- mobile app installation guide ----------------
+     Links to one of two Floorsense-hosted guides depending on whether the client chose SSO on
+     smartalock-it-configuration-02.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
+     and a non-empty string ("okta"/"azure"/"other"/etc.) once any SSO option is selected there. */
+  const smartalockIt = (project.smartalock && project.smartalock.wizard && project.smartalock.wizard.it) || {};
+  const usesSSO = !!smartalockIt.ssoMethod;
+  const NON_SSO_GUIDE_URL = 'https://floorsense.notion.site/Non-SSO-mobile-app-registration-and-installation-guide-cf55346b44d2418eaaef2d876bdf6e58';
+  const SSO_GUIDE_URL = 'https://floorsense.notion.site/SSO-Single-Sign-On-floorsense-mobile-app-installation-guide-b796174cf26e4c82839fea6ef8b922a0';
+  document.getElementById('appGuideText').textContent = usesSSO
+    ? 'Your workplace signs in to the Floorsense mobile app with Single Sign-On. Follow the guide below to register and install the app.'
+    : 'Follow the guide below to register and install the Floorsense mobile app on your phone.';
+  const appGuideLink = document.getElementById('appGuideLink');
+  appGuideLink.href = usesSSO ? SSO_GUIDE_URL : NON_SSO_GUIDE_URL;
+  appGuideLink.textContent = usesSSO
+    ? 'Get the SSO mobile app installation guide'
+    : 'Get the mobile app installation guide';
 
   /* ---------------- toolbar ---------------- */
   document.getElementById('printBtn').addEventListener('click', () => window.print());
