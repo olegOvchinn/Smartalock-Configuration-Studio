@@ -167,6 +167,25 @@
   .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
+  /* ---------- safety warning: no red/amber callout box precedent exists elsewhere in this codebase
+     (the only other --danger usages are form-validation error states), so this reuses the neutral
+     .footer-hint layout idea — a small round icon badge beside a line of text — but recolored around
+     var(--danger) with a light red-tinted background/border to read as a caution rather than plain
+     info. ---------- */
+  .safety-warning {
+    display: flex; align-items: flex-start; gap: 14px; max-width: 640px; margin: 22px auto 0;
+    background: #FFF3F1; border: 1px solid rgba(255,59,48,0.3); border-radius: var(--radius-md);
+    padding: 16px 18px;
+  }
+  .safety-warning-icon {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,59,48,0.12);
+  }
+  .safety-warning-glyph { width: 20px; height: 20px; color: var(--danger); }
+  .safety-warning-text { font-size: 13px; color: var(--ink); line-height: 1.55; margin: 0; }
+  .safety-warning-text strong { color: var(--danger); }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -304,6 +323,13 @@
         </div>
       </div>
 
+      <div class="safety-warning">
+        <div class="safety-warning-icon">
+          <svg class="safety-warning-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5L21.5 20H2.5Z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <p class="safety-warning-text"><strong>Safety consideration:</strong> letting users raise or lower a desk remotely from the mobile app is a safety risk — someone could move the desk while a person, pet, or object is at or under it, causing injury or damage. Weigh this before enabling FME for any desks.</p>
+      </div>
+
       <div class="page-nav">
         <a class="page-nav-btn" href="floorsense-nsnp-11.html" id="pageNavPrev">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
@@ -431,6 +457,21 @@ own background/shadow highlight, which already carries the "this one's selected"
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
 (untouched), and a Playwright screenshot confirming no dot renders on any card while the checked
 card's blue background/shadow highlight still reads clearly.
+
+MOST RECENT CHANGE: per a request to warn that letting users move a desk up/down remotely is a safety
+risk, added a `.safety-warning` callout below the 3 option cards: a warning-triangle icon in a small
+red-tinted circle badge beside a line of text ("Safety consideration: letting users raise or lower a
+desk remotely from the mobile app is a safety risk — someone could move the desk while a person, pet,
+or object is at or under it, causing injury or damage. Weigh this before enabling FME for any desks.").
+No red/amber warning-box precedent exists anywhere else in this codebase (confirmed by search — the
+only other `var(--danger)` usages are form-validation error states on other pages), so this box's
+layout borrows the neutral `.footer-hint` icon+text row idea seen elsewhere but recolors it around
+`var(--danger)` with a light red wash background/border to read as a caution rather than plain info.
+Shown once, below all 3 cards, rather than per-card, since the risk applies to enabling FME at all
+(both "All sit-stand desks" and "We will provide a list of desk types" turn it on) rather than being
+specific to one option. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched), and a full-page Playwright screenshot confirming the warning
+renders clearly below the cards.
 -->
 
 <script>
