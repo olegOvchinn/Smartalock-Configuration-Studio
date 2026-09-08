@@ -356,6 +356,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Matched `floorsense-out-of-box-policy.html`'s new "Project Details" section (Project Registration + IT Configuration & Integrations) to the Core Policy card's own 915.2px width and centered alignment, so the two read as one continuous canvas.
 - Fixed a remaining case of that misalignment: Project Details now also shrinks in sync with Core Policy's `.compact` mode (once an additional Desk Group/User Group policy is saved), instead of staying full-width while Core Policy narrowed underneath it.
 - Removed the "Access Methods" checkbox group (Cards/Mobile app/Desktop app/Wallet pass) from additional Desk Group/User Group override policy cards on `floorsense-out-of-box-policy.html`, along with its supporting CSS, helper function, and state fields; the top-level Core Policy card's own Access Methods group is unaffected.
+- Removed the "Recurring bookings" toggle from additional Desk Group/User Group override policy cards on `floorsense-out-of-box-policy.html`; the top-level Core Policy card's own Recurring bookings toggle is unaffected.
 
 ## Status
 

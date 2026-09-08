@@ -2252,6 +2252,27 @@ moment they left `getCorePolicySnapshot()`. Verified via an inline HTMLParser ta
 confirming no "Access Methods" text/checkboxes appear anywhere in the card while the identical-to-core
 save-gating still works correctly, and a full-page Playwright screenshot showing Check-in Behaviour
 flowing directly into Additional Options with no gap or leftover markup.
+
+MOST RECENT CHANGE: per a request to remove the "Recurring bookings" option from the additional
+(Desk Group/User Group override) policy cards — the top-level Core Policy card's own Recurring
+bookings toggle (`#coreRecurringToggle`, reading/writing
+`project.floorsense.wizard.outOfBoxPolicy.recurringEnabled` directly) was left untouched, since the
+request was scoped to the additional-policy cards specifically. Removed the "Recurring bookings"
+`.policy-field-row` (label + `switchHtml('recurringEnabled', p.recurringEnabled)` call) from
+`policyCardHtml(p)`'s Additional Options group, the `recurringEnabled` key from
+`CORE_POLICY_DEFAULTS`, and the matching field from `getCorePolicySnapshot()`'s return object. No
+markup, CSS, or wiring code was specific to this one field — `.policy-switch` toggles are wired
+generically by `wirePolicyCard()`'s `querySelectorAll('.policy-switch')` loop, so removing the row
+was enough. `isIdenticalToCorePolicy()` needed no changes, same as the Access Methods removal above:
+it compares `Object.keys(core).every(...)` and simply stopped comparing `recurringEnabled` once it
+left `getCorePolicySnapshot()`. Also updated the code comment above the Core Policy card's own
+Recurring bookings/Privacy toggle wiring, which previously described both toggles as fields "already
+used by the additional-policy cards" — no longer accurate for Recurring bookings. Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, a jsdom test
+creating a new additional policy and confirming no "Recurring bookings" text appears in the card
+(while the adjacent Sit-stand desks/Do Not Disturb fields and the Core Policy card's own Recurring
+bookings toggle are both unaffected), and a full-page Playwright screenshot showing Sit-stand desks
+flowing directly into Do Not Disturb available with no gap or leftover markup.
 -->
 
 
@@ -2412,9 +2433,11 @@ flowing directly into Additional Options with no gap or leftover markup.
   });
 
   /* ---------------- core policy: Recurring bookings / Privacy toggles ----------------
-     Replaces the two previously-static rows with real on/off switches, matching
-     CORE_POLICY_DEFAULTS' recurringEnabled (default off) and dndEnabled (default on) fields
-     already used by the additional-policy cards below. Autosaves on click, independent of
+     Replaces the two previously-static rows with real on/off switches, reading/writing
+     project.floorsense.wizard.outOfBoxPolicy.recurringEnabled (default off) and .dndEnabled
+     (default on) directly — the additional-policy cards below have their own dndEnabled field
+     (seeded from this one via getCorePolicySnapshot()), but no longer have a Recurring bookings
+     field of their own since it was removed from those cards. Autosaves on click, independent of
      "Confirm & finish", same convention as every other toggle/field on this card. */
   const coreAdditionalToggles = [
     { field: 'recurringEnabled', el: document.getElementById('coreRecurringToggle'), defaultOn: false },
@@ -2734,7 +2757,7 @@ flowing directly into Additional Options with no gap or leftover markup.
     checkinBeforeMin: 60, checkinAfterMin: 60,
     prebookingDays: 8, reservationDurationHours: 9,
     swipeOutRequired: true, autoCancelOnElsewhere: true,
-    nsnpMode: 'depends', sitStandEnabled: false, recurringEnabled: false, dndEnabled: true,
+    nsnpMode: 'depends', sitStandEnabled: false, dndEnabled: true,
     maxDesksPerUser: 1
   };
   const MAX_ADDITIONAL_POLICIES = 3;
@@ -2777,7 +2800,6 @@ flowing directly into Additional Options with no gap or leftover markup.
       // definition for a fresh copy, so it isn't read from anywhere else.
       nsnpMode: 'depends',
       sitStandEnabled: (fmeState.mode || 'none') !== 'none',
-      recurringEnabled: typeof oob.recurringEnabled === 'boolean' ? oob.recurringEnabled : false,
       dndEnabled: typeof oob.dndEnabled === 'boolean' ? oob.dndEnabled : true,
       maxDesksPerUser: Number.isFinite(oob.maxDesksPerUser) ? oob.maxDesksPerUser : 1
     };
@@ -2911,10 +2933,6 @@ flowing directly into Additional Options with no gap or leftover markup.
           <div class="policy-field-row">
             <span class="policy-field-label">Sit-stand desks</span>
             ${switchHtml('sitStandEnabled', p.sitStandEnabled)}
-          </div>
-          <div class="policy-field-row">
-            <span class="policy-field-label">Recurring bookings</span>
-            ${switchHtml('recurringEnabled', p.recurringEnabled)}
           </div>
           <div class="policy-field-row">
             <span class="policy-field-label">Do Not Disturb available</span>
