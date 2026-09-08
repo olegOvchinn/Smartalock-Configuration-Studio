@@ -182,6 +182,7 @@
     background: #fff; border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .summary-group-head h3 .summary-icon-badge.icon-company { border-color: #0071E3; }
   .summary-group-head h3 .summary-icon-badge.icon-it-config { border-color: #0071E3; }
   .summary-group-head h3 .summary-icon-badge.icon-access-card { border-color: #1FAA59; }
   .summary-group-head h3 .summary-icon-badge.icon-locker-door { border-color: #0071E3; }
@@ -371,6 +372,18 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           View / Print Guide
         </a>
+      </div>
+
+      <!-- Project Registration (shared with the Floorsense branch — see smartalock-templates-00.html) -->
+      <div class="summary-group">
+        <div class="summary-group-head">
+          <h3><span class="summary-icon-badge icon-company"><img class="summary-icon" src="../assets/images/icon-company.png" alt=""></span>Project Registration</h3>
+          <div class="summary-group-head-actions">
+            <span class="status-pill" id="pill-registration">—</span>
+            <a class="edit-link" href="../smartalock-templates-00.html">Edit</a>
+          </div>
+        </div>
+        <div id="group-registration"></div>
       </div>
 
       <!-- IT Configuration & Integrations -->
@@ -583,6 +596,25 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, and 
 confirming the group renders only those 4 rows both with SSO off and with SSO on (including with the
 now-removed keys still present in a legacy saved project, to confirm they're simply ignored rather
 than causing an error).
+MOST RECENT CHANGE: per a request to ensure `smartalock-templates-00.html` (Project Registration) and
+`smartalock-it-configuration-02.html` (IT Configuration & Integrations) both feed this summary
+dynamically, added a new "Project Registration" `.summary-group` — a new `.icon-company` badge class
+(border-color `#0071E3`, sampled from `icon-company.png`'s own PNG pixels the same way every other
+icon on this page was sampled) — inserted as the very first group, before IT Configuration &
+Integrations (which was already dynamic). It reads `project.registration` (the same top-level key
+`smartalock-templates-00.html` writes) and renders: Company Name (`customer`), Site Address (`site`),
+Primary Contact Email (`email`), Additional Contacts (a `·`-joined list of whichever of
+`policy`/`it`/`training`/`support`/`facilities` are actually set, e.g. "Policy: Jane Doe · IT: Bob
+Smith"), Floorsight Admin Portal Access (`portalAccess`, a multi-line textarea on that page — split on
+newlines and rejoined with `·` so multiple names/emails don't run together as one unbroken line), and
+Target Dates (`installationDate`/`completionDate`, `<input type="month">` values like `"2026-11"`
+formatted to "November 2026" via a small `formatMonthYear()` helper). Added `{ key: "registration",
+label: "Project Registration" }` to the front of the `MODULES` array so its own status pill and the
+overall progress percentage pick it up automatically, matching the existing pattern for every other
+group. Edit link points to `../smartalock-templates-00.html`. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming every row
+renders correctly from a populated project, and falls back to "Not specified"/"None specified" with
+no saved project at all.
 -->
 
 <script>
@@ -612,8 +644,10 @@ than causing an error).
   project.smartalock = project.smartalock || { configured:false, templates:[], wizard:{} };
   const wizard = project.smartalock.wizard || {};
   const status = wizard.moduleStatus || {};
+  const registration = project.registration || {};
 
   const MODULES = [
+    { key: "registration", label: "Project Registration" },
     { key: "it", label: "IT Configuration & Integrations" },
     { key: "access", label: "Initial Locker Access Methods" },
     { key: "behaviour", label: "Locker Door Behaviour" },
@@ -671,6 +705,45 @@ than causing an error).
     p.textContent = text;
     return p;
   }
+
+  /* ---------------- Project Registration (shared with the Floorsense branch — see
+     smartalock-templates-00.html; floorsense-out-of-box-policy.html reads the exact same
+     project.registration key for its own "Project Registration" summary group) ---------------- */
+  (function () {
+    const reg = registration;
+    const wrap = document.getElementById('group-registration');
+
+    wrap.appendChild(row('Company Name', reg.customer || 'Not specified'));
+    wrap.appendChild(row('Site Address', reg.site || 'Not specified'));
+    wrap.appendChild(row('Primary Contact Email', reg.email || 'Not specified'));
+
+    const contactPairs = [
+      ['Policy', reg.policy], ['IT', reg.it], ['Training', reg.training],
+      ['Support', reg.support], ['Facilities', reg.facilities]
+    ].filter(([, v]) => v && v.trim());
+    wrap.appendChild(row('Additional Contacts', contactPairs.length
+      ? contactPairs.map(([label, v]) => label + ': ' + v).join(' · ')
+      : 'None specified'));
+
+    const portalAccessLines = (reg.portalAccess || '').split('\n').map(l => l.trim()).filter(Boolean);
+    wrap.appendChild(row('Floorsight Admin Portal Access',
+      portalAccessLines.length ? portalAccessLines.join(' · ') : 'None specified'));
+
+    function formatMonthYear(value) {
+      if (!value) return null;
+      const parts = value.split('-');
+      const y = Number(parts[0]), m = Number(parts[1]);
+      if (!y || !m) return null;
+      const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return MONTHS[m - 1] + ' ' + y;
+    }
+    const installLabel = formatMonthYear(reg.installationDate);
+    const completeLabel = formatMonthYear(reg.completionDate);
+    const dateParts = [];
+    if (installLabel) dateParts.push('Installation: ' + installLabel);
+    if (completeLabel) dateParts.push('Go-live: ' + completeLabel);
+    wrap.appendChild(row('Target Dates', dateParts.length ? dateParts.join(' · ') : 'Not specified'));
+  })();
 
   /* ---------------- IT Configuration & Integrations ---------------- */
   (function () {
