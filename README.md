@@ -369,6 +369,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Changed card 1's icon color ("Start time if booked in advance") on `floorsense-default-reservation-times-07.html` from plain accent blue to orange (`badge-amber`, `#F2A154`, the site's existing warm-orange palette entry).
 - On `smartalock-reservation-type-01.html`, hovering a reservation-type card now previews that type's flow image in the placeholder, reverting to the actual selection (or the default) when the pointer leaves.
 - Applied the same hover-preview behavior to `smartalock-locker-policy-05.html`'s 3 policy cards: hovering previews that card's image in the placeholder, reverting to whichever card is actually active (the last clicked/focused one, or `idle` by default) when the pointer leaves.
+- Removed the edge border on the image placeholder frame on both `smartalock-reservation-type-01.html` and `smartalock-locker-policy-05.html`; the drop shadow and rounded corners stay, only the hard border edge is gone.
 
 ## Status
 

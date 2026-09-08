@@ -125,14 +125,17 @@
   .page-visual { position: static; }
   .page-visual-frame {
     width: 100%; max-width: 480px; border-radius: 24px; overflow: hidden;
-    border: 1.5px dashed var(--line); background: var(--paper-soft);
+    background: var(--paper-soft);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
     aspect-ratio: 4 / 5; color: var(--ink-soft); font-family: var(--font-text); font-size: 10.82px; text-align: center; padding: 20px;
   }
   .page-visual-frame svg { width: 40px; height: 40px; opacity: 0.4; }
   .page-visual-frame img { display: none; width: 100%; height: 100%; object-fit: cover; }
+  /* Per a request to remove the edge border around this placeholder/image frame, dropped the base
+     dashed border and the show-image state's solid border-color override; the box-shadow (depth)
+     and rounded corners stay, only the hard border edge is gone. */
   .page-visual-frame.show-image {
-    border-style: solid; border-color: var(--line); box-shadow: var(--shadow); aspect-ratio: 1 / 1; padding: 0;
+    box-shadow: var(--shadow); aspect-ratio: 1 / 1; padding: 0;
     background: #FFFFFF;
   }
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
@@ -401,6 +404,8 @@ MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on flo
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette rotation on the 3 `.qcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). Release when reserved but unused (`icon-release-when-idle.png`) stayed blue but tightened from `#4A8DF0` to the sampled `#2552CF` (class name `badge-blue` unchanged). Lockers per User (`icon-locker-limits.png`) changed from the rotation's `#EC6BA5` pink to its sampled true color, `#0D8217` green (class renamed `badge-pink` -> `badge-green`). Release Behaviour (`icon-release-behaviour.png`) stayed purple but tightened from `#9B6BEC` to the sampled `#472ABC` (class name `badge-purple` unchanged). Only the badge border-color CSS and the markup's modifier class were touched — same as before, the `<img>` elements, their `src` attributes, and the underlying PNG files were left 100% byte-for-byte untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 
 MOST RECENT CHANGE: per a request to apply smartalock-reservation-type-01.html's hover-preview behavior to this page, added `pointerenter`/`pointerleave` listeners to all 3 `.qcard[data-visual]`s. Unlike reservation-type-01 (where selection is a persisted `state.reservationTypes` array separate from hover), this page has no separate "selection" concept — `showPolicyVisual(key)` already runs on `focusin`/`click` to both set the visible image and mark the interacted card `.visual-active`. So a new `previewPolicyVisual(key)` function was added that only sets the image (no `.visual-active` marking), wired to `pointerenter`; `pointerleave` looks up whichever card currently carries `.visual-active` (querying the DOM rather than tracking a separate JS variable, since the class is already the page's existing source of truth) and calls the existing `showPolicyVisual` on that card's key to restore it, falling back to `'idle'` if none is somehow active. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test hovering each card (image swaps live) then leaving (image reverts to the `idle` default) and, separately, clicking a card to make it active, hovering a different one, then leaving (image correctly restores to the clicked/active card's image, not the default).
+
+MOST RECENT CHANGE: per a request to remove the edge border on this page's image placeholder (applied identically to smartalock-reservation-type-01.html), dropped `.page-visual-frame`'s base `border: 1.5px dashed var(--line)` and `.page-visual-frame.show-image`'s `border-style: solid; border-color: var(--line);` override — the `box-shadow: var(--shadow)` (depth) and rounded corners on the show-image state are untouched, only the hard border edge is gone. This page's frame markup already carries `show-image` unconditionally (it never shows the dashed empty-placeholder state), so this removes the border seen on every load. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a Playwright screenshot confirming the frame's computed `border` resolves to `0px none`.
 -->
 
 <script>
