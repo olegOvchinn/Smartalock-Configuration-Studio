@@ -140,9 +140,9 @@
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 8px 0 0; }
   /* Per a request to make the "fixed end" card's hint specifically 20% darker than the shared
      .policy-hint color above (var(--header-grey-light), #AEAEB2) — #8B8B8E is each RGB channel of
-     #AEAEB2 scaled to 80% (174/178 -> 139/142). Scoped to #fixedEndHint only; durationHint keeps the
-     lighter shared color. */
-  #fixedEndHint { color: #8B8B8E; }
+     #AEAEB2 scaled to 80% (174/178 -> 139/142). Later extended to #durationHint per a follow-up
+     request for the same treatment, so both cards' hints now share this darker color. */
+  #fixedEndHint, #durationHint { color: #8B8B8E; }
 
   .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
   .minute-input {
@@ -1186,6 +1186,16 @@ extracted script block (untouched — markup/CSS-only change), a jsdom test conf
 `.path-icon-img` elements remain and all three `.path-icon-badge` elements carry the expected classes
 (none/badge-blue/badge-pink), and a Playwright screenshot confirming all three icons now render as
 white-canvas badges with colored borders.
+
+MOST RECENT CHANGE: per a follow-up request to make the duration card's hint ("A booking made without
+a chosen time lasts 9h, starting from the custom start time above.") 20% darker too, extended the
+`#fixedEndHint` color override to also target `#durationHint` (`#fixedEndHint, #durationHint { color:
+#8B8B8E; }`) rather than adding a second, separately-scoped rule with the same value — both cards'
+hints now share the darker color, and `.policy-hint` itself (the shared base rule) is untouched in
+case any other element ever relies on its original lighter `var(--header-grey-light)`. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and
+a Playwright screenshot confirming both `#durationHint` and `#fixedEndHint` now resolve to the same
+rgb(139, 139, 142).
 -->
 
 <script>

@@ -364,6 +364,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a single segment to card 1's ("Start time if booked in advance") timeline on `floorsense-default-reservation-times-07.html`, marking the slider's own position on the rail (reusing the existing segmented-zone styling cards 2/3 already use for their start-end spans).
 - Made the fixed-end card's hint text 20% darker than the shared `.policy-hint` color on `floorsense-default-reservation-times-07.html`; the duration card's hint is unaffected.
 - Propagated the site-wide icon-badge treatment (white canvas, colored border) to `floorsense-default-reservation-times-07.html`'s three bare content icons, matching the convention already applied to `floorsense-nsnp-11.html`/`floorsense-fme-12.html`/`floorsense-anti-desk-hogging-13.html`: card 1's lone icon stays plain accent blue, the two end-mode cards cycle blue then pink.
+- Extended that same 20%-darker treatment to the duration card's hint on `floorsense-default-reservation-times-07.html`, so both end-mode cards' hints now share the darker color.
 
 ## Status
 
