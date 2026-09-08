@@ -196,11 +196,14 @@
      a flat white square canvas with a light colored border per option, replacing the old bare
      56x56px accent-blue line icon (this page's .path-icon-img previously stayed bare/unbadged while
      every other page sharing that same class name — nsnp-11, fme-12, anti-desk-hogging-13 — had
-     already been propagated to the badge treatment). Card 1's icon is a single lone icon (not part
-     of a repeating option group), so it keeps plain var(--accent) blue; the two end-mode cards
-     (duration, fixed-end) are a repeating option group and get distinct palette colors — pink for
-     fixed-end, and green (#4CAF6D, the same badge-green already used elsewhere on the Floorsense
-     branch, e.g. floorsense-out-of-box-policy.html) for duration per a follow-up request. ---------- */
+     already been propagated to the badge treatment). Card 1 (a single lone icon, not part of a
+     repeating option group) was later switched from plain var(--accent) blue to orange per a
+     follow-up request — using badge-amber's established #F2A154 (the site's warm orange-toned
+     palette entry, e.g. floorsense-reservation-types-01.html's .desk-icon-badge.badge-amber) rather
+     than inventing a new hex. The two end-mode cards (duration, fixed-end) are a repeating option
+     group and get their own distinct palette colors — pink for fixed-end, and green (#4CAF6D, the
+     same badge-green already used elsewhere on the Floorsense branch, e.g.
+     floorsense-out-of-box-policy.html) for duration. ---------- */
   .path-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
@@ -209,6 +212,8 @@
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
+  .path-icon-badge.badge-amber { border-color: #F2A154; }
+  .path-icon-badge.badge-amber .path-icon-glyph { color: #F2A154; }
   .path-icon-badge.badge-green { border-color: #4CAF6D; }
   .path-icon-badge.badge-green .path-icon-glyph { color: #4CAF6D; }
   .path-icon-badge.badge-pink { border-color: #EC6BA5; }
@@ -475,7 +480,7 @@
              snapping to 30-minute segments. -->
         <div class="info-card">
           <div class="info-row">
-            <div class="path-icon-badge"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg></div>
+            <div class="path-icon-badge badge-amber"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">Start time if booked in advance</h3>
               <p class="path-desc">
@@ -1209,6 +1214,17 @@ end-mode cards as cycling "blue then pink," to describe green/pink instead. Veri
 HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a
 Playwright screenshot confirming the duration card's icon badge now renders with a green border
 (`rgb(76, 175, 109)`).
+
+MOST RECENT CHANGE: per a request to make card 1's icon ("Start time if booked in advance") orange,
+added a `badge-amber` modifier and applied it to that card's `.path-icon-badge` — `#F2A154` is the
+same badge-amber hex already used sitewide for the warm-orange palette entry (e.g. floorsense-
+reservation-types-01.html's `.desk-icon-badge.badge-amber`), reused here rather than inventing a new
+"orange" color, since the site's palette convention doesn't otherwise distinguish amber from orange.
+Card 1 remains a single lone icon, not part of a repeating option group — it simply now uses a named
+palette color instead of the plain `var(--accent)` blue it had before. Updated the `.path-icon-badge`
+CSS comment accordingly. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched), and a Playwright screenshot confirming card 1's icon badge now
+renders with an orange border (`rgb(242, 161, 84)`).
 -->
 
 <script>
