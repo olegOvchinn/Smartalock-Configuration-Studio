@@ -254,6 +254,11 @@
   .project-details-head { max-width: 915.2px; margin: 0 auto 22px; }
   .project-details-column { max-width: 915.2px; margin: 0 auto; }
   .project-details-column .summary-group { max-width: none; }
+  /* ---------- #coreSettingsColumn also shrinks to .compact (657.8px) once at least one additional
+     policy exists (see the JS toggle below) — mirrored here so Project Details stays exactly as wide
+     as the Core Policy card in that state too, not just the default/no-additional-policies case. ---------- */
+  .project-details-head.compact { max-width: 657.8px; }
+  .project-details-column.compact { max-width: 657.8px; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
@@ -579,7 +584,7 @@
         <p>Registration and IT configuration details collected before this branch was chosen — shared with the Smartalock branch, since both use the same project.</p>
       </div>
 
-      <div class="project-details-column">
+      <div class="project-details-column" id="projectDetailsColumn">
 
       <div class="summary-group">
         <div class="summary-group-head">
@@ -2222,6 +2227,28 @@ confirming `.project-details-column`, `.project-details-head`, and `#coreSetting
 to the identical computed `max-width: 915.2px` with `margin-left/right: auto`, and a full-page
 Playwright screenshot confirming the Project Registration and IT Configuration cards now line up
 exactly with the Core Policy card's left/right edges below them.
+
+MOST RECENT CHANGE: per a report that Project Details and Core Policy still looked misaligned in
+some views — specifically Core Policy rendering narrower than Project Registration/IT Configuration —
+found the previous alignment fix only covered the default state. `#coreSettingsColumn` also gets a
+`.compact` class toggled by `renderPolicies()` (`classList.toggle('compact', additionalPolicies.length
+> 0)`) once at least one additional (Desk Group/User Group) policy has been saved, narrowing it from
+915.2px to 657.8px — `.project-details-column`/`.project-details-head` had no equivalent `.compact`
+variant at all, so they stayed at 915.2px in that state while Core Policy shrank underneath them,
+reproducing exactly the reported mismatch (confirmed via a jsdom test seeding a project with one saved
+additional policy: `#coreSettingsColumn` resolved to 657.8px while the two Project Details wrappers
+still resolved to 915.2px). Added `id="projectDetailsColumn"` to the wrapper div (it previously had
+none), added matching `.project-details-column.compact`/`.project-details-head.compact { max-width:
+657.8px; }` CSS rules, and updated `renderPolicies()` to toggle `.compact` on both `#projectDetailsColumn`
+and `.project-details-head` using the same `additionalPolicies.length > 0` condition already computed
+for `#coreSettingsColumn`, so all three stay in sync in every state, not just the default one — this
+runs on every `renderPolicies()` call, including the unconditional one at page load, so a project that
+already has a saved additional policy renders correctly aligned immediately, not just after a
+subsequent edit. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block, a jsdom test confirming `#coreSettingsColumn`/`#projectDetailsColumn`/`.project-details-
+head` resolve to the identical 915.2px with no additional policies and the identical 657.8px with one
+saved, and a full-page Playwright screenshot of the compact state confirming all three cards' edges
+line up.
 -->
 
 
@@ -3131,7 +3158,16 @@ exactly with the Core Policy card's left/right edges below them.
 
     // Shrink the core policy column to a denser secondary view once at least one additional
     // policy exists — it becomes reference material once named policies are the active focus.
-    document.getElementById('coreSettingsColumn').classList.toggle('compact', additionalPolicies.length > 0);
+    // Project Details (Project Registration + IT Configuration & Integrations) mirrors the exact
+    // same toggle so it stays exactly as wide as the Core Policy card in both states — otherwise it
+    // would stay at 915.2px while Core Policy narrowed to 657.8px, breaking the width alignment the
+    // two are meant to share.
+    const isCompact = additionalPolicies.length > 0;
+    document.getElementById('coreSettingsColumn').classList.toggle('compact', isCompact);
+    const projectDetailsColumn = document.getElementById('projectDetailsColumn');
+    if (projectDetailsColumn) projectDetailsColumn.classList.toggle('compact', isCompact);
+    const projectDetailsHead = document.querySelector('.project-details-head');
+    if (projectDetailsHead) projectDetailsHead.classList.toggle('compact', isCompact);
   }
 
   document.getElementById('addPolicyBtn').addEventListener('click', () => {
