@@ -215,16 +215,18 @@
   }
   .info-row { display: flex; align-items: flex-start; gap: 14px; }
   .section-choice-label {
-    font-size: 20.25px; font-weight: 600; color: var(--accent-deep); margin: 0 0 6px;
+    font-size: 20.25px; font-weight: 600; color: var(--header-grey); margin: 0 0 6px;
   }
   /* ---------- section-choice-note: the former standalone .footer-hint box, moved up to sit
-     directly beneath the section header instead of trailing the cards below. Kept in the same
-     accent-deep color family as the header above it (so the two read as one connected intro rather
-     than clashing tones), but at a lighter weight/opacity and smaller size to establish clear
-     hierarchy — the header is the question, this is a supporting clarification, not a second
-     heading. ---------- */
+     directly beneath the section header instead of trailing the cards below. Switched both lines
+     from the accent-deep blue tried first to the site's standard dark-grey text palette instead —
+     .section-choice-label now uses var(--header-grey) (#48484A), the same tone as every other plain
+     section heading on this page (e.g. h2.section-title), and .section-choice-note uses var(--ink-
+     soft) (#6E6E73), the site's standard secondary-text grey (already used for e.g. .path-desc).
+     Kept the same size/weight split as before (20.25px/600 vs 14px/500) so the note still reads as
+     clearly secondary to the header, just in a neutral grey rather than a blue tint. ---------- */
   .section-choice-note {
-    font-size: 14px; font-weight: 500; color: rgba(0,88,176,0.72); line-height: 1.5; margin: 0 0 18px;
+    font-size: 14px; font-weight: 500; color: var(--ink-soft); line-height: 1.5; margin: 0 0 18px;
   }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 26px; }
@@ -1091,6 +1093,17 @@ the 18px bottom margin the label used to have, preserving the original gap befor
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
 (untouched), and a Playwright screenshot confirming the note now sits directly beneath the header in
 a legible, visually connected two-line intro with no leftover footer box.
+
+MOST RECENT CHANGE: per a follow-up to try dark grey instead of the accent-deep blue tried for the
+header/note pair above, `.section-choice-label` switched from `var(--accent-deep)` to
+`var(--header-grey)` (#48484A) — the same tone this page's other plain section headings already use
+(e.g. `h2.section-title`) — and `.section-choice-note` switched from `rgba(0,88,176,0.72)` to
+`var(--ink-soft)` (#6E6E73), the site's standard secondary-text grey (already used for e.g.
+`.path-desc`). Kept the same 20.25px/600 vs 14px/500 size/weight split as before, so the note still
+reads clearly secondary to the header, just via a neutral grey scale instead of a blue tint — no
+layout or spacing changes. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched), and a Playwright screenshot confirming both lines render legibly
+in dark grey against the accent-wash background.
 -->
 
 <script>
