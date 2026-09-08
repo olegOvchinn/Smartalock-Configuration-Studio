@@ -455,22 +455,6 @@
   .policy-switch.on { background: var(--accent); }
   .policy-switch.on::after { transform: translateX(15px); }
 
-  /* checkbox rows, same visual language as .training-check above */
-  .policy-check-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; cursor: pointer; }
-  .policy-check-row input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .policy-check-tick {
-    width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--line); background: var(--paper);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;
-    transition: border-color .15s, background .15s;
-  }
-  .policy-check-tick::after {
-    content: ''; width: 7px; height: 5px; opacity: 0;
-    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
-    transform: rotate(-45deg) translateY(-1px); transition: opacity .12s;
-  }
-  .policy-check-row input:checked ~ .policy-check-tick { background: var(--accent); border-color: var(--accent); }
-  .policy-check-row input:checked ~ .policy-check-tick::after { opacity: 1; }
-  .policy-check-label { font-size: 12.6px; color: var(--ink); font-weight: 500; }
 
   .add-policy-row { display: flex; align-items: center; gap: 14px; max-width: 640px; margin: 4px auto 0; flex-wrap: wrap; }
   .add-policy-btn {
@@ -2249,6 +2233,25 @@ script block, a jsdom test confirming `#coreSettingsColumn`/`#projectDetailsColu
 head` resolve to the identical 915.2px with no additional policies and the identical 657.8px with one
 saved, and a full-page Playwright screenshot of the compact state confirming all three cards' edges
 line up.
+
+MOST RECENT CHANGE: per a request to remove the "Access Methods" section (Cards/Mobile app/Desktop
+app/Wallet pass checkboxes) from the additional (Desk Group/User Group override) policy cards — the
+top-level Core Policy card's own Access Methods summary group was left untouched, since the request
+was specifically about the additional-policy cards under "Additional Policies". Removed the
+`.policy-field-group` markup block (the group title plus 4 `checkRowHtml(...)` calls) from
+`policyCardHtml(p)`, the now-unused `checkRowHtml(field, checked, label)` helper function itself (it
+had no other callers), its supporting CSS (`.policy-check-row`, `.policy-check-tick` and its `::after`,
+`.policy-check-label`, and the `:checked` state rules), the `accessCards`/`accessApp`/`accessDesktop`/
+`accessWalletPass` keys from `CORE_POLICY_DEFAULTS`, the matching 4 fields from
+`getCorePolicySnapshot()`'s return object (along with the `checkinMethodsState`/`selectedMethods` local
+variables that only existed to compute them), and the checkbox-wiring `forEach` block in the policy-card
+wiring function that only ever matched these 4 inputs. `isIdenticalToCorePolicy()` needed no changes —
+it compares `Object.keys(core).every(...)`, so it automatically stopped comparing the removed keys the
+moment they left `getCorePolicySnapshot()`. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a jsdom test creating a new additional policy and
+confirming no "Access Methods" text/checkboxes appear anywhere in the card while the identical-to-core
+save-gating still works correctly, and a full-page Playwright screenshot showing Check-in Behaviour
+flowing directly into Additional Options with no gap or leftover markup.
 -->
 
 
@@ -2721,7 +2724,7 @@ line up.
   /* ---------------- additional (neighbourhood-specific) policies ----------------
      Only shown once Desk Groups are in use. Every field here mirrors a setting that already has an
      Edit button on the core policy above: Check-in Window, Prebooking & Duration, Check-in
-     Behaviour, Access Methods, and Additional Options. CORE_POLICY_DEFAULTS is only used as a
+     Behaviour, and Additional Options. CORE_POLICY_DEFAULTS is only used as a
      last-resort fallback when a number field somehow ends up non-numeric (see the input[type=number]
      change handler below) — it is NOT what a duplicated policy actually starts from; that's
      getCorePolicySnapshot() just below, which reads the real, currently-configured core policy
@@ -2731,7 +2734,6 @@ line up.
     checkinBeforeMin: 60, checkinAfterMin: 60,
     prebookingDays: 8, reservationDurationHours: 9,
     swipeOutRequired: true, autoCancelOnElsewhere: true,
-    accessCards: true, accessApp: true, accessDesktop: true, accessWalletPass: false,
     nsnpMode: 'depends', sitStandEnabled: false, recurringEnabled: false, dndEnabled: true,
     maxDesksPerUser: 1
   };
@@ -2751,10 +2753,8 @@ line up.
     const checkinWindowState = project.floorsense.wizard.checkinWindow || {};
     const prebookingState = project.floorsense.wizard.prebookingAdvance || {};
     const durationState = project.floorsense.wizard.defaultReservationTimes || {};
-    const checkinMethodsState = project.floorsense.wizard.checkinMethods || {};
     const fmeState = project.floorsense.wizard.fme || {};
     const oob = project.floorsense.wizard.outOfBoxPolicy || {};
-    const selectedMethods = Array.isArray(checkinMethodsState.selected) ? checkinMethodsState.selected : ['prebooking'];
 
     const endMode = durationState.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
     let reservationDurationHours = Number.isFinite(durationState.defaultDurationHours) ? durationState.defaultDurationHours : 9;
@@ -2773,13 +2773,6 @@ line up.
       reservationDurationHours: reservationDurationHours,
       swipeOutRequired: oob.swipeOutRequired !== false,
       autoCancelOnElsewhere: oob.autoCancelOnElsewhere !== false,
-      // The live Access Methods only has one combined "app or desktop browser" method
-      // ('prebooking'), not separate App/Desktop toggles — mirror it onto both fields. QR has no
-      // equivalent field on the additional-policy card and is intentionally not carried over.
-      accessCards: selectedMethods.includes('card'),
-      accessApp: selectedMethods.includes('prebooking'),
-      accessDesktop: selectedMethods.includes('prebooking'),
-      accessWalletPass: selectedMethods.includes('wallet'),
       // 'depends' means "same as the core policy" for this field specifically — already correct by
       // definition for a fresh copy, so it isn't read from anywhere else.
       nsnpMode: 'depends',
@@ -2836,13 +2829,6 @@ line up.
 
   function switchHtml(field, on) {
     return `<button type="button" class="policy-switch${on ? ' on' : ''}" data-field="${field}" role="switch" aria-checked="${on}"></button>`;
-  }
-  function checkRowHtml(field, checked, label) {
-    return `<label class="policy-check-row">
-              <input type="checkbox" data-field="${field}"${checked ? ' checked' : ''}>
-              <span class="policy-check-tick" aria-hidden="true"></span>
-              <span class="policy-check-label">${label}</span>
-            </label>`;
   }
 
   function policyCardHtml(p) {
@@ -2906,14 +2892,6 @@ line up.
             <span class="policy-field-label">Auto-cancel booking when checking in elsewhere</span>
             ${switchHtml('autoCancelOnElsewhere', p.autoCancelOnElsewhere)}
           </div>
-        </div>
-
-        <div class="policy-field-group">
-          <p class="policy-field-group-title">Access Methods</p>
-          ${checkRowHtml('accessCards', p.accessCards, 'Cards')}
-          ${checkRowHtml('accessApp', p.accessApp, 'Mobile app')}
-          ${checkRowHtml('accessDesktop', p.accessDesktop, 'Desktop app')}
-          ${checkRowHtml('accessWalletPass', p.accessWalletPass, 'Wallet pass')}
         </div>
 
         <div class="policy-field-group">
@@ -3110,14 +3088,6 @@ line up.
     card.querySelectorAll('select.policy-select').forEach(sel => {
       sel.addEventListener('change', () => {
         policy[sel.getAttribute('data-field')] = sel.value;
-        markPolicyUnsaved(card, policy);
-        clearIdenticalHint();
-        savePolicies();
-      });
-    });
-    card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      cb.addEventListener('change', () => {
-        policy[cb.getAttribute('data-field')] = cb.checked;
         markPolicyUnsaved(card, policy);
         clearIdenticalHint();
         savePolicies();
