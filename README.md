@@ -361,6 +361,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Moved that note up under the "Choose below how the reservation's end time should be worked out" header on `floorsense-default-reservation-times-07.html` (removing the standalone box entirely), with a new lighter/smaller type style so it reads as a supporting line beneath the header rather than a second heading.
 - Switched that header/note pair on `floorsense-default-reservation-times-07.html` from an accent-blue tint to the site's standard dark-grey text palette (`--header-grey` / `--ink-soft`).
 - On `floorsense-default-reservation-times-07.html`: dropped the colon from the end-mode header, made its `.end-mode-section` canvas white with the same drop shadow as card 1 ("Start time if booked in advance"), and removed the visible radio-button circle from both end-mode cards (selection still works via the hidden native radio input).
+- Added a single segment to card 1's ("Start time if booked in advance") timeline on `floorsense-default-reservation-times-07.html`, marking the slider's own position on the rail (reusing the existing segmented-zone styling cards 2/3 already use for their start-end spans).
 
 ## Status
 

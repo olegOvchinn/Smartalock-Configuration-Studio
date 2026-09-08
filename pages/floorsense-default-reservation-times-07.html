@@ -246,7 +246,9 @@
      the shaded start-end span renders as a row of individually rounded 30-minute blocks (flex
      children, small gap between each), each colored via a per-segment lerpColor() interpolation
      from a deep to a lighter blue, so the run of separate blocks reads as one continuous gradient
-     rather than a flat bar. Card 1 has no zone (a single point in time, not a span). ---------- */
+     rather than a flat bar. Card 1 is a single point in time rather than a start-end span, so it
+     only ever renders exactly one of these blocks (via renderZoneSegmentsInto(card1Zone, 1)),
+     positioned directly under its pin as a single-segment marker rather than a multi-block zone. */
   .timeline-zone {
     position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
     display: flex; align-items: stretch; gap: 3px;
@@ -465,6 +467,7 @@
                 <div class="timeline-diagram-row">
                   <div class="timeline-track-wrapper">
                     <div class="timeline-rail">
+                      <div class="timeline-zone" id="card1Zone"></div>
                       <div class="timeline-ticks" id="card1Ticks"></div>
                     </div>
                     <div class="timeline-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
@@ -1118,6 +1121,22 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 click with zero `.path-tick` elements left in the DOM, and a Playwright screenshot confirming the
 header has no colon, the canvas renders white with a visible drop shadow matching card 1, and neither
 card shows a radio circle.
+
+MOST RECENT CHANGE: per a request to add one segment into card 1's ("Start time if booked in
+advance") timeline to indicate the slider's position, added a `<div class="timeline-zone" id=
+"card1Zone">` into its rail (reusing the existing `.timeline-zone`/`.timeline-zone-seg` CSS that
+cards 2/3's start-end spans already use, rather than introducing new styling) and a matching
+`card1Zone` element reference in JS. Unlike cards 2/3, which render a variable-length run of blocks
+between two pins, card 1 only has one pin, so `updateCard1Diagram()` now calls the existing
+`renderZoneSegmentsInto(card1Zone, 1)` to always draw exactly one 30-minute-wide block, positioned
+directly under the pin (`left`/`width` computed the same way as the pin itself, from
+`state.defaultStartTime` on card 1's own full-day 0–1440-minute scale) rather than spanning to a
+second point — a single filled segment marking "here" instead of a shaded range. The `.timeline-zone`
+CSS comment was updated to describe this single-segment case instead of claiming card 1 has no zone
+at all. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, a jsdom test confirming the segment's `left`/`width` track the pin's own position exactly
+(e.g. both resolve to 41.667% for a 10:00 AM start) with exactly one `.timeline-zone-seg` rendered,
+and a Playwright screenshot confirming a single blue segment now sits under the pin on card 1's rail.
 -->
 
 <script>
@@ -1294,6 +1313,7 @@ card shows a radio circle.
   const card1StartTime = document.getElementById('card1StartTime');
   const card1StartDescTime = document.getElementById('card1StartDescTime');
   const card1StartNode = document.getElementById('card1StartNode');
+  const card1Zone = document.getElementById('card1Zone');
   const card1TicksEl = document.getElementById('card1Ticks');
 
   const durationLabel = document.getElementById('durationLabel');
@@ -1324,6 +1344,11 @@ card shows a radio circle.
     card1StartNode.style.left = (startMinutes / 1440 * 100) + '%';
     card1StartNode.setAttribute('aria-valuenow', startMinutes);
     card1StartNode.setAttribute('aria-valuetext', startLabel);
+    // Single 30-minute-wide segment marking the pin's own position on the rail (card 1 has no
+    // start-end span, so this is always exactly one block, not a multi-segment zone).
+    card1Zone.style.left = (startMinutes / 1440 * 100) + '%';
+    card1Zone.style.width = (30 / 1440 * 100) + '%';
+    renderZoneSegmentsInto(card1Zone, 1);
   }
 
   function updateDurationDiagram() {
