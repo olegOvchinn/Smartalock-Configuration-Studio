@@ -215,7 +215,16 @@
   }
   .info-row { display: flex; align-items: flex-start; gap: 14px; }
   .section-choice-label {
-    font-size: 20.25px; font-weight: 600; color: var(--accent-deep); margin: 0 0 16px;
+    font-size: 20.25px; font-weight: 600; color: var(--accent-deep); margin: 0 0 6px;
+  }
+  /* ---------- section-choice-note: the former standalone .footer-hint box, moved up to sit
+     directly beneath the section header instead of trailing the cards below. Kept in the same
+     accent-deep color family as the header above it (so the two read as one connected intro rather
+     than clashing tones), but at a lighter weight/opacity and smaller size to establish clear
+     hierarchy — the header is the question, this is a supporting clarification, not a second
+     heading. ---------- */
+  .section-choice-note {
+    font-size: 14px; font-weight: 500; color: rgba(0,88,176,0.72); line-height: 1.5; margin: 0 0 18px;
   }
 
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 26px; }
@@ -323,17 +332,6 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
-  /* ---------- footer-hint: previously a flex row with a small accent-bordered icon badge in front
-     of the note text. Per a request to remove the icon and present the note as its own box instead,
-     this is now a standalone accent-wash panel (matching the site's established notice-box
-     convention, e.g. .policies-intro on floorsense-out-of-box-policy.html) with bold text rather
-     than an icon doing the work of flagging it as a callout. ---------- */
-  .footer-hint {
-    margin-top: 8px; max-width: 900px;
-    background: var(--accent-wash); border: 1px solid var(--line); border-radius: var(--radius-md);
-    padding: 14px 18px;
-  }
-  .footer-hint-text { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
   .policy-diagram-frame {
@@ -485,6 +483,7 @@
 
         <div class="end-mode-section">
         <p class="section-choice-label">Choose below how the reservation's end time should be worked out:</p>
+        <p class="section-choice-note">Users can always set their own start time — this choice only decides how the end time (or duration) is worked out when they don't.</p>
 
         <div class="path-check-grid" id="endModeGrid">
 
@@ -566,10 +565,6 @@
             </label>
           </div>
         </div>
-        </div>
-
-        <div class="footer-hint">
-          <p class="footer-hint-text">Users can always set their own start time — this choice only decides how the end time (or duration) is worked out when they don't.</p>
         </div>
 
       </div>
@@ -1079,6 +1074,23 @@ paragraph wouldn't have read as a boxed callout without also darkening/bolding t
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
 (untouched), and a Playwright screenshot confirming the note now renders as its own bordered,
 accent-wash box with bold text and no icon.
+
+MOST RECENT CHANGE: per a follow-up to drop the standalone `.footer-hint` box entirely and instead
+place the same note directly under the "Choose below how the reservation's end time should be worked
+out:" header, moved the note's `<p>` up into `.end-mode-section` (right after `.section-choice-label`,
+before `#endModeGrid`) and deleted the old `.footer-hint`/`.footer-hint-text` markup and CSS along
+with the empty trailing `<div>` that used to hold them. Worked out a new type scale for the two lines
+now stacked together on the same accent-wash background: `.section-choice-label` keeps its existing
+20.25px/600/`var(--accent-deep)` treatment as the section's header, and a new `.section-choice-note`
+class renders the clarification at 14px/500/`rgba(0,88,176,0.72)` — a lighter-opacity tint of the same
+accent-deep blue rather than an unrelated grey, so the two lines read as one connected intro (question
++ supporting detail) instead of clashing tones, while the smaller size and reduced weight/opacity keep
+the note clearly secondary to the header above it. `.section-choice-label`'s bottom margin was reduced
+from 16px to 6px (tightened now that the note follows directly beneath it) and the note itself carries
+the 18px bottom margin the label used to have, preserving the original gap before the option cards.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched), and a Playwright screenshot confirming the note now sits directly beneath the header in
+a legible, visually connected two-line intro with no leftover footer box.
 -->
 
 <script>

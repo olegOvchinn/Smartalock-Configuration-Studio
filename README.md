@@ -358,6 +358,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the "Access Methods" checkbox group (Cards/Mobile app/Desktop app/Wallet pass) from additional Desk Group/User Group override policy cards on `floorsense-out-of-box-policy.html`, along with its supporting CSS, helper function, and state fields; the top-level Core Policy card's own Access Methods group is unaffected.
 - Removed the "Recurring bookings" toggle from additional Desk Group/User Group override policy cards on `floorsense-out-of-box-policy.html`; the top-level Core Policy card's own Recurring bookings toggle is unaffected.
 - Removed the icon from `floorsense-default-reservation-times-07.html`'s closing footer note and turned it into its own bordered, accent-wash box with bold text.
+- Moved that note up under the "Choose below how the reservation's end time should be worked out" header on `floorsense-default-reservation-times-07.html` (removing the standalone box entirely), with a new lighter/smaller type style so it reads as a supporting line beneath the header rather than a second heading.
 
 ## Status
 
