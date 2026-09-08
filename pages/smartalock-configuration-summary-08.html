@@ -45,7 +45,9 @@
   .brand-logo { height: 15.4px; width: auto; display: block; flex-shrink: 0; }
   .brand-tagline { color: var(--ink-soft); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.02px; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 10px; border-left: 1px solid var(--line); }
 
-  /* ---------- horizontal progress bar (replaces the module-nav pane) ---------- */
+  /* ---------- horizontal progress bar (matches the Floorsense branch's own reduced 2-segment
+     nav on floorsense-out-of-box-policy.html: the immediately-preceding page plus this page as
+     "current" — not the original 9-segment full-wizard nav) ---------- */
   .progress-bar { display: flex; gap: 5px; margin: 26px 0 0; list-style: none; padding: 0; }
   .progress-seg {
     position: relative; flex: 1; height: 5px; border-radius: 5px; background: var(--paper-soft);
@@ -118,17 +120,6 @@
   .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
-
-  /* ---------- overall progress ---------- */
-  .progress-card {
-    background: var(--paper-soft); border: 1px solid var(--line); border-radius: var(--radius-lg);
-    padding: 20px 22px; margin-bottom: 24px;
-  }
-  .progress-card-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-  .progress-card-top span.ttl { font-family: var(--font-display); font-weight: 700; font-size: 12.3px; color: var(--header-grey); }
-  .progress-card-top span.pct { font-family: var(--font-display); font-weight: 700; font-size: 12.3px; color: var(--accent-deep); }
-  .progress-track { height: 8px; background: var(--line); border-radius: 100px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width .3s ease; }
 
   /* ---------- end-user guide download card (ported from floorsense-out-of-box-policy.html) ---------- */
   .download-card {
@@ -292,42 +283,10 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="../smartalock-templates-00.html">
+        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
           <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Project Registration</span>
+          <span class="progress-seg-tip">Kiosk Customisation</span>
         </a>
-          <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
-          </a>
-          <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Initial Locker Access Methods</span>
-          </a>
-          <a class="progress-seg" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Door Behaviour</span>
-          </a>
-          <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Types</span>
-          </a>
-          <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Reservation Type</span>
-          </a>
-          <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Locker Policy</span>
-          </a>
-          <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">User Policy</span>
-          </a>
-          <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
-            <span class="progress-seg-fill"></span>
-            <span class="progress-seg-tip">Kiosk Customisation</span>
-          </a>
           <a class="progress-seg current" data-module="summary" href="smartalock-configuration-summary-08.html">
             <span class="progress-seg-fill"></span>
             <span class="progress-seg-tip">Configuration Summary</span>
@@ -350,14 +309,6 @@
 
       <div class="section-head">
         <span class="eyebrow">Review</span>
-      </div>
-
-      <div class="progress-card">
-        <div class="progress-card-top">
-          <span class="ttl">Modules saved</span>
-          <span class="pct" id="progressPct">0%</span>
-        </div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
 
       <div class="download-card">
@@ -635,6 +586,27 @@ artwork color. Verified via a small Python script parsing all 9 `.icon-X { borde
 and confirming 9 distinct hex values, `node --check` on the extracted script block (untouched — CSS-
 only change), and a full-page Playwright screenshot confirming all 9 badges render visibly distinct
 colors down the page.
+
+MOST RECENT CHANGE: per a request to remove the "Modules saved" progress bar (the `.progress-card`
+widget — title, percentage, and single fill bar — NOT the header's segmented module-nav, which is a
+separate element sharing the word "progress"), removed its CSS (`.progress-card`,
+`.progress-card-top`, `.progress-track`, `.progress-fill`), its markup, and the `renderProgress()` IIFE
+that populated `#progressFill`'s width and `#progressPct`'s text from `MODULES`/`status`. A prior pass
+in this same turn had mistakenly removed the header's segmented nav (`#progressBar`) instead, thinking
+it was the target — that was reverted, and per a follow-up request the header nav was reconfigured
+(rather than restored to its original 9-segment form) to match the Floorsense branch's own reduced
+2-segment pattern on floorsense-out-of-box-policy.html: just the immediately-preceding page
+(`data-module="kiosk"`, this page's own back-arrow target) plus this page itself as `.current`
+(`data-module="summary"`), instead of one segment per wizard module. `renderProgressBar()` (toggles
+`.saved` from `status[key]`), its initial call, its `pointerdown`/`pointerleave` "tapped"-tooltip
+wiring, and its second call inside the "Save & Email Me Summary" confirm handler were all restored
+verbatim from the Floorsense pattern — unaffected by having fewer segments, since the function only
+ever touches whichever `.progress-seg[data-module]` elements actually exist. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, a jsdom test confirming
+zero `.progress-card` elements remain, exactly 2 `.progress-seg` elements exist with the correct
+`data-module`/`.saved`/`.current` states, and the confirm-button click handler runs with no errors,
+and a Playwright screenshot confirming the header now shows a 2-segment bar (matching the Floorsense
+branch's own layout) with no "Modules saved" card below it.
 -->
 
 <script>
@@ -678,7 +650,18 @@ colors down the page.
     { key: "locker-type", label: "Locker Types" }
   ];
 
-  /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
+  function setPill(key) {
+    const el = document.getElementById('pill-' + key);
+    if (!el) return;
+    const saved = !!status[key];
+    el.textContent = saved ? 'Saved' : 'Not saved yet';
+    el.classList.add(saved ? 'saved' : 'pending');
+  }
+  MODULES.forEach(m => setPill(m.key));
+
+  /* ---------------- horizontal progress bar (2 segments only, matching the Floorsense branch's
+     own reduced nav on floorsense-out-of-box-policy.html — the immediately-preceding page plus
+     this page as "current") ---------------- */
   function renderProgressBar() {
     document.querySelectorAll('.progress-seg[data-module]').forEach(seg => {
       const key = seg.getAttribute('data-module');
@@ -694,22 +677,6 @@ colors down the page.
     });
     seg.addEventListener('pointerleave', () => seg.classList.remove('tapped'));
   });
-
-  function setPill(key) {
-    const el = document.getElementById('pill-' + key);
-    if (!el) return;
-    const saved = !!status[key];
-    el.textContent = saved ? 'Saved' : 'Not saved yet';
-    el.classList.add(saved ? 'saved' : 'pending');
-  }
-  MODULES.forEach(m => setPill(m.key));
-
-  (function renderProgress() {
-    const savedCount = MODULES.filter(m => status[m.key]).length;
-    const pct = Math.round((savedCount / MODULES.length) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressPct').textContent = pct + '% (' + savedCount + ' of ' + MODULES.length + ')';
-  })();
 
   function row(label, value, desc) {
     const div = document.createElement('div');
