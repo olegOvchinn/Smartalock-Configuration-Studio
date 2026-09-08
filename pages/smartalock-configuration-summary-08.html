@@ -568,6 +568,21 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. Each of the 8 `.summary-group` cards (IT Configuration & Integrations, Initial Locker Access Methods, Locker Door Behaviour, Reservation Type, Locker Policy, User Policy, Kiosk Customisation, Locker Types) dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border — these are read-only summary groups with no hover/selected state, so only the base glass treatment applies. Each group heading's raster `<img class="summary-icon">` (40x40px) was wrapped in a new `<span class="summary-icon-badge">` — a 70x70px white-canvas, accent-bordered badge sized to comfortably contain the icon plus padding — cycling the established blue/pink/purple/teal/amber palette across the 8 groups in DOM order (wrapping back to blue for User Policy, pink for Kiosk Customisation, purple for Locker Types), since the 8 section icons form a repeating set down the page. The `.progress-card`/`.download-card` (both smaller `var(--radius-md)`/`var(--paper-soft)` panels, not the assigned card class) and `.submit-guides-panel` (a distinct accent-tinted callout banner) were deliberately left untouched — out of scope for this pass. Icon image assets themselves were untouched. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: Replaced the cycled blue/pink/purple/teal/amber palette-rotation on the 8 `.summary-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB of saturated, non-background-wash pixels via PIL), in DOM order: IT Configuration & Integrations (`icon-it-configuration.png`) badge-blue #4A8DF0 -> #0071E3; Initial Locker Access Methods (`icon-access-card.png`) badge-pink #EC6BA5 -> #1FAA59 (green); Locker Door Behaviour (`icon-locker-door-behaviour.png`) badge-purple #9B6BEC -> #0071E3 (same exact blue as IT Configuration); Reservation Type (`icon-reservation-type.png`) badge-teal #2FBF9F -> #0071E3 (same exact blue again); Locker Policy (`icon-release-when-idle.png`) badge-amber #F2A154 -> #2552CF (a visibly different, slightly darker/richer blue — deliberately not merged with the other three); User Policy (`icon-who-can-use-lockers.png`) badge-blue #4A8DF0 -> #0E8F8F (teal); Kiosk Customisation (`icon-kiosk-customisation.png`) badge-pink #EC6BA5 -> #0071E3 (same exact blue as the first three); Locker Types (`icon-locker-types-summary.png`) badge-purple #9B6BEC -> #48484A (a neutral dark grey, since this icon is genuinely monochrome grey line-art rather than colorful). Because four of the eight icons now share the exact same blue (#0071E3) and a fifth is a distinctly different blue (#2552CF), the old shared `badge-blue`/`badge-pink`/`badge-purple`/`badge-teal`/`badge-amber` color-family classes were removed entirely and replaced with eight distinct per-icon modifier classes (`.icon-it-config`, `.icon-access-card`, `.icon-locker-door`, `.icon-reservation-type`, `.icon-release-idle`, `.icon-who-can-use`, `.icon-kiosk-custom`, `.icon-locker-types`) so each icon's border color is set unambiguously by name rather than by a shared color-family label that no longer matches the underlying hue for several of them. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: mirrors the "Anyone" access-policy removal on smartalock-user-policy-06.html (see that file's own NOTE). Since a saved project could still carry a legacy `userAccessPolicy: ""` from before that removal, `accessLabels` here changed from `{ "": "Anyone", all: ..., groups: ... }` to `{ "": "All registered users", all: "All registered users", groups: "Selected user groups" }`, and the fallback string used when `u.userAccessPolicy` is falsy changed from `'Anyone'` to `'All registered users'` — so the "Who Can Use Lockers" summary row reads "All registered users" for both the new `"all"` value and any pre-existing `""` value, never a now-nonexistent "Anyone". Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming the row's rendered text for `""`, `"all"`, and `"groups"`.
+MOST RECENT CHANGE: per a request to check the IT Configuration & Integrations group for orphaned
+items, found 5 rows — SSO Application Name(s), Tenant / Directory ID, Client ID, Client Secret,
+Allowed Email Domains — rendered whenever `it.ssoMethod` is set, reading `it.ssoAppNames`/
+`ssoTenantId`/`ssoClientId`/`ssoSecret`/`ssoEmailDomains`. None of these 5 keys are ever written
+anywhere: `smartalock-it-configuration-02.html`'s own state object only has `ssoMethod`/
+`scimProvisioning`/`apiRequirements`/`gallagherIntegration` — there's no form field on that page (or
+anywhere else in the repo) that ever sets the other five, so these rows always rendered "None
+specified"/"Not set" regardless of what a client actually configured. Removed all 5 rows entirely
+(the `if (it.ssoMethod) { ... }` block that rendered them); the group now shows exactly the 4 rows
+that correspond to real, settable fields (Single Sign-On (SSO), SCIM User Provisioning, API /
+Integration Requirements, Gallagher Integration) regardless of SSO state. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+confirming the group renders only those 4 rows both with SSO off and with SSO on (including with the
+now-removed keys still present in a legacy saved project, to confirm they're simply ignored rather
+than causing an error).
 -->
 
 <script>
@@ -667,19 +682,6 @@ MOST RECENT CHANGE: mirrors the "Anyone" access-policy removal on smartalock-use
 
     wrap.appendChild(row('Single Sign-On (SSO)', ssoLabels[it.ssoMethod] ?? (it.ssoMethod || 'No SSO'),
       'Identity provider used for staff and administrator login to the kiosk and admin console.'));
-
-    if (it.ssoMethod) {
-      wrap.appendChild(row('SSO Application Name(s)', it.ssoAppNames || 'None specified',
-        "Name(s) of the application(s) registered with the identity provider."));
-      wrap.appendChild(row('Tenant / Directory ID', it.ssoTenantId || 'None specified',
-        "Unique identifier for your organisation's directory in the identity provider."));
-      wrap.appendChild(row('Client ID', it.ssoClientId || 'None specified',
-        'Application (client) ID issued by the identity provider for this integration.'));
-      wrap.appendChild(row('Client Secret', it.ssoSecret ? 'Configured (hidden)' : 'Not set',
-        'Secret credential used to authenticate the SSO integration.'));
-      wrap.appendChild(row('Allowed Email Domains', it.ssoEmailDomains || 'None specified',
-        'Email domains permitted to sign in to Smartalock via SSO.'));
-    }
 
     wrap.appendChild(row('SCIM User Provisioning', scimLabels[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'),
       'Automatic creation, update and removal of user accounts from your identity provider.'));
