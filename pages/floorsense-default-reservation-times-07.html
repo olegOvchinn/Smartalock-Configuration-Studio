@@ -198,8 +198,9 @@
      every other page sharing that same class name — nsnp-11, fme-12, anti-desk-hogging-13 — had
      already been propagated to the badge treatment). Card 1's icon is a single lone icon (not part
      of a repeating option group), so it keeps plain var(--accent) blue; the two end-mode cards
-     (duration, fixed-end) are a repeating option group and get palette colors cycled in DOM order,
-     same convention as nsnp-11/fme-12/anti-desk-hogging-13: blue then pink. ---------- */
+     (duration, fixed-end) are a repeating option group and get distinct palette colors — pink for
+     fixed-end, and green (#4CAF6D, the same badge-green already used elsewhere on the Floorsense
+     branch, e.g. floorsense-out-of-box-policy.html) for duration per a follow-up request. ---------- */
   .path-icon-badge {
     width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
@@ -208,8 +209,8 @@
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .path-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .path-icon-badge.badge-blue .path-icon-glyph { color: #4A8DF0; }
+  .path-icon-badge.badge-green { border-color: #4CAF6D; }
+  .path-icon-badge.badge-green .path-icon-glyph { color: #4CAF6D; }
   .path-icon-badge.badge-pink { border-color: #EC6BA5; }
   .path-icon-badge.badge-pink .path-icon-glyph { color: #EC6BA5; }
   .path-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
@@ -515,7 +516,7 @@
           <div class="path-check-card" data-mode="duration">
             <label class="path-row">
               <input type="radio" name="endMode" value="duration">
-              <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+              <div class="path-icon-badge badge-green"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
               <div class="path-card-body">
                 <h3 class="path-title">Reservation ends after a fixed number of hours</h3>
                 <p class="path-desc" id="durationExampleDesc">Every booking lasts the same length, no matter what time it starts — for example, a booking at 8:30 AM would run until 5:30 PM.</p>
@@ -1196,6 +1197,18 @@ case any other element ever relies on its original lighter `var(--header-grey-li
 an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and
 a Playwright screenshot confirming both `#durationHint` and `#fixedEndHint` now resolve to the same
 rgb(139, 139, 142).
+
+MOST RECENT CHANGE: per a request to make the duration card's icon ("Reservation ends after a fixed
+number of hours") greenish, swapped its `.path-icon-badge` modifier from `badge-blue` to a new
+`badge-green` (`#4CAF6D`, the same badge-green already used elsewhere on the Floorsense branch, e.g.
+floorsense-out-of-box-policy.html's `.summary-icon-badge.badge-green`, rather than inventing a new
+hex) — `badge-blue` was only ever used by this one icon on this page, so its now-unused CSS rule was
+replaced outright rather than left dead alongside the new one. The fixed-end card's `badge-pink` icon
+is unaffected. Updated the `.path-icon-badge` CSS comment, which previously described the two
+end-mode cards as cycling "blue then pink," to describe green/pink instead. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a
+Playwright screenshot confirming the duration card's icon badge now renders with a green border
+(`rgb(76, 175, 109)`).
 -->
 
 <script>
