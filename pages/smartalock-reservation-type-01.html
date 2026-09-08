@@ -465,6 +465,7 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. `.tcard`'s solid `border: 1.5px solid var(--line)` was removed in favour of a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border. This card pre-dates the propagation with its own per-type accent (`--tc`/`--tc-wash`, one of blue/green/purple per `data-type`), so rather than flattening the hover/`.chosen` glow to one fixed blue tint, a matching `--tc-glow`/`--tc-glow-strong` custom property pair was added per type so each card's shadow still tints in its own colour; `.maxed:hover` now resets to the plain base shadow instead of a grey border. Each of the 3 cards' raster `<img class="tcard-icon-img">` (56px: Allocated by Administrator, User Self-Allocated, Parcel Delivery) was wrapped in a new `<span class="tcard-icon-badge">` — a 72x72px white-canvas, colour-bordered badge — cycling the site's standard blue/pink/purple palette in DOM order (independent of each card's own `--tc` theme colour, matching how every other repeating icon group on the site uses the fixed palette); only the badge border is coloured, the icon image files themselves are untouched. `.duration-panel` (a smaller `var(--radius-md)` sub-panel) was deliberately left untouched, per the task's exclusion of nested sub-panels. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette-rotation on the 3 `.tcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB of saturated, non-background-wash pixels via PIL): Allocated by Administrator (`icon-admin-allocated.png`) badge-blue #4A8DF0 -> badge-blue #0071E3; User Self-Allocated (`icon-user-self-allocated.png`) badge-pink #EC6BA5 -> badge-green #1FAA59; Parcel Delivery (`icon-parcel-delivery.png`) badge-purple #9B6BEC -> badge-purple #8B5CF6. The old `badge-pink` rule was removed (replaced by a new `badge-green` rule) since no icon on this page uses pink anymore; `badge-blue`/`badge-purple` kept their names but got updated hex values. This is unrelated to and does not touch each card's own separate `--tc`/`--tc-wash` per-type theming of the card background/heading/radio-check. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
+MOST RECENT CHANGE: per a request that hovering a reservation-type card previews its image in the `#reservationVisualFrame` placeholder, added `pointerenter`/`pointerleave` listeners to all 3 `.tcard`s (same pointer-event idiom already used for this file's progress-segment tooltips). `pointerenter` shows that card's `VISUAL_SRC` entry (adding `.show-image`, setting `#reservationVisualImg`'s `src`/`alt`) without touching `state.reservationTypes`; `pointerleave` simply calls the existing `renderTypeCards()`, which recomputes the correct image from the real selection state (the last-chosen type, or the `user` flow default when nothing's chosen yet) — so the preview never gets stuck out of sync with the actual selection once the pointer leaves. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test hovering each card (image swaps live) then leaving (image reverts to the default) and, separately, selecting a card, hovering a different one, then leaving (image correctly restores to the selected card's image, not the default).
 -->
 
 <script>
@@ -587,6 +588,21 @@ MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette-rotation on 
     if (e.target.closest('.duration-panel')) return;
     toggleType(key);
   }));
+
+  // Hovering a card previews that type's flow image in the placeholder without changing the
+  // actual selection — leaving the card restores whatever renderTypeCards() would normally show
+  // (the last-chosen type, or the 'user' flow default when nothing's chosen yet), so the preview
+  // never gets "stuck" out of sync with the real selection state.
+  Object.keys(cards).forEach(key => {
+    cards[key].addEventListener('pointerenter', () => {
+      const visual = VISUAL_SRC[key];
+      if (!visual) return;
+      reservationVisualFrame.classList.add('show-image');
+      reservationVisualImg.src = visual.src;
+      reservationVisualImg.alt = visual.alt;
+    });
+    cards[key].addEventListener('pointerleave', () => renderTypeCards());
+  });
 
   /* ---------------- duration options (User Self-Allocated) ---------------- */
   function selectDuration(value) {

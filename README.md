@@ -367,6 +367,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Extended that same 20%-darker treatment to the duration card's hint on `floorsense-default-reservation-times-07.html`, so both end-mode cards' hints now share the darker color.
 - Changed the duration card's icon color on `floorsense-default-reservation-times-07.html` from blue to green (`badge-green`, `#4CAF6D`, matching the badge-green already used on `floorsense-out-of-box-policy.html`); the fixed-end card's pink icon is unaffected.
 - Changed card 1's icon color ("Start time if booked in advance") on `floorsense-default-reservation-times-07.html` from plain accent blue to orange (`badge-amber`, `#F2A154`, the site's existing warm-orange palette entry).
+- On `smartalock-reservation-type-01.html`, hovering a reservation-type card now previews that type's flow image in the placeholder, reverting to the actual selection (or the default) when the pointer leaves.
 
 ## Status
 
