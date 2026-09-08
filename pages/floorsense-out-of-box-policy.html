@@ -245,6 +245,16 @@
      harmless no-op class (the JS still toggles it) now that the base rule already covers it. ---------- */
   .core-settings-column { max-width: 915.2px; margin: 0 auto; }
 
+  /* ---------- "Project Details" (Project Registration + IT Configuration & Integrations) sits above
+     #summaryColumns and needs to match #coreSettingsColumn's own width/centering exactly, so the two
+     read as one continuous canvas rather than a narrower strip sitting above a wider one. Both the
+     heading and the column wrapping the two summary-groups get the same 915.2px cap + margin:0 auto;
+     the summary-groups' own base 640px max-width is neutralized inside the column the same way
+     .core-policy-body .summary-group already does for the Core Policy card's groups. ---------- */
+  .project-details-head { max-width: 915.2px; margin: 0 auto 22px; }
+  .project-details-column { max-width: 915.2px; margin: 0 auto; }
+  .project-details-column .summary-group { max-width: none; }
+
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
      policies a client is now actively managing, so it's rendered narrower/denser rather than at
@@ -564,10 +574,12 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
+      <div class="section-head project-details-head">
         <h2 class="section-title">Project Details</h2>
         <p>Registration and IT configuration details collected before this branch was chosen — shared with the Smartalock branch, since both use the same project.</p>
       </div>
+
+      <div class="project-details-column">
 
       <div class="summary-group">
         <div class="summary-group-head">
@@ -647,6 +659,8 @@
             <span class="value" id="itGallagherSummaryValue">Not required</span>
           </div>
         </div>
+      </div>
+
       </div>
 
       <div class="summary-columns" id="summaryColumns">
@@ -2191,6 +2205,23 @@ confirming every row renders correctly from a populated project (matching
 `smartalock-configuration-summary-08.html`'s own rendering of the identical data) and falls back
 cleanly with no saved project at all, and a full-page Playwright screenshot confirming the new
 section's placement and styling.
+
+MOST RECENT CHANGE: per a request that "Project Details" match the Core Policy card's own width and
+alignment, found the two new `.summary-group` cards were rendering at the base `.summary-group`
+class's own 640px max-width (left-aligned within `.panel-inner`), while `#coreSettingsColumn` below
+them is capped at 915.2px and centred via `margin: 0 auto` — narrower and misaligned relative to the
+card underneath. Wrapped the two summary-groups in a new `.project-details-column` div carrying the
+identical `max-width: 915.2px; margin: 0 auto;` as `#coreSettingsColumn`, and neutralized the
+summary-groups' own 640px cap inside it (`.project-details-column .summary-group { max-width: none; }`
+— the same technique `.core-policy-body .summary-group` already uses for the Core Policy card's own
+groups). The "Project Details" heading itself got a matching `.project-details-head` class (915.2px
+max-width, `margin: 0 auto`) so the heading text block lines up with the cards below it too, rather
+than just the cards matching each other. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched — CSS/markup-only change), a jsdom test
+confirming `.project-details-column`, `.project-details-head`, and `#coreSettingsColumn` all resolve
+to the identical computed `max-width: 915.2px` with `margin-left/right: auto`, and a full-page
+Playwright screenshot confirming the Project Registration and IT Configuration cards now line up
+exactly with the Core Policy card's left/right edges below them.
 -->
 
 
