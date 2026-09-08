@@ -360,6 +360,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the icon from `floorsense-default-reservation-times-07.html`'s closing footer note and turned it into its own bordered, accent-wash box with bold text.
 - Moved that note up under the "Choose below how the reservation's end time should be worked out" header on `floorsense-default-reservation-times-07.html` (removing the standalone box entirely), with a new lighter/smaller type style so it reads as a supporting line beneath the header rather than a second heading.
 - Switched that header/note pair on `floorsense-default-reservation-times-07.html` from an accent-blue tint to the site's standard dark-grey text palette (`--header-grey` / `--ink-soft`).
+- On `floorsense-default-reservation-times-07.html`: dropped the colon from the end-mode header, made its `.end-mode-section` canvas white with the same drop shadow as card 1 ("Start time if booked in advance"), and removed the visible radio-button circle from both end-mode cards (selection still works via the hidden native radio input).
 
 ## Status
 
