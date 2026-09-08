@@ -368,6 +368,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Changed the duration card's icon color on `floorsense-default-reservation-times-07.html` from blue to green (`badge-green`, `#4CAF6D`, matching the badge-green already used on `floorsense-out-of-box-policy.html`); the fixed-end card's pink icon is unaffected.
 - Changed card 1's icon color ("Start time if booked in advance") on `floorsense-default-reservation-times-07.html` from plain accent blue to orange (`badge-amber`, `#F2A154`, the site's existing warm-orange palette entry).
 - On `smartalock-reservation-type-01.html`, hovering a reservation-type card now previews that type's flow image in the placeholder, reverting to the actual selection (or the default) when the pointer leaves.
+- Applied the same hover-preview behavior to `smartalock-locker-policy-05.html`'s 3 policy cards: hovering previews that card's image in the placeholder, reverting to whichever card is actually active (the last clicked/focused one, or `idle` by default) when the pointer leaves.
 
 ## Status
 

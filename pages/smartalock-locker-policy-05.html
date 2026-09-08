@@ -399,6 +399,8 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .qcard dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; the existing `.visual-active` state (previously `border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash);`, toggled on card focus/click to sync the side visual image) was converted to read through a stronger shadow tint plus a light blue background tint instead, the same conversion used for `.checked`/`.chosen` states on other propagated pages. Each of the 3 raster `.qcard-icon` `<img>` icons (Release when reserved but unused, Lockers per User, Release Behaviour) was wrapped in a new `.qcard-icon-badge` div (88px, white background, colored border, sized to comfortably fit the existing 72px icons) — since the 3 cards form a repeating option group, the badges use blue/pink/purple in DOM order. IMPORTANT, to distinguish this from an earlier attempt on this exact page that was explicitly reverted because it recolored the icons' own green/purple/blue hues: this change touches ONLY the new badge div's border-color — the `<img>` elements themselves, their `src` attributes, and the underlying icon-release-when-idle.png / icon-locker-limits.png / icon-release-behaviour.png files were left 100% byte-for-byte untouched; no image file was opened, recolored, or resaved. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change), plus a diff confirming the 3 PNG assets are bit-for-bit identical to before this change.
 
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette rotation on the 3 `.qcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). Release when reserved but unused (`icon-release-when-idle.png`) stayed blue but tightened from `#4A8DF0` to the sampled `#2552CF` (class name `badge-blue` unchanged). Lockers per User (`icon-locker-limits.png`) changed from the rotation's `#EC6BA5` pink to its sampled true color, `#0D8217` green (class renamed `badge-pink` -> `badge-green`). Release Behaviour (`icon-release-behaviour.png`) stayed purple but tightened from `#9B6BEC` to the sampled `#472ABC` (class name `badge-purple` unchanged). Only the badge border-color CSS and the markup's modifier class were touched — same as before, the `<img>` elements, their `src` attributes, and the underlying PNG files were left 100% byte-for-byte untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
+
+MOST RECENT CHANGE: per a request to apply smartalock-reservation-type-01.html's hover-preview behavior to this page, added `pointerenter`/`pointerleave` listeners to all 3 `.qcard[data-visual]`s. Unlike reservation-type-01 (where selection is a persisted `state.reservationTypes` array separate from hover), this page has no separate "selection" concept — `showPolicyVisual(key)` already runs on `focusin`/`click` to both set the visible image and mark the interacted card `.visual-active`. So a new `previewPolicyVisual(key)` function was added that only sets the image (no `.visual-active` marking), wired to `pointerenter`; `pointerleave` looks up whichever card currently carries `.visual-active` (querying the DOM rather than tracking a separate JS variable, since the class is already the page's existing source of truth) and calls the existing `showPolicyVisual` on that card's key to restore it, falling back to `'idle'` if none is somehow active. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test hovering each card (image swaps live) then leaving (image reverts to the `idle` default) and, separately, clicking a card to make it active, hovering a different one, then leaving (image correctly restores to the clicked/active card's image, not the default).
 -->
 
 <script>
@@ -501,9 +503,24 @@ MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette rotation on 
     lockerPolicyVisualImg.alt = visual.alt;
     document.querySelectorAll('.qcard[data-visual]').forEach(c => c.classList.toggle('visual-active', c.getAttribute('data-visual') === key));
   }
+  // Hovering a card previews its image without touching which card is marked .visual-active —
+  // leaving the card restores whatever's actually active (the last-clicked/focused card, same
+  // pattern as smartalock-reservation-type-01.html's hover preview), so the preview never gets
+  // stuck out of sync with the real state.
+  function previewPolicyVisual(key) {
+    const visual = VISUAL_SRC[key];
+    if (!visual) return;
+    lockerPolicyVisualImg.src = visual.src;
+    lockerPolicyVisualImg.alt = visual.alt;
+  }
   document.querySelectorAll('.qcard[data-visual]').forEach(card => {
     card.addEventListener('focusin', () => showPolicyVisual(card.getAttribute('data-visual')));
     card.addEventListener('click', () => showPolicyVisual(card.getAttribute('data-visual')));
+    card.addEventListener('pointerenter', () => previewPolicyVisual(card.getAttribute('data-visual')));
+    card.addEventListener('pointerleave', () => {
+      const activeCard = document.querySelector('.qcard[data-visual].visual-active');
+      showPolicyVisual(activeCard ? activeCard.getAttribute('data-visual') : 'idle');
+    });
   });
   showPolicyVisual('idle');
 
