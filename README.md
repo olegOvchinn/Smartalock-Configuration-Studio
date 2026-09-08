@@ -352,6 +352,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a note to `floorsense-out-of-box-policy.html`'s "Notifications" row that not all notification types can be configured and to check with the Smartalock team first.
 - Removed 5 orphaned rows (SSO Application Name(s), Tenant / Directory ID, Client ID, Client Secret, Allowed Email Domains) from `smartalock-configuration-summary-08.html`'s IT Configuration & Integrations group — none of their underlying keys are ever set anywhere in the wizard, so they always rendered "None specified"/"Not set".
 - Added a "Project Registration" summary group to `smartalock-configuration-summary-08.html`, and a new "Project Details" section (Project Registration + IT Configuration & Integrations) to `floorsense-out-of-box-policy.html`, so both branches' summaries dynamically reflect the shared `smartalock-templates-00.html`/`smartalock-it-configuration-02.html` values.
+- Reassigned 3 of `smartalock-configuration-summary-08.html`'s 9 icon-badge colors (Project Registration, Locker Door Behaviour, Kiosk Customisation) so all 9 groups now have visibly distinct badge colors.
 
 ## Status
 

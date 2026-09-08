@@ -182,14 +182,14 @@
     background: #fff; border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .summary-group-head h3 .summary-icon-badge.icon-company { border-color: #0071E3; }
+  .summary-group-head h3 .summary-icon-badge.icon-company { border-color: #EC6BA5; }
   .summary-group-head h3 .summary-icon-badge.icon-it-config { border-color: #0071E3; }
   .summary-group-head h3 .summary-icon-badge.icon-access-card { border-color: #1FAA59; }
-  .summary-group-head h3 .summary-icon-badge.icon-locker-door { border-color: #0071E3; }
-  .summary-group-head h3 .summary-icon-badge.icon-reservation-type { border-color: #0071E3; }
+  .summary-group-head h3 .summary-icon-badge.icon-locker-door { border-color: #9B6BEC; }
+  .summary-group-head h3 .summary-icon-badge.icon-reservation-type { border-color: #F2A154; }
   .summary-group-head h3 .summary-icon-badge.icon-release-idle { border-color: #2552CF; }
   .summary-group-head h3 .summary-icon-badge.icon-who-can-use { border-color: #0E8F8F; }
-  .summary-group-head h3 .summary-icon-badge.icon-kiosk-custom { border-color: #0071E3; }
+  .summary-group-head h3 .summary-icon-badge.icon-kiosk-custom { border-color: #EC6B6B; }
   .summary-group-head h3 .summary-icon-badge.icon-locker-types { border-color: #48484A; }
   .summary-group-head h3 .summary-icon { width: 40px; height: 40px; flex-shrink: 0; }
   .status-pill {
@@ -615,6 +615,26 @@ group. Edit link points to `../smartalock-templates-00.html`. Verified via an in
 tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming every row
 renders correctly from a populated project, and falls back to "Not specified"/"None specified" with
 no saved project at all.
+MOST RECENT CHANGE: per a request to ensure every icon badge on this page uses a different colour,
+audited all 9 `.summary-icon-badge.icon-X` border-colors (the new `.icon-company` from the previous
+change brought the total to 9) and found 5 sharing the exact same `#0071E3` blue: `icon-it-config`,
+`icon-locker-door`, `icon-reservation-type`, `icon-kiosk-custom`, and the newly-added `icon-company` —
+a side-effect of the per-icon sampling approach used earlier this session (several source PNGs
+genuinely are drawn in that same blue). Reassigned 3 of the 5 to previously-unused colours from the
+site's own established palette rather than inventing new ones: `icon-company` (Project Registration)
+-> `#EC6BA5` pink, `icon-locker-door` (Locker Door Behaviour) -> `#9B6BEC` purple, `icon-reservation-
+type` (Reservation Type) -> `#F2A154` amber, `icon-kiosk-custom` (Kiosk Customisation) -> `#EC6B6B`
+coral. `icon-it-config` (IT Configuration & Integrations) keeps `#0071E3`, since IT Configuration is
+this page's most central/iconic use of the site's own accent blue. `icon-release-idle`'s `#2552CF`
+(a deliberately distinct, richer blue — see the earlier MOST RECENT CHANGE note above) was left
+unchanged, since it was already established as visually distinct from `#0071E3`. The icon `<img>`
+artwork itself is untouched in every case — only each badge's border-color changed, so an icon's own
+drawn color (e.g. `icon-it-config`'s glyph, drawn amber/orange) can still differ from its badge
+border, which is expected: the border signals the group's palette slot, not a copy of the icon's own
+artwork color. Verified via a small Python script parsing all 9 `.icon-X { border-color: ... }` rules
+and confirming 9 distinct hex values, `node --check` on the extracted script block (untouched — CSS-
+only change), and a full-page Playwright screenshot confirming all 9 badges render visibly distinct
+colors down the page.
 -->
 
 <script>
