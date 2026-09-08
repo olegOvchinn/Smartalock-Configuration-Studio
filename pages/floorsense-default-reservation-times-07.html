@@ -323,24 +323,17 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
-  .footer-hint { display: flex; align-items: center; gap: 14px; margin-top: 8px; padding: 2px 4px; }
-  /* ---------- footer-hint-icon-badge: this was a plain flex-centering wrapper div (no background/
-     border of its own) around a bare 26px svg. Per the site-wide icon-badge propagation from
-     floorsense-reservation-types-01.html, wrapped it in the same white/accent-bordered badge look
-     (sized down proportionally from page01's 60px/34.5px, since this glyph was already much
-     smaller). This is a single lone icon (the only icon in the page's footer hint, not part of a
-     repeating option group), so it kept plain var(--accent) blue rather than a palette colour — see
-     the MOST RECENT CHANGE note below. ---------- */
-  .footer-hint-icon {
-    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  /* ---------- footer-hint: previously a flex row with a small accent-bordered icon badge in front
+     of the note text. Per a request to remove the icon and present the note as its own box instead,
+     this is now a standalone accent-wash panel (matching the site's established notice-box
+     convention, e.g. .policies-intro on floorsense-out-of-box-policy.html) with bold text rather
+     than an icon doing the work of flagging it as a callout. ---------- */
+  .footer-hint {
+    margin-top: 8px; max-width: 900px;
+    background: var(--accent-wash); border: 1px solid var(--line); border-radius: var(--radius-md);
+    padding: 14px 18px;
   }
-  .footer-hint-glyph { width: 26px; height: 26px; color: var(--accent); position: relative; z-index: 1; }
-  .footer-hint-text { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .footer-hint-text { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
   .policy-diagram-frame {
@@ -576,9 +569,6 @@
         </div>
 
         <div class="footer-hint">
-          <div class="footer-hint-icon">
-            <svg class="footer-hint-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="10.5" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>
-          </div>
           <p class="footer-hint-text">Users can always set their own start time — this choice only decides how the end time (or duration) is worked out when they don't.</p>
         </div>
 
@@ -1074,6 +1064,21 @@ read as distinct clickable cards floating on top of the accent wash rather than 
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
 (untouched), and a Playwright screenshot confirming the label and both option cards now sit inside one
 visually distinct accent-coloured section.
+
+MOST RECENT CHANGE: per a request to remove the icon from in front of the closing footer note
+("Users can always set their own start time...") and present the note as its own box with bold text
+instead, removed the `.footer-hint-icon` wrapper div, its `.footer-hint-glyph` svg (a small
+circle-with-exclamation-point glyph), and their supporting CSS entirely — the note no longer relies
+on an icon to read as a callout. `.footer-hint` itself changed from a bare flex row (icon + text,
+`padding: 2px 4px`, no background) into a standalone panel matching the site's established
+notice-box convention (see e.g. `.policies-intro` on floorsense-out-of-box-policy.html):
+`background: var(--accent-wash)`, `border: 1px solid var(--line)`, `var(--radius-md)` corners, and
+`14px 18px` padding. `.footer-hint-text` switched from `font-weight` unset (400) / `var(--ink-soft)`
+to `font-weight: 700` / `var(--ink)` per the request that its font be made bold — a plain unstyled
+paragraph wouldn't have read as a boxed callout without also darkening/bolding the text inside it.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched), and a Playwright screenshot confirming the note now renders as its own bordered,
+accent-wash box with bold text and no icon.
 -->
 
 <script>
