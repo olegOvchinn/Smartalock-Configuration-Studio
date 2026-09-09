@@ -279,6 +279,32 @@
     color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
 
+  /* ---------- Same-Desk Booking Days: a plain, independent 1-5 stepper — same control as
+     floorsense-anti-desk-hogging-13.html's own (see that page's own NOTE for why this is a
+     stepper and not a slider), copied verbatim and scoped under .feature-row-adh like the
+     timeline rules above. ---------- */
+  .feature-row-adh .adh-stepper-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 4px; }
+  .feature-row-adh .stepper {
+    display: flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 12px;
+    overflow: hidden; background: #fff;
+  }
+  .feature-row-adh .stepper-value {
+    min-width: 56px; padding: 8px 18px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 22px; font-weight: 700; color: #102A43;
+  }
+  .feature-row-adh .stepper-btns { display: flex; flex-direction: column; border-left: 1.5px solid var(--line); }
+  .feature-row-adh .stepper-btn {
+    width: 34px; height: 22px; border: none; background: var(--paper-soft); padding: 0;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: background .15s;
+  }
+  .feature-row-adh .stepper-btn svg { width: 11px; height: 11px; stroke: var(--ink-soft); }
+  .feature-row-adh .stepper-btn:hover:not(:disabled) { background: var(--accent-wash); }
+  .feature-row-adh .stepper-btn:hover:not(:disabled) svg { stroke: var(--accent-deep); }
+  .feature-row-adh .stepper-btn:disabled { cursor: not-allowed; opacity: 0.35; }
+  .feature-row-adh .stepper-up { border-bottom: 1px solid var(--line); }
+  .feature-row-adh .stepper-unit { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
      color: var(--accent)) so every icon on this page is now the same size/style. ---------- */
@@ -446,18 +472,15 @@
                 <div class="timeline-header">
                   <p class="timeline-subtitle">Same-Desk Booking Days</p>
                 </div>
-                <div class="timeline-diagram-row">
-                  <div class="timeline-track-wrapper" id="adhBookingTrackWrapper">
-                    <div class="timeline-rail">
-                      <div class="timeline-zone" id="adhBookingZone"></div>
-                      <div class="timeline-ticks" id="adhBookingTicks"></div>
-                    </div>
-                    <div class="timeline-node" id="adhBookingNode" tabindex="0" role="slider" aria-label="Same-desk booking days within the window" aria-valuemin="1" aria-valuemax="2">
-                      <div class="anchor-pin"></div>
-                      <div class="label-time primary" id="adhBookingNodeLabel">1 day</div>
-                      <div class="label-desc">Booking days</div>
+                <div class="adh-stepper-row">
+                  <div class="stepper">
+                    <span class="stepper-value" id="adhBookingValue">1</span>
+                    <div class="stepper-btns">
+                      <button type="button" class="stepper-btn stepper-up" id="adhBookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+                      <button type="button" class="stepper-btn stepper-down" id="adhBookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
                     </div>
                   </div>
+                  <span class="stepper-unit" id="adhBookingUnitLabel">day</span>
                 </div>
               </div>
             </div>
@@ -978,6 +1001,22 @@ keyboard-stepping the window slider down and confirming the booking slider's val
 clamp down to match; and Reset restoring both sliders to their defaults and hiding the field again;
 plus a Playwright screenshot confirming the two sliders render correctly inside the row, matching
 page 13's own look.
+
+MOST RECENT CHANGE: mirrors the same change made to floorsense-anti-desk-hogging-13.html itself —
+see that file's own NOTE for the full rationale. "Same-Desk Booking Days" changed from the second
+rail/pin slider (`adhBookingZone`/`adhBookingTicks`/`adhBookingNode`, plus `adhBookingDayToPercent()`/
+`adhRenderBookingTicks()`/`adhRenderBookingDiagram()`/`adhBookingDayFromClientX()` and its
+pointerdown/keydown listeners — all removed) to a plain up/down stepper (`#adhBookingValue`/
+`#adhBookingUpBtn`/`#adhBookingDownBtn`, identical markup/CSS to page 13's own, `adh`-prefixed) with
+a fixed, independent 1-5 range via a new `adhRenderBookingStepper()`/`adhClampBookingDays()` pair —
+no longer capped at or affected by the Time Window slider's own `adhState.windowDays` in any way.
+Reset was updated to call `adhRenderBookingStepper(1)` in place of the two removed render calls. Time
+Window's own slider is unchanged. Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block, a jsdom test confirming the stepper defaults to 1, a saved
+`maxBookings` greater than `windowDays` is preserved (not clamped), the up/down buttons clamp at 5/1
+and disable correctly, dragging/stepping the Time Window slider never touches the booking value, and
+Reset restores both to their defaults, plus a Playwright screenshot confirming the stepper renders
+correctly inside the row.
 -->
 
 <script>
@@ -1209,11 +1248,6 @@ page 13's own look.
   const adhWindowNode = document.getElementById('adhWindowNode');
   const adhWindowNodeLabel = document.getElementById('adhWindowNodeLabel');
   const adhWindowTrackWrapper = document.getElementById('adhWindowTrackWrapper');
-  const adhBookingZone = document.getElementById('adhBookingZone');
-  const adhBookingTicksEl = document.getElementById('adhBookingTicks');
-  const adhBookingNode = document.getElementById('adhBookingNode');
-  const adhBookingNodeLabel = document.getElementById('adhBookingNodeLabel');
-  const adhBookingTrackWrapper = document.getElementById('adhBookingTrackWrapper');
 
   function adhWindowDayToPercent(day) { return Math.max(0, Math.min(100, (day / ADH_WINDOW_MAX_DAYS) * 100)); }
   function adhClampWindowDays(days) {
@@ -1269,72 +1303,40 @@ page 13's own look.
     }
   });
 
-  function adhBookingDayToPercent(day) {
-    return adhState.windowDays > 0 ? Math.max(0, Math.min(100, (day / adhState.windowDays) * 100)) : 0;
-  }
+  /* ---------------- Same-Desk Booking Days: a plain, independent 1-5 stepper — per a follow-up
+     request this value is no longer tied to (or capped by) the Time Window slider above; see
+     floorsense-anti-desk-hogging-13.html's own NOTE for the full rationale. Function names below
+     mirror that page's own stepper functions 1:1, just "adh"-prefixed. ---------------- */
+  const ADH_BOOKING_MAX = 5;
+  const adhBookingValue = document.getElementById('adhBookingValue');
+  const adhBookingUnitLabel = document.getElementById('adhBookingUnitLabel');
+  const adhBookingUpBtn = document.getElementById('adhBookingUpBtn');
+  const adhBookingDownBtn = document.getElementById('adhBookingDownBtn');
+
   function adhClampBookingDays(days) {
     let value = Math.round(days);
     if (!Number.isFinite(value) || value < 1) value = 1;
-    if (value > adhState.windowDays) value = adhState.windowDays;
+    if (value > ADH_BOOKING_MAX) value = ADH_BOOKING_MAX;
     return value;
   }
-  function adhRenderBookingTicks() {
-    let html = '';
-    for (let d = 1; d <= adhState.windowDays; d += 1) {
-      html += `<div class="timeline-tick${d === adhState.windowDays ? ' hour' : ''}" style="left:${adhBookingDayToPercent(d)}%"></div>`;
-    }
-    adhBookingTicksEl.innerHTML = html;
-  }
-  function adhRenderBookingDiagram(days) {
-    const percent = adhBookingDayToPercent(days);
-    adhBookingNode.style.left = percent + '%';
-    adhBookingZone.style.left = '0%';
-    adhBookingZone.style.width = percent + '%';
-    adhRenderZoneSegmentsInto(adhBookingZone, days);
-    adhBookingNodeLabel.textContent = formatAdhDays(days);
-    adhBookingNode.setAttribute('aria-valuemax', adhState.windowDays);
-    adhBookingNode.setAttribute('aria-valuenow', days);
-    adhBookingNode.setAttribute('aria-valuetext', formatAdhDays(days));
+  function adhRenderBookingStepper(days) {
+    adhBookingValue.textContent = days;
+    adhBookingUnitLabel.textContent = days === 1 ? 'day' : 'days';
+    adhBookingUpBtn.disabled = days >= ADH_BOOKING_MAX;
+    adhBookingDownBtn.disabled = days <= 1;
   }
 
   function adhSetWindowDays(days) {
     adhState.windowDays = adhClampWindowDays(days);
     adhRenderWindowDiagram(adhState.windowDays);
-    adhRenderBookingTicks();
-    adhState.maxBookings = adhClampBookingDays(adhState.maxBookings);
-    adhRenderBookingDiagram(adhState.maxBookings);
   }
   function adhSetMaxBookings(days) {
     adhState.maxBookings = adhClampBookingDays(days);
-    adhRenderBookingDiagram(adhState.maxBookings);
+    adhRenderBookingStepper(adhState.maxBookings);
   }
 
-  function adhBookingDayFromClientX(clientX) {
-    const rect = adhBookingTrackWrapper.getBoundingClientRect();
-    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-    return adhClampBookingDays((rawPercent / 100) * adhState.windowDays);
-  }
-  function adhOnBookingPointerMove(e) { adhSetMaxBookings(adhBookingDayFromClientX(e.clientX)); }
-  function adhOnBookingPointerUp() {
-    adhBookingNode.classList.remove('dragging');
-    document.removeEventListener('pointermove', adhOnBookingPointerMove);
-    document.removeEventListener('pointerup', adhOnBookingPointerUp);
-    adhSaveSettings();
-  }
-  adhBookingNode.addEventListener('pointerdown', (e) => {
-    e.preventDefault();
-    adhBookingNode.classList.add('dragging');
-    adhBookingNode.focus();
-    document.addEventListener('pointermove', adhOnBookingPointerMove);
-    document.addEventListener('pointerup', adhOnBookingPointerUp);
-  });
-  adhBookingNode.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-      e.preventDefault(); adhSetMaxBookings(adhState.maxBookings + 1); adhSaveSettings();
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-      e.preventDefault(); adhSetMaxBookings(adhState.maxBookings - 1); adhSaveSettings();
-    }
-  });
+  adhBookingUpBtn.addEventListener('click', () => { adhSetMaxBookings(adhState.maxBookings + 1); adhSaveSettings(); });
+  adhBookingDownBtn.addEventListener('click', () => { adhSetMaxBookings(adhState.maxBookings - 1); adhSaveSettings(); });
 
   function adhSaveSettings() {
     project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
@@ -1344,8 +1346,7 @@ page 13's own look.
   }
 
   adhRenderWindowDiagram(adhState.windowDays);
-  adhRenderBookingTicks();
-  adhRenderBookingDiagram(adhState.maxBookings);
+  adhRenderBookingStepper(adhState.maxBookings);
   renderAdhSettingsField();
 
   document.getElementById(adhFeature.switchEl).addEventListener('click', renderAdhSettingsField);
@@ -1364,8 +1365,7 @@ page 13's own look.
     adhState.windowDays = 2;
     adhState.maxBookings = 1;
     adhRenderWindowDiagram(2);
-    adhRenderBookingTicks();
-    adhRenderBookingDiagram(1);
+    adhRenderBookingStepper(1);
     renderAll();
     renderIdleHoursField();
     renderFmeAckField();

@@ -2303,6 +2303,17 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 windowDays/maxBookings, each checked against the exact expected value/description text and the
 row-edit-link href), and a Playwright screenshot confirming the new row renders correctly in place
 between Sit-stand desks and Recurring bookings.
+
+MOST RECENT CHANGE: per a follow-up request that "Same-Desk Booking Days" become a plain, independent
+1-5 stepper on floorsense-anti-desk-hogging-13.html (no longer capped at or derived from the Time
+Window slider — see that file's own NOTE), `renderAdhSummary()` was reworded to stop implying
+`maxBookings` is a subset of `windowDays`. The value pill now reads "N days per M days window" (was
+"N of M days") and the description reads "...on up to N days within each M rolling window..." (was
+"...up to N of the M days in this window..."), matching the new independent semantics. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a 3-scenario
+jsdom test confirming the off state's text is unchanged and that an enabled state where `maxBookings`
+exceeds `windowDays` (impossible under the old capped design, routine now) renders both numbers as-is
+with no clamping.
 -->
 
 
@@ -2680,9 +2691,10 @@ between Sit-stand desks and Recurring bookings.
   (function renderAdhSummary() {
     // Same formatDays phrasing as floorsense-anti-desk-hogging-13.html's own updateSummary(), so
     // the wording here always matches what that page (and floorsense-optional-features-06.html's
-    // own inline sliders) would show. windowDays/maxBookings are both day-counts now — maxBookings
-    // is "how many of the window's days the same desk may be booked", capped at windowDays, not an
-    // independent 1-7 "times" value.
+    // own inline controls) would show. Per a follow-up request windowDays (Time Window) and
+    // maxBookings (Same-Desk Booking Days) are independent values now — maxBookings is a plain
+    // 1-5 stepper, no longer capped at or derived from windowDays — so the phrasing below no
+    // longer implies maxBookings is a subset of windowDays.
     const savedAdh = project.floorsense.wizard.antiDeskHogging || {};
     const mode = savedAdh.mode || 'none';
     const windowDays = Number.isFinite(savedAdh.windowDays) ? savedAdh.windowDays : 2;
@@ -2691,10 +2703,11 @@ between Sit-stand desks and Recurring bookings.
       return d === 1 ? '1 day' : d + ' days';
     }
     if (mode === 'enable') {
-      document.getElementById('adhSummaryValue').textContent = maxBookings + ' of ' + formatDays(windowDays);
+      document.getElementById('adhSummaryValue').textContent =
+        formatDays(maxBookings) + ' per ' + formatDays(windowDays) + ' window';
       document.getElementById('adhSummaryDesc').textContent =
-        'Enabled — a user can book the same desk on up to ' + maxBookings + ' of the ' + windowDays +
-        ' days in this window, to encourage cross-team interaction.';
+        'Enabled — a user can book the same desk on up to ' + formatDays(maxBookings) +
+        ' within each ' + formatDays(windowDays) + ' rolling window, to encourage cross-team interaction.';
     } else {
       document.getElementById('adhSummaryValue').textContent = 'Off';
       document.getElementById('adhSummaryDesc').textContent =

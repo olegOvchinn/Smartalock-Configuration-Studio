@@ -250,6 +250,33 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
+  /* ---------- Same-Desk Booking Days: a plain number stepper, not a slider — per a follow-up
+     request, this value is no longer tied to (or capped by) the Time Window slider above, so a
+     rail/pin diagram implying a shared scale would be misleading. A basic up/down stepper reads as
+     independent at a glance the way a shared rail wouldn't. Range is a fixed 1-5, unrelated to
+     Time Window's own 1-14 range. ---------- */
+  .stepper-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
+  .stepper {
+    display: flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 12px;
+    overflow: hidden; background: #fff;
+  }
+  .stepper-value {
+    min-width: 56px; padding: 8px 18px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-text); font-size: 22px; font-weight: 700; color: #102A43;
+  }
+  .stepper-btns { display: flex; flex-direction: column; border-left: 1.5px solid var(--line); }
+  .stepper-btn {
+    width: 34px; height: 22px; border: none; background: var(--paper-soft); padding: 0;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: background .15s;
+  }
+  .stepper-btn svg { width: 11px; height: 11px; stroke: var(--ink-soft); }
+  .stepper-btn:hover:not(:disabled) { background: var(--accent-wash); }
+  .stepper-btn:hover:not(:disabled) svg { stroke: var(--accent-deep); }
+  .stepper-btn:disabled { cursor: not-allowed; opacity: 0.35; }
+  .stepper-up { border-bottom: 1px solid var(--line); }
+  .stepper-unit { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -354,8 +381,8 @@
             <p class="checkin-card-desc">
               Floorsense has a feature to restrict users from booking the same desk multiple days in a
               row. Some customers enable this to encourage cross-team interaction and to prevent a
-              return to a quasi-fixed-desk way of working. It works by setting a time window — e.g. 2
-              days — and how many of those days the same desk may be booked.
+              return to a quasi-fixed-desk way of working. It works by setting a rolling time window,
+              and separately, how many days out of any window the same desk may be booked.
             </p>
             <div class="idle-toggle-row">
               <span class="idle-toggle-label">Enable Anti Desk Hogging</span>
@@ -389,20 +416,17 @@
             <div class="timeline-header">
               <p class="timeline-subtitle">Same-Desk Booking Days</p>
             </div>
-            <div class="timeline-diagram-row">
-              <div class="timeline-track-wrapper" id="bookingTrackWrapper">
-                <div class="timeline-rail">
-                  <div class="timeline-zone" id="bookingZone"></div>
-                  <div class="timeline-ticks" id="bookingTicks"></div>
-                </div>
-                <div class="timeline-node" id="bookingNode" tabindex="0" role="slider" aria-label="Same-desk booking days within the window" aria-valuemin="1" aria-valuemax="2">
-                  <div class="anchor-pin"></div>
-                  <div class="label-time primary" id="bookingNodeLabel">1 day</div>
-                  <div class="label-desc">Booking days</div>
+            <div class="stepper-row">
+              <div class="stepper">
+                <span class="stepper-value" id="bookingValue">1</span>
+                <div class="stepper-btns">
+                  <button type="button" class="stepper-btn stepper-up" id="bookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+                  <button type="button" class="stepper-btn stepper-down" id="bookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
                 </div>
               </div>
+              <span class="stepper-unit" id="bookingUnitLabel">day</span>
             </div>
-            <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 of the 2 days in this window.</p>
+            <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 day within each rolling window.</p>
           </div>
         </div>
       </div>
@@ -573,6 +597,35 @@ sliders' labels, segment counts, and the booking slider's `aria-valuemax` correc
 ArrowRight keyboard stepping on both sliders, including that shrinking the window below the current
 `maxBookings` clamps it down and updates the tick marks/aria-valuemax to match; and that the window
 slider clamps at both 1 and 14.
+
+MOST RECENT CHANGE: per a follow-up request, "Same-Desk Booking Days" was changed from the second
+rail/pin slider back to a plain up/down number stepper (`#bookingValue`/`#bookingUpBtn`/
+`#bookingDownBtn`, a rounded box split into a value display and stacked chevron buttons — a fixed
+1-5 range shown per the reference screenshot supplied), and — per the explicit instruction that "the
+values are not interconnected" — its dependency on the Time Window slider was removed entirely: it no
+longer shares Time Window's rail, is no longer capped at `windowDays`, and shrinking/growing the Time
+Window slider no longer clamps or re-renders it in any way. `state.maxBookings` still defaults to 1
+and is still stored at the same `antiDeskHogging.maxBookings` field, just clamped to a fixed 1-5
+range (`ADH_BOOKING_MAX`) instead of a `windowDays`-derived one. All of the rail/zone/tick/pin-drag
+machinery specific to that second slider (`bookingZone`/`bookingTicks`/`bookingNode`/
+`bookingTrackWrapper`, `bookingDayToPercent()`, `renderBookingTicks()`, `renderBookingDiagram()`,
+`bookingDayFromClientX()`, and its pointerdown/keydown listeners) was removed, replaced by a much
+smaller `renderBookingStepper()`/`setMaxBookings()` pair wired to the two buttons' `click` events;
+`clampBookingDays()` was simplified to the fixed 1-5 range and disables the relevant button at either
+end. `updateSummary()` no longer mentions `windowDays` at all ("This allows a user to book the same
+desk on up to N day(s) within each rolling window," dropping the previous "of the M days in this
+window" phrasing, since M no longer bounds N). The intro paragraph was reworded similarly ("sets a
+rolling time window, and separately, how many days out of any window the same desk may be booked").
+Time Window's own slider (`windowNode` and everything around it) is completely unchanged — the
+request was explicit that it should be "left as is." The identical stepper (same ids, `adh`-prefixed)
+replaced the second slider on floorsense-optional-features-06.html's inline copy too — see that
+file's own NOTE. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
+script block, a jsdom test confirming: the stepper defaults to 1/disables its down button; a saved
+`maxBookings` value greater than the current `windowDays` is preserved rather than clamped down
+(proving the values are genuinely decoupled); the up/down buttons clamp at 5 and 1 respectively and
+disable at each end; dragging/stepping the Time Window slider never changes the booking value; and
+the summary sentence pluralizes correctly at 1 vs. more. Also a Playwright screenshot confirming the
+stepper's look matches the supplied reference image.
 -->
 
 <script>
@@ -770,94 +823,46 @@ slider clamps at both 1 and 14.
     }
   });
 
-  /* ---------------- Same-Desk Booking Days slider: a second rail whose own maximum tracks the
-     Time Window slider's current value — a user can't book the same desk on more days than exist
-     in the window — so its range is recalculated (ticks re-rendered, current value re-clamped) every
-     time windowDays changes. ---------------- */
-  const bookingZone = document.getElementById('bookingZone');
-  const bookingTicksEl = document.getElementById('bookingTicks');
-  const bookingNode = document.getElementById('bookingNode');
-  const bookingNodeLabel = document.getElementById('bookingNodeLabel');
-  const bookingTrackWrapper = document.getElementById('bookingTrackWrapper');
+  /* ---------------- Same-Desk Booking Days: a plain, independent 1-5 stepper. Per a follow-up
+     request this value is no longer tied to (or capped by) the Time Window slider above — the two
+     are set completely separately now, so there is no "day the window ends" concept to place a pin
+     against and no re-clamping when the other value changes. ---------------- */
+  const ADH_BOOKING_MAX = 5;
+  const bookingValue = document.getElementById('bookingValue');
+  const bookingUnitLabel = document.getElementById('bookingUnitLabel');
+  const bookingUpBtn = document.getElementById('bookingUpBtn');
+  const bookingDownBtn = document.getElementById('bookingDownBtn');
   const adhSummaryHint = document.getElementById('adhSummaryHint');
 
-  function bookingDayToPercent(day) {
-    return state.windowDays > 0 ? Math.max(0, Math.min(100, (day / state.windowDays) * 100)) : 0;
+  function updateSummary() {
+    adhSummaryHint.textContent = 'This allows a user to book the same desk on up to ' + state.maxBookings +
+      (state.maxBookings === 1 ? ' day' : ' days') + ' within each rolling window.';
   }
   function clampBookingDays(days) {
     let value = Math.round(days);
     if (!Number.isFinite(value) || value < 1) value = 1;
-    if (value > state.windowDays) value = state.windowDays;
+    if (value > ADH_BOOKING_MAX) value = ADH_BOOKING_MAX;
     return value;
   }
-  function renderBookingTicks() {
-    let html = '';
-    for (let d = 1; d <= state.windowDays; d += 1) {
-      const percent = bookingDayToPercent(d);
-      const isMajor = d === state.windowDays;
-      html += `<div class="timeline-tick${isMajor ? ' hour' : ''}" style="left:${percent}%"></div>`;
-    }
-    bookingTicksEl.innerHTML = html;
-  }
-  function updateSummary() {
-    adhSummaryHint.textContent = 'This allows a user to book the same desk on up to ' + state.maxBookings +
-      ' of the ' + state.windowDays + ' days in this window.';
-  }
-  function renderBookingDiagram(days) {
-    const percent = bookingDayToPercent(days);
-    bookingNode.style.left = percent + '%';
-    bookingZone.style.left = '0%';
-    bookingZone.style.width = percent + '%';
-    renderZoneSegmentsInto(bookingZone, days);
-    bookingNodeLabel.textContent = formatDays(days);
-    bookingNode.setAttribute('aria-valuemax', state.windowDays);
-    bookingNode.setAttribute('aria-valuenow', days);
-    bookingNode.setAttribute('aria-valuetext', formatDays(days));
+  function renderBookingStepper(days) {
+    bookingValue.textContent = days;
+    bookingUnitLabel.textContent = days === 1 ? 'day' : 'days';
+    bookingUpBtn.disabled = days >= ADH_BOOKING_MAX;
+    bookingDownBtn.disabled = days <= 1;
     updateSummary();
   }
 
   function setWindowDays(days) {
     state.windowDays = clampWindowDays(days);
     renderWindowDiagram(state.windowDays);
-    renderBookingTicks();
-    state.maxBookings = clampBookingDays(state.maxBookings);
-    renderBookingDiagram(state.maxBookings);
   }
   function setMaxBookings(days) {
     state.maxBookings = clampBookingDays(days);
-    renderBookingDiagram(state.maxBookings);
+    renderBookingStepper(state.maxBookings);
   }
 
-  function bookingDayFromClientX(clientX) {
-    const rect = bookingTrackWrapper.getBoundingClientRect();
-    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-    return clampBookingDays((rawPercent / 100) * state.windowDays);
-  }
-  function onBookingPointerMove(e) { setMaxBookings(bookingDayFromClientX(e.clientX)); }
-  function onBookingPointerUp() {
-    bookingNode.classList.remove('dragging');
-    document.removeEventListener('pointermove', onBookingPointerMove);
-    document.removeEventListener('pointerup', onBookingPointerUp);
-    queueSave();
-  }
-  bookingNode.addEventListener('pointerdown', (e) => {
-    e.preventDefault();
-    bookingNode.classList.add('dragging');
-    bookingNode.focus();
-    document.addEventListener('pointermove', onBookingPointerMove);
-    document.addEventListener('pointerup', onBookingPointerUp);
-  });
-  bookingNode.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      setMaxBookings(state.maxBookings + 1);
-      queueSave();
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      setMaxBookings(state.maxBookings - 1);
-      queueSave();
-    }
-  });
+  bookingUpBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings + 1); queueSave(); });
+  bookingDownBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings - 1); queueSave(); });
 
   /* ---------------- reveal animation: plays once per card as it scrolls into view, ported
      verbatim from floorsense-prebooking-advance-04.html and extended to both cards on this
@@ -884,8 +889,7 @@ slider clamps at both 1 and 14.
 
   function applyState() {
     renderWindowDiagram(state.windowDays);
-    renderBookingTicks();
-    renderBookingDiagram(state.maxBookings);
+    renderBookingStepper(state.maxBookings);
     applyEnabledState();
   }
   applyState();
