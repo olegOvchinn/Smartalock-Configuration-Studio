@@ -808,6 +808,13 @@
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
+            <span class="label">Anti Desk Hogging</span>
+            <span class="value-group"><span class="value" id="adhSummaryValue">Off</span><a class="row-edit-link" href="floorsense-anti-desk-hogging-13.html">Edit</a></span>
+          </div>
+          <p class="summary-desc" id="adhSummaryDesc">Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top">
             <span class="label">Recurring bookings</span>
             <button type="button" class="policy-switch" id="coreRecurringToggle" role="switch" aria-checked="false"></button>
           </div>
@@ -2273,6 +2280,29 @@ creating a new additional policy and confirming no "Recurring bookings" text app
 (while the adjacent Sit-stand desks/Do Not Disturb fields and the Core Policy card's own Recurring
 bookings toggle are both unaffected), and a full-page Playwright screenshot showing Sit-stand desks
 flowing directly into Do Not Disturb available with no gap or leftover markup.
+
+MOST RECENT CHANGE: per a request to investigate whether any page was orphaned around Anti Desk
+Hogging / "anti nesting" (a mishearing of the same feature, whose icon on floorsense-optional-
+features-06.html happens to be a bird-in-a-nest glyph), found that floorsense-anti-desk-hogging-
+13.html had no way in: Auto-Release on Idle, NSNP, and Sit-stand desks (FME) — the three other
+optional features sharing the exact same dedicated-page-plus-NAV_SEQUENCE-skip pattern — each got
+their own Additional Options summary row with a `row-edit-link` straight to their page, but Anti
+Desk Hogging never did, and the Optional Features hub only exposes a toggle switch for it with no
+link out either. The only way to reach that page at all was the manual page-nav "next" arrow chain
+(Check-in Window → Idle Release → Reservation Length → NSNP → FME → Anti Desk Hogging), and only if
+every intervening feature also happened to be switched on. Fixed by adding a new "Anti Desk Hogging"
+`.summary-row` to the Additional Options group, directly after Sit-stand desks and before Recurring
+bookings, with a `#adhSummaryValue`/`row-edit-link` pair matching the NSNP/FME pattern exactly, plus
+a `renderAdhSummary()` IIFE (added right after the existing `renderFmeSummary()`) that reads
+`project.floorsense.wizard.antiDeskHogging` (`mode`/`windowDays`/`maxBookings`) and reuses the exact
+same `formatTimes()`/`formatDays()` phrasing ("once"/"twice"/"N times" and "1 day"/"N days") that
+floorsense-anti-desk-hogging-13.html's own `updateSummary()` already uses, so the wording here always
+matches what that page itself would show — e.g. "twice per 3 days" when enabled, or "Off" when not.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+5-scenario jsdom test (default/unset, explicit mode:'none', and three enabled combinations of
+windowDays/maxBookings, each checked against the exact expected value/description text and the
+row-edit-link href), and a Playwright screenshot confirming the new row renders correctly in place
+between Sit-stand desks and Recurring bookings.
 -->
 
 
@@ -2644,6 +2674,34 @@ flowing directly into Do Not Disturb available with no gap or leftover markup.
     } else {
       document.getElementById('fmeSummaryValue').textContent = 'Off';
       document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is disabled by default.';
+    }
+  })();
+
+  (function renderAdhSummary() {
+    // Same formatTimes/formatDays phrasing as floorsense-anti-desk-hogging-13.html's own
+    // updateSummary(), so the wording here always matches what that page itself would show.
+    const savedAdh = project.floorsense.wizard.antiDeskHogging || {};
+    const mode = savedAdh.mode || 'none';
+    const windowDays = Number.isFinite(savedAdh.windowDays) ? savedAdh.windowDays : 2;
+    const maxBookings = Number.isFinite(savedAdh.maxBookings) ? savedAdh.maxBookings : 1;
+    function formatTimes(n) {
+      if (n === 1) return 'once';
+      if (n === 2) return 'twice';
+      return n + ' times';
+    }
+    function formatDays(d) {
+      return d === 1 ? '1 day' : d + ' days';
+    }
+    if (mode === 'enable') {
+      const timesLabel = formatTimes(maxBookings);
+      const daysLabel = formatDays(windowDays);
+      document.getElementById('adhSummaryValue').textContent = timesLabel + ' per ' + daysLabel;
+      document.getElementById('adhSummaryDesc').textContent =
+        'Enabled — a user can book the same desk ' + timesLabel + ' every ' + daysLabel + ', to encourage cross-team interaction.';
+    } else {
+      document.getElementById('adhSummaryValue').textContent = 'Off';
+      document.getElementById('adhSummaryDesc').textContent =
+        'Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.';
     }
   })();
 

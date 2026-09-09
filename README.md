@@ -372,6 +372,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the edge border on the image placeholder frame on both `smartalock-reservation-type-01.html` and `smartalock-locker-policy-05.html`; the drop shadow and rounded corners stay, only the hard border edge is gone.
 - Removed the "Modules saved" progress card from `smartalock-configuration-summary-08.html`, and reconfigured the header's segmented module-nav to match the Floorsense branch's own reduced 2-segment pattern (previous page + current) instead of one segment per wizard module.
 - Synchronized "booking start" on `floorsense-checkin-window-08.html` with `floorsense-business-hours-05.html` and `floorsense-default-reservation-times-07.html`, so a change made on any of the three now applies everywhere: page 08's example diagram now reads `businessHours.arrivalTime` first (matching page 07's existing fallback order), closing the one remaining gap in that trio's shared state.
+- Added an "Anti Desk Hogging" row (value + Edit link) to the Configuration Summary's Additional Options group, matching the existing Auto-Release on Idle / NSNP / Sit-stand desks rows — `floorsense-anti-desk-hogging-13.html` previously had no direct way in from the summary or the Optional Features hub, only a manual page-nav "next" arrow chain.
 
 ## Status
 
