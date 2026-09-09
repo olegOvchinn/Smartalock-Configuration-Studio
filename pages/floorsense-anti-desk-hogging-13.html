@@ -357,7 +357,7 @@
               Floorsense has a feature to restrict users from booking the same desk multiple days in a
               row. Some customers enable this to encourage cross-team interaction and to prevent a
               return to a quasi-fixed-desk way of working. It works by setting a rolling time window,
-              and separately, how many days out of any window the same desk may be booked.
+              and separately, how many times within any window the same desk may be booked.
             </p>
           </div>
         </div>
@@ -369,8 +369,9 @@
             </div>
             <div class="minute-field">
               <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Same-desk booking times, 1 to 5">
-              <span class="minute-suffix">days within the rolling window (max 5)</span>
+              <span class="minute-suffix">times within the rolling window (max 5)</span>
             </div>
+            <p class="policy-hint">Each booking of this desk counts as one time toward the limit above — including a second booking on the same day, if it starts more than 1 hour after the previous one ended.</p>
           </div>
 
           <div class="timeline-card">
@@ -681,6 +682,29 @@ row was renamed identically — see that file's own NOTE. Verified via an inline
 check, `node --check` on the extracted script block, and a jsdom test confirming the new label/aria-
 label/hint text render with zero runtime errors and no functional regression, plus a Playwright
 screenshot confirming the new name reads correctly on the card.
+
+MOST RECENT CHANGE: per a request that the fill-in field count times rather than days, superseding the
+"still a day-count" note directly above — the field's `.minute-suffix` changed from "days within the
+rolling window (max 5)" to "times within the rolling window (max 5)", the intro `.checkin-card-desc`
+paragraph's closing clause changed from "how many days out of any window the same desk may be booked"
+to "how many times within any window the same desk may be booked", and a new grey `.policy-hint`
+paragraph was added directly below the field explaining the specific counting rule supplied: "Each
+booking of this desk counts as one time toward the limit above — including a second booking on the
+same day, if it starts more than 1 hour after the previous one ended." This clarifies that same-day
+reuse of the desk isn't automatically exempt from the limit — a same-day rebooking only avoids counting
+as an extra time when it follows the previous release within 1 hour (e.g. a quick badge-out/badge-back-
+in), not whenever it happens to fall on the same calendar day. The underlying field, id
+(`bookingDaysInput`), and 1-5 range are unchanged — only its displayed unit and the added explanation.
+The same suffix change (but not the hint, since the hub's inline copies never carry `.policy-hint` text
+for any feature) was mirrored on floorsense-optional-features-06.html — see that file's own NOTE.
+floorsense-out-of-box-policy.html's Configuration Summary row was also updated: `renderAdhSummary()`
+gained a `formatTimes()` helper (mirroring the existing `formatDays()`) so the row and its static
+fallback description both now say "times" for the booking-count value while windowDays (Time Window)
+keeps its own "days" phrasing. Verified via an inline HTMLParser tag-balance check and `node --check`
+on all three files' extracted script blocks, jsdom tests confirming both the new hint text and the
+updated summary phrasing (singular "1 time" vs. plural "N times", independent of windowDays' own "N
+days") render correctly with zero runtime errors, and a Playwright screenshot of the card confirming the
+new copy reads cleanly.
 -->
 
 <script>

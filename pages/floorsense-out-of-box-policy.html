@@ -811,7 +811,7 @@
             <span class="label">Anti Desk Hogging</span>
             <span class="value-group"><span class="value" id="adhSummaryValue">Off</span><a class="row-edit-link" href="floorsense-anti-desk-hogging-13.html">Edit</a></span>
           </div>
-          <p class="summary-desc" id="adhSummaryDesc">Restricts how many days a user can book the same desk within a rolling time window. Disabled by default.</p>
+          <p class="summary-desc" id="adhSummaryDesc">Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -2314,6 +2314,24 @@ an inline HTMLParser tag-balance check, `node --check` on the extracted script b
 jsdom test confirming the off state's text is unchanged and that an enabled state where `maxBookings`
 exceeds `windowDays` (impossible under the old capped design, routine now) renders both numbers as-is
 with no clamping.
+
+MOST RECENT CHANGE: per a request that the Same-Desk Booking Times field count booking occurrences
+rather than calendar days — specifically, a same-day rebooking of the same desk only avoids counting as
+an extra time if it starts within 1 hour of the previous release (see
+floorsense-anti-desk-hogging-13.html's own NOTE and its new on-page hint explaining this rule) —
+`renderAdhSummary()` gained a `formatTimes()` helper (`'1 time'` / `'N times'`, mirroring the existing
+`formatDays()`) and now formats `maxBookings` with it instead of `formatDays()`, while `windowDays`
+keeps its own `formatDays()` unchanged. The value pill now reads "N time(s) per M days window" (was "N
+days per M days window") and the enabled description reads "...book the same desk up to N time(s)
+within each M days rolling window..." (was "...up to N days..."). The static fallback description
+(shown before this row's `<script>` runs) changed from "Restricts how many days a user can book..." to
+"Restricts how many times a user can book...", and the disabled-state description in
+`renderAdhSummary()` itself was updated to match. This is a units correction, not a new field —
+`antiDeskHogging.maxBookings` is still the same number (1-5) read from the same state path; only how
+it's worded changed. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a 3-scenario jsdom test confirming the off state, a singular "1 time"
+enabled state, and a plural "N times" enabled state all render correctly with `windowDays` still shown
+in days throughout, with zero runtime errors.
 -->
 
 
@@ -2689,12 +2707,13 @@ with no clamping.
   })();
 
   (function renderAdhSummary() {
-    // Same formatDays phrasing as floorsense-anti-desk-hogging-13.html's own updateSummary(), so
-    // the wording here always matches what that page (and floorsense-optional-features-06.html's
-    // own inline controls) would show. Per a follow-up request windowDays (Time Window) and
-    // maxBookings (Same-Desk Booking Days) are independent values now — maxBookings is a plain
-    // 1-5 stepper, no longer capped at or derived from windowDays — so the phrasing below no
-    // longer implies maxBookings is a subset of windowDays.
+    // Per a follow-up request, maxBookings (Same-Desk Booking Times) now counts booking occurrences
+    // rather than calendar days — a same-day rebooking of this desk counts as an extra time once
+    // there's more than a 1-hour gap since the previous release, per that field's own on-page hint
+    // on floorsense-anti-desk-hogging-13.html/floorsense-optional-features-06.html — so it's
+    // formatted with formatTimes() here, while windowDays (Time Window) is still a day count and
+    // keeps formatDays(). These remain independent values: maxBookings is a plain 1-5 fill-in field,
+    // not capped at or derived from windowDays.
     const savedAdh = project.floorsense.wizard.antiDeskHogging || {};
     const mode = savedAdh.mode || 'none';
     const windowDays = Number.isFinite(savedAdh.windowDays) ? savedAdh.windowDays : 2;
@@ -2702,16 +2721,19 @@ with no clamping.
     function formatDays(d) {
       return d === 1 ? '1 day' : d + ' days';
     }
+    function formatTimes(n) {
+      return n === 1 ? '1 time' : n + ' times';
+    }
     if (mode === 'enable') {
       document.getElementById('adhSummaryValue').textContent =
-        formatDays(maxBookings) + ' per ' + formatDays(windowDays) + ' window';
+        formatTimes(maxBookings) + ' per ' + formatDays(windowDays) + ' window';
       document.getElementById('adhSummaryDesc').textContent =
-        'Enabled — a user can book the same desk on up to ' + formatDays(maxBookings) +
+        'Enabled — a user can book the same desk up to ' + formatTimes(maxBookings) +
         ' within each ' + formatDays(windowDays) + ' rolling window, to encourage cross-team interaction.';
     } else {
       document.getElementById('adhSummaryValue').textContent = 'Off';
       document.getElementById('adhSummaryDesc').textContent =
-        'Restricts how many days a user can book the same desk within a rolling time window. Disabled by default.';
+        'Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.';
     }
   })();
 

@@ -444,7 +444,7 @@
                 </div>
                 <div class="minute-field">
                   <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="adhBookingDaysInput" aria-label="Same-desk booking times, 1 to 5">
-                  <span class="minute-suffix">days within the rolling window (max 5)</span>
+                  <span class="minute-suffix">times within the rolling window (max 5)</span>
                 </div>
               </div>
               <div class="timeline-card">
@@ -1038,6 +1038,20 @@ didn't change, only the field's display name. Historical NOTE paragraphs above a
 per this site's established convention of not rewriting historical record. Verified via an inline
 HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming
 the new label renders with zero runtime errors and no functional regression.
+
+MOST RECENT CHANGE: mirrors the same "days" to "times" unit change made to
+floorsense-anti-desk-hogging-13.html itself — see that file's own NOTE for the full rationale and the
+specific counting rule (a same-day rebooking only avoids counting as an extra time if it follows the
+previous release within 1 hour). `.minute-suffix` here changed from "days within the rolling window
+(max 5)" to "times within the rolling window (max 5)", superseding the "unit itself...didn't change"
+statement directly above. This hub's own `.feature-row-desc` for Anti Desk Hogging already read
+"Restricts how many times a user can book the same desk..." (independently worded that way already),
+so it needed no change. No explanatory `.policy-hint` was added under this field here, since the
+compact hub inline copy has never carried hint text for any feature (Auto-Release on Idle, NSNP, FME
+all rely on their own dedicated pages for that level of detail) — the full explanation lives on
+floorsense-anti-desk-hogging-13.html. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and a jsdom test confirming the new suffix text with zero
+runtime errors.
 -->
 
 <script>
