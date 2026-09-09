@@ -142,15 +142,15 @@
   /* ---------- Time Window timeline: the same segmented-rail/draggable-pin control as
      floorsense-prebooking-advance-04.html's advance-booking diagram — a single-handle 1-14 day
      slider. Every rail/zone/tick/pin/label class, colour and dimension below is copied verbatim
-     from that page. Same-Desk Booking Days used to be a second copy of this same control but is now
-     a plain stepper instead, positioned above this card rather than inside one of its own — see the
+     from that page. Same-Desk Booking Times used to be a second copy of this same control but is now
+     a plain fill-in field instead, positioned above this card rather than inside one of its own — see the
      MOST RECENT CHANGE note below. ---------- */
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; border-radius: var(--radius-md); margin: 0 22px; }
   .timeline-header { margin-bottom: 4px; }
   .timeline-subtitle { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
 
-  /* ---------- Same-Desk Booking Days field: unboxed (no .timeline-card background), matching
+  /* ---------- Same-Desk Booking Times field: unboxed (no .timeline-card background), matching
      floorsense-prebooking-advance-04.html's own number-field-outside-the-grey-box placement above
      its timeline diagram — see that page's own NOTE and the reference screenshot in this file's
      MOST RECENT CHANGE note. Sits directly above the Time Window card, inset the same 22px each
@@ -237,7 +237,7 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
-  /* ---------- Same-Desk Booking Days: a plain fill-in number field, styled and structured exactly
+  /* ---------- Same-Desk Booking Times: a plain fill-in number field, styled and structured exactly
      like floorsense-prebooking-advance-04.html's own "Advance booking limit" field — .minute-field/
      .minute-input/.minute-suffix copied verbatim from that page (a compact 88px bordered number
      input plus a plain-text suffix span) rather than this page's earlier bespoke up/down-chevron
@@ -365,10 +365,10 @@
         <div id="adhBody">
           <div class="adh-field-block">
             <div class="timeline-header">
-              <p class="timeline-subtitle">Same-Desk Booking Days</p>
+              <p class="timeline-subtitle">Same-Desk Booking Times</p>
             </div>
             <div class="minute-field">
-              <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Same-desk booking days, 1 to 5">
+              <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Same-desk booking times, 1 to 5">
               <span class="minute-suffix">days within the rolling window (max 5)</span>
             </div>
           </div>
@@ -390,7 +390,7 @@
                 </div>
               </div>
             </div>
-            <p class="policy-hint">Sets the length of the rolling window used by the Same-Desk Booking Days limit above — e.g. a 2-day window counts today and yesterday together when checking that limit.</p>
+            <p class="policy-hint">Sets the length of the rolling window used by the Same-Desk Booking Times limit above — e.g. a 2-day window counts today and yesterday together when checking that limit.</p>
           </div>
         </div>
       </div>
@@ -666,6 +666,21 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, a js
 `#adhSummaryHint` no longer exists, exactly one `.policy-hint` remains with the new wording, and typing
 into the booking field still clamps/saves correctly with zero runtime errors, plus a Playwright
 screenshot of the card confirming the layout reads cleanly with the one remaining hint.
+
+MOST RECENT CHANGE: per a request to rename "Same-Desk Booking Days" to "Same-Desk Booking Times",
+updated every current, user-visible occurrence: the `.timeline-subtitle` label above the field, the
+input's `aria-label`, and the Time Window card's own hint text (which names this field by name). The
+input's own id (`bookingDaysInput`), its `.minute-suffix` ("days within the rolling window (max 5)"),
+and every other current-state comment describing the field were updated to match the new name too,
+except this file's own historical MOST RECENT CHANGE paragraphs above, which are left saying "Days"
+since they're a record of what the field was called at the time, not live copy — matching the same
+convention used for other renames on this site (e.g. floorsense-prebooking-advance-04.html's own
+"Prebooking" to "Booking" rename). The field's underlying unit is unchanged — it's still a day-count
+(1-5), just relabeled; the mirrored copy on floorsense-optional-features-06.html's Anti Desk Hogging
+row was renamed identically — see that file's own NOTE. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and a jsdom test confirming the new label/aria-
+label/hint text render with zero runtime errors and no functional regression, plus a Playwright
+screenshot confirming the new name reads correctly on the card.
 -->
 
 <script>
@@ -848,7 +863,7 @@ screenshot of the card confirming the layout reads cleanly with the one remainin
     }
   });
 
-  /* ---------------- Same-Desk Booking Days: a plain fill-in number field, wired exactly like
+  /* ---------------- Same-Desk Booking Times: a plain fill-in number field, wired exactly like
      floorsense-prebooking-advance-04.html's own "Advance booking limit" field — clampBookingDays()
      reads/clamps/writes the input's own .value directly (mirroring that page's
      clampPrebookingDays()), rather than the old up/down-stepper's separate render function. Per a
@@ -878,7 +893,7 @@ screenshot of the card confirming the layout reads cleanly with the one remainin
 
   /* ---------------- reveal animation: plays once as the Time Window card scrolls into view,
      ported verbatim from floorsense-prebooking-advance-04.html. Only one .timeline-card remains on
-     this page now that Same-Desk Booking Days is an unboxed plain number field, but this still uses
+     this page now that Same-Desk Booking Times is an unboxed plain number field, but this still uses
      querySelectorAll so it needs no changes if another card is ever added back. ---------------- */
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const timelineCards = document.querySelectorAll('.timeline-card');

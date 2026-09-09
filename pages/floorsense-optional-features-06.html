@@ -205,7 +205,7 @@
   .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
-  /* ---------- Anti Desk Hogging's own inline settings: the same Same-Desk Booking Days stepper /
+  /* ---------- Anti Desk Hogging's own inline settings: the same Same-Desk Booking Times field /
      Time Window slider used on floorsense-anti-desk-hogging-13.html itself, shown only once that
      feature's switch is on. Every class below is copied verbatim from that page (scaled down
      slightly to sit comfortably inside a single hub row) so the controls read as the same
@@ -279,7 +279,7 @@
     color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
 
-  /* ---------- Same-Desk Booking Days: a plain fill-in number field, styled and structured exactly
+  /* ---------- Same-Desk Booking Times: a plain fill-in number field, styled and structured exactly
      like floorsense-prebooking-advance-04.html's own "Advance booking limit" field (see that page's
      own NOTE) — .minute-field/.minute-input/.minute-suffix copied verbatim and scoped under
      .feature-row-adh like the timeline rules above, replacing the earlier up/down-chevron stepper
@@ -440,10 +440,10 @@
             <div class="feature-row-adh" id="adhSettingsField">
               <div class="adh-field-block">
                 <div class="timeline-header">
-                  <p class="timeline-subtitle">Same-Desk Booking Days</p>
+                  <p class="timeline-subtitle">Same-Desk Booking Times</p>
                 </div>
                 <div class="minute-field">
-                  <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="adhBookingDaysInput" aria-label="Same-desk booking days, 1 to 5">
+                  <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="adhBookingDaysInput" aria-label="Same-desk booking times, 1 to 5">
                   <span class="minute-suffix">days within the rolling window (max 5)</span>
                 </div>
               </div>
@@ -1029,6 +1029,15 @@ defaults to 1 and stays hidden until the master switch is on; a saved state rend
 and reveals it correctly; typing a value above 5 clamps to 5 and saves; toggling the switch reveals the
 field; and Reset restores both Time Window and the field to their defaults. Also a Playwright screenshot
 confirming the field matches page 04's look inside the row.
+
+MOST RECENT CHANGE: mirrors the same rename made to floorsense-anti-desk-hogging-13.html itself — see
+that file's own NOTE for the full rationale. "Same-Desk Booking Days" became "Same-Desk Booking Times"
+in the `.timeline-subtitle` label and the input's `aria-label`; the input's own id
+(`adhBookingDaysInput`) and its `.minute-suffix` are unchanged, since the unit itself (a 1-5 day count)
+didn't change, only the field's display name. Historical NOTE paragraphs above are left saying "Days",
+per this site's established convention of not rewriting historical record. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test confirming
+the new label renders with zero runtime errors and no functional regression.
 -->
 
 <script>
@@ -1315,7 +1324,7 @@ confirming the field matches page 04's look inside the row.
     }
   });
 
-  /* ---------------- Same-Desk Booking Days: a plain fill-in number field, wired exactly like
+  /* ---------------- Same-Desk Booking Times: a plain fill-in number field, wired exactly like
      floorsense-prebooking-advance-04.html's own "Advance booking limit" field —
      adhClampBookingDays() reads/clamps/writes the input's own .value directly (mirroring that
      page's clampPrebookingDays()), replacing the earlier up/down-stepper's separate render
