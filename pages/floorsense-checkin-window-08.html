@@ -1052,6 +1052,26 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to synchronize "booking start" on this page with
+floorsense-business-hours-05.html and floorsense-default-reservation-times-07.html so that changing
+the value anywhere applies everywhere, this page's read-only example-diagram computation was fixed to
+check `project.floorsense.wizard.businessHours.arrivalTime` first. Previously this page only read the
+legacy `project.floorsense.wizard.defaultReservationTimes.defaultStartTime` key, so an edit made solely
+on floorsense-business-hours-05.html (which owns `businessHours.arrivalTime`/`departureTime` directly)
+would not show up here even though page 07 already read/wrote `businessHours` correctly — this page
+was the one remaining gap in an otherwise-synced trio. Fixed by changing
+`const savedDefaultStartTime = defaultReservationTimes.defaultStartTime || '08:30';` to
+`const savedDefaultStartTime = businessHours.arrivalTime || defaultReservationTimes.defaultStartTime
+|| '08:30';`, matching the exact fallback priority order page 07 already uses. `savedDefaultStartTime`
+is used only once on this page, to render its own example check-in diagram
+(`startMinutes = parseTimeToMinutes(savedDefaultStartTime)`), and this page never writes the value
+back, so no `save()`-side change was needed here. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a 4-scenario jsdom test (businessHours-only, legacy-only,
+neither set, and conflicting values with businessHours correctly taking priority), an end-to-end jsdom
+test simulating an edit on floorsense-business-hours-05.html and confirming the resulting localStorage
+state renders the correct start time on this page on a fresh load, and a Playwright screenshot
+confirming the "6:45 AM" label renders correctly when seeded only via `businessHours.arrivalTime`.
 -->
 
 <script>
@@ -1087,8 +1107,15 @@ touched file.
     checkInEarlyMinutes: Number.isFinite(saved.checkInEarlyMinutes) ? saved.checkInEarlyMinutes : 30,
     checkInLateMinutes: Number.isFinite(saved.checkInLateMinutes) ? saved.checkInLateMinutes : 60
   };
+  // Booking start is shared across this page, floorsense-business-hours-05.html, and
+  // floorsense-default-reservation-times-07.html — businessHours.arrivalTime is the single source
+  // of truth those two pages already read/write, so it's read first here too (falling back to this
+  // page's own previously-read defaultReservationTimes.defaultStartTime, then the '08:30' default,
+  // for projects saved before that sync existed). This page only ever displays the value (its own
+  // example diagram) and never writes it back, so no save()-side change was needed.
+  const businessHours = project.floorsense.wizard.businessHours || {};
   const defaultReservationTimes = project.floorsense.wizard.defaultReservationTimes || {};
-  const savedDefaultStartTime = defaultReservationTimes.defaultStartTime || '08:30';
+  const savedDefaultStartTime = businessHours.arrivalTime || defaultReservationTimes.defaultStartTime || '08:30';
 
   /* ---------------- check-in methods footer text, sourced from page 02's saved selection ---------------- */
   const CHECKIN_METHOD_LABELS = {
