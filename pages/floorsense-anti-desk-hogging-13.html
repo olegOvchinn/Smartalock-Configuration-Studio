@@ -157,18 +157,23 @@
   .idle-body { display: none; }
   .idle-body.show { display: block; }
 
-  /* ---------- time-window / booking-days timelines: the same segmented-rail/draggable-pin control
-     as floorsense-prebooking-advance-04.html's advance-booking diagram, used twice here — one rail
-     for the time window itself (a single-handle 1-14 day slider), and a second, shorter rail for how
-     many of that window's days the same desk may be booked (1 up to the window's own current length,
-     so this second slider's range shrinks/grows to track the first one live). Every rail/zone/tick/
-     pin/label class, colour and dimension below is copied verbatim from that page so all the
-     wizard's slider controls feel and look identical. See the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- Time Window timeline: the same segmented-rail/draggable-pin control as
+     floorsense-prebooking-advance-04.html's advance-booking diagram — a single-handle 1-14 day
+     slider. Every rail/zone/tick/pin/label class, colour and dimension below is copied verbatim
+     from that page. Same-Desk Booking Days used to be a second copy of this same control but is now
+     a plain stepper instead, positioned above this card rather than inside one of its own — see the
+     MOST RECENT CHANGE note below. ---------- */
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; border-radius: var(--radius-md); margin: 0 22px; }
-  .timeline-card + .timeline-card { margin-top: 18px; }
   .timeline-header { margin-bottom: 4px; }
   .timeline-subtitle { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
+
+  /* ---------- Same-Desk Booking Days field: unboxed (no .timeline-card background), matching
+     floorsense-prebooking-advance-04.html's own number-field-outside-the-grey-box placement above
+     its timeline diagram — see that page's own NOTE and the reference screenshot in this file's
+     MOST RECENT CHANGE note. Sits directly above the Time Window card, inset the same 22px each
+     side so its label/stepper align with the checkin-card-header content above it. ---------- */
+  .adh-field-block { margin: 0 22px 18px; }
 
   .timeline-diagram-row { display: block; }
   .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 10px 46px; }
@@ -392,6 +397,23 @@
         </div>
 
         <div class="idle-body" id="adhBody">
+          <div class="adh-field-block">
+            <div class="timeline-header">
+              <p class="timeline-subtitle">Same-Desk Booking Days</p>
+            </div>
+            <div class="stepper-row">
+              <div class="stepper">
+                <span class="stepper-value" id="bookingValue">1</span>
+                <div class="stepper-btns">
+                  <button type="button" class="stepper-btn stepper-up" id="bookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+                  <button type="button" class="stepper-btn stepper-down" id="bookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                </div>
+              </div>
+              <span class="stepper-unit" id="bookingUnitLabel">day</span>
+            </div>
+            <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 day within each rolling window.</p>
+          </div>
+
           <div class="timeline-card">
             <div class="timeline-header">
               <p class="timeline-subtitle">Time Window</p>
@@ -410,23 +432,6 @@
               </div>
             </div>
             <p class="policy-hint">How many days form one rolling window — e.g. 2 days means today and yesterday count together.</p>
-          </div>
-
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <p class="timeline-subtitle">Same-Desk Booking Days</p>
-            </div>
-            <div class="stepper-row">
-              <div class="stepper">
-                <span class="stepper-value" id="bookingValue">1</span>
-                <div class="stepper-btns">
-                  <button type="button" class="stepper-btn stepper-up" id="bookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
-                  <button type="button" class="stepper-btn stepper-down" id="bookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-                </div>
-              </div>
-              <span class="stepper-unit" id="bookingUnitLabel">day</span>
-            </div>
-            <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 day within each rolling window.</p>
           </div>
         </div>
       </div>
@@ -626,6 +631,24 @@ script block, a jsdom test confirming: the stepper defaults to 1/disables its do
 disable at each end; dragging/stepping the Time Window slider never changes the booking value; and
 the summary sentence pluralizes correctly at 1 vs. more. Also a Playwright screenshot confirming the
 stepper's look matches the supplied reference image.
+
+MOST RECENT CHANGE: per a follow-up request that Same-Desk Booking Days "not have its own card" and
+instead sit above the Time Window card — styled the way floorsense-prebooking-advance-04.html places
+its own number field directly above its timeline diagram, per a reference screenshot of that page —
+the stepper's `.timeline-card` wrapper was removed and the whole block (now a plain `.adh-field-block`
+div, no background/border of its own) was moved above the Time Window `.timeline-card` in the DOM.
+`.adh-field-block` picks up the same `margin: 0 22px` horizontal inset the Time Window card already
+had, plus an 18px bottom margin, so both controls' content lines up under the intro card's own 22px
+padding and the two stay visually separated. The now-unused `.timeline-card + .timeline-card` sibling
+rule (there's only one `.timeline-card` on this page now) was removed, and this file's own header
+comments describing the timeline CSS were reworded to reflect the current single-timeline-card
+layout. No JS changed — `renderBookingStepper()`/`setMaxBookings()` reference elements purely by id,
+which are unaffected by their new position in the markup; the reveal-animation `querySelectorAll
+('.timeline-card')` now simply matches one element instead of two. The identical reorder was applied
+to floorsense-optional-features-06.html's inline copy — see that file's own NOTE. Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, a re-run of every
+existing jsdom test for this page (all still pass unchanged, confirming the reorder is purely
+visual), and a Playwright screenshot confirming the new layout matches the supplied reference image.
 -->
 
 <script>
@@ -864,9 +887,10 @@ stepper's look matches the supplied reference image.
   bookingUpBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings + 1); queueSave(); });
   bookingDownBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings - 1); queueSave(); });
 
-  /* ---------------- reveal animation: plays once per card as it scrolls into view, ported
-     verbatim from floorsense-prebooking-advance-04.html and extended to both cards on this
-     page ---------------- */
+  /* ---------------- reveal animation: plays once as the Time Window card scrolls into view,
+     ported verbatim from floorsense-prebooking-advance-04.html. Only one .timeline-card remains on
+     this page now that Same-Desk Booking Days is an unboxed stepper, but this still uses
+     querySelectorAll so it needs no changes if another card is ever added back. ---------------- */
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const timelineCards = document.querySelectorAll('.timeline-card');
   if (timelineCards.length && !reducedMotion) {

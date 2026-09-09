@@ -205,16 +205,16 @@
   .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
-  /* ---------- Anti Desk Hogging's own inline settings: the same Time Window / Same-Desk Booking
-     Days slider pair used on floorsense-anti-desk-hogging-13.html itself, shown only once that
-     feature's switch is on. Every rail/zone/tick/pin/label class below is copied verbatim from that
-     page (scaled down slightly to sit comfortably inside a single hub row) so the controls read as
-     the same component wherever they appear. See that page's own NOTE for the full slider design,
-     and this file's own NOTE for why this row gets its own copy instead of just a link out. ---------- */
+  /* ---------- Anti Desk Hogging's own inline settings: the same Same-Desk Booking Days stepper /
+     Time Window slider used on floorsense-anti-desk-hogging-13.html itself, shown only once that
+     feature's switch is on. Every class below is copied verbatim from that page (scaled down
+     slightly to sit comfortably inside a single hub row) so the controls read as the same
+     component wherever they appear. See that page's own NOTE for the full design, and this file's
+     own NOTE for why this row gets its own copy instead of just a link out. ---------- */
   .feature-row-adh { display: none; margin-top: 14px; }
   .feature-row-adh.show { display: block; }
+  .feature-row-adh .adh-field-block { margin: 0 0 14px; }
   .feature-row-adh .timeline-card { background: var(--paper-soft); padding: 18px 22px 22px; border-radius: var(--radius-md); }
-  .feature-row-adh .timeline-card + .timeline-card { margin-top: 14px; }
   .feature-row-adh .timeline-header { margin-bottom: 4px; }
   .feature-row-adh .timeline-subtitle { font-size: 12.6px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
   .feature-row-adh .timeline-diagram-row { display: block; }
@@ -450,6 +450,21 @@
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
             <span class="feature-row-status" id="adhStatus">Off</span>
             <div class="feature-row-adh" id="adhSettingsField">
+              <div class="adh-field-block">
+                <div class="timeline-header">
+                  <p class="timeline-subtitle">Same-Desk Booking Days</p>
+                </div>
+                <div class="adh-stepper-row">
+                  <div class="stepper">
+                    <span class="stepper-value" id="adhBookingValue">1</span>
+                    <div class="stepper-btns">
+                      <button type="button" class="stepper-btn stepper-up" id="adhBookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+                      <button type="button" class="stepper-btn stepper-down" id="adhBookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                    </div>
+                  </div>
+                  <span class="stepper-unit" id="adhBookingUnitLabel">day</span>
+                </div>
+              </div>
               <div class="timeline-card">
                 <div class="timeline-header">
                   <p class="timeline-subtitle">Time Window</p>
@@ -466,21 +481,6 @@
                       <div class="label-desc">Window</div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-header">
-                  <p class="timeline-subtitle">Same-Desk Booking Days</p>
-                </div>
-                <div class="adh-stepper-row">
-                  <div class="stepper">
-                    <span class="stepper-value" id="adhBookingValue">1</span>
-                    <div class="stepper-btns">
-                      <button type="button" class="stepper-btn stepper-up" id="adhBookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
-                      <button type="button" class="stepper-btn stepper-down" id="adhBookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-                    </div>
-                  </div>
-                  <span class="stepper-unit" id="adhBookingUnitLabel">day</span>
                 </div>
               </div>
             </div>
@@ -1017,6 +1017,17 @@ on the extracted script block, a jsdom test confirming the stepper defaults to 1
 and disable correctly, dragging/stepping the Time Window slider never touches the booking value, and
 Reset restores both to their defaults, plus a Playwright screenshot confirming the stepper renders
 correctly inside the row.
+
+MOST RECENT CHANGE: mirrors the same reorder made to floorsense-anti-desk-hogging-13.html itself —
+see that file's own NOTE for the full rationale and reference screenshot. The Same-Desk Booking Days
+stepper's `.timeline-card` wrapper was removed (now a plain `.adh-field-block` div, no background of
+its own) and moved above the Time Window `.timeline-card` in the DOM, matching
+floorsense-prebooking-advance-04.html's own number-field-above-the-diagram placement. `.feature-row-
+adh .adh-field-block` picks up a 14px bottom margin so the two controls stay visually separated at
+this row's own more compact scale; the now-unused `.feature-row-adh .timeline-card + .timeline-card`
+sibling rule was removed. No JS changed. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a re-run of every existing jsdom test for this hub (all
+still pass unchanged), and a Playwright screenshot confirming the new layout inside the row.
 -->
 
 <script>
