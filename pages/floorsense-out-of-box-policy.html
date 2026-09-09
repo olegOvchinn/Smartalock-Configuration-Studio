@@ -811,7 +811,7 @@
             <span class="label">Anti Desk Hogging</span>
             <span class="value-group"><span class="value" id="adhSummaryValue">Off</span><a class="row-edit-link" href="floorsense-anti-desk-hogging-13.html">Edit</a></span>
           </div>
-          <p class="summary-desc" id="adhSummaryDesc">Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.</p>
+          <p class="summary-desc" id="adhSummaryDesc">Restricts how many days a user can book the same desk within a rolling time window. Disabled by default.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -2678,30 +2678,27 @@ between Sit-stand desks and Recurring bookings.
   })();
 
   (function renderAdhSummary() {
-    // Same formatTimes/formatDays phrasing as floorsense-anti-desk-hogging-13.html's own
-    // updateSummary(), so the wording here always matches what that page itself would show.
+    // Same formatDays phrasing as floorsense-anti-desk-hogging-13.html's own updateSummary(), so
+    // the wording here always matches what that page (and floorsense-optional-features-06.html's
+    // own inline sliders) would show. windowDays/maxBookings are both day-counts now — maxBookings
+    // is "how many of the window's days the same desk may be booked", capped at windowDays, not an
+    // independent 1-7 "times" value.
     const savedAdh = project.floorsense.wizard.antiDeskHogging || {};
     const mode = savedAdh.mode || 'none';
     const windowDays = Number.isFinite(savedAdh.windowDays) ? savedAdh.windowDays : 2;
     const maxBookings = Number.isFinite(savedAdh.maxBookings) ? savedAdh.maxBookings : 1;
-    function formatTimes(n) {
-      if (n === 1) return 'once';
-      if (n === 2) return 'twice';
-      return n + ' times';
-    }
     function formatDays(d) {
       return d === 1 ? '1 day' : d + ' days';
     }
     if (mode === 'enable') {
-      const timesLabel = formatTimes(maxBookings);
-      const daysLabel = formatDays(windowDays);
-      document.getElementById('adhSummaryValue').textContent = timesLabel + ' per ' + daysLabel;
+      document.getElementById('adhSummaryValue').textContent = maxBookings + ' of ' + formatDays(windowDays);
       document.getElementById('adhSummaryDesc').textContent =
-        'Enabled — a user can book the same desk ' + timesLabel + ' every ' + daysLabel + ', to encourage cross-team interaction.';
+        'Enabled — a user can book the same desk on up to ' + maxBookings + ' of the ' + windowDays +
+        ' days in this window, to encourage cross-team interaction.';
     } else {
       document.getElementById('adhSummaryValue').textContent = 'Off';
       document.getElementById('adhSummaryDesc').textContent =
-        'Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.';
+        'Restricts how many days a user can book the same desk within a rolling time window. Disabled by default.';
     }
   })();
 

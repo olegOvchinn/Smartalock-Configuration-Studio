@@ -205,6 +205,80 @@
   .relay-confirm-row input:checked ~ .relay-confirm-tick::after { opacity: 1; }
   .relay-confirm-label { font-size: 12.6px; font-weight: 600; color: var(--ink); }
 
+  /* ---------- Anti Desk Hogging's own inline settings: the same Time Window / Same-Desk Booking
+     Days slider pair used on floorsense-anti-desk-hogging-13.html itself, shown only once that
+     feature's switch is on. Every rail/zone/tick/pin/label class below is copied verbatim from that
+     page (scaled down slightly to sit comfortably inside a single hub row) so the controls read as
+     the same component wherever they appear. See that page's own NOTE for the full slider design,
+     and this file's own NOTE for why this row gets its own copy instead of just a link out. ---------- */
+  .feature-row-adh { display: none; margin-top: 14px; }
+  .feature-row-adh.show { display: block; }
+  .feature-row-adh .timeline-card { background: var(--paper-soft); padding: 18px 22px 22px; border-radius: var(--radius-md); }
+  .feature-row-adh .timeline-card + .timeline-card { margin-top: 14px; }
+  .feature-row-adh .timeline-header { margin-bottom: 4px; }
+  .feature-row-adh .timeline-subtitle { font-size: 12.6px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
+  .feature-row-adh .timeline-diagram-row { display: block; }
+  .feature-row-adh .timeline-track-wrapper { position: relative; height: 30px; margin: 56px 10px 40px; }
+  .feature-row-adh .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
+  }
+  .feature-row-adh .timeline-zone {
+    position: absolute; top: 6px; bottom: 6px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .feature-row-adh .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 4px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .feature-row-adh .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+  .feature-row-adh .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .feature-row-adh .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .feature-row-adh .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
+  .feature-row-adh .timeline-node {
+    position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none;
+    padding: 14px; margin: -14px; cursor: grab; touch-action: none; z-index: 2;
+  }
+  .feature-row-adh .timeline-node:active, .feature-row-adh .timeline-node.dragging { cursor: grabbing; }
+  .feature-row-adh .timeline-node .anchor-pin {
+    width: 17px; height: 17px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0;
+  }
+  .feature-row-adh .timeline-node:hover .anchor-pin, .feature-row-adh .timeline-node.dragging .anchor-pin {
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
+  }
+  .feature-row-adh .timeline-node.dragging .anchor-pin { transform: scale(1.12); }
+  .feature-row-adh .timeline-node:focus-visible .anchor-pin {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
+  }
+  .feature-row-adh .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 12px;
+    font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 10px; border-radius: 999px;
+  }
+  .feature-row-adh .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .feature-row-adh .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
      color: var(--accent)) so every icon on this page is now the same size/style. ---------- */
@@ -349,6 +423,44 @@
             <p class="feature-row-title">Anti Desk Hogging</p>
             <p class="feature-row-desc">Restricts how many times a user can book the same desk within a rolling time window, to encourage cross-team mixing.</p>
             <span class="feature-row-status" id="adhStatus">Off</span>
+            <div class="feature-row-adh" id="adhSettingsField">
+              <div class="timeline-card">
+                <div class="timeline-header">
+                  <p class="timeline-subtitle">Time Window</p>
+                </div>
+                <div class="timeline-diagram-row">
+                  <div class="timeline-track-wrapper" id="adhWindowTrackWrapper">
+                    <div class="timeline-rail">
+                      <div class="timeline-zone" id="adhWindowZone"></div>
+                      <div class="timeline-ticks" id="adhWindowTicks"></div>
+                    </div>
+                    <div class="timeline-node" id="adhWindowNode" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
+                      <div class="anchor-pin"></div>
+                      <div class="label-time primary" id="adhWindowNodeLabel">2 days</div>
+                      <div class="label-desc">Window</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-card">
+                <div class="timeline-header">
+                  <p class="timeline-subtitle">Same-Desk Booking Days</p>
+                </div>
+                <div class="timeline-diagram-row">
+                  <div class="timeline-track-wrapper" id="adhBookingTrackWrapper">
+                    <div class="timeline-rail">
+                      <div class="timeline-zone" id="adhBookingZone"></div>
+                      <div class="timeline-ticks" id="adhBookingTicks"></div>
+                    </div>
+                    <div class="timeline-node" id="adhBookingNode" tabindex="0" role="slider" aria-label="Same-desk booking days within the window" aria-valuemin="1" aria-valuemax="2">
+                      <div class="anchor-pin"></div>
+                      <div class="label-time primary" id="adhBookingNodeLabel">1 day</div>
+                      <div class="label-desc">Booking days</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <button type="button" class="switch" id="adhSwitch" role="switch" aria-checked="false" aria-label="Enable Anti Desk Hogging"></button>
         </div>
@@ -837,8 +949,36 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, and 
 confirming `#recurDaysField` no longer exists, the switch still toggles `recurringEnabled` and
 saves correctly with no `recurringDays` field written, the FME acknowledgment field (from the
 earlier `fmeFeature` lookup fix) still works, and Reset still restores the switch to off.
--->
 
+MOST RECENT CHANGE: per a follow-up request that this row reveal the same timeline+slider controls
+as the redesigned floorsense-anti-desk-hogging-13.html when Anti Desk Hogging is switched on, added a
+new `.feature-row-adh` block (`#adhSettingsField`) inside this row's `.feature-row-body`, following
+the exact same show/hide convention as Auto-Release on Idle's `.feature-row-hours`/FME's
+`.feature-row-ack` above (`display:none` until `adhFeature.isOn()`, toggled by a dedicated render
+function called on load and on that row's own switch click). It contains the identical two-slider
+pair from that page — "Time Window" (1-14 days) and "Same-Desk Booking Days" (1 up to the current
+Time Window value, re-clamped live whenever the window shrinks) — with every rail/zone/tick/pin/
+label CSS class copied verbatim (scoped under a `.feature-row-adh` ancestor selector so it can't leak
+into any other row) and every render/drag/keyboard-stepping JS function duplicated with an `adh`
+prefix (`adhRenderWindowDiagram`, `adhSetMaxBookings`, etc.) to avoid colliding with this file's own
+`FEATURES`/`renderFeature` helpers or with page 13's own identically-named functions, since each page
+keeps its own inlined `<style>`/`<script>` per this project's existing convention. Both copies read
+and write the exact same `project.floorsense.wizard.antiDeskHogging.windowDays`/`maxBookings` fields
+`floorsense-anti-desk-hogging-13.html` itself uses, so dragging a slider here or there always agrees
+regardless of which page was edited last. Compact sizing (30px rail height vs page 13's 36px, smaller
+label/tick fonts) was used purely to fit comfortably inside a single hub row rather than a full page
+— no reveal-in animation was added, matching this hub's other conditional sub-fields, which also
+appear instantly rather than animating in. The Reset button was updated to also restore
+`antiDeskHogging.windowDays`/`maxBookings` to their 2/1 defaults and re-render both sliders, alongside
+its existing full reset of every feature switch. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, a jsdom test covering: default (switch off, field
+hidden); a saved windowDays/maxBookings pair rendering both sliders and the booking slider's
+`aria-valuemax` correctly; clicking the switch on revealing the field and saving `mode`; ArrowLeft
+keyboard-stepping the window slider down and confirming the booking slider's value and aria-valuemax
+clamp down to match; and Reset restoring both sliders to their defaults and hiding the field again;
+plus a Playwright screenshot confirming the two sliders render correctly inside the row, matching
+page 13's own look.
+-->
 
 <script>
 (function(){
@@ -1022,6 +1162,194 @@ earlier `fmeFeature` lookup fix) still works, and Reset still restores the switc
 
   document.getElementById(fmeFeature.switchEl).addEventListener('click', renderFmeAckField);
 
+  /* ---------------- Anti Desk Hogging's own inline settings: same Time Window / Same-Desk
+     Booking Days slider pair as floorsense-anti-desk-hogging-13.html itself, reading/writing the
+     exact same project.floorsense.wizard.antiDeskHogging.windowDays/maxBookings fields so both
+     pages always agree, shown only while the Anti Desk Hogging switch itself is on. See that
+     page's own NOTE for the full slider design — every function below mirrors it 1:1, just
+     "adh"-prefixed to avoid colliding with this hub's own per-feature helpers. ---------------- */
+  const adhFeature = FEATURES.find(f => f.key === 'antiDeskHogging');
+  const adhSettingsField = document.getElementById('adhSettingsField');
+
+  function renderAdhSettingsField() {
+    adhSettingsField.classList.toggle('show', adhFeature.isOn());
+  }
+
+  const savedAdh = project.floorsense.wizard.antiDeskHogging || {};
+  const adhState = {
+    windowDays: Number.isFinite(savedAdh.windowDays) ? savedAdh.windowDays : 2,
+    maxBookings: Number.isFinite(savedAdh.maxBookings) ? savedAdh.maxBookings : 1
+  };
+
+  function formatAdhDays(d) { return d === 1 ? '1 day' : d + ' days'; }
+
+  const ADH_ZONE_SEG_COLOR_START = '#0058B0';
+  const ADH_ZONE_SEG_COLOR_END = '#5AC8FA';
+  function adhLerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+  function adhRenderZoneSegmentsInto(el, segCount) {
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      html += `<div class="timeline-zone-seg" style="background:${adhLerpColor(ADH_ZONE_SEG_COLOR_START, ADH_ZONE_SEG_COLOR_END, t)}"></div>`;
+    }
+    el.innerHTML = html;
+  }
+
+  const ADH_WINDOW_MAX_DAYS = 14;
+  const adhWindowZone = document.getElementById('adhWindowZone');
+  const adhWindowTicksEl = document.getElementById('adhWindowTicks');
+  const adhWindowNode = document.getElementById('adhWindowNode');
+  const adhWindowNodeLabel = document.getElementById('adhWindowNodeLabel');
+  const adhWindowTrackWrapper = document.getElementById('adhWindowTrackWrapper');
+  const adhBookingZone = document.getElementById('adhBookingZone');
+  const adhBookingTicksEl = document.getElementById('adhBookingTicks');
+  const adhBookingNode = document.getElementById('adhBookingNode');
+  const adhBookingNodeLabel = document.getElementById('adhBookingNodeLabel');
+  const adhBookingTrackWrapper = document.getElementById('adhBookingTrackWrapper');
+
+  function adhWindowDayToPercent(day) { return Math.max(0, Math.min(100, (day / ADH_WINDOW_MAX_DAYS) * 100)); }
+  function adhClampWindowDays(days) {
+    let value = Math.round(days);
+    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (value > ADH_WINDOW_MAX_DAYS) value = ADH_WINDOW_MAX_DAYS;
+    return value;
+  }
+  function adhRenderWindowTicks() {
+    let html = '';
+    for (let d = 1; d <= ADH_WINDOW_MAX_DAYS; d += 1) {
+      html += `<div class="timeline-tick${d % 7 === 0 ? ' hour' : ''}" style="left:${adhWindowDayToPercent(d)}%"></div>`;
+    }
+    adhWindowTicksEl.innerHTML = html;
+  }
+  adhRenderWindowTicks();
+
+  function adhRenderWindowDiagram(days) {
+    const percent = adhWindowDayToPercent(days);
+    adhWindowNode.style.left = percent + '%';
+    adhWindowZone.style.left = '0%';
+    adhWindowZone.style.width = percent + '%';
+    adhRenderZoneSegmentsInto(adhWindowZone, days);
+    adhWindowNodeLabel.textContent = formatAdhDays(days);
+    adhWindowNode.setAttribute('aria-valuenow', days);
+    adhWindowNode.setAttribute('aria-valuetext', formatAdhDays(days));
+  }
+
+  function adhWindowDayFromClientX(clientX) {
+    const rect = adhWindowTrackWrapper.getBoundingClientRect();
+    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    return adhClampWindowDays((rawPercent / 100) * ADH_WINDOW_MAX_DAYS);
+  }
+  function adhOnWindowPointerMove(e) { adhSetWindowDays(adhWindowDayFromClientX(e.clientX)); }
+  function adhOnWindowPointerUp() {
+    adhWindowNode.classList.remove('dragging');
+    document.removeEventListener('pointermove', adhOnWindowPointerMove);
+    document.removeEventListener('pointerup', adhOnWindowPointerUp);
+    adhSaveSettings();
+  }
+  adhWindowNode.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    adhWindowNode.classList.add('dragging');
+    adhWindowNode.focus();
+    document.addEventListener('pointermove', adhOnWindowPointerMove);
+    document.addEventListener('pointerup', adhOnWindowPointerUp);
+  });
+  adhWindowNode.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault(); adhSetWindowDays(adhState.windowDays + 1); adhSaveSettings();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault(); adhSetWindowDays(adhState.windowDays - 1); adhSaveSettings();
+    }
+  });
+
+  function adhBookingDayToPercent(day) {
+    return adhState.windowDays > 0 ? Math.max(0, Math.min(100, (day / adhState.windowDays) * 100)) : 0;
+  }
+  function adhClampBookingDays(days) {
+    let value = Math.round(days);
+    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (value > adhState.windowDays) value = adhState.windowDays;
+    return value;
+  }
+  function adhRenderBookingTicks() {
+    let html = '';
+    for (let d = 1; d <= adhState.windowDays; d += 1) {
+      html += `<div class="timeline-tick${d === adhState.windowDays ? ' hour' : ''}" style="left:${adhBookingDayToPercent(d)}%"></div>`;
+    }
+    adhBookingTicksEl.innerHTML = html;
+  }
+  function adhRenderBookingDiagram(days) {
+    const percent = adhBookingDayToPercent(days);
+    adhBookingNode.style.left = percent + '%';
+    adhBookingZone.style.left = '0%';
+    adhBookingZone.style.width = percent + '%';
+    adhRenderZoneSegmentsInto(adhBookingZone, days);
+    adhBookingNodeLabel.textContent = formatAdhDays(days);
+    adhBookingNode.setAttribute('aria-valuemax', adhState.windowDays);
+    adhBookingNode.setAttribute('aria-valuenow', days);
+    adhBookingNode.setAttribute('aria-valuetext', formatAdhDays(days));
+  }
+
+  function adhSetWindowDays(days) {
+    adhState.windowDays = adhClampWindowDays(days);
+    adhRenderWindowDiagram(adhState.windowDays);
+    adhRenderBookingTicks();
+    adhState.maxBookings = adhClampBookingDays(adhState.maxBookings);
+    adhRenderBookingDiagram(adhState.maxBookings);
+  }
+  function adhSetMaxBookings(days) {
+    adhState.maxBookings = adhClampBookingDays(days);
+    adhRenderBookingDiagram(adhState.maxBookings);
+  }
+
+  function adhBookingDayFromClientX(clientX) {
+    const rect = adhBookingTrackWrapper.getBoundingClientRect();
+    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    return adhClampBookingDays((rawPercent / 100) * adhState.windowDays);
+  }
+  function adhOnBookingPointerMove(e) { adhSetMaxBookings(adhBookingDayFromClientX(e.clientX)); }
+  function adhOnBookingPointerUp() {
+    adhBookingNode.classList.remove('dragging');
+    document.removeEventListener('pointermove', adhOnBookingPointerMove);
+    document.removeEventListener('pointerup', adhOnBookingPointerUp);
+    adhSaveSettings();
+  }
+  adhBookingNode.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    adhBookingNode.classList.add('dragging');
+    adhBookingNode.focus();
+    document.addEventListener('pointermove', adhOnBookingPointerMove);
+    document.addEventListener('pointerup', adhOnBookingPointerUp);
+  });
+  adhBookingNode.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault(); adhSetMaxBookings(adhState.maxBookings + 1); adhSaveSettings();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault(); adhSetMaxBookings(adhState.maxBookings - 1); adhSaveSettings();
+    }
+  });
+
+  function adhSaveSettings() {
+    project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
+    project.floorsense.wizard.antiDeskHogging.windowDays = adhState.windowDays;
+    project.floorsense.wizard.antiDeskHogging.maxBookings = adhState.maxBookings;
+    queueSave();
+  }
+
+  adhRenderWindowDiagram(adhState.windowDays);
+  adhRenderBookingTicks();
+  adhRenderBookingDiagram(adhState.maxBookings);
+  renderAdhSettingsField();
+
+  document.getElementById(adhFeature.switchEl).addEventListener('click', renderAdhSettingsField);
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     FEATURES.forEach(feature => feature.setOn(false));
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
@@ -1030,9 +1358,18 @@ earlier `fmeFeature` lookup fix) still works, and Reset still restores the switc
     project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
     project.floorsense.wizard.fme.motorDetailsAck = false;
     fmeAckCheckbox.checked = false;
+    project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
+    project.floorsense.wizard.antiDeskHogging.windowDays = 2;
+    project.floorsense.wizard.antiDeskHogging.maxBookings = 1;
+    adhState.windowDays = 2;
+    adhState.maxBookings = 1;
+    adhRenderWindowDiagram(2);
+    adhRenderBookingTicks();
+    adhRenderBookingDiagram(1);
     renderAll();
     renderIdleHoursField();
     renderFmeAckField();
+    renderAdhSettingsField();
     queueSave();
   });
 

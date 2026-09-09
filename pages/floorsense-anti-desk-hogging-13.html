@@ -108,134 +108,146 @@
   }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin: 0 auto 22px; max-width: 640px; }
-  .section-head + .section-head { margin-top: 36px; }
-  h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0 0 12px; }
-  .section-head p:last-child { margin-bottom: 0; }
 
-  /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path-00.html /
-     floorsense-nsnp-11.html — here just 2 modes (enable / don't enable) ---------- */
-  .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
-  /* ---------- glass card: per the site-wide glass-card treatment introduced on
-     floorsense-reservation-types-01.html, .path-check-card dropped its solid
-     `border: 1.5px solid var(--line)` in favour of a translucent white background with
-     `backdrop-filter: blur()` and a soft fuzzy `box-shadow` standing in for the border. Hover/checked
-     states, previously shown via `border-color`, now read through the shadow's tint/spread and the
-     background tint instead — see the MOST RECENT CHANGE note below. ---------- */
-  .path-check-card {
+  /* ---------- feature intro + on/off switch: ported verbatim from
+     floorsense-idle-release-09.html's .checkin-card/.idle-toggle-row/.switch/.idle-body suite,
+     replacing the old 2-mode .path-check-grid radio choice (both "We will enable"/"We will NOT
+     enable" cards) — a single explainer card with an inline switch is simpler for a plain on/off
+     feature like this one, and matches how Auto-Release on Idle already works. See the MOST RECENT
+     CHANGE note below. ---------- */
+  .checkin-card {
+    max-width: 760px; margin: 0 auto;
     background: rgba(255,255,255,0.6);
     backdrop-filter: blur(10px) saturate(160%);
     -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
-    padding: 18px 20px;
+    border: none; border-radius: var(--radius-lg); overflow: hidden;
     box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
     transition: box-shadow .2s, background .2s;
   }
-  .path-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
-  }
-  .path-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
-  }
-  .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
-  .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  .path-tick {
-    width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); flex-shrink: 0;
-    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .path-check-card.checked .path-tick { border-color: var(--accent); }
-  .path-tick::after {
-    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
-    opacity: 0; transition: opacity .15s;
-  }
-  .path-check-card.checked .path-tick::after { opacity: 1; }
-  /* ---------- path-icon-badge: matches floorsense-reservation-types-01.html's .desk-icon-badge —
-     a flat white square canvas with a light colored border per option, replacing the old bare
-     56x56px accent-blue line icon. See the MOST RECENT CHANGE note below. ---------- */
-  .path-icon-badge {
-    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+  .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
+  .checkin-card-icon-badge {
+    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
     border: 1.5px solid var(--accent);
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .path-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .path-icon-badge.badge-blue .path-icon-glyph { color: #4A8DF0; }
-  .path-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .path-icon-badge.badge-pink .path-icon-glyph { color: #EC6BA5; }
-  .path-icon-badge.badge-purple { border-color: #9B6BEC; }
-  .path-icon-badge.badge-purple .path-icon-glyph { color: #9B6BEC; }
-  .path-icon-badge.badge-teal { border-color: #2FBF9F; }
-  .path-icon-badge.badge-teal .path-icon-glyph { color: #2FBF9F; }
-  .path-icon-badge.badge-amber { border-color: #F2A154; }
-  .path-icon-badge.badge-amber .path-icon-glyph { color: #F2A154; }
-  .path-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
-  .path-card-body { min-width: 0; flex: 1; }
-  .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
-  .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .checkin-card-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .checkin-card-icon-badge.badge-teal .checkin-card-icon-glyph { color: #2FBF9F; }
+  .checkin-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
+  .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
-  /* ---------- settings panel: two plain value drums (time window, max bookings) rather than the
-     rail/pin timeline diagram used elsewhere — "book the same desk N times in a window" doesn't
-     have a natural before/after moment to plot on a rail the way idle-release/NSNP's "duration
-     until X happens" or business-hours/check-in-window's "time of day" values do, so this reuses
-     just the Apple Clock time-drum mechanics (ported from floorsense-nsnp-11.html), not the
-     timeline-track-wrapper/anchor-pin/label-time suite. ---------- */
-  .adh-settings { display: none; margin: 20px auto 0; max-width: 760px; }
-  .adh-settings.show { display: block; }
-  .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; }
-  .timeline-card.standalone {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+  .idle-toggle-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
   }
+  .idle-toggle-label { font-size: 13.12px; font-weight: 600; color: var(--ink); }
+  .switch {
+    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
+    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on::after { transform: translateX(16px); }
+
+  .idle-body { display: none; }
+  .idle-body.show { display: block; }
+
+  /* ---------- time-window / booking-days timelines: the same segmented-rail/draggable-pin control
+     as floorsense-prebooking-advance-04.html's advance-booking diagram, used twice here — one rail
+     for the time window itself (a single-handle 1-14 day slider), and a second, shorter rail for how
+     many of that window's days the same desk may be booked (1 up to the window's own current length,
+     so this second slider's range shrinks/grows to track the first one live). Every rail/zone/tick/
+     pin/label class, colour and dimension below is copied verbatim from that page so all the
+     wizard's slider controls feel and look identical. See the MOST RECENT CHANGE note below. ---------- */
+  .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; border-radius: var(--radius-md); margin: 0 22px; }
+  .timeline-card + .timeline-card { margin-top: 18px; }
   .timeline-header { margin-bottom: 4px; }
-  .timeline-subtitle { font-size: 13.5px; color: var(--ink); margin: 0; line-height: 1.5; }
-  .timeline-subtitle strong { color: #102A43; font-weight: 700; }
+  .timeline-subtitle { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
 
-  .adh-drum-row { display: flex; gap: 32px; justify-content: center; margin-top: 18px; }
-  .adh-drum-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .adh-drum-label { font-size: 11.48px; color: var(--ink-soft); text-align: center; margin: 0; max-width: 110px; }
+  .timeline-diagram-row { display: block; }
+  .timeline-track-wrapper { position: relative; height: 36px; margin: 66px 10px 46px; }
+  .timeline-rail {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--line);
+    box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
+  }
+  .timeline-zone {
+    position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
+    display: flex; align-items: stretch; gap: 3px;
+  }
+  .timeline-zone-seg {
+    position: relative; overflow: hidden;
+    flex: 1 1 0; min-width: 0; border-radius: 5px;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -2px 3px rgba(6,30,60,0.28),
+      inset 0 0 8px 2px rgba(120,200,255,0.9);
+  }
+  .timeline-zone-seg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+  .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
+  .timeline-tick {
+    position: absolute; top: 0; width: 2px; height: 2px; border-radius: 999px;
+    background: var(--header-grey-light); transform: translateX(-50%); opacity: 0.55;
+  }
+  .timeline-tick.hour { height: 4px; background: var(--header-grey-light); opacity: 0.9; }
 
-  .time-drum {
-    position: relative; width: 100px; height: 150px; flex-shrink: 0;
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 18px -10px rgba(0,0,0,0.18);
+  .timeline-node {
+    position: absolute; top: 50%; transform: translate(-50%, -50%); outline: none;
+    padding: 16px; margin: -16px; cursor: grab; touch-action: none; z-index: 2;
   }
-  .time-drum::before {
-    content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; z-index: 2;
-    background: linear-gradient(to bottom,
-      rgba(16,42,67,0.09) 0%, rgba(16,42,67,0) 24%,
-      rgba(16,42,67,0) 76%, rgba(16,42,67,0.09) 100%);
+  .timeline-node:active, .timeline-node.dragging { cursor: grabbing; }
+  .timeline-node .anchor-pin {
+    width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
+    box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
+    transition: box-shadow .15s, transform .15s, background-color .15s;
+    opacity: 0;
   }
-  .time-drum-window {
-    position: absolute; top: 50%; left: 0; right: 0; height: 30px; transform: translateY(-50%);
-    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); pointer-events: none; z-index: 1;
-    background: rgba(16,42,67,0.03);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.07), inset 0 -1px 3px rgba(0,0,0,0.07);
+  .timeline-node:hover .anchor-pin, .timeline-node.dragging .anchor-pin {
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 6px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .time-drum-scroll {
-    height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-    border-radius: 12px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 32%, black 68%, transparent 100%);
+  .timeline-node.dragging .anchor-pin { transform: scale(1.12); }
+  .timeline-node:focus-visible .anchor-pin {
+    box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
-  .time-drum-scroll::-webkit-scrollbar { display: none; }
-  .time-drum-pad { height: 60px; }
-  .time-drum-row {
-    height: 30px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 12px; font-weight: 500; color: var(--ink-soft); user-select: none;
+  .timeline-node .label-time {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
   }
-  .time-drum-row.selected {
-    font-size: 15px; font-weight: 700; color: #102A43;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .timeline-node .label-desc {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); text-align: center; white-space: nowrap;
+  }
+
+  @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ci-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .timeline-card.animate-in .label-time,
+  .timeline-card.animate-in .label-desc {
+    animation: ci-fade .35s ease-out both;
+  }
+  .timeline-card.animate-in .timeline-zone {
+    transform-origin: left center;
+    animation: ci-grow .5s ease-out .15s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-card.animate-in * { animation: none !important; }
   }
 
   /* ---------- prev / next page nav ---------- */
@@ -335,59 +347,63 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <h2 class="section-title">Would you like to enable Anti Desk Hogging?</h2>
-        <p>Floorsense has a feature to restrict users from booking the same desk multiple days in a row. Some customers enable this to encourage cross-team interaction and to prevent a return to a quasi-fixed-desk way of working. It works by setting a time window — e.g. 2 days — and the number of times within that window a user can book the same desk.</p>
-      </div>
-
-      <div class="path-check-grid" id="adhGrid">
-        <div class="path-check-card" data-mode="enable">
-          <label class="path-row">
-            <input type="radio" name="adhMode" value="enable">
-            <span class="path-tick" aria-hidden="true"></span>
-            <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><line x1="2" y1="22" x2="22" y2="2"/></svg></div>
-            <div class="path-card-body">
-              <h3 class="path-title">We will enable this feature</h3>
-              <p class="path-desc">Specify the size of the time window, and the number of times within that window the same desk can be booked, below.</p>
-            </div>
-          </label>
-        </div>
-
-        <div class="path-check-card" data-mode="none">
-          <label class="path-row">
-            <input type="radio" name="adhMode" value="none">
-            <span class="path-tick" aria-hidden="true"></span>
-            <div class="path-icon-badge badge-pink"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg></div>
-            <div class="path-card-body">
-              <h3 class="path-title">We will NOT enable this feature</h3>
-              <p class="path-desc">Users can book the same desk as often as they like, with no restriction.</p>
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="adh-settings" id="adhSettings">
-        <div class="timeline-card standalone">
-          <div class="timeline-header">
-            <p class="timeline-subtitle">This would allow a user to book the same desk <strong id="adhTimesSummary">once</strong> every <strong id="adhWindowSummary">2 days</strong>.</p>
-          </div>
-          <div class="adh-drum-row">
-            <div class="adh-drum-col">
-              <div class="time-drum" id="windowDrum" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
-                <div class="time-drum-window"></div>
-                <div class="time-drum-scroll" id="windowDrumScroll"></div>
-              </div>
-              <p class="adh-drum-label">Time Window</p>
-            </div>
-            <div class="adh-drum-col">
-              <div class="time-drum" id="maxBookingsDrum" tabindex="0" role="slider" aria-label="Number of same-desk bookings within the window" aria-valuemin="1" aria-valuemax="7">
-                <div class="time-drum-window"></div>
-                <div class="time-drum-scroll" id="maxBookingsDrumScroll"></div>
-              </div>
-              <p class="adh-drum-label">Number of Same Desk Bookings</p>
+      <div class="checkin-card">
+        <div class="checkin-card-header">
+          <div class="checkin-card-icon-badge badge-teal"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7.1 15.6Q7.4 14.5 9.2 14.7Q9.7 14.3 12 14.3Q14.3 14.3 14.8 14.7Q16.6 14.5 16.9 15.6Q16.6 16.6 12 16.6Q7.4 16.6 7.1 15.6Z" fill="currentColor" stroke="none"/><ellipse cx="11.6" cy="12.6" rx="2.5" ry="2.1" fill="currentColor" stroke="none"/><circle cx="13.9" cy="10.9" r="1.05" fill="currentColor" stroke="none"/><path d="M14.9 10.7l1.3 -0.15l-0.55 1.15z" fill="currentColor" stroke="none"/><circle cx="14.1" cy="10.6" r="0.18" fill="#fff" stroke="none"/></svg></div>
+          <div style="flex:1; min-width:0;">
+            <p class="checkin-card-desc">
+              Floorsense has a feature to restrict users from booking the same desk multiple days in a
+              row. Some customers enable this to encourage cross-team interaction and to prevent a
+              return to a quasi-fixed-desk way of working. It works by setting a time window — e.g. 2
+              days — and how many of those days the same desk may be booked.
+            </p>
+            <div class="idle-toggle-row">
+              <span class="idle-toggle-label">Enable Anti Desk Hogging</span>
+              <button type="button" class="switch" id="adhEnableSwitch" role="switch" aria-checked="false" aria-label="Enable Anti Desk Hogging"></button>
             </div>
           </div>
-          <p class="policy-hint">This encourages cross-team interaction and helps prevent a return to a quasi-fixed-desk way of working.</p>
+        </div>
+
+        <div class="idle-body" id="adhBody">
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <p class="timeline-subtitle">Time Window</p>
+            </div>
+            <div class="timeline-diagram-row">
+              <div class="timeline-track-wrapper" id="windowTrackWrapper">
+                <div class="timeline-rail">
+                  <div class="timeline-zone" id="windowZone"></div>
+                  <div class="timeline-ticks" id="windowTicks"></div>
+                </div>
+                <div class="timeline-node" id="windowNode" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
+                  <div class="anchor-pin"></div>
+                  <div class="label-time primary" id="windowNodeLabel">2 days</div>
+                  <div class="label-desc">Window</div>
+                </div>
+              </div>
+            </div>
+            <p class="policy-hint">How many days form one rolling window — e.g. 2 days means today and yesterday count together.</p>
+          </div>
+
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <p class="timeline-subtitle">Same-Desk Booking Days</p>
+            </div>
+            <div class="timeline-diagram-row">
+              <div class="timeline-track-wrapper" id="bookingTrackWrapper">
+                <div class="timeline-rail">
+                  <div class="timeline-zone" id="bookingZone"></div>
+                  <div class="timeline-ticks" id="bookingTicks"></div>
+                </div>
+                <div class="timeline-node" id="bookingNode" tabindex="0" role="slider" aria-label="Same-desk booking days within the window" aria-valuemin="1" aria-valuemax="2">
+                  <div class="anchor-pin"></div>
+                  <div class="label-time primary" id="bookingNodeLabel">1 day</div>
+                  <div class="label-desc">Booking days</div>
+                </div>
+              </div>
+            </div>
+            <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 of the 2 days in this window.</p>
+          </div>
         </div>
       </div>
 
@@ -509,6 +525,54 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to remove the "We will NOT enable this feature" option, remove
+the radio buttons, and add a timeline+slider control like floorsense-prebooking-advance-04.html's,
+this page's entire `.path-check-grid` (both 2-mode radio cards) and `.adh-settings` (the two Apple
+Clock time-drums) were replaced. The intro/toggle now matches floorsense-idle-release-09.html's own
+`.checkin-card`/`.idle-toggle-row`/`.switch`/`.idle-body` suite exactly: a single explainer card with
+an inline on/off switch (`#adhEnableSwitch`) — `state.mode` still stores the string 'enable'/'none'
+it always did (not converted to a boolean), since floorsense-optional-features-06.html's own switch
+and every NAV_SEQUENCE/seqEnabled walker sitewide already read/write `antiDeskHogging.mode` this way;
+only the on-page control changed; the way the value is stored didn't. The card's icon was also
+updated from the old repeat-arrow-with-a-slash glyph to the same bird-in-a-nest glyph
+floorsense-optional-features-06.html's own Anti Desk Hogging row uses (badge-teal), since that row
+was redesigned after this page's icon was originally set and the two had drifted apart.
+
+Below the switch, once on, are two rail/pin sliders ported verbatim from
+floorsense-prebooking-advance-04.html's advance-booking diagram (same `.timeline-card`/
+`.timeline-rail`/`.timeline-zone`/`.timeline-zone-seg`/`.timeline-ticks`/`.timeline-node`/
+`.anchor-pin`/`.label-time`/`.label-desc` classes, `lerpColor()` segment-gradient helper, pointer-drag
+and arrow-key stepping, and scroll-triggered `.animate-in` reveal). "Time Window" is a single-handle
+1-14 day slider (`#windowNode`, replacing the old "Time Window" drum 1:1 in range). "Same-Desk
+Booking Days" (`#bookingNode`, replacing the old "Number of Same Desk Bookings" drum) is a second
+slider whose own maximum now tracks the Time Window slider's current value instead of a fixed 1-7 —
+per the request that this control choose "how many days user can book same desk within the time
+window," a user can no longer select more booking-days than the window itself contains. Shrinking the
+Time Window slider clamps a too-large Same-Desk Booking Days value down automatically (ticks and pin
+position both re-render against the new, smaller range). `state.maxBookings` keeps its existing field
+name for backward compatibility with every other file that reads it (see below), even though it's now
+always a day-count bounded by `windowDays` rather than an independent 1-7 "times" value. The old
+`formatTimes()` ("once"/"twice"/"N times") helper was removed entirely, since both sliders are now
+day-counts and share the single `formatDays()` helper. The master sentence beneath the second slider
+was reworded to match: "This allows a user to book the same desk on up to N of the M days in this
+window." NAV_SEQUENCE/seqResolve/pageNavPrev, the Reset button, and the Continue button's redirect are
+all unchanged by this redesign — they only ever read/write `state.mode`/`state.windowDays`/
+`state.maxBookings`, not how those values are edited on-screen.
+
+Per a follow-up request, this exact same slider pair (reading/writing the same
+`antiDeskHogging.windowDays`/`maxBookings` fields) was also added inline on
+floorsense-optional-features-06.html's own Anti Desk Hogging row, revealed only while that row's own
+switch is on — see that file's own NOTE for the full design of that copy.
+
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+Playwright screenshot of both the enabled and disabled states, and a jsdom test covering: default/
+unset state: switch off, body hidden, sliders default to 2 days/1 day; toggling the switch on/off
+saves `mode` correctly and shows/hides the body; a saved `windowDays`/`maxBookings` pair renders both
+sliders' labels, segment counts, and the booking slider's `aria-valuemax` correctly; ArrowLeft/
+ArrowRight keyboard stepping on both sliders, including that shrinking the window below the current
+`maxBookings` clamps it down and updates the tick marks/aria-valuemax to match; and that the window
+slider clamps at both 1 and 14.
 -->
 
 <script>
@@ -569,10 +633,6 @@ touched file.
   });
 
   /* ---------------- fields ---------------- */
-  const grid = document.getElementById('adhGrid');
-  const adhSettings = document.getElementById('adhSettings');
-  const adhTimesSummary = document.getElementById('adhTimesSummary');
-  const adhWindowSummary = document.getElementById('adhWindowSummary');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
@@ -587,144 +647,246 @@ touched file.
     setTimeout(() => saveDot.classList.remove('show'), 900);
   }
 
-  function formatTimes(n) {
-    if (n === 1) return 'once';
-    if (n === 2) return 'twice';
-    return n + ' times';
-  }
   function formatDays(d) {
     return d === 1 ? '1 day' : d + ' days';
   }
+
+  /* ---------------- on/off switch, ported from floorsense-idle-release-09.html's
+     idleEnableSwitch/idleBody — the settings panel is hidden entirely (not just dimmed) until
+     switched on. `mode` stays the string 'enable'/'none' it always was (not a boolean), since
+     floorsense-optional-features-06.html's own switch and every NAV_SEQUENCE/seqEnabled walker
+     sitewide already read/write antiDeskHogging.mode this way — see this file's own NAV_SEQUENCE
+     below, unchanged by this redesign. ---------------- */
+  const adhEnableSwitch = document.getElementById('adhEnableSwitch');
+  const adhBody = document.getElementById('adhBody');
+
+  function applyEnabledState() {
+    const on = state.mode === 'enable';
+    adhEnableSwitch.classList.toggle('on', on);
+    adhEnableSwitch.setAttribute('aria-checked', String(on));
+    adhBody.classList.toggle('show', on);
+  }
+
+  adhEnableSwitch.addEventListener('click', () => {
+    state.mode = state.mode === 'enable' ? 'none' : 'enable';
+    applyEnabledState();
+    queueSave();
+  });
+
+  /* ---------------- shared segmented-zone colour helper, ported verbatim from
+     floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html ---------------- */
+  const ZONE_SEG_COLOR_START = '#0058B0';
+  const ZONE_SEG_COLOR_END = '#5AC8FA';
+  function lerpColor(hexA, hexB, t) {
+    const a = parseInt(hexA.slice(1), 16), b = parseInt(hexB.slice(1), 16);
+    const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+    const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+    const r = Math.round(ar + (br - ar) * t);
+    const g = Math.round(ag + (bg - ag) * t);
+    const bl = Math.round(ab + (bb - ab) * t);
+    return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+  }
+  function renderZoneSegmentsInto(el, segCount) {
+    let html = '';
+    for (let i = 0; i < segCount; i++) {
+      const t = segCount > 1 ? i / (segCount - 1) : 0;
+      const color = lerpColor(ZONE_SEG_COLOR_START, ZONE_SEG_COLOR_END, t);
+      html += `<div class="timeline-zone-seg" style="background:${color}"></div>`;
+    }
+    el.innerHTML = html;
+  }
+
+  /* ---------------- Time Window slider: single-handle 1-14 day rail, ported from
+     floorsense-prebooking-advance-04.html's advance-booking diagram. Percent-position math treats
+     day 0 as an implicit fixed anchor at the rail's left edge (same as that page), but the slider
+     itself is clamped to 1-14 — there's no "0 days"/off state to represent here, since off is the
+     switch above instead. ---------------- */
+  const WINDOW_MAX_DAYS = 14;
+  const windowZone = document.getElementById('windowZone');
+  const windowTicksEl = document.getElementById('windowTicks');
+  const windowNode = document.getElementById('windowNode');
+  const windowNodeLabel = document.getElementById('windowNodeLabel');
+  const windowTrackWrapper = document.getElementById('windowTrackWrapper');
+
+  function windowDayToPercent(day) {
+    return Math.max(0, Math.min(100, (day / WINDOW_MAX_DAYS) * 100));
+  }
+  function clampWindowDays(days) {
+    let value = Math.round(days);
+    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (value > WINDOW_MAX_DAYS) value = WINDOW_MAX_DAYS;
+    return value;
+  }
+  function renderWindowTicks() {
+    let html = '';
+    for (let d = 1; d <= WINDOW_MAX_DAYS; d += 1) {
+      const percent = windowDayToPercent(d);
+      const isMajor = d % 7 === 0;
+      html += `<div class="timeline-tick${isMajor ? ' hour' : ''}" style="left:${percent}%"></div>`;
+    }
+    windowTicksEl.innerHTML = html;
+  }
+  renderWindowTicks();
+
+  function renderWindowDiagram(days) {
+    const percent = windowDayToPercent(days);
+    windowNode.style.left = percent + '%';
+    windowZone.style.left = '0%';
+    windowZone.style.width = percent + '%';
+    renderZoneSegmentsInto(windowZone, days);
+    windowNodeLabel.textContent = formatDays(days);
+    windowNode.setAttribute('aria-valuenow', days);
+    windowNode.setAttribute('aria-valuetext', formatDays(days));
+  }
+
+  function windowDayFromClientX(clientX) {
+    const rect = windowTrackWrapper.getBoundingClientRect();
+    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    return clampWindowDays((rawPercent / 100) * WINDOW_MAX_DAYS);
+  }
+  function onWindowPointerMove(e) { setWindowDays(windowDayFromClientX(e.clientX)); }
+  function onWindowPointerUp() {
+    windowNode.classList.remove('dragging');
+    document.removeEventListener('pointermove', onWindowPointerMove);
+    document.removeEventListener('pointerup', onWindowPointerUp);
+    queueSave();
+  }
+  windowNode.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    windowNode.classList.add('dragging');
+    windowNode.focus();
+    document.addEventListener('pointermove', onWindowPointerMove);
+    document.addEventListener('pointerup', onWindowPointerUp);
+  });
+  windowNode.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      setWindowDays(state.windowDays + 1);
+      queueSave();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setWindowDays(state.windowDays - 1);
+      queueSave();
+    }
+  });
+
+  /* ---------------- Same-Desk Booking Days slider: a second rail whose own maximum tracks the
+     Time Window slider's current value — a user can't book the same desk on more days than exist
+     in the window — so its range is recalculated (ticks re-rendered, current value re-clamped) every
+     time windowDays changes. ---------------- */
+  const bookingZone = document.getElementById('bookingZone');
+  const bookingTicksEl = document.getElementById('bookingTicks');
+  const bookingNode = document.getElementById('bookingNode');
+  const bookingNodeLabel = document.getElementById('bookingNodeLabel');
+  const bookingTrackWrapper = document.getElementById('bookingTrackWrapper');
+  const adhSummaryHint = document.getElementById('adhSummaryHint');
+
+  function bookingDayToPercent(day) {
+    return state.windowDays > 0 ? Math.max(0, Math.min(100, (day / state.windowDays) * 100)) : 0;
+  }
+  function clampBookingDays(days) {
+    let value = Math.round(days);
+    if (!Number.isFinite(value) || value < 1) value = 1;
+    if (value > state.windowDays) value = state.windowDays;
+    return value;
+  }
+  function renderBookingTicks() {
+    let html = '';
+    for (let d = 1; d <= state.windowDays; d += 1) {
+      const percent = bookingDayToPercent(d);
+      const isMajor = d === state.windowDays;
+      html += `<div class="timeline-tick${isMajor ? ' hour' : ''}" style="left:${percent}%"></div>`;
+    }
+    bookingTicksEl.innerHTML = html;
+  }
   function updateSummary() {
-    adhTimesSummary.textContent = formatTimes(state.maxBookings);
-    adhWindowSummary.textContent = formatDays(state.windowDays);
+    adhSummaryHint.textContent = 'This allows a user to book the same desk on up to ' + state.maxBookings +
+      ' of the ' + state.windowDays + ' days in this window.';
+  }
+  function renderBookingDiagram(days) {
+    const percent = bookingDayToPercent(days);
+    bookingNode.style.left = percent + '%';
+    bookingZone.style.left = '0%';
+    bookingZone.style.width = percent + '%';
+    renderZoneSegmentsInto(bookingZone, days);
+    bookingNodeLabel.textContent = formatDays(days);
+    bookingNode.setAttribute('aria-valuemax', state.windowDays);
+    bookingNode.setAttribute('aria-valuenow', days);
+    bookingNode.setAttribute('aria-valuetext', formatDays(days));
+    updateSummary();
   }
 
-  /* ---------------- Apple Clock-style value drums, ported from
-     floorsense-nsnp-11.html/floorsense-idle-release-09.html (generic numeric values, not actual
-     times of day or elapsed durations) ---------------- */
-  const DRUM_ROW_H = 30;
-  const windowDrumValues = [];
-  for (let d = 1; d <= 14; d++) windowDrumValues.push({ minutes: d, label: d === 1 ? '1 day' : d + ' days' });
-  const maxBookingsDrumValues = [];
-  for (let n = 1; n <= 7; n++) maxBookingsDrumValues.push({ minutes: n, label: n === 1 ? '1 time' : n + ' times' });
-
-  function buildDrumRows(scrollEl, values) {
-    let html = '<div class="time-drum-pad"></div>';
-    values.forEach((v, i) => {
-      html += `<div class="time-drum-row" data-index="${i}">${v.label}</div>`;
-    });
-    html += '<div class="time-drum-pad"></div>';
-    scrollEl.innerHTML = html;
-    return Array.from(scrollEl.querySelectorAll('.time-drum-row'));
+  function setWindowDays(days) {
+    state.windowDays = clampWindowDays(days);
+    renderWindowDiagram(state.windowDays);
+    renderBookingTicks();
+    state.maxBookings = clampBookingDays(state.maxBookings);
+    renderBookingDiagram(state.maxBookings);
+  }
+  function setMaxBookings(days) {
+    state.maxBookings = clampBookingDays(days);
+    renderBookingDiagram(state.maxBookings);
   }
 
-  function createTimeDrum(scrollEl, values, opts) {
-    const rows = buildDrumRows(scrollEl, values);
-    let current = -1;
-    let settleTimer = null;
-
-    function clampIndex(i) { return Math.max(0, Math.min(rows.length - 1, i)); }
-    function indexFromScroll() { return Math.round(scrollEl.scrollTop / DRUM_ROW_H); }
-    function highlight(index) {
-      if (index === current) return;
-      current = index;
-      rows.forEach((r, i) => r.classList.toggle('selected', i === index));
-      scrollEl.parentElement.setAttribute('aria-valuenow', values[index].minutes);
-      scrollEl.parentElement.setAttribute('aria-valuetext', values[index].label);
-    }
-    function nearestIndexForMinutes(minutes) {
-      let best = 0, bestDiff = Infinity;
-      values.forEach((v, i) => {
-        const diff = Math.abs(v.minutes - minutes);
-        if (diff < bestDiff) { bestDiff = diff; best = i; }
-      });
-      return best;
-    }
-    function scrollToIndex(index, smooth) {
-      index = clampIndex(index);
-      scrollEl.scrollTo({ top: index * DRUM_ROW_H, behavior: smooth ? 'smooth' : 'auto' });
-      highlight(index);
-    }
-
-    scrollEl.addEventListener('scroll', () => {
-      highlight(clampIndex(indexFromScroll()));
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const settled = clampIndex(indexFromScroll());
-        scrollToIndex(settled, true);
-        if (opts.onChange) opts.onChange(values[settled].minutes);
-      }, 120);
-    }, { passive: true });
-
-    scrollEl.parentElement.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const i = clampIndex(indexFromScroll() + 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const i = clampIndex(indexFromScroll() - 1);
-        scrollToIndex(i, true);
-        if (opts.onChange) opts.onChange(values[i].minutes);
-      }
-    });
-
-    scrollToIndex(nearestIndexForMinutes(opts.initialMinutes), false);
-
-    return {
-      setMinutes(minutes) { scrollToIndex(nearestIndexForMinutes(minutes), false); }
-    };
+  function bookingDayFromClientX(clientX) {
+    const rect = bookingTrackWrapper.getBoundingClientRect();
+    const rawPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    return clampBookingDays((rawPercent / 100) * state.windowDays);
   }
-
-  const windowDrum = createTimeDrum(document.getElementById('windowDrumScroll'), windowDrumValues, {
-    initialMinutes: state.windowDays,
-    onChange: (days) => {
-      state.windowDays = days;
-      updateSummary();
-      queueSave();
-    }
+  function onBookingPointerMove(e) { setMaxBookings(bookingDayFromClientX(e.clientX)); }
+  function onBookingPointerUp() {
+    bookingNode.classList.remove('dragging');
+    document.removeEventListener('pointermove', onBookingPointerMove);
+    document.removeEventListener('pointerup', onBookingPointerUp);
+    queueSave();
+  }
+  bookingNode.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    bookingNode.classList.add('dragging');
+    bookingNode.focus();
+    document.addEventListener('pointermove', onBookingPointerMove);
+    document.addEventListener('pointerup', onBookingPointerUp);
   });
-  const maxBookingsDrum = createTimeDrum(document.getElementById('maxBookingsDrumScroll'), maxBookingsDrumValues, {
-    initialMinutes: state.maxBookings,
-    onChange: (times) => {
-      state.maxBookings = times;
-      updateSummary();
+  bookingNode.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      setMaxBookings(state.maxBookings + 1);
+      queueSave();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setMaxBookings(state.maxBookings - 1);
       queueSave();
     }
   });
 
-  /* ---------------- mode grid ---------------- */
-  function setModeCards(mode) {
-    grid.querySelectorAll('.path-check-card').forEach(card => {
-      const isMatch = card.getAttribute('data-mode') === mode;
-      card.classList.toggle('checked', isMatch);
-      card.querySelector('input[type="radio"]').checked = isMatch;
-    });
-    const showSettings = mode === 'enable';
-    adhSettings.classList.toggle('show', showSettings);
-    // Re-sync both drums' scroll positions whenever the panel becomes visible: while display:none,
-    // scrollTop is clamped to 0 by the browser (no layout box), so a position set earlier while
-    // hidden is lost and must be re-applied now that it can actually scroll.
-    if (showSettings) {
-      windowDrum.setMinutes(state.windowDays);
-      maxBookingsDrum.setMinutes(state.maxBookings);
+  /* ---------------- reveal animation: plays once per card as it scrolls into view, ported
+     verbatim from floorsense-prebooking-advance-04.html and extended to both cards on this
+     page ---------------- */
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timelineCards = document.querySelectorAll('.timeline-card');
+  if (timelineCards.length && !reducedMotion) {
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      timelineCards.forEach(card => revealObserver.observe(card));
+    } else {
+      timelineCards.forEach(card => card.classList.add('animate-in'));
     }
+  } else {
+    timelineCards.forEach(card => card.classList.add('animate-in'));
   }
-
-  grid.querySelectorAll('.path-check-card').forEach(card => {
-    const mode = card.getAttribute('data-mode');
-    card.querySelector('input[type="radio"]').addEventListener('change', () => {
-      state.mode = mode;
-      setModeCards(mode);
-      queueSave();
-    });
-  });
 
   function applyState() {
-    setModeCards(state.mode);
-    updateSummary();
+    renderWindowDiagram(state.windowDays);
+    renderBookingTicks();
+    renderBookingDiagram(state.maxBookings);
+    applyEnabledState();
   }
   applyState();
 
