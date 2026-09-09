@@ -142,7 +142,7 @@
   /* ---------- Time Window timeline: the same segmented-rail/draggable-pin control as
      floorsense-prebooking-advance-04.html's advance-booking diagram — a single-handle 1-14 day
      slider. Every rail/zone/tick/pin/label class, colour and dimension below is copied verbatim
-     from that page. Same-Desk Booking Times used to be a second copy of this same control but is now
+     from that page. Max Same-Desk Bookings used to be a second copy of this same control but is now
      a plain fill-in field instead, positioned above this card rather than inside one of its own — see the
      MOST RECENT CHANGE note below. ---------- */
   .timeline-card { background: var(--paper-soft); padding: 22px 26px 28px; border-radius: var(--radius-md); margin: 0 22px; }
@@ -150,7 +150,7 @@
   .timeline-subtitle { font-size: 13.5px; font-weight: 600; color: var(--header-grey); margin: 0; line-height: 1.5; }
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
 
-  /* ---------- Same-Desk Booking Times field: unboxed (no .timeline-card background), matching
+  /* ---------- Max Same-Desk Bookings field: unboxed (no .timeline-card background), matching
      floorsense-prebooking-advance-04.html's own number-field-outside-the-grey-box placement above
      its timeline diagram — see that page's own NOTE and the reference screenshot in this file's
      MOST RECENT CHANGE note. Sits directly above the Time Window card, inset the same 22px each
@@ -237,7 +237,7 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
-  /* ---------- Same-Desk Booking Times: a plain fill-in number field, styled and structured exactly
+  /* ---------- Max Same-Desk Bookings: a plain fill-in number field, styled and structured exactly
      like floorsense-prebooking-advance-04.html's own "Advance booking limit" field — .minute-field/
      .minute-input/.minute-suffix copied verbatim from that page (a compact 88px bordered number
      input plus a plain-text suffix span) rather than this page's earlier bespoke up/down-chevron
@@ -365,13 +365,13 @@
         <div id="adhBody">
           <div class="adh-field-block">
             <div class="timeline-header">
-              <p class="timeline-subtitle">Same-Desk Booking Times</p>
+              <p class="timeline-subtitle">Max Same-Desk Bookings</p>
             </div>
             <div class="minute-field">
-              <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Same-desk booking times, 1 to 5">
-              <span class="minute-suffix">times within the rolling window (max 5)</span>
+              <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Maximum same-desk bookings, 1 to 5">
+              <span class="minute-suffix">bookings within the rolling window (max 5)</span>
             </div>
-            <p class="policy-hint">Each booking of this desk counts as one time toward the limit above — including a second booking on the same day, if it starts more than 1 hour after the previous one ended.</p>
+            <p class="policy-hint">Each booking of this desk counts toward the limit above — including a second booking on the same day, if it starts more than 1 hour after the previous one ended.</p>
           </div>
 
           <div class="timeline-card">
@@ -391,7 +391,7 @@
                 </div>
               </div>
             </div>
-            <p class="policy-hint">Sets the length of the rolling window used by the Same-Desk Booking Times limit above — e.g. a 2-day window counts today and yesterday together when checking that limit.</p>
+            <p class="policy-hint">Sets the length of the rolling window used by the Max Same-Desk Bookings limit above — e.g. a 2-day window counts today and yesterday together when checking that limit.</p>
           </div>
         </div>
       </div>
@@ -705,6 +705,26 @@ on all three files' extracted script blocks, jsdom tests confirming both the new
 updated summary phrasing (singular "1 time" vs. plural "N times", independent of windowDays' own "N
 days") render correctly with zero runtime errors, and a Playwright screenshot of the card confirming the
 new copy reads cleanly.
+
+MOST RECENT CHANGE: per a request to shorten the label so it more clearly states what the value is (a
+maximum count of bookings), renamed "Same-Desk Booking Times" to "Max Same-Desk Bookings" — three words
+either way, but "Max" now signals up front that this is a ceiling, not a duration. The `.timeline-
+subtitle` label, the input's `aria-label` ("Maximum same-desk bookings, 1 to 5"), the `.minute-suffix`
+("bookings within the rolling window (max 5)", was "times within..."), the grey hint below the field
+(now "Each booking of this desk counts toward the limit above...", dropping the redundant "as one time"
+now that the label itself says "bookings"), and the Time Window card's own hint (which names this field
+by name) were all updated to match. Every current-state CSS/JS comment describing the field was updated
+too; historical NOTE paragraphs above are left saying "Same-Desk Booking Times"/"Days", per this site's
+established convention of not rewriting historical record. The field's underlying id
+(`bookingDaysInput`), 1-5 range, and same-day-rebooking-within-1-hour counting rule are all unchanged —
+only the label and surrounding copy. The identical rename was mirrored on
+floorsense-optional-features-06.html's inline copy — see that file's own NOTE. On
+floorsense-out-of-box-policy.html, `renderAdhSummary()`'s `formatTimes()` helper was renamed
+`formatBookings()` ("1 booking"/"N bookings", was "1 time"/"N times") so the Configuration Summary's
+phrasing matches the new field name. Verified via an inline HTMLParser tag-balance check and `node
+--check` on all three files' extracted script blocks, jsdom tests confirming the new label/hint/suffix
+text and the renamed summary helper all render correctly with zero runtime errors, and a Playwright
+screenshot of the card confirming the new copy reads cleanly.
 -->
 
 <script>
@@ -887,7 +907,7 @@ new copy reads cleanly.
     }
   });
 
-  /* ---------------- Same-Desk Booking Times: a plain fill-in number field, wired exactly like
+  /* ---------------- Max Same-Desk Bookings: a plain fill-in number field, wired exactly like
      floorsense-prebooking-advance-04.html's own "Advance booking limit" field — clampBookingDays()
      reads/clamps/writes the input's own .value directly (mirroring that page's
      clampPrebookingDays()), rather than the old up/down-stepper's separate render function. Per a
@@ -917,7 +937,7 @@ new copy reads cleanly.
 
   /* ---------------- reveal animation: plays once as the Time Window card scrolls into view,
      ported verbatim from floorsense-prebooking-advance-04.html. Only one .timeline-card remains on
-     this page now that Same-Desk Booking Times is an unboxed plain number field, but this still uses
+     this page now that Max Same-Desk Bookings is an unboxed plain number field, but this still uses
      querySelectorAll so it needs no changes if another card is ever added back. ---------------- */
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const timelineCards = document.querySelectorAll('.timeline-card');
