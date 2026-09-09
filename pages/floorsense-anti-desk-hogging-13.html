@@ -109,12 +109,13 @@
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
 
-  /* ---------- feature intro + on/off switch: ported verbatim from
-     floorsense-idle-release-09.html's .checkin-card/.idle-toggle-row/.switch/.idle-body suite,
-     replacing the old 2-mode .path-check-grid radio choice (both "We will enable"/"We will NOT
-     enable" cards) — a single explainer card with an inline switch is simpler for a plain on/off
-     feature like this one, and matches how Auto-Release on Idle already works. See the MOST RECENT
-     CHANGE note below. ---------- */
+  /* ---------- feature intro card: originally ported from floorsense-idle-release-09.html's
+     .checkin-card/.idle-toggle-row/.switch/.idle-body suite (replacing the old 2-mode
+     .path-check-grid radio choice), then later simplified further by removing its own inline
+     "Enable Anti Desk Hogging" toggle entirely — this feature's on/off state is controlled solely
+     by the master switch on floorsense-optional-features-06.html, so a second, redundant toggle
+     here was removed; the settings below are now always shown. See the MOST RECENT CHANGE note
+     below. ---------- */
   .checkin-card {
     max-width: 760px; margin: 0 auto;
     background: rgba(255,255,255,0.6);
@@ -137,25 +138,6 @@
   .checkin-card-icon-badge.badge-teal .checkin-card-icon-glyph { color: #2FBF9F; }
   .checkin-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
-
-  .idle-toggle-row {
-    display: flex; align-items: center; justify-content: space-between; gap: 14px;
-    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
-  }
-  .idle-toggle-label { font-size: 13.12px; font-weight: 600; color: var(--ink); }
-  .switch {
-    position: relative; width: 38px; height: 22px; border-radius: 100px; background: var(--line);
-    border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
-  }
-  .switch::after {
-    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
-    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform .18s;
-  }
-  .switch.on { background: var(--accent); }
-  .switch.on::after { transform: translateX(16px); }
-
-  .idle-body { display: none; }
-  .idle-body.show { display: block; }
 
   /* ---------- Time Window timeline: the same segmented-rail/draggable-pin control as
      floorsense-prebooking-advance-04.html's advance-booking diagram — a single-handle 1-14 day
@@ -255,32 +237,20 @@
     .timeline-card.animate-in * { animation: none !important; }
   }
 
-  /* ---------- Same-Desk Booking Days: a plain number stepper, not a slider — per a follow-up
-     request, this value is no longer tied to (or capped by) the Time Window slider above, so a
-     rail/pin diagram implying a shared scale would be misleading. A basic up/down stepper reads as
-     independent at a glance the way a shared rail wouldn't. Range is a fixed 1-5, unrelated to
-     Time Window's own 1-14 range. ---------- */
-  .stepper-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
-  .stepper {
-    display: flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 12px;
-    overflow: hidden; background: #fff;
+  /* ---------- Same-Desk Booking Days: a plain fill-in number field, styled and structured exactly
+     like floorsense-prebooking-advance-04.html's own "Advance booking limit" field — .minute-field/
+     .minute-input/.minute-suffix copied verbatim from that page (a compact 88px bordered number
+     input plus a plain-text suffix span) rather than this page's earlier bespoke up/down-chevron
+     stepper. Per a follow-up request, this value remains independent of (not capped by) the Time
+     Window slider — same fixed 1-5 range as before, just a different on-screen control. ---------- */
+  .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
   }
-  .stepper-value {
-    min-width: 56px; padding: 8px 18px; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 22px; font-weight: 700; color: #102A43;
-  }
-  .stepper-btns { display: flex; flex-direction: column; border-left: 1.5px solid var(--line); }
-  .stepper-btn {
-    width: 34px; height: 22px; border: none; background: var(--paper-soft); padding: 0;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: background .15s;
-  }
-  .stepper-btn svg { width: 11px; height: 11px; stroke: var(--ink-soft); }
-  .stepper-btn:hover:not(:disabled) { background: var(--accent-wash); }
-  .stepper-btn:hover:not(:disabled) svg { stroke: var(--accent-deep); }
-  .stepper-btn:disabled { cursor: not-allowed; opacity: 0.35; }
-  .stepper-up { border-bottom: 1px solid var(--line); }
-  .stepper-unit { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -389,27 +359,17 @@
               return to a quasi-fixed-desk way of working. It works by setting a rolling time window,
               and separately, how many days out of any window the same desk may be booked.
             </p>
-            <div class="idle-toggle-row">
-              <span class="idle-toggle-label">Enable Anti Desk Hogging</span>
-              <button type="button" class="switch" id="adhEnableSwitch" role="switch" aria-checked="false" aria-label="Enable Anti Desk Hogging"></button>
-            </div>
           </div>
         </div>
 
-        <div class="idle-body" id="adhBody">
+        <div id="adhBody">
           <div class="adh-field-block">
             <div class="timeline-header">
               <p class="timeline-subtitle">Same-Desk Booking Days</p>
             </div>
-            <div class="stepper-row">
-              <div class="stepper">
-                <span class="stepper-value" id="bookingValue">1</span>
-                <div class="stepper-btns">
-                  <button type="button" class="stepper-btn stepper-up" id="bookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
-                  <button type="button" class="stepper-btn stepper-down" id="bookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-                </div>
-              </div>
-              <span class="stepper-unit" id="bookingUnitLabel">day</span>
+            <div class="minute-field">
+              <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="bookingDaysInput" aria-label="Same-desk booking days, 1 to 5">
+              <span class="minute-suffix">days within the rolling window (max 5)</span>
             </div>
             <p class="policy-hint" id="adhSummaryHint">This allows a user to book the same desk on up to 1 day within each rolling window.</p>
           </div>
@@ -662,6 +622,34 @@ removed; the highlight circle, bird/nest paths, and eye dot are unchanged, so th
 identical, just without its own inner frame. Verified via an inline HTMLParser tag-balance check and a
 Playwright screenshot (zoomed on the icon badge) confirming only the badge's own single border
 remains.
+
+MOST RECENT CHANGE: per a request to remove the "Enable Anti Desk Hogging" toggle and restyle "Same-
+Desk Booking Days" to match floorsense-prebooking-advance-04.html exactly, two things changed. First,
+the `.idle-toggle-row` (label + `#adhEnableSwitch`) was removed entirely, along with the now-unused
+`.idle-toggle-row`/`.idle-toggle-label`/`.switch`/`.idle-body`/`.idle-body.show` CSS — this feature's
+on/off state is controlled solely by the master switch on floorsense-optional-features-06.html, so a
+second, redundant toggle here (which never actually gated navigation — NAV_SEQUENCE already skips this
+page when the hub's switch is off) was removed, and the settings block (`#adhBody`, no longer
+conditionally hidden) is now always shown. `state.mode` itself is untouched: it's still loaded from and
+saved back to storage exactly as before (needed by NAV_SEQUENCE/seqEnabled and the hub's own switch),
+just never read or written from this page anymore — Reset no longer touches it either, only
+`windowDays`/`maxBookings`.
+
+Second, the Same-Desk Booking Days up/down-chevron stepper (`#bookingValue`/`#bookingUpBtn`/
+`#bookingDownBtn`) was replaced with a plain fill-in number field styled and wired exactly like
+floorsense-prebooking-advance-04.html's own "Advance booking limit" field: `.minute-field`/
+`.minute-input`/`.minute-suffix` copied verbatim from that page (an 88px bordered number input plus a
+plain-text suffix span), and a new `clampBookingDays()` that reads/clamps/writes the input's own
+`.value` directly, mirroring that page's `clampPrebookingDays()`, in place of the old stepper's
+separate render function. The field keeps the same fixed 1-5 range and the same independence from the
+Time Window slider as before — only the on-screen control changed. The identical restyle was applied to
+floorsense-optional-features-06.html's inline copy (`#adhBookingDaysInput`, `adh`-prefixed function
+names) — see that file's own NOTE. Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block, a jsdom test confirming: the field defaults to 1 and has no toggle/switch
+anywhere on the page; a saved state renders correctly with the settings always visible; typing a value
+above 5 or below 1 clamps to 5/1 respectively and saves; and Reset restores `windowDays`/`maxBookings`
+to their defaults while leaving a saved `mode` untouched. Also a Playwright screenshot of the card
+confirming the toggle is gone and the field matches page 04's look.
 -->
 
 <script>
@@ -740,27 +728,12 @@ remains.
     return d === 1 ? '1 day' : d + ' days';
   }
 
-  /* ---------------- on/off switch, ported from floorsense-idle-release-09.html's
-     idleEnableSwitch/idleBody — the settings panel is hidden entirely (not just dimmed) until
-     switched on. `mode` stays the string 'enable'/'none' it always was (not a boolean), since
-     floorsense-optional-features-06.html's own switch and every NAV_SEQUENCE/seqEnabled walker
-     sitewide already read/write antiDeskHogging.mode this way — see this file's own NAV_SEQUENCE
-     below, unchanged by this redesign. ---------------- */
-  const adhEnableSwitch = document.getElementById('adhEnableSwitch');
-  const adhBody = document.getElementById('adhBody');
-
-  function applyEnabledState() {
-    const on = state.mode === 'enable';
-    adhEnableSwitch.classList.toggle('on', on);
-    adhEnableSwitch.setAttribute('aria-checked', String(on));
-    adhBody.classList.toggle('show', on);
-  }
-
-  adhEnableSwitch.addEventListener('click', () => {
-    state.mode = state.mode === 'enable' ? 'none' : 'enable';
-    applyEnabledState();
-    queueSave();
-  });
+  /* ---------------- this page no longer has its own on/off toggle — `state.mode` is still loaded
+     from and saved back to storage unchanged (a plain string 'enable'/'none', per every
+     NAV_SEQUENCE/seqEnabled walker and floorsense-optional-features-06.html's own master switch
+     that read/write it that way), but it's never read or written from this page anymore. The
+     settings below are simply always shown; see this file's own NAV_SEQUENCE below, unchanged by
+     this. ---------------- */
 
   /* ---------------- shared segmented-zone colour helper, ported verbatim from
      floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html ---------------- */
@@ -859,50 +832,43 @@ remains.
     }
   });
 
-  /* ---------------- Same-Desk Booking Days: a plain, independent 1-5 stepper. Per a follow-up
-     request this value is no longer tied to (or capped by) the Time Window slider above — the two
-     are set completely separately now, so there is no "day the window ends" concept to place a pin
-     against and no re-clamping when the other value changes. ---------------- */
+  /* ---------------- Same-Desk Booking Days: a plain fill-in number field, wired exactly like
+     floorsense-prebooking-advance-04.html's own "Advance booking limit" field — clampBookingDays()
+     reads/clamps/writes the input's own .value directly (mirroring that page's
+     clampPrebookingDays()), rather than the old up/down-stepper's separate render function. Per a
+     follow-up request this value remains independent of (not capped by) the Time Window slider
+     above — the two are set completely separately, so there is no re-clamping when the other value
+     changes. ---------------- */
   const ADH_BOOKING_MAX = 5;
-  const bookingValue = document.getElementById('bookingValue');
-  const bookingUnitLabel = document.getElementById('bookingUnitLabel');
-  const bookingUpBtn = document.getElementById('bookingUpBtn');
-  const bookingDownBtn = document.getElementById('bookingDownBtn');
+  const bookingDaysInput = document.getElementById('bookingDaysInput');
   const adhSummaryHint = document.getElementById('adhSummaryHint');
 
   function updateSummary() {
     adhSummaryHint.textContent = 'This allows a user to book the same desk on up to ' + state.maxBookings +
       (state.maxBookings === 1 ? ' day' : ' days') + ' within each rolling window.';
   }
-  function clampBookingDays(days) {
-    let value = Math.round(days);
+  function clampBookingDays() {
+    let value = parseInt(bookingDaysInput.value, 10);
     if (!Number.isFinite(value) || value < 1) value = 1;
     if (value > ADH_BOOKING_MAX) value = ADH_BOOKING_MAX;
+    bookingDaysInput.value = value;
     return value;
-  }
-  function renderBookingStepper(days) {
-    bookingValue.textContent = days;
-    bookingUnitLabel.textContent = days === 1 ? 'day' : 'days';
-    bookingUpBtn.disabled = days >= ADH_BOOKING_MAX;
-    bookingDownBtn.disabled = days <= 1;
-    updateSummary();
   }
 
   function setWindowDays(days) {
     state.windowDays = clampWindowDays(days);
     renderWindowDiagram(state.windowDays);
   }
-  function setMaxBookings(days) {
-    state.maxBookings = clampBookingDays(days);
-    renderBookingStepper(state.maxBookings);
-  }
 
-  bookingUpBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings + 1); queueSave(); });
-  bookingDownBtn.addEventListener('click', () => { setMaxBookings(state.maxBookings - 1); queueSave(); });
+  bookingDaysInput.addEventListener('input', () => {
+    state.maxBookings = clampBookingDays();
+    updateSummary();
+    queueSave();
+  });
 
   /* ---------------- reveal animation: plays once as the Time Window card scrolls into view,
      ported verbatim from floorsense-prebooking-advance-04.html. Only one .timeline-card remains on
-     this page now that Same-Desk Booking Days is an unboxed stepper, but this still uses
+     this page now that Same-Desk Booking Days is an unboxed plain number field, but this still uses
      querySelectorAll so it needs no changes if another card is ever added back. ---------------- */
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const timelineCards = document.querySelectorAll('.timeline-card');
@@ -926,8 +892,8 @@ remains.
 
   function applyState() {
     renderWindowDiagram(state.windowDays);
-    renderBookingStepper(state.maxBookings);
-    applyEnabledState();
+    bookingDaysInput.value = state.maxBookings;
+    updateSummary();
   }
   applyState();
 
@@ -962,7 +928,6 @@ remains.
   if (prevEntry) pageNavPrev.href = prevEntry.href; // always resolves (reservation-length is the floor, never skippable)
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.mode = 'none';
     state.windowDays = 2;
     state.maxBookings = 1;
     applyState();

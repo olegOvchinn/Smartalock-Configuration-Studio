@@ -279,31 +279,19 @@
     color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
 
-  /* ---------- Same-Desk Booking Days: a plain, independent 1-5 stepper — same control as
-     floorsense-anti-desk-hogging-13.html's own (see that page's own NOTE for why this is a
-     stepper and not a slider), copied verbatim and scoped under .feature-row-adh like the
-     timeline rules above. ---------- */
-  .feature-row-adh .adh-stepper-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 4px; }
-  .feature-row-adh .stepper {
-    display: flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 12px;
-    overflow: hidden; background: #fff;
+  /* ---------- Same-Desk Booking Days: a plain fill-in number field, styled and structured exactly
+     like floorsense-prebooking-advance-04.html's own "Advance booking limit" field (see that page's
+     own NOTE) — .minute-field/.minute-input/.minute-suffix copied verbatim and scoped under
+     .feature-row-adh like the timeline rules above, replacing the earlier up/down-chevron stepper
+     mirrored from floorsense-anti-desk-hogging-13.html's own now-superseded stepper design. ---------- */
+  .feature-row-adh .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+  .feature-row-adh .minute-input {
+    width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 14px; font-weight: 600; background: var(--paper-soft);
+    text-align: center; color: var(--ink);
   }
-  .feature-row-adh .stepper-value {
-    min-width: 56px; padding: 8px 18px; display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-text); font-size: 22px; font-weight: 700; color: #102A43;
-  }
-  .feature-row-adh .stepper-btns { display: flex; flex-direction: column; border-left: 1.5px solid var(--line); }
-  .feature-row-adh .stepper-btn {
-    width: 34px; height: 22px; border: none; background: var(--paper-soft); padding: 0;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: background .15s;
-  }
-  .feature-row-adh .stepper-btn svg { width: 11px; height: 11px; stroke: var(--ink-soft); }
-  .feature-row-adh .stepper-btn:hover:not(:disabled) { background: var(--accent-wash); }
-  .feature-row-adh .stepper-btn:hover:not(:disabled) svg { stroke: var(--accent-deep); }
-  .feature-row-adh .stepper-btn:disabled { cursor: not-allowed; opacity: 0.35; }
-  .feature-row-adh .stepper-up { border-bottom: 1px solid var(--line); }
-  .feature-row-adh .stepper-unit { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .feature-row-adh .minute-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .feature-row-adh .minute-suffix { font-size: 12.1px; color: var(--ink-soft); font-weight: 500; }
 
   .feature-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); background: var(--paper-soft); }
   /* ---------- footer icon matches .feature-row-icon's "Style 1" treatment (84x84px, bare,
@@ -454,15 +442,9 @@
                 <div class="timeline-header">
                   <p class="timeline-subtitle">Same-Desk Booking Days</p>
                 </div>
-                <div class="adh-stepper-row">
-                  <div class="stepper">
-                    <span class="stepper-value" id="adhBookingValue">1</span>
-                    <div class="stepper-btns">
-                      <button type="button" class="stepper-btn stepper-up" id="adhBookingUpBtn" aria-label="Increase same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
-                      <button type="button" class="stepper-btn stepper-down" id="adhBookingDownBtn" aria-label="Decrease same-desk booking days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-                    </div>
-                  </div>
-                  <span class="stepper-unit" id="adhBookingUnitLabel">day</span>
+                <div class="minute-field">
+                  <input type="number" min="1" max="5" step="1" value="1" class="minute-input" id="adhBookingDaysInput" aria-label="Same-desk booking days, 1 to 5">
+                  <span class="minute-suffix">days within the rolling window (max 5)</span>
                 </div>
               </div>
               <div class="timeline-card">
@@ -1028,6 +1010,25 @@ this row's own more compact scale; the now-unused `.feature-row-adh .timeline-ca
 sibling rule was removed. No JS changed. Verified via an inline HTMLParser tag-balance check,
 `node --check` on the extracted script block, a re-run of every existing jsdom test for this hub (all
 still pass unchanged), and a Playwright screenshot confirming the new layout inside the row.
+
+MOST RECENT CHANGE: mirrors the same restyle made to floorsense-anti-desk-hogging-13.html itself — see
+that file's own NOTE for the full rationale. Note this hub's own Anti Desk Hogging master switch
+(`#adhSwitch`) is unaffected and was NOT removed — only page 13's own local, redundant "Enable Anti Desk
+Hogging" toggle was removed there, since this hub's switch is the sole master control either way. Here,
+the Same-Desk Booking Days up/down-chevron stepper (`#adhBookingValue`/`#adhBookingUpBtn`/
+`#adhBookingDownBtn`) was replaced with a plain fill-in number field (`#adhBookingDaysInput`) styled
+identically to floorsense-prebooking-advance-04.html's own "Advance booking limit" field —
+`.feature-row-adh .minute-field`/`.minute-input`/`.minute-suffix` scoped CSS in place of the old
+`.adh-stepper-row`/`.stepper`/`.stepper-value`/`.stepper-btns` rules, and a new `adhClampBookingDays()`
+that reads/clamps/writes the input's own `.value` directly (mirroring `clampPrebookingDays()`) in place
+of the old `adhRenderBookingStepper()`. Reset now sets `adhBookingDaysInput.value = 1` directly instead
+of calling the removed stepper-render function. Same fixed 1-5 range and same independence from the Time
+Window slider as before — only the on-screen control changed. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, a jsdom test confirming: the field
+defaults to 1 and stays hidden until the master switch is on; a saved state renders the field's value
+and reveals it correctly; typing a value above 5 clamps to 5 and saves; toggling the switch reveals the
+field; and Reset restores both Time Window and the field to their defaults. Also a Playwright screenshot
+confirming the field matches page 04's look inside the row.
 -->
 
 <script>
@@ -1314,40 +1315,34 @@ still pass unchanged), and a Playwright screenshot confirming the new layout ins
     }
   });
 
-  /* ---------------- Same-Desk Booking Days: a plain, independent 1-5 stepper — per a follow-up
-     request this value is no longer tied to (or capped by) the Time Window slider above; see
-     floorsense-anti-desk-hogging-13.html's own NOTE for the full rationale. Function names below
-     mirror that page's own stepper functions 1:1, just "adh"-prefixed. ---------------- */
+  /* ---------------- Same-Desk Booking Days: a plain fill-in number field, wired exactly like
+     floorsense-prebooking-advance-04.html's own "Advance booking limit" field —
+     adhClampBookingDays() reads/clamps/writes the input's own .value directly (mirroring that
+     page's clampPrebookingDays()), replacing the earlier up/down-stepper's separate render
+     function. Per a follow-up request this value remains independent of (not capped by) the Time
+     Window slider above; see floorsense-anti-desk-hogging-13.html's own NOTE for the full
+     rationale — function names below mirror that page's own field functions 1:1, just
+     "adh"-prefixed. ---------------- */
   const ADH_BOOKING_MAX = 5;
-  const adhBookingValue = document.getElementById('adhBookingValue');
-  const adhBookingUnitLabel = document.getElementById('adhBookingUnitLabel');
-  const adhBookingUpBtn = document.getElementById('adhBookingUpBtn');
-  const adhBookingDownBtn = document.getElementById('adhBookingDownBtn');
+  const adhBookingDaysInput = document.getElementById('adhBookingDaysInput');
 
-  function adhClampBookingDays(days) {
-    let value = Math.round(days);
+  function adhClampBookingDays() {
+    let value = parseInt(adhBookingDaysInput.value, 10);
     if (!Number.isFinite(value) || value < 1) value = 1;
     if (value > ADH_BOOKING_MAX) value = ADH_BOOKING_MAX;
+    adhBookingDaysInput.value = value;
     return value;
-  }
-  function adhRenderBookingStepper(days) {
-    adhBookingValue.textContent = days;
-    adhBookingUnitLabel.textContent = days === 1 ? 'day' : 'days';
-    adhBookingUpBtn.disabled = days >= ADH_BOOKING_MAX;
-    adhBookingDownBtn.disabled = days <= 1;
   }
 
   function adhSetWindowDays(days) {
     adhState.windowDays = adhClampWindowDays(days);
     adhRenderWindowDiagram(adhState.windowDays);
   }
-  function adhSetMaxBookings(days) {
-    adhState.maxBookings = adhClampBookingDays(days);
-    adhRenderBookingStepper(adhState.maxBookings);
-  }
 
-  adhBookingUpBtn.addEventListener('click', () => { adhSetMaxBookings(adhState.maxBookings + 1); adhSaveSettings(); });
-  adhBookingDownBtn.addEventListener('click', () => { adhSetMaxBookings(adhState.maxBookings - 1); adhSaveSettings(); });
+  adhBookingDaysInput.addEventListener('input', () => {
+    adhState.maxBookings = adhClampBookingDays();
+    adhSaveSettings();
+  });
 
   function adhSaveSettings() {
     project.floorsense.wizard.antiDeskHogging = project.floorsense.wizard.antiDeskHogging || {};
@@ -1357,7 +1352,7 @@ still pass unchanged), and a Playwright screenshot confirming the new layout ins
   }
 
   adhRenderWindowDiagram(adhState.windowDays);
-  adhRenderBookingStepper(adhState.maxBookings);
+  adhBookingDaysInput.value = adhState.maxBookings;
   renderAdhSettingsField();
 
   document.getElementById(adhFeature.switchEl).addEventListener('click', renderAdhSettingsField);
@@ -1376,7 +1371,7 @@ still pass unchanged), and a Playwright screenshot confirming the new layout ins
     adhState.windowDays = 2;
     adhState.maxBookings = 1;
     adhRenderWindowDiagram(2);
-    adhRenderBookingStepper(1);
+    adhBookingDaysInput.value = 1;
     renderAll();
     renderIdleHoursField();
     renderFmeAckField();
