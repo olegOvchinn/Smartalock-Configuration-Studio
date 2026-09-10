@@ -140,6 +140,15 @@
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
   }
+  /* ---------- group-tag: same pill treatment as qcard-tag, ported from
+     floorsense-desk-user-groups-03.html's "Recommended" pill, for cards that recommend (rather than
+     merely allow) a choice — .qcard-tag alone is only ever used for "Optional" elsewhere on this page,
+     so this is a separate class rather than overloading its meaning. ---------- */
+  .group-tag {
+    font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px; margin-left: 6px;
+    display: inline-block; vertical-align: middle;
+  }
   .qcard p.qdesc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
   .qcard label { display: block; font-size: 12.3px; font-weight: 500; margin-bottom: 6px; }
   .qcard select, .qcard textarea, .qcard input[type="text"] {
@@ -225,7 +234,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <h1 class="hero-title">IT Configuration &amp; Integrations</h1>
-        <p class="sub">SSO, provisioning and integrations — all entirely optional.</p>
+        <p class="sub">Company sign-in, user provisioning and integrations — all entirely optional.</p>
       </div>
       <h1 class="module-heading">IT Configuration &amp; Integrations</h1>
     </div>
@@ -242,8 +251,8 @@
         <div class="page-text">
 
           <div class="qcard">
-            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>SSO Authentication</h3>
-            <p class="qdesc">Select how users will authenticate with the Smartalock system, if SSO is required.</p>
+            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>Company Sign-In <span class="group-tag">Recommended</span></h3>
+            <p class="qdesc">Select how users will authenticate with the Smartalock system, if Single Sign-On is required.</p>
             <label>Authentication method</label>
             <select id="ssoMethod">
               <option value="">No SSO</option>
@@ -259,7 +268,7 @@
           </div>
 
           <div class="qcard">
-            <h3><div class="qcard-icon-badge icon-scim"><img class="qcard-icon" src="../assets/images/icon-scim.png" alt=""></div>SCIM User Provisioning</h3>
+            <h3><div class="qcard-icon-badge icon-scim"><img class="qcard-icon" src="../assets/images/icon-scim.png" alt=""></div>Automatic User Provisioning <span class="group-tag">Recommended</span></h3>
             <p class="qdesc">Configure automatic user provisioning and deprovisioning, if required.</p>
             <label>SCIM provisioning</label>
             <select id="scimProvisioning">
@@ -401,6 +410,27 @@ with `?return=summary&branch=floorsense` it goes to floorsense-out-of-box-policy
 `?return=summary&branch=smartalock` it goes to smartalock-configuration-summary-08.html, and with
 neither param it still proceeds to pick-a-product.html as before. Verified via Playwright
 end-to-end navigation tests covering all three cases.
+
+MOST RECENT CHANGE: per a request to avoid being too technical, the page subtitle and the first two
+cards' headings no longer use the acronyms "SSO"/"SCIM" — the subtitle now reads "Company sign-in,
+user provisioning and integrations...", the first card's `<h3>` reads "Company Sign-In" (was "SSO
+Authentication"), and the second card's `<h3>` reads "Automatic User Provisioning" (was "SCIM User
+Provisioning"). Per a follow-up clarifying the scope: the first card's description paragraph now
+spells out the full term ("...if Single Sign-On is required.", was "...if SSO is required.") rather
+than dropping the concept entirely, and the `<select>` options/labels/guide-box text on both cards
+were deliberately left saying "SSO"/"SCIM" verbatim (e.g. "No SSO", "Other SSO", "SCIM
+provisioning", "Need help configuring SCIM?") since those acronyms are fine in the actual choices,
+just not in the headline copy. No ids, state keys, CSS class names (`icon-sso`/`icon-scim`,
+`ssoMethod`/`scimProvisioning`), image filenames, or guide-link URLs were touched — this was a
+visible-copy-only change. Per a further request, both of these first two cards' headings also
+gained a `<span class="group-tag">Recommended</span>` pill (a new `.group-tag` CSS rule, ported
+verbatim from `floorsense-desk-user-groups-03.html`'s own "Recommended" pill, since this page only
+had the differently-purposed `.qcard-tag` "Optional" pill before). Verified via an HTMLParser
+tag-balance check, `node --check` on the script block (untouched), a Playwright test confirming
+selecting an SSO method and enabling SCIM provisioning still autosaves to
+`project.smartalock.wizard.it` and still reveals both guide boxes, and screenshots of both cards
+showing the new plain-language headings, the "Recommended" pill, and the full "Single Sign-On"
+wording in the first card's description.
 -->
 
 <script>

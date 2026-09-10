@@ -406,6 +406,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Split each of the 5 contact fields on `smartalock-templates-00.html`'s Contacts card (Policy, IT, Training, Support/Helpdesk, Facilities) into separate Name and Email inputs, instead of one combined free-text field per contact.
 - Regrouped those Name/Email pairs on `smartalock-templates-00.html`'s Contacts card under a single heading per contact ("Policy Contact", "IT Contact", etc.), with the fields themselves now just labeled "Name" and "Email" instead of repeating the contact's name in both labels.
 - Moved those "Name"/"Email" labels into the fields themselves as placeholder text (replacing the old "If different..."/"If any.." placeholders), removing the separate labels above each input.
+- On `smartalock-it-configuration-02.html`, reworded the subtitle and the first two cards' headings to avoid the "SSO"/"SCIM" acronyms ("Company Sign-In", "Automatic User Provisioning"), spelled out "Single Sign-On" in full in the first card's description, kept "SSO"/"SCIM" in the actual dropdown choices, and added a "Recommended" pill to both of those cards' headings.
 
 ## Status
 
