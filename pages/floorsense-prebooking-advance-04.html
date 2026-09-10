@@ -240,7 +240,7 @@
     box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
     display: inline-flex; align-items: center; gap: 5px;
@@ -932,6 +932,13 @@ and a Playwright test confirming: the arrow elements are bare `<svg>`s with no i
 leaves the value unchanged; starting a drag with the mouse pressed down inside the filled zone (not
 on the pin) sets the `dragging` class and moves the value correctly on drag/release; and regression
 checks confirm dragging the pin directly and pressing the arrow keys both still work.
+
+MOST RECENT CHANGE: per a request to move the floating days pill closer to the rail, `.label-time`'s
+`margin-bottom` shrank from `14px` to `6px` (it's positioned via `bottom: 100%` off the pin's own
+box, so this directly tightens the gap between the pill's bottom edge and the rail). Nothing else
+about the pill, arrows, or rail changed. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched — CSS-only change), and a before/after
+Playwright screenshot comparison confirming the pill sits noticeably closer to the rail.
 -->
 
 

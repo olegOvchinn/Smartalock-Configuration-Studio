@@ -397,6 +397,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a small caption below `floorsense-prebooking-advance-04.html`'s timeline — "Drag the pin — or tap the arrows — to change how many days ahead." — spelling out in words that the pill/pin is interactive.
 - Both of that timeline's captions ("BOOK AHEAD" and the new drag hint) now use the page's near-black body text colour instead of their previous lighter greys.
 - Per a follow-up, the two flashing arrows are decorative again (no longer clickable), and the filled zone bar itself is now a drag target alongside the pin — grabbing anywhere in the blue fill starts the same drag as grabbing the pin. The caption below the timeline updated to match ("...or the filled bar...").
+- The floating days pill on that same timeline now sits closer to the rail (tighter gap above the pin).
 
 ## Status
 
