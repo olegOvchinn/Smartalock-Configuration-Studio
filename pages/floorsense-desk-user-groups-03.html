@@ -395,8 +395,6 @@
             </div>
             <p>User Groups allow for further granularity in setting desk policy (rules) for booking. The policy for a User Group overrides the policy for a Desk Group (or the default policy if no Desk Groups are configured).</p>
             <p>A Floorsense user can only belong to a single User Group. Typically the User Group names can be imported from a source system via file upload, and each user record uploaded is tagged with which User Group it belongs to.</p>
-            <p>Alternatively, User Groups can be configured via the Admin portal and users added to these User Groups after the users themselves have been auto-created/imported via an independent import process.</p>
-            <p>User Groups cannot be imported automatically for Single Sign-On auto-created users, and also cannot be imported from Active Directory, unless the user only exists in a single group within Active Directory.</p>
             <p>Tick 1 or more of the following options to describe your User Group requirements:</p>
           </div>
 
@@ -803,6 +801,18 @@ none), state, or JS wiring changed. Verified via an inline HTMLParser tag-balanc
 --check` on the extracted script block, and a full-page Playwright screenshot confirming both icons
 render at the correct size/color/position beside their headings with the checkbox cards below
 unaffected.
+
+MOST RECENT CHANGE: per a request to remove two paragraphs from the User Group Setup card's section
+head, deleted "Alternatively, User Groups can be configured via the Admin portal and users added to
+these User Groups after the users themselves have been auto-created/imported via an independent import
+process." and "User Groups cannot be imported automatically for Single Sign-On auto-created users, and
+also cannot be imported from Active Directory, unless the user only exists in a single group within
+Active Directory." — both sat between the existing "A Floorsense user can only belong to a single User
+Group..." paragraph and the "Tick 1 or more of the following options..." lead-in. Only these two `<p>`
+tags were removed; the paragraph before them, the "Tick 1 or more..." lead-in, and the checkbox grid
+below are all unchanged, and Desk Group Setup's own card (identical layout, no such paragraphs) is
+unaffected. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
+script block (untouched — markup-only change, no JS logic affected).
 -->
 
 
