@@ -144,6 +144,12 @@
     min-height: 64px; resize: vertical;
   }
   .form-field textarea:focus { outline: none; border-color: var(--ink); }
+  /* ---------- contact-group: a heading ("Policy Contact") over its own Name/Email field pair,
+     so the pair reads as one contact instead of repeating the contact's name in every label ---------- */
+  .contact-group { grid-column: 1 / -1; }
+  .contact-group-label { font-size: 12.3px; font-weight: 600; margin-bottom: 8px; }
+  .contact-group-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .contact-group-fields { grid-template-columns: 1fr; } }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -243,49 +249,74 @@
         <h3><div class="qcard-icon-badge badge-teal"><img class="qcard-icon" src="assets/images/icon-contacts.png" alt=""></div>Contacts <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
         <div class="form-grid">
-          <div class="form-field">
-            <label>Policy Contact Name</label>
-            <input type="text" id="regPolicyName" placeholder="If different...">
+          <div class="contact-group">
+            <div class="contact-group-label">Policy Contact</div>
+            <div class="contact-group-fields">
+              <div class="form-field">
+                <label>Name</label>
+                <input type="text" id="regPolicyName" placeholder="If different...">
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="text" id="regPolicyEmail" placeholder="If different...">
+              </div>
+            </div>
           </div>
-          <div class="form-field">
-            <label>Policy Contact Email</label>
-            <input type="text" id="regPolicyEmail" placeholder="If different...">
-          </div>
-          <div class="form-field">
-            <label>IT Contact Name</label>
-            <input type="text" id="regITName" placeholder="If different...">
-          </div>
-          <div class="form-field">
-            <label>IT Contact Email</label>
-            <input type="text" id="regITEmail" placeholder="If different...">
+          <div class="contact-group">
+            <div class="contact-group-label">IT Contact</div>
+            <div class="contact-group-fields">
+              <div class="form-field">
+                <label>Name</label>
+                <input type="text" id="regITName" placeholder="If different...">
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="text" id="regITEmail" placeholder="If different...">
+              </div>
+            </div>
           </div>
           <div class="form-field" style="grid-column: 1 / -1;">
             <label>Please provide the names and email addresses of individuals who require access to the Floorsight Administering Web Portal (1-2 people).</label>
             <textarea id="regPortalAccess" placeholder="e.g. Jane Doe - jane@company.com&#10;John Smith - john@company.com"></textarea>
           </div>
-          <div class="form-field">
-            <label>Training Contact Name</label>
-            <input type="text" id="regTrainingName" placeholder="If any...">
+          <div class="contact-group">
+            <div class="contact-group-label">Training Contact</div>
+            <div class="contact-group-fields">
+              <div class="form-field">
+                <label>Name</label>
+                <input type="text" id="regTrainingName" placeholder="If any...">
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="text" id="regTrainingEmail" placeholder="If any...">
+              </div>
+            </div>
           </div>
-          <div class="form-field">
-            <label>Training Contact Email</label>
-            <input type="text" id="regTrainingEmail" placeholder="If any...">
+          <div class="contact-group">
+            <div class="contact-group-label">Support / Helpdesk Contact</div>
+            <div class="contact-group-fields">
+              <div class="form-field">
+                <label>Name</label>
+                <input type="text" id="regSupportName" placeholder="Enter support contact name...">
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="text" id="regSupportEmail" placeholder="Enter support contact email...">
+              </div>
+            </div>
           </div>
-          <div class="form-field">
-            <label>Support / Helpdesk Contact Name</label>
-            <input type="text" id="regSupportName" placeholder="Enter support contact name...">
-          </div>
-          <div class="form-field">
-            <label>Support / Helpdesk Contact Email</label>
-            <input type="text" id="regSupportEmail" placeholder="Enter support contact email...">
-          </div>
-          <div class="form-field">
-            <label>Facilities Contact Name</label>
-            <input type="text" id="regFacilitiesName" placeholder="Enter facilities contact name...">
-          </div>
-          <div class="form-field">
-            <label>Facilities Contact Email</label>
-            <input type="text" id="regFacilitiesEmail" placeholder="Enter facilities contact email...">
+          <div class="contact-group">
+            <div class="contact-group-label">Facilities Contact</div>
+            <div class="contact-group-fields">
+              <div class="form-field">
+                <label>Name</label>
+                <input type="text" id="regFacilitiesName" placeholder="Enter facilities contact name...">
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="text" id="regFacilitiesEmail" placeholder="Enter facilities contact email...">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -493,6 +524,20 @@ pairs needed no other JS changes. Verified via an HTMLParser tag-balance check, 
 the script block, and a Playwright test confirming all 10 new inputs exist, that typed values
 autosave into `project.registration` under their new key names, persist across a reload, and clear
 via Reset.
+
+MOST RECENT CHANGE: per a follow-up request, the Name/Email pair for each contact no longer
+repeats the contact's own name in both field labels (e.g. "Policy Contact Name" / "Policy Contact
+Email"). Each pair is now wrapped in a new `.contact-group` div (`grid-column: 1 / -1`, so it still
+takes one full row of the card's 2-column `.form-grid`) with a single bold `.contact-group-label`
+heading ("Policy Contact", "IT Contact", "Training Contact", "Support / Helpdesk Contact",
+"Facilities Contact") above a nested `.contact-group-fields` 2-column grid holding the two
+`.form-field`s, now just labeled "Name" and "Email". The Portal Access textarea between IT and
+Training is unchanged (it isn't a name/email pair, so it isn't wrapped in a group). No id or state
+changes — `regPolicyName`/`regPolicyEmail`/etc. and their `project.registration` keys are exactly
+as in the previous change, so `fieldEls`/`state` needed no edits. Verified via an HTMLParser
+tag-balance check, `node --check` on the script block, a Playwright test re-confirming autosave/
+persist/reset still work under the new markup, and a screenshot confirming each group now reads as
+one heading over a Name/Email pair.
 -->
 
 <script>
