@@ -279,6 +279,13 @@
     font-family: var(--font-text); font-size: 10.66px; background: var(--paper);
   }
   .kiosk-toggle-subfields .field input:focus { outline: none; border-color: var(--ink); }
+  .kiosk-toggle-subfields .field select {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper); color: var(--ink);
+  }
+  .kiosk-toggle-subfields .field select:focus { outline: none; border-color: var(--ink); }
+  .kiosk-toggle-subfields .field.field-optional { display: none; }
+  .kiosk-toggle-subfields .field.field-optional.show { display: block; animation: fadeIn .22s ease; }
 
   .kiosk-field-row {
     margin-top: 14px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
@@ -584,6 +591,25 @@ rules were removed as now-unused. `.preview-fallback .glyph` (the lone Lottie-fa
 which has no icon image of its own to sample) was left untouched, still plain accent blue. Verified
 via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (only the
 BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched).
+
+MOST RECENT CHANGE: Per a follow-up request, renamed the "Smartalock Logo" toggle (key
+logoEnabled, elementId smartalockLogo) to "Main Information Banner" and gave it hasFields:true,
+mirroring the sibling "Information Banner" (bannerEnabled) toggle's already-established
+select-then-reveal-a-field pattern. It now renders a "Banner Text" <select> (Smartalock wordmark
+default vs. "Replace existing with custom") plus a one-line text field labeled "Banner Line 1"
+(new state keys logoCustomEnabled/logoCustomText) that only appears once "Replace existing with
+custom" is chosen. A new updateLogoText() sets #smartalockLogo's text to the custom value when
+enabled, or back to "Smartalock" otherwise; it's called from applyInitialState() and from the new
+select/input listeners. CSS gained a plain select styling rule reusing the existing
+.kiosk-toggle-subfields .field input look, plus a .field-optional/.show pair (mirrors the
+.qcard-subfield show pattern used elsewhere in this app) to hide/reveal the custom-text field.
+Reset restores logoCustomEnabled to false and logoCustomText to ''. Note this introduces a second,
+independent "Banner Line 1" label on this page (the pre-existing Information Banner card also has
+one) — both were kept as named, per the request, since they belong to two visually distinct cards.
+Verified via python3 /tmp/validate_generic.py (tag balance), node --check on the extracted script
+block, a jsdom functional test (select→custom reveals the field, typing updates #smartalockLogo
+live, switching back to default reverts it, and the values round-trip through localStorage), and
+Playwright screenshots of both the default and custom states.
 -->
 
 <script>
@@ -617,6 +643,8 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
 
   const state = Object.assign({
     logoEnabled: true,
+    logoCustomEnabled: false,
+    logoCustomText: "",
     bannerEnabled: true,
     bannerLine1: "Scan your access card or",
     bannerLine2: "select an option to get started",
@@ -630,7 +658,7 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
   }, project.smartalock.wizard.kioskCustomisation || {});
 
   const TOGGLES = [
-    { key: "logoEnabled",   elementId: "smartalockLogo",     label: "Smartalock Logo",   desc: "Shows the Smartalock wordmark on the kiosk home screen.", icon: "icon-kiosk-logo.png" },
+    { key: "logoEnabled",   elementId: "smartalockLogo",     label: "Main Information Banner", desc: "Shows a headline on the kiosk home screen — the Smartalock wordmark by default, or your own custom text.", hasFields: true, icon: "icon-kiosk-logo.png" },
     { key: "bannerEnabled", elementId: "welcomeMessage",      label: "Information Banner", desc: "Short instructional message shown beneath the logo.", hasFields: true, icon: "icon-kiosk-banner.png" },
     { key: "openEnabled",   elementId: "openExistingButton",  label: "Open Existing",     desc: "Look up and reopen a locker the user already has assigned.", icon: "icon-kiosk-open-existing.png" },
     { key: "lockerEnabled", elementId: "getLockerButton",     label: "Get A Locker",      desc: "Primary flow — assigns and opens an available locker to the user.", icon: "icon-kiosk-get-locker.png" },
@@ -706,6 +734,11 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
     }
   }
 
+  function updateLogoText(){
+    const el = document.getElementById('smartalockLogo');
+    el.textContent = (state.logoCustomEnabled && state.logoCustomText) ? state.logoCustomText : 'Smartalock';
+  }
+
   function updateBannerText(){
     const el = document.getElementById('welcomeMessage');
     el.textContent = '';
@@ -745,7 +778,7 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
       `;
       item.appendChild(row);
 
-      if (t.hasFields) {
+      if (t.hasFields && t.key === 'bannerEnabled') {
         const fields = document.createElement('div');
         fields.className = 'kiosk-toggle-subfields' + (state.bannerEnabled ? ' show' : '');
         fields.id = 'fields-' + t.key;
@@ -769,6 +802,39 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
         fields.querySelector('#bannerLine2Input').addEventListener('input', e => {
           state.bannerLine2 = e.target.value;
           updateBannerText();
+          queueSave();
+        });
+      }
+
+      if (t.hasFields && t.key === 'logoEnabled') {
+        const fields = document.createElement('div');
+        fields.className = 'kiosk-toggle-subfields' + (state.logoEnabled ? ' show' : '');
+        fields.id = 'fields-' + t.key;
+        fields.innerHTML = `
+          <div class="field">
+            <label>Banner Text</label>
+            <select id="logoCustomSelect">
+              <option value="default"${state.logoCustomEnabled ? '' : ' selected'}>Smartalock wordmark (default)</option>
+              <option value="custom"${state.logoCustomEnabled ? ' selected' : ''}>Replace existing with custom</option>
+            </select>
+          </div>
+          <div class="field field-optional${state.logoCustomEnabled ? ' show' : ''}" id="logoCustomTextWrap">
+            <label>Banner Line 1</label>
+            <input type="text" id="logoCustomTextInput" maxlength="40" value="${state.logoCustomText}" placeholder="Enter custom banner text">
+          </div>
+        `;
+        item.appendChild(fields);
+
+        const logoCustomTextWrap = fields.querySelector('#logoCustomTextWrap');
+        fields.querySelector('#logoCustomSelect').addEventListener('change', e => {
+          state.logoCustomEnabled = e.target.value === 'custom';
+          logoCustomTextWrap.classList.toggle('show', state.logoCustomEnabled);
+          updateLogoText();
+          queueSave();
+        });
+        fields.querySelector('#logoCustomTextInput').addEventListener('input', e => {
+          state.logoCustomText = e.target.value;
+          updateLogoText();
           queueSave();
         });
       }
@@ -823,6 +889,7 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
         element.style.transform = base + 'translateY(10px)';
       }
     });
+    updateLogoText();
     updateBannerText();
     applyBgColour();
     bgColourInput.value = (state.bgColour || '').replace(/^#/, '');
@@ -842,6 +909,8 @@ BADGE_PALETTE/badgeClass lines were removed; toggle/switch/save logic untouched)
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.logoEnabled = true;
+    state.logoCustomEnabled = false;
+    state.logoCustomText = '';
     state.bannerEnabled = true;
     state.bannerLine1 = 'Scan your access card or';
     state.bannerLine2 = 'select an option to get started';

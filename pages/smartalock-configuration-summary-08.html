@@ -617,6 +617,15 @@ label and description text are unchanged. Verified via an inline HTMLParser tag-
 --check` on the extracted script block, and a jsdom test confirming the row reads "1 per user" by
 default, "5 per user" for a saved custom value of 5, and "Not specified" for Custom selected with no
 value saved, with zero runtime errors.
+
+MOST RECENT CHANGE: mirrors the rename on smartalock-kiosk-customisation-07.html of its
+"Smartalock Logo" toggle to "Main Information Banner", which also gained a custom-text option.
+The kiosk-customisation TOGGLES array here dropped its own `logoEnabled` entry and now renders a
+dedicated row instead — label "Main Information Banner", value "Enabled"/"Removed" from
+`flag('logoEnabled')`, with the description gaining a ` Text: "..."` suffix (reusing the same
+pattern as the neighbouring Information Banner row) whenever `k.logoCustomEnabled` is true,
+showing `k.logoCustomText` or "(not specified)" if left blank. Verified via
+python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted script block.
 -->
 
 <script>
@@ -887,12 +896,18 @@ value saved, with zero runtime errors.
     const flag = (key) => k.hasOwnProperty(key) ? !!k[key] : true;
 
     const TOGGLES = [
-      { key: 'logoEnabled', label: 'Smartalock Logo', desc: 'Shows the Smartalock wordmark on the kiosk home screen.' },
       { key: 'openEnabled', label: 'Open Existing', desc: 'Look up and reopen a locker the user already has assigned.' },
       { key: 'lockerEnabled', label: 'Get A Locker', desc: 'Primary flow — assigns and opens an available locker to the user.' },
       { key: 'qrEnabled', label: 'Scan QR Code', desc: 'Authenticates the user by scanning a QR code instead of a badge or PIN.' },
       { key: 'cardEnabled', label: 'Place Card Here', desc: 'Prompts the user to tap or place their access card on the reader.' }
     ];
+
+    const logoOn = flag('logoEnabled');
+    const logoCustomOn = !!k.logoCustomEnabled;
+    const logoText = k.logoCustomText || '';
+    const logoDesc = 'Shows a headline on the kiosk home screen — the Smartalock wordmark by default, or custom text.' +
+      (logoOn && logoCustomOn ? ' Text: "' + (logoText || '(not specified)') + '"' : '');
+    wrap.appendChild(row('Main Information Banner', logoOn ? 'Enabled' : 'Removed', logoDesc));
 
     TOGGLES.forEach(t => {
       wrap.appendChild(row(t.label, flag(t.key) ? 'Enabled' : 'Removed', t.desc));
