@@ -342,7 +342,7 @@
           <h3><span class="summary-icon-badge icon-company"><img class="summary-icon" src="../assets/images/icon-company.png" alt=""></span>Project Registration</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-registration">—</span>
-            <a class="edit-link" href="../smartalock-templates-00.html">Edit</a>
+            <a class="edit-link" href="../smartalock-templates-00.html?return=summary&amp;branch=smartalock">Edit</a>
           </div>
         </div>
         <div id="group-registration"></div>
@@ -354,7 +354,7 @@
           <h3><span class="summary-icon-badge icon-it-config"><img class="summary-icon" src="../assets/images/icon-it-configuration.png" alt=""></span>IT Configuration &amp; Integrations</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-it">—</span>
-            <a class="edit-link" href="smartalock-it-configuration-02.html">Edit</a>
+            <a class="edit-link" href="smartalock-it-configuration-02.html?return=summary&amp;branch=smartalock">Edit</a>
           </div>
         </div>
         <div id="group-it"></div>
@@ -366,7 +366,7 @@
           <h3><span class="summary-icon-badge icon-access-card"><img class="summary-icon" src="../assets/images/icon-access-card.png" alt=""></span>Initial Locker Access Methods</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-access">—</span>
-            <a class="edit-link" href="smartalock-access-methods-09.html">Edit</a>
+            <a class="edit-link" href="smartalock-access-methods-09.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-access"></div>
@@ -378,7 +378,7 @@
           <h3><span class="summary-icon-badge icon-locker-door"><img class="summary-icon" src="../assets/images/icon-locker-door-behaviour.png" alt=""></span>Locker Door Behaviour</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-behaviour">—</span>
-            <a class="edit-link" href="smartalock-locker-behaviour-03.html">Edit</a>
+            <a class="edit-link" href="smartalock-locker-behaviour-03.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-behaviour"></div>
@@ -390,7 +390,7 @@
           <h3><span class="summary-icon-badge icon-reservation-type"><img class="summary-icon" src="../assets/images/icon-reservation-type.png" alt=""></span>Reservation Type</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-reservation">—</span>
-            <a class="edit-link" href="smartalock-reservation-type-01.html">Edit</a>
+            <a class="edit-link" href="smartalock-reservation-type-01.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-reservation"></div>
@@ -402,7 +402,7 @@
           <h3><span class="summary-icon-badge icon-release-idle"><img class="summary-icon" src="../assets/images/icon-release-when-idle.png" alt=""></span>Locker Policy</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-locker">—</span>
-            <a class="edit-link" href="smartalock-locker-policy-05.html">Edit</a>
+            <a class="edit-link" href="smartalock-locker-policy-05.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-locker"></div>
@@ -414,7 +414,7 @@
           <h3><span class="summary-icon-badge icon-who-can-use"><img class="summary-icon" src="../assets/images/icon-who-can-use-lockers.png" alt=""></span>User Policy</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-user">—</span>
-            <a class="edit-link" href="smartalock-user-policy-06.html">Edit</a>
+            <a class="edit-link" href="smartalock-user-policy-06.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-user"></div>
@@ -426,7 +426,7 @@
           <h3><span class="summary-icon-badge icon-kiosk-custom"><img class="summary-icon" src="../assets/images/icon-kiosk-customisation.png" alt=""></span>Kiosk Customisation</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-kiosk">—</span>
-            <a class="edit-link" href="smartalock-kiosk-customisation-07.html">Edit</a>
+            <a class="edit-link" href="smartalock-kiosk-customisation-07.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-kiosk"></div>
@@ -438,7 +438,7 @@
           <h3><span class="summary-icon-badge icon-locker-types"><img class="summary-icon" src="../assets/images/icon-locker-types-summary.png" alt=""></span>Locker Types</h3>
           <div class="summary-group-head-actions">
             <span class="status-pill" id="pill-locker-type">—</span>
-            <a class="edit-link" href="smartalock-locker-types-04.html">Edit</a>
+            <a class="edit-link" href="smartalock-locker-types-04.html?return=summary">Edit</a>
           </div>
         </div>
         <div id="group-locker-type"></div>
@@ -674,6 +674,13 @@ site) before the label — `a.product-picker-btn` gained `gap: 6px` and a `svg {
 stroke: #fff }` rule for it. The green colour and placement are unchanged. Verified via
 python3 /tmp/validate_generic.py (tag balance), node --check on the extracted script block, and a
 Playwright screenshot confirming the label, arrow, and href.
+MOST RECENT CHANGE: per a request that every page reached via this summary's "Edit" links should
+return here on Save/Continue instead of proceeding to its normal next page, all 9 `.edit-link`
+hrefs on this page now carry `?return=summary` (the two links shared with the Floorsense branch —
+Project Registration and IT Configuration & Integrations — additionally carry `&branch=smartalock`
+so those shared pages know which summary to return to). This page's own JS is unchanged; only the
+href strings were edited. Verified via Playwright end-to-end navigation tests confirming each
+target page's Continue button now lands back on this summary.
 -->
 
 <script>

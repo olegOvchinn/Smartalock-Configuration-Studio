@@ -435,6 +435,13 @@ navigation; filling in a value clears the error and saves `{ lockerLimit: 'custo
 '5' }`; Reset restores `lockerLimit: '1'` and clears `customLockerLimit`; and a previously-saved custom
 value re-loads into the select/input correctly. Also a Playwright screenshot of the card in both its
 default and Custom-selected states.
+MOST RECENT CHANGE: per the site-wide return-to-summary fix, this page's Continue handler now
+consumes the `?return=summary` query param carried by its Edit link on
+smartalock-configuration-summary-08.html — added after the existing idle-duration/locker-limit
+validation guards, so Continue still blocks on those errors first, then goes to
+smartalock-configuration-summary-08.html when the param is present, or
+smartalock-user-policy-06.html as before when it is absent. Verified via Playwright end-to-end
+navigation tests covering both cases.
 -->
 
 <script>
@@ -607,6 +614,8 @@ default and Custom-selected states.
     save();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     if (state.idleDuration === 'custom' && customIdleDuration.value.trim() === '') {
       showIdleError();
@@ -622,7 +631,8 @@ default and Custom-selected states.
     markModuleSaved('locker');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-user-policy-06.html'; }, 500);
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-user-policy-06.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;

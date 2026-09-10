@@ -470,6 +470,11 @@ MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette-rotation on the 3 `.tcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB of saturated, non-background-wash pixels via PIL): Allocated by Administrator (`icon-admin-allocated.png`) badge-blue #4A8DF0 -> badge-blue #0071E3; User Self-Allocated (`icon-user-self-allocated.png`) badge-pink #EC6BA5 -> badge-green #1FAA59; Parcel Delivery (`icon-parcel-delivery.png`) badge-purple #9B6BEC -> badge-purple #8B5CF6. The old `badge-pink` rule was removed (replaced by a new `badge-green` rule) since no icon on this page uses pink anymore; `badge-blue`/`badge-purple` kept their names but got updated hex values. This is unrelated to and does not touch each card's own separate `--tc`/`--tc-wash` per-type theming of the card background/heading/radio-check. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: per a request that hovering a reservation-type card previews its image in the `#reservationVisualFrame` placeholder, added `pointerenter`/`pointerleave` listeners to all 3 `.tcard`s (same pointer-event idiom already used for this file's progress-segment tooltips). `pointerenter` shows that card's `VISUAL_SRC` entry (adding `.show-image`, setting `#reservationVisualImg`'s `src`/`alt`) without touching `state.reservationTypes`; `pointerleave` simply calls the existing `renderTypeCards()`, which recomputes the correct image from the real selection state (the last-chosen type, or the `user` flow default when nothing's chosen yet) — so the preview never gets stuck out of sync with the actual selection once the pointer leaves. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test hovering each card (image swaps live) then leaving (image reverts to the default) and, separately, selecting a card, hovering a different one, then leaving (image correctly restores to the selected card's image, not the default).
 MOST RECENT CHANGE: per a request to remove the edge border on the `#reservationVisualFrame` image placeholder, dropped `.page-visual-frame`'s base `border: 1.5px dashed var(--line)` and `.page-visual-frame.show-image`'s `border-style: solid; border-color: var(--line);` override — the `box-shadow: var(--shadow)` (depth) and rounded corners on the show-image state are untouched, only the hard border edge is gone. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a Playwright screenshot confirming the frame's computed `border` resolves to `0px none`.
+MOST RECENT CHANGE: per the site-wide return-to-summary fix, this page's Continue handler now
+consumes the `?return=summary` query param carried by its Edit link on
+smartalock-configuration-summary-08.html — Continue goes there when the param is present, and to
+smartalock-locker-policy-05.html as before when it is absent. Verified via Playwright end-to-end
+navigation tests covering both cases.
 -->
 
 <script>
@@ -637,12 +642,15 @@ MOST RECENT CHANGE: per a request to remove the edge border on the `#reservation
     save();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('reservation');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-locker-policy-05.html'; }, 500);
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-locker-policy-05.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;

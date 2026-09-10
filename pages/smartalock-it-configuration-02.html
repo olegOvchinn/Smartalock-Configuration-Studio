@@ -395,6 +395,12 @@ the option cards' icons 30% smaller, scaled both `.qcard h3 .qcard-icon` (76px -
 untouched, since the request was scoped to the icons specifically. Verified via an inline HTMLParser
 tag-balance check, `node --check` on the extracted script block (untouched), and a Playwright
 screenshot confirming the icon renders visibly smaller within its badge.
+MOST RECENT CHANGE: this page (IT Configuration & Integrations) is also shared by both product
+branches' Edit links, so its Continue handler now reads both `return` and `branch` query params —
+with `?return=summary&branch=floorsense` it goes to floorsense-out-of-box-policy.html, with
+`?return=summary&branch=smartalock` it goes to smartalock-configuration-summary-08.html, and with
+neither param it still proceeds to pick-a-product.html as before. Verified via Playwright
+end-to-end navigation tests covering all three cases.
 -->
 
 <script>
@@ -511,12 +517,19 @@ screenshot confirming the icon renders visibly smaller within its badge.
     save();
   });
 
+  const returnParams = new URLSearchParams(window.location.search);
+  const returnToSummary = returnParams.get('return') === 'summary';
+  const returnBranch = returnParams.get('branch');
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('it');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'pick-a-product.html'; }, 500);
+    const nextUrl = returnToSummary
+      ? (returnBranch === 'floorsense' ? 'floorsense-out-of-box-policy.html' : 'smartalock-configuration-summary-08.html')
+      : 'pick-a-product.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;

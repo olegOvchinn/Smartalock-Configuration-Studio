@@ -434,6 +434,12 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Propagated the site-wide glass-card/icon-badge styling (from floorsense-reservation-types-01.html) to this page. `.access-check-card`'s solid `border: 1.5px solid var(--line)` was removed in favour of a translucent white background, `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy box-shadow standing in for the border; the existing `:hover`/`.checked` states (previously `border-color: var(--accent)` plus a solid `--accent-wash` fill) now read through the shadow's tint/spread and a translucent background tint instead. Each of the 4 cards' raster `<img class="access-icon-img">` (56x56px: Building access cards, PIN, Floorsense app, QR code) was wrapped in a new `<span class="access-icon-badge">` — a 72x72px white-canvas, colour-bordered badge — cycling the blue/pink/purple/teal palette across the 4 cards in DOM order, since they form a repeating option group; only the badge border is coloured, the icon image files themselves are untouched. The separate `.access-tick` custom-checkbox marker was left as-is. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple/teal palette-rotation on the 4 `.access-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB of saturated, non-background-wash pixels via PIL): Building Access Cards (`icon-access-card-illus.png`) badge-blue #4A8DF0 -> badge-green #328456; PIN (`icon-access-pin-illus.png`) badge-pink #EC6BA5 -> badge-amber #8E7645 (a blended approximation, since this icon is multi-colored — cream background wash, amber-ish PIN pad frame, blue screen); Floorsense App (`icon-access-app-illus.png`) badge-purple #9B6BEC -> badge-teal #0A5E5F; QR Code (`icon-access-qr-illus.png`) badge-teal #2FBF9F -> badge-blue #214A74. Class names were reassigned to the modifier that now matches each icon's sampled hue (blue/green/amber/teal), and the old badge-pink/badge-purple rules were removed since no icon on this page uses them anymore. Verified via python3 /tmp/validate.py (tag balance) and node --check on the extracted script block (JS untouched).
+MOST RECENT CHANGE: as this page is the Smartalock wizard's entry point reached via
+smartalock-configuration-summary-08.html's Edit link, its Continue handler now consumes the
+`?return=summary` query param that link carries — Continue goes to
+smartalock-configuration-summary-08.html when the param is present, and to
+smartalock-locker-behaviour-03.html as before when it is absent. Verified via Playwright
+end-to-end navigation tests covering both cases.
 -->
 
 <script>
@@ -575,12 +581,15 @@ MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple/teal palette-rotatio
     save();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('access');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-locker-behaviour-03.html'; }, 500);
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-locker-behaviour-03.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;

@@ -450,6 +450,12 @@ padding, title/description font sizes, badge border width — was touched, since
 to the icons specifically. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block (untouched), and a Playwright screenshot confirming the icon renders visibly
 smaller within its badge while the rest of the card is unchanged.
+MOST RECENT CHANGE: this page (Project Registration) is shared by both product branches' Edit
+links, so its Continue handler now reads both `return` and `branch` query params — with
+`?return=summary&branch=floorsense` it goes to pages/floorsense-out-of-box-policy.html, with
+`?return=summary&branch=smartalock` it goes to pages/smartalock-configuration-summary-08.html, and
+with neither param it still proceeds to pages/smartalock-it-configuration-02.html as before.
+Verified via Playwright end-to-end navigation tests covering all three cases.
 -->
 
 <script>
@@ -535,12 +541,19 @@ smaller within its badge while the rest of the card is unchanged.
     save();
   });
 
+  const returnParams = new URLSearchParams(window.location.search);
+  const returnToSummary = returnParams.get('return') === 'summary';
+  const returnBranch = returnParams.get('branch');
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('registration');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'pages/smartalock-it-configuration-02.html'; }, 500);
+    const nextUrl = returnToSummary
+      ? (returnBranch === 'floorsense' ? 'pages/floorsense-out-of-box-policy.html' : 'pages/smartalock-configuration-summary-08.html')
+      : 'pages/smartalock-it-configuration-02.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;

@@ -763,6 +763,13 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, a js
 input gone, sentence still present, checking "Dedicated Workstations" still reveals the subfields
 panel, Reset and Continue both run with zero JS errors), and a Playwright screenshot of the
 resulting card.
+  MOST RECENT CHANGE: per a request that every page reached via "Edit" from either branch's
+  summary should return to that summary on Save/Continue instead of proceeding to its normal next
+  page, this page's Continue handler now consumes the `?return=summary` query param that its
+  inbound Edit link (on floorsense-out-of-box-policy.html) already carried but this page
+  previously ignored — Continue now goes to floorsense-out-of-box-policy.html when the param is
+  present, and to floorsense-checkin-methods-02.html as before when it is absent. Verified via
+  Playwright end-to-end navigation tests covering both cases.
 -->
 
 <script>
@@ -886,12 +893,15 @@ resulting card.
     queueSave();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('reservation-types');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-checkin-methods-02.html'; }, 500);
+    const nextUrl = returnToSummary ? 'floorsense-out-of-box-policy.html' : 'floorsense-checkin-methods-02.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   updateSummary();

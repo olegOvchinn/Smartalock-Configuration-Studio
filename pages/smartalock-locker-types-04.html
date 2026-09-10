@@ -382,6 +382,11 @@ MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height
 MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .type-check-card dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; its existing `:hover` and `.checked` states (previously `border-color: var(--accent)` plus, for `.checked`, `background: var(--accent-wash)`) were converted to read through the shadow tint/spread and background tint instead. The separate small `.type-tick` custom-checkbox marker (22px, unrelated to the icon) was left untouched. Each of the 7 raster `.type-icon-img` icons (Top, Middle, Bottom, Large, Side, Small, Custom Type) was wrapped in a new `.type-icon-badge` span (72px, white background, colored border, sized to fit the existing 56px icons — a `<span>` rather than a `<div>` since it nests inside the inline `.type-label` span) — since these 7 cards form a repeating option group, the badges cycle through the full blue/pink/purple/teal/amber palette and repeat from blue for the 6th/7th icons. Only each badge's border color was set; the icon image files were not modified. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple/teal/amber palette rotation on the 7 `.type-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). It turns out 6 of the 7 icons (Top, Middle, Bottom, Large, Side, Small) are genuinely the same blue line-art style, so all 6 now share one `badge-blue` class at the sampled `#0071E3` (previously each cycled through its own rotation color: Top `#4A8DF0` blue, Middle `#EC6BA5` pink, Bottom `#9B6BEC` purple, Large `#2FBF9F` teal, Side `#F2A154` amber, Small `#4A8DF0` blue again). Only Custom Type's pencil icon is a genuinely different color, sampled at `#8B5CF6` purple (class renamed `badge-pink` -> `badge-purple`, reusing the existing purple class name but with a new hex value). The now-unused `.badge-pink`, `.badge-teal`, and `.badge-amber` CSS rules were removed since no icon on this page uses them anymore. Only badge border-color CSS and each span's modifier class were touched; icon PNGs, sizing, and JS logic are untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
+MOST RECENT CHANGE: per the site-wide return-to-summary fix, this page's Continue handler now
+consumes the `?return=summary` query param carried by its Edit link on
+smartalock-configuration-summary-08.html — Continue goes there when the param is present, and to
+smartalock-reservation-type-01.html as before when it is absent. Verified via Playwright
+end-to-end navigation tests covering both cases.
 -->
 
 <script>
@@ -511,12 +516,15 @@ MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple/teal/amber palette r
     save();
   });
 
+  const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('locker-type');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'smartalock-reservation-type-01.html'; }, 500);
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-reservation-type-01.html';
+    setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 
   let saveTimer = null;
