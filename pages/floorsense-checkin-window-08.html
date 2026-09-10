@@ -172,26 +172,22 @@
     transition: box-shadow .2s, background .2s;
   }
   .checkin-card-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 22px 20px; }
-  /* ---------- content icon badge: this used to be a bare 56px svg (no wrapper), matching
-     floorsense-reservation-types-01.html's pre-badge .desk-icon-img treatment. Per the site-wide
-     propagation of page01's icon-badge pattern, wrapped in a new .checkin-card-icon-badge (white
-     background, thin accent border, short drop shadow), sized 64px/56px (vs page01's 60px/34.5px)
-     to keep this glyph at its original 56px rather than shrinking it, per the "different base size"
-     sizing guidance — with the svg itself renamed to .checkin-card-icon-glyph. This icon's own
-     shapes (a circle + one pie-wedge path) have no accompanying `fill-opacity="0.15"` highlight
-     shape, so it doesn't match business-hours-05's "Style 1" canvas-icon convention and was in scope
-     for the badge treatment. It's the only header icon on this page's single .checkin-card (not part
-     of a repeating option group), so it kept plain var(--accent) blue rather than a palette colour —
-     see the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- content icon badge: white-canvas badge (unchanged), now wrapping a user-supplied
+     raster icon (calendar + red clock face) instead of the previous bare clock SVG glyph. The badge
+     border was resampled from the new icon's own dominant accent colour (the clock face, a coral red
+     — median RGB via PIL) rather than kept as plain var(--accent) blue, matching the sitewide
+     convention of matching a badge border to its icon's own colour once a real asset replaces a
+     placeholder glyph. It's still the only header icon on this page's single .checkin-card (not part
+     of a repeating option group). ---------- */
   .checkin-card-icon-badge {
     width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     position: relative;
     background: #fff;
-    border: 1.5px solid var(--accent);
+    border: 1.5px solid #E44C42;
     box-shadow: 0 3px 6px rgba(16,42,67,0.10);
   }
-  .checkin-card-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
+  .checkin-card-icon-img { width: 44px; height: 44px; flex-shrink: 0; position: relative; z-index: 1; }
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
   .checkin-inline-field {
     display: inline-flex; align-items: center; gap: 5px; vertical-align: middle;
@@ -459,7 +455,7 @@
 
       <div class="checkin-card">
         <div class="checkin-card-header">
-          <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg></div>
+          <div class="checkin-card-icon-badge"><img class="checkin-card-icon-img" src="../assets/images/icon-checkin-window.png" alt="A calendar with a red clock face, representing the check-in time window"></div>
           <p class="checkin-card-desc">
             People don't always arrive at the exact second their booking starts — some are a few
             minutes early, others run a little late — so a desk shouldn't release the instant
@@ -1111,6 +1107,22 @@ no other code was affected. Verified via an inline HTMLParser tag-balance check,
 the extracted script block, and a Playwright test confirming the new copy text renders verbatim,
 `.checkin-footer` no longer exists in the DOM, and both pins still drag and update their labels
 correctly.
+
+MOST RECENT CHANGE: per a request to use a supplied icon instead, the header's plain clock SVG
+glyph (a circle + one pie-wedge path, `.checkin-card-icon-glyph`) was replaced with a user-provided
+raster icon — a calendar with a red clock face overlapping its bottom-right corner — saved as
+`assets/images/icon-checkin-window.png`. The `<svg>` was swapped for
+`<img class="checkin-card-icon-img" src="../assets/images/icon-checkin-window.png">` inside the
+existing `.checkin-card-icon-badge` white-canvas wrapper (unchanged shape/shadow), sized `44px`
+(down from the glyph's `56px`, since the new icon is a wider two-part composition — calendar body
+plus an overlapping circle — that reads better smaller within the same `64px` badge rather than
+crowding it). The badge's border colour changed from the placeholder `var(--accent)` blue to
+`#E44C42`, sampled directly from the icon's own clock-face red (median RGB via PIL) — the calendar
+outline itself is a near-black navy, so the clock face's red is the icon's own distinguishing
+accent, matching the sitewide convention of a badge border echoing its icon's real colour once a
+placeholder glyph is replaced with a real asset. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block (untouched — markup/CSS-only change), and a
+Playwright screenshot confirming the new icon renders inside its badge with the red border.
 -->
 
 <script>
