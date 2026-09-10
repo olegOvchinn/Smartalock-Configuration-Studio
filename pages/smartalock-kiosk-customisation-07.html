@@ -229,6 +229,22 @@
   }
   .welcome:hover { opacity: .85; }
 
+  /* ---------- optional custom logo image — either in the left panel's free space above the Home
+     button, or in the right panel in place of the Main Information Banner / Information Banner
+     text. Only one of these two wrappers is ever shown at a time, per state.customLogoPlacement. */
+  .custom-logo-left {
+    display: none; flex: 1; align-items: center; justify-content: center; padding: 12px; min-height: 0;
+  }
+  .custom-logo-left.show { display: flex; }
+  .custom-logo-left img { max-width: 78%; max-height: 110px; object-fit: contain; }
+
+  .custom-logo-right {
+    display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 70%; text-align: center;
+  }
+  .custom-logo-right.show { display: block; }
+  .custom-logo-right img { max-width: 100%; max-height: 170px; object-fit: contain; }
+
   .card-reader {
     position: absolute; right: 45px; bottom: 42px; display: flex; align-items: center; gap: 18px;
     color: #fff; font-size: 19.68px; font-weight: 700; letter-spacing: .5px; cursor: pointer;
@@ -286,6 +302,17 @@
   .kiosk-toggle-subfields .field select:focus { outline: none; border-color: var(--ink); }
   .kiosk-toggle-subfields .field.field-optional { display: none; }
   .kiosk-toggle-subfields .field.field-optional.show { display: block; animation: fadeIn .22s ease; }
+  .kiosk-toggle-subfields .field input[type="file"] {
+    width: 100%; border: 1px dashed var(--line); border-radius: 8px; padding: 9px 11px;
+    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft); color: var(--ink-soft);
+  }
+  .kiosk-toggle-subfields .field input[type="file"]:hover { border-color: var(--accent); }
+  .kiosk-toggle-subfields .field input[type="file"]::file-selector-button {
+    font-family: var(--font-text); font-weight: 600; font-size: 10.4px; color: var(--accent-deep);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 980px; padding: 5px 11px;
+    margin-right: 9px; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .kiosk-toggle-subfields .field input[type="file"]:hover::file-selector-button { border-color: var(--accent); background: var(--accent-wash); }
 
   .kiosk-field-row {
     margin-top: 14px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
@@ -474,6 +501,10 @@
                 <img src="../images/icons/map.svg">
               </div>
 
+              <div class="custom-logo-left" id="customLogoLeftWrap">
+                <img id="customLogoLeft" alt="Custom logo">
+              </div>
+
               <div class="menu-area">
 
                 <div class="home-button">
@@ -513,6 +544,10 @@
               <div id="welcomeMessage" class="welcome">
                 Scan your access card or<br>
                 select an option to get started
+              </div>
+
+              <div class="custom-logo-right" id="customLogoRightWrap">
+                <img id="customLogoRight" alt="Custom logo">
               </div>
 
               <div id="placeCardHere" class="card-reader">
@@ -610,6 +645,28 @@ Verified via python3 /tmp/validate_generic.py (tag balance), node --check on the
 block, a jsdom functional test (select→custom reveals the field, typing updates #smartalockLogo
 live, switching back to default reverts it, and the values round-trip through localStorage), and
 Playwright screenshots of both the default and custom states.
+
+MOST RECENT CHANGE: added a new, independent "Custom Logo" toggle (key customLogoEnabled, off by
+default since it's explicitly optional) so a customer can show their own image logo instead of
+text. It has hasFields:true but no elementId of its own — unlike every other toggle, it can target
+either of two mockup locations depending on a "Placement" <select> (customLogoPlacement: "left" or
+"right"): a new #customLogoLeftWrap slot inserted between .sidebar-icons and .menu-area (the free
+space above the Home button in the tablet mockup's left panel), or a new #customLogoRightWrap slot
+in the right panel, absolutely centered where the Main Information Banner / Information Banner
+text sits. Only one is ever shown at once (new updateCustomLogo(), called from
+applyInitialState(), toggleOption(), and both field listeners), and choosing the "right" placement
+sets #smartalockLogo/#welcomeMessage to visibility:hidden rather than fighting their own
+display/opacity toggles, so their own enable/disable state is preserved underneath. The uploaded
+image is read via FileReader as a data URL for this session's live preview only; deliberately kept
+in a closured `customLogoDataUrl` variable outside of `state` so it's never serialized into
+localStorage — only its file name (state.customLogoFileName) persists, mirroring this app's
+existing dedicatedSpreadsheetName convention for file inputs (see floorsense-reservation-types-01.html).
+The file input and its CSS also mirror that same page's dashed-border/pill-button file styling.
+Configuration Summary's Kiosk Customisation group gained a matching "Custom Logo" row. Verified via
+python3 /tmp/validate_generic.py (tag balance), node --check on the extracted script block, a jsdom
+test of the switch/select/field wiring, and Playwright screenshots (with a real uploaded PNG) of
+both the left-panel and right-panel placements, confirming the banner text is hidden only in the
+latter case.
 -->
 
 <script>
@@ -648,6 +705,9 @@ Playwright screenshots of both the default and custom states.
     bannerEnabled: true,
     bannerLine1: "Scan your access card or",
     bannerLine2: "select an option to get started",
+    customLogoEnabled: false,
+    customLogoPlacement: "left",
+    customLogoFileName: "",
     openEnabled: true,
     lockerEnabled: true,
     qrEnabled: true,
@@ -657,9 +717,16 @@ Playwright screenshots of both the default and custom states.
     bgColour: ""
   }, project.smartalock.wizard.kioskCustomisation || {});
 
+  // Holds the uploaded logo image as a data URL for this session's live preview only — deliberately
+  // kept out of `state` (and so out of localStorage) so an image never gets serialized into the
+  // saved project; only its file name (state.customLogoFileName) is persisted, matching this app's
+  // existing convention for file inputs (see dedicatedSpreadsheetName on floorsense-reservation-types-01.html).
+  let customLogoDataUrl = '';
+
   const TOGGLES = [
     { key: "logoEnabled",   elementId: "smartalockLogo",     label: "Main Information Banner", desc: "Shows a headline on the kiosk home screen — the Smartalock wordmark by default, or your own custom text.", hasFields: true, icon: "icon-kiosk-logo.png" },
     { key: "bannerEnabled", elementId: "welcomeMessage",      label: "Information Banner", desc: "Short instructional message shown beneath the logo.", hasFields: true, icon: "icon-kiosk-banner.png" },
+    { key: "customLogoEnabled", label: "Custom Logo", desc: "Optional — display your own logo image instead of text. Place it in the free space of the left panel above the Home button, or on the right in place of the banners.", hasFields: true, icon: "icon-kiosk-logo.png" },
     { key: "openEnabled",   elementId: "openExistingButton",  label: "Open Existing",     desc: "Look up and reopen a locker the user already has assigned.", icon: "icon-kiosk-open-existing.png" },
     { key: "lockerEnabled", elementId: "getLockerButton",     label: "Get A Locker",      desc: "Primary flow — assigns and opens an available locker to the user.", icon: "icon-kiosk-get-locker.png" },
     { key: "qrEnabled",     elementId: "scanQRButton",        label: "Scan QR Code",      desc: "Authenticates the user by scanning a QR code instead of a badge or PIN.", icon: "icon-kiosk-scan-qr.png" },
@@ -737,6 +804,26 @@ Playwright screenshots of both the default and custom states.
   function updateLogoText(){
     const el = document.getElementById('smartalockLogo');
     el.textContent = (state.logoCustomEnabled && state.logoCustomText) ? state.logoCustomText : 'Smartalock';
+  }
+
+  function updateCustomLogo(){
+    const active = state.customLogoEnabled && !!customLogoDataUrl;
+    const onLeft = active && state.customLogoPlacement === 'left';
+    const onRight = active && state.customLogoPlacement === 'right';
+
+    const leftWrap = document.getElementById('customLogoLeftWrap');
+    const rightWrap = document.getElementById('customLogoRightWrap');
+    document.getElementById('customLogoLeft').src = customLogoDataUrl || '';
+    document.getElementById('customLogoRight').src = customLogoDataUrl || '';
+    leftWrap.classList.toggle('show', onLeft);
+    rightWrap.classList.toggle('show', onRight);
+
+    // When the custom logo replaces the right-side banners, hide the Main Information Banner /
+    // Information Banner text underneath rather than fighting their own display/opacity toggles.
+    const smartalockLogoEl = document.getElementById('smartalockLogo');
+    const welcomeMessageEl = document.getElementById('welcomeMessage');
+    smartalockLogoEl.style.visibility = onRight ? 'hidden' : '';
+    welcomeMessageEl.style.visibility = onRight ? 'hidden' : '';
   }
 
   function updateBannerText(){
@@ -839,6 +926,50 @@ Playwright screenshots of both the default and custom states.
         });
       }
 
+      if (t.hasFields && t.key === 'customLogoEnabled') {
+        const fields = document.createElement('div');
+        fields.className = 'kiosk-toggle-subfields' + (state.customLogoEnabled ? ' show' : '');
+        fields.id = 'fields-' + t.key;
+        fields.innerHTML = `
+          <div class="field">
+            <label>Logo Image</label>
+            <input type="file" id="customLogoFileInput" accept="image/*">
+          </div>
+          <div class="field">
+            <label>Placement</label>
+            <select id="customLogoPlacementSelect">
+              <option value="left"${state.customLogoPlacement === 'left' ? ' selected' : ''}>Left panel, above Home button</option>
+              <option value="right"${state.customLogoPlacement === 'right' ? ' selected' : ''}>Right panel, in place of the banners</option>
+            </select>
+          </div>
+        `;
+        item.appendChild(fields);
+
+        fields.querySelector('#customLogoFileInput').addEventListener('change', e => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) {
+            state.customLogoFileName = '';
+            customLogoDataUrl = '';
+            updateCustomLogo();
+            queueSave();
+            return;
+          }
+          state.customLogoFileName = file.name;
+          const reader = new FileReader();
+          reader.onload = () => {
+            customLogoDataUrl = reader.result;
+            updateCustomLogo();
+          };
+          reader.readAsDataURL(file);
+          queueSave();
+        });
+        fields.querySelector('#customLogoPlacementSelect').addEventListener('change', e => {
+          state.customLogoPlacement = e.target.value;
+          updateCustomLogo();
+          queueSave();
+        });
+      }
+
       toggleList.appendChild(item);
     });
 
@@ -862,6 +993,8 @@ Playwright screenshots of both the default and custom states.
       const fieldsEl = document.getElementById('fields-' + key);
       if (fieldsEl) fieldsEl.classList.toggle('show', state[key]);
     }
+
+    if (key === 'customLogoEnabled') updateCustomLogo();
 
     queueSave();
   }
@@ -891,6 +1024,7 @@ Playwright screenshots of both the default and custom states.
     });
     updateLogoText();
     updateBannerText();
+    updateCustomLogo();
     applyBgColour();
     bgColourInput.value = (state.bgColour || '').replace(/^#/, '');
   }
@@ -914,6 +1048,10 @@ Playwright screenshots of both the default and custom states.
     state.bannerEnabled = true;
     state.bannerLine1 = 'Scan your access card or';
     state.bannerLine2 = 'select an option to get started';
+    state.customLogoEnabled = false;
+    state.customLogoPlacement = 'left';
+    state.customLogoFileName = '';
+    customLogoDataUrl = '';
     state.openEnabled = true;
     state.lockerEnabled = true;
     state.qrEnabled = true;

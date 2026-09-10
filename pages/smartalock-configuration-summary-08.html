@@ -626,6 +626,18 @@ dedicated row instead — label "Main Information Banner", value "Enabled"/"Remo
 pattern as the neighbouring Information Banner row) whenever `k.logoCustomEnabled` is true,
 showing `k.logoCustomText` or "(not specified)" if left blank. Verified via
 python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted script block.
+
+MOST RECENT CHANGE: mirrors the new, optional "Custom Logo" toggle added to
+smartalock-kiosk-customisation-07.html (key customLogoEnabled). Unlike the generic `flag()` helper
+used for the other kiosk toggles (which defaults a missing key to `true`, since those toggles were
+all on by default from the start), this new feature is off by default, so its row is computed
+directly as `!!k.customLogoEnabled` — an old saved project with no such key reads "Off", not "On".
+When on, the description names which mockup location it occupies (via a small PLACEMENT_LABELS
+map for customLogoPlacement's "left"/"right" values) and either the saved customLogoFileName or a
+"(no file chosen yet)" note. Verified via python3 /tmp/validate_generic.py (tag balance), node
+--check on the extracted script block, and a jsdom test of three cases — a pre-existing project
+with no customLogoEnabled key at all (reads "Off"), enabled with a right-panel file (names the
+placement and file), and enabled left-panel with no file chosen yet (says so) — all matching.
 -->
 
 <script>
@@ -919,6 +931,16 @@ python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted
     const bannerDesc = 'Short instructional message shown beneath the logo.' +
       (bannerOn ? ' Text: "' + line1 + (line2 ? ' / ' + line2 : '') + '"' : '');
     wrap.appendChild(row('Information Banner', bannerOn ? 'Enabled' : 'Removed', bannerDesc));
+
+    // Optional feature, off by default — unlike the toggles above, an old saved project with no
+    // customLogoEnabled key at all should read as "Off", not "Enabled".
+    const customLogoOn = !!k.customLogoEnabled;
+    const customLogoFileName = k.customLogoFileName || '';
+    const PLACEMENT_LABELS = { left: 'left panel, above the Home button', right: 'right panel, in place of the banners' };
+    const customLogoPlacementText = PLACEMENT_LABELS[k.customLogoPlacement] || PLACEMENT_LABELS.left;
+    const customLogoDesc = 'Optional image logo you provide, in place of text.' +
+      (customLogoOn ? ' Shown in the ' + customLogoPlacementText + (customLogoFileName ? ' — file: "' + customLogoFileName + '"' : ' (no file chosen yet)') : '');
+    wrap.appendChild(row('Custom Logo', customLogoOn ? 'On' : 'Off', customLogoDesc));
 
     wrap.appendChild(row('Background Colour', k.bgColour || 'Default (#5B8FD7)',
       'Colour of the kiosk home screen background.'));
