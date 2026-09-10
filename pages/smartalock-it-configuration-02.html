@@ -76,10 +76,22 @@
   .module-heading { display: none; }
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
-  .section-head { margin-bottom: 22px; max-width: 560px; }
-  .section-head .eyebrow { color: var(--accent-deep); background: var(--accent-wash); margin-bottom: 14px; }
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
-  .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
+  /* ---------- it-help-notice: replaces the old "Configure / Optional" eyebrow at the top of the
+     page — instead of a status pill, this offers to hand the whole page off to the client's IT
+     contact (from Project Registration) rather than have the client fill in technical fields
+     themselves. Sits at the full panel width (no max-width), same accent-wash/left-border treatment
+     as .guide-box further down, for a consistent "helper callout" look sitewide. ---------- */
+  .it-help-notice {
+    margin-bottom: 22px; padding: 16px 18px; background: var(--accent-wash); border-left: 4px solid var(--accent);
+    border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .it-help-notice p { margin: 0; font-size: 11.89px; line-height: 1.6; color: var(--ink-soft); flex: 1; min-width: 240px; }
+  .it-help-notice-btn {
+    flex-shrink: 0; padding: 9px 16px; background: var(--accent); color: #fff; border: none; border-radius: 100px;
+    font-family: var(--font-text); font-size: 10.25px; font-weight: 600; cursor: pointer;
+  }
+  .it-help-notice-btn:hover { background: var(--accent-deep); }
 
   /* ---------- shared text-with-visual layout (image/placeholder to the right) ---------- */
   .content-with-visual { display: grid; grid-template-columns: 560px 480px; gap: 24px; align-items: start; }
@@ -247,8 +259,9 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure <span style="font-family:var(--font-text);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 8px;border-radius:100px;vertical-align:middle;margin-left:4px;">Optional</span></span>
+      <div class="it-help-notice">
+        <p>Not confident about any of this? You can send this page to your IT contact to review and fill in for you instead.</p>
+        <button class="it-help-notice-btn" id="sendItEmailBtn" type="button">Send Email</button>
       </div>
 
       <div class="content-with-visual">
@@ -479,6 +492,34 @@ scopes there, only the label above the select does. Verified via an HTMLParser t
 "No SSO", appears (defaulting to "both") once an SSO method is chosen, autosaves a changed scope
 and persists it across a reload, and that Reset restores both the hidden state and the "both"
 default.
+
+MOST RECENT CHANGE: per a request, the "Configure / Optional" eyebrow pill at the top of the page
+(`.section-head` + `.eyebrow`) was replaced with a new `.it-help-notice` callout: "Not confident
+about any of this? You can send this page to your IT contact to review and fill in for you
+instead." plus a `<button id="sendItEmailBtn">Send Email</button>`. The now-fully-unused
+`.section-head`/`.section-head .eyebrow`/`.section-head p` CSS rules were removed (the page's base
+`.eyebrow`/`.panel-intro .eyebrow` rules were already unused before this change and were left
+alone, since cleaning those up wasn't part of this request). `.it-help-notice` reuses the same
+accent-wash/left-border look as `.guide-box` further down the page, but sits at the full panel
+width (no 560px cap) since it's a page-level message, not scoped to one card.
+
+Clicking "Send Email" (or, silently with no alert, clicking the existing "Save & continue" button)
+calls a new `sendItContactEmail()`: it reads `project.registration.itEmail` (the "IT Contact Email"
+field on `smartalock-templates-00.html`'s Contacts card — the previous page in this flow), and if
+present, builds a `mailto:` URL (subject + a short plain-text body asking the IT contact to
+complete this step, ending with `window.location.href` as the link back to this page) and assigns
+it to `window.location.href`, following the exact same `mailto:`-compose pattern already used by
+`floorsense-out-of-box-policy.html`'s "Save & Email Me Summary" button. If no IT contact email is
+on file, the explicit button click shows an `alert()` asking the user to add one on Project
+Registration first; the automatic call from "Save & continue" passes `{ silent: true }` so a normal
+continue click that never intended to loop in IT doesn't get interrupted by that alert. Verified
+via an HTMLParser tag-balance check, `node --check` on the script block, and Playwright tests
+confirming: clicking "Send Email" with no IT email on file shows the alert and doesn't navigate;
+with an IT email set (seeded into `project.registration.itEmail` via localStorage) clicking it
+raises no error and doesn't navigate the page away (consistent with how browsers handle `mailto:`
+assignments — confirmed via the same reasoning documented in `floorsense-out-of-box-policy.html`'s
+own NOTE); and that "Save & continue" still saves `moduleStatus.it`, shows no alert, and still
+redirects to the next page on schedule.
 -->
 
 <script>
@@ -602,6 +643,40 @@ default.
     save();
   });
 
+  /* ---------------- send this page to the IT contact ----------------
+     Reads project.registration.itEmail (the "IT Contact Email" field entered on the Contacts card
+     of smartalock-templates-00.html) and opens a mailto: compose containing a link back to this
+     page, so a client who isn't confident configuring SSO/provisioning/integrations themselves can
+     hand it off to their own IT contact instead. Wired to fire both from the dedicated "Send Email"
+     button in the top notice, and automatically (silently, no alert if no IT email is on file) every
+     time "Save & continue" is clicked below. */
+  const sendItEmailBtn = document.getElementById('sendItEmailBtn');
+
+  function sendItContactEmail(opts) {
+    const toEmail = (project.registration && project.registration.itEmail) || '';
+    if (!toEmail) {
+      if (!(opts && opts.silent)) {
+        alert('No IT contact email is on file yet — add one on the Project Registration page, then try again.');
+      }
+      return false;
+    }
+    const subject = encodeURIComponent('Smartalock IT Configuration — could you complete this?');
+    const bodyLines = [
+      'Hi,',
+      '',
+      "We're setting up Smartalock and could use your help with the IT Configuration & Integrations step (sign-in, user provisioning, and any integrations).",
+      '',
+      'Please open this page to review and fill in the details:',
+      window.location.href,
+      ''
+    ];
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    window.location.href = 'mailto:' + toEmail + '?subject=' + subject + '&body=' + body;
+    return true;
+  }
+
+  sendItEmailBtn.addEventListener('click', () => sendItContactEmail());
+
   const returnParams = new URLSearchParams(window.location.search);
   const returnToSummary = returnParams.get('return') === 'summary';
   const returnBranch = returnParams.get('branch');
@@ -609,6 +684,7 @@ default.
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('it');
+    sendItContactEmail({ silent: true });
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
     const nextUrl = returnToSummary

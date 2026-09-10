@@ -409,6 +409,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-it-configuration-02.html`, reworded the subtitle and the first two cards' headings to avoid the "SSO"/"SCIM" acronyms ("Company Sign-In", "Automatic User Provisioning"), spelled out "Single Sign-On" in full in the first card's description, kept "SSO"/"SCIM" in the actual dropdown choices, and added a "Recommended" pill to both of those cards' headings.
 - Reworded that first card's heading again to "Sign-In & Access Control" and expanded its description to explain the actual choice: connecting the client's own login system to control mobile app/admin portal access, versus Floorsense handling authentication by default if left unset.
 - Added an "Applies to" choice below that card's Authentication method select, letting the client scope Single Sign-On to the mobile app only, the admin portal only, or both (the default) — shown only once an actual SSO method is selected.
+- Replaced the "Configure / Optional" eyebrow at the top of `smartalock-it-configuration-02.html` with a notice offering to send the page to the client's IT contact instead, with a "Send Email" button that opens a mailto to the IT Contact Email from Project Registration with a link back to this page — the same email also fires silently when "Save & continue" is clicked.
 
 ## Status
 
