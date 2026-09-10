@@ -398,6 +398,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Both of that timeline's captions ("BOOK AHEAD" and the new drag hint) now use the page's near-black body text colour instead of their previous lighter greys.
 - Per a follow-up, the two flashing arrows are decorative again (no longer clickable), and the filled zone bar itself is now a drag target alongside the pin — grabbing anywhere in the blue fill starts the same drag as grabbing the pin. The caption below the timeline updated to match ("...or the filled bar...").
 - The floating days pill on that same timeline now sits closer to the rail (tighter gap above the pin).
+- `floorsense-business-hours-05.html`'s Arrival and Departure pins each got the same treatment: flashing white left/right arrows on their pill, and the pill moved closer to the rail.
 
 ## Status
 

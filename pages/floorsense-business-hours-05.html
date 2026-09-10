@@ -207,11 +207,23 @@
     box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .label-arrow { flex-shrink: 0; }
+  @keyframes label-arrow-nudge-left {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+  @keyframes label-arrow-nudge-right {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(3px); opacity: 1; }
+  }
+  .label-arrow-left { animation: label-arrow-nudge-left 1.4s ease-in-out infinite; }
+  .label-arrow-right { animation: label-arrow-nudge-right 1.4s ease-in-out infinite; animation-delay: 0.7s; }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -236,6 +248,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
+    .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
@@ -358,12 +371,20 @@
               </div>
               <div class="timeline-node" id="arrivalNode" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
-                <div class="label-time" id="arrivalTime">9:00 AM</div>
+                <div class="label-time">
+                  <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="arrivalTime">9:00 AM</span>
+                  <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
                 <div class="label-desc">Arrives</div>
               </div>
               <div class="timeline-node" id="departureNode" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
-                <div class="label-time primary" id="departureTime">5:00 PM</div>
+                <div class="label-time primary">
+                  <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="departureTime">5:00 PM</span>
+                  <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
                 <div class="label-desc">Departs</div>
               </div>
             </div>
@@ -846,6 +867,25 @@ project shows the same start time everywhere before either page has been touched
 value. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
 block, and a jsdom test confirming a project seeded with only `businessHours: { arrivalTime: '06:15',
 departureTime: '19:45' }` shows "6:15 AM" as page 07's Card 1 start time on load.
+
+MOST RECENT CHANGE: per a request to apply the same pin treatment already added to
+floorsense-prebooking-advance-04.html to this page's two pins, both `#arrivalNode` and
+`#departureNode` gained a small decorative left/right chevron flanking their `#arrivalTime`/
+`#departureTime` label text (stroked `#fff` to match the pill's own text colour) — each `id` moved
+from the `.label-time` div itself onto a new inner `<span>` wrapping just the text, so the existing
+`arrivalTimeEl.textContent =`/`departureTimeEl.textContent =` assignments in `renderDiagram()`
+continue to only touch the number/unit and leave the arrow siblings alone; no JS changes were
+needed. `.timeline-node .label-time` gained `display: inline-flex; align-items: center; gap: 5px`
+to lay the arrows and text out in a row, plus the same `label-arrow-nudge-left`/`-right` keyframes
+(1.4s ease-in-out infinite, right delayed 0.7s so the two flash out of phase) and
+`prefers-reduced-motion` opt-out already used on the reference page — copied verbatim, arrows are
+purely decorative here too (no click behaviour, matching prebooking-advance-04's final state, not
+its since-reverted clickable-arrow phase). Separately, `.label-time`'s `margin-bottom` shrank from
+`14px` to `6px` on both pins, bringing each pill closer to the rail, again matching the reference
+page. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a Playwright test confirming: both pins render 2 arrows each (4 total) with `#fff`
+stroke and the expected keyframe animations/delay; and dragging each pin still updates its own
+label correctly (regression check), confirming the id-to-span move didn't break `renderDiagram()`.
 -->
 
 
