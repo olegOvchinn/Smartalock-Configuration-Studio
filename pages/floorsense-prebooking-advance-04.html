@@ -268,10 +268,10 @@
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    color: var(--ink-soft); text-align: center; white-space: nowrap;
+    color: var(--ink); text-align: center; white-space: nowrap;
   }
   .timeline-drag-hint {
-    margin: 4px 0 0; font-size: 11.89px; font-weight: 500; color: var(--header-grey-light);
+    margin: 4px 0 0; font-size: 11.89px; font-weight: 500; color: var(--ink);
     line-height: 1.5; text-align: center;
   }
 
@@ -914,6 +914,14 @@ them. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 block (untouched — markup/CSS-only change), and a Playwright test measuring the gap between the
 "BOOK AHEAD" label's bottom edge and the new hint's top edge (30.5px, confirming no overlap) plus a
 screenshot of the rendered card.
+
+MOST RECENT CHANGE: per a request to make both timeline captions black, `.label-desc` ("BOOK AHEAD")
+switched from `var(--ink-soft)` and `.timeline-drag-hint` ("Drag the pin...") switched from
+`var(--header-grey-light)` to both use `var(--ink)` (`#1D1D1F`, this page's existing near-black body
+text colour, rather than either of their previous lighter greys). Nothing else about either caption
+— size, weight, spacing, position — changed. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched), and a Playwright check confirming both
+elements' computed `color` now resolves to `rgb(29, 29, 31)`, plus a screenshot of the rendered card.
 -->
 
 

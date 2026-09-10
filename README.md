@@ -395,6 +395,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - `floorsense-prebooking-advance-04.html`'s floating days-ahead pill now has small amber left/right arrows (matching the page's icon colour) that continuously flash and nudge outward in alternation, signalling that the pin can be dragged in either direction.
 - Per a follow-up, those two arrows are now white and are real tap/click targets: each steps the advance-booking value by 1 day, for anyone who can't (or doesn't want to) drag the pin directly.
 - Added a small caption below `floorsense-prebooking-advance-04.html`'s timeline — "Drag the pin — or tap the arrows — to change how many days ahead." — spelling out in words that the pill/pin is interactive.
+- Both of that timeline's captions ("BOOK AHEAD" and the new drag hint) now use the page's near-black body text colour instead of their previous lighter greys.
 
 ## Status
 
