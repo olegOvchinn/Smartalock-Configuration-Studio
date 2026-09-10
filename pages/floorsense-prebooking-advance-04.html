@@ -241,8 +241,20 @@
     position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .label-arrow { flex-shrink: 0; }
+  @keyframes label-arrow-nudge-left {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+  @keyframes label-arrow-nudge-right {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(3px); opacity: 1; }
+  }
+  .label-arrow-left { animation: label-arrow-nudge-left 1.4s ease-in-out infinite; }
+  .label-arrow-right { animation: label-arrow-nudge-right 1.4s ease-in-out infinite; animation-delay: 0.7s; }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -264,6 +276,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
+    .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
   /* ---------- prev / next page nav ---------- */
@@ -387,7 +400,11 @@
                 </div>
                 <div class="timeline-node" id="advanceNode" tabindex="0" role="slider" aria-label="Advance booking limit, days ahead" aria-valuemin="0" aria-valuemax="30">
                   <div class="anchor-pin"></div>
-                  <div class="label-time primary" id="advanceNodeLabel">8 days</div>
+                  <div class="label-time primary">
+                    <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#D98E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span id="advanceNodeLabel">8 days</span>
+                    <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#D98E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
                   <div class="label-desc">Book ahead</div>
                 </div>
               </div>
@@ -824,6 +841,26 @@ MOST RECENT CHANGE: per a request to reduce the icon size 30%, scaled both `.pol
 the request was scoped to the icon's size. Verified via an inline HTMLParser tag-balance check,
 `node --check` on the extracted script block (untouched), and a Playwright screenshot confirming the
 icon renders visibly smaller within its card.
+
+MOST RECENT CHANGE: per a request to make the floating days-ahead pill (`.label-time.primary`,
+previously plain text) obviously movable, added a small left/right chevron SVG on either side of
+the text — `#advanceNodeLabel`'s `id` moved from the pill `<div>` onto a new inner `<span>` wrapping
+just the text, so the existing JS's `advanceNodeLabel.textContent = ...` assignment still only
+touches the number/unit and leaves the two arrow siblings alone; no JS changes were needed. Both
+chevrons are stroked `#D98E00`, the same amber already used for this page's `.policy-icon-badge`
+icon border, rather than the pill's own blue, so they read as a distinct interactive hint against
+the blue background. `.label-time` gained `display: inline-flex; align-items: center; gap: 5px` to
+lay the arrows and text out in a row. Each arrow continuously nudges outward and back while fading
+between 40%-100% opacity (`label-arrow-nudge-left`/`-right` keyframes, 1.4s ease-in-out infinite),
+with the right arrow's animation delayed 0.7s (half the cycle) so the two flash out of phase —
+left brightens/nudges left while right dims, then they swap — reading as an alternating left-right
+flash that signals the pin can be dragged either direction. Both animations are disabled (frozen at
+a fixed 85% opacity) under `prefers-reduced-motion: reduce`, alongside this page's existing
+reveal-animation opt-out. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a Playwright test confirming: the label text still renders/updates
+correctly after the id was moved to the inner span (including through a click-drag interaction,
+regression-checked), both arrows are present with the expected amber stroke colour, and both have
+their respective keyframe animations applied with the right arrow's 0.7s delay.
 -->
 
 
