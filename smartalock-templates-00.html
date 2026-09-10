@@ -253,12 +253,10 @@
             <div class="contact-group-label">Policy Contact</div>
             <div class="contact-group-fields">
               <div class="form-field">
-                <label>Name</label>
-                <input type="text" id="regPolicyName" placeholder="If different...">
+                <input type="text" id="regPolicyName" placeholder="Name" aria-label="Policy Contact Name">
               </div>
               <div class="form-field">
-                <label>Email</label>
-                <input type="text" id="regPolicyEmail" placeholder="If different...">
+                <input type="text" id="regPolicyEmail" placeholder="Email" aria-label="Policy Contact Email">
               </div>
             </div>
           </div>
@@ -266,12 +264,10 @@
             <div class="contact-group-label">IT Contact</div>
             <div class="contact-group-fields">
               <div class="form-field">
-                <label>Name</label>
-                <input type="text" id="regITName" placeholder="If different...">
+                <input type="text" id="regITName" placeholder="Name" aria-label="IT Contact Name">
               </div>
               <div class="form-field">
-                <label>Email</label>
-                <input type="text" id="regITEmail" placeholder="If different...">
+                <input type="text" id="regITEmail" placeholder="Email" aria-label="IT Contact Email">
               </div>
             </div>
           </div>
@@ -283,12 +279,10 @@
             <div class="contact-group-label">Training Contact</div>
             <div class="contact-group-fields">
               <div class="form-field">
-                <label>Name</label>
-                <input type="text" id="regTrainingName" placeholder="If any...">
+                <input type="text" id="regTrainingName" placeholder="Name" aria-label="Training Contact Name">
               </div>
               <div class="form-field">
-                <label>Email</label>
-                <input type="text" id="regTrainingEmail" placeholder="If any...">
+                <input type="text" id="regTrainingEmail" placeholder="Email" aria-label="Training Contact Email">
               </div>
             </div>
           </div>
@@ -296,12 +290,10 @@
             <div class="contact-group-label">Support / Helpdesk Contact</div>
             <div class="contact-group-fields">
               <div class="form-field">
-                <label>Name</label>
-                <input type="text" id="regSupportName" placeholder="Enter support contact name...">
+                <input type="text" id="regSupportName" placeholder="Name" aria-label="Support / Helpdesk Contact Name">
               </div>
               <div class="form-field">
-                <label>Email</label>
-                <input type="text" id="regSupportEmail" placeholder="Enter support contact email...">
+                <input type="text" id="regSupportEmail" placeholder="Email" aria-label="Support / Helpdesk Contact Email">
               </div>
             </div>
           </div>
@@ -309,12 +301,10 @@
             <div class="contact-group-label">Facilities Contact</div>
             <div class="contact-group-fields">
               <div class="form-field">
-                <label>Name</label>
-                <input type="text" id="regFacilitiesName" placeholder="Enter facilities contact name...">
+                <input type="text" id="regFacilitiesName" placeholder="Name" aria-label="Facilities Contact Name">
               </div>
               <div class="form-field">
-                <label>Email</label>
-                <input type="text" id="regFacilitiesEmail" placeholder="Enter facilities contact email...">
+                <input type="text" id="regFacilitiesEmail" placeholder="Email" aria-label="Facilities Contact Email">
               </div>
             </div>
           </div>
@@ -538,6 +528,18 @@ as in the previous change, so `fieldEls`/`state` needed no edits. Verified via a
 tag-balance check, `node --check` on the script block, a Playwright test re-confirming autosave/
 persist/reset still work under the new markup, and a screenshot confirming each group now reads as
 one heading over a Name/Email pair.
+
+MOST RECENT CHANGE: per a follow-up request, the visible "Name"/"Email" `<label>`s above each
+contact sub-field were removed — "Name" and "Email" now show as the input's own `placeholder` text
+instead (replacing the previous per-contact placeholders like "If different...", "If any...",
+"Enter support contact name..."), matching how the request described putting them "inside the
+field." Each input kept an `aria-label` (e.g. `aria-label="Policy Contact Name"`) carrying the
+same full wording the old visible label had, so the field's accessible name is unchanged for
+screen readers even though nothing shows on screen until the group heading above it. The
+`.contact-group-label` headings ("Policy Contact", "IT Contact", etc.) are unaffected. No id or
+state changes. Verified via an HTMLParser tag-balance check, `node --check` on the script block, a
+Playwright test re-confirming autosave/persist/reset still work, and a screenshot showing each
+field now just reading "Name"/"Email" as placeholder text under its group heading.
 -->
 
 <script>
