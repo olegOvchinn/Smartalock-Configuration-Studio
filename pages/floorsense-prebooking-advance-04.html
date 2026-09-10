@@ -196,7 +196,9 @@
   .timeline-zone {
     position: absolute; top: 7.5px; bottom: 7.5px; left: 0; width: 0;
     display: flex; align-items: stretch; gap: 3px;
+    cursor: grab; touch-action: none;
   }
+  .timeline-zone:active, .timeline-zone.dragging { cursor: grabbing; }
   .timeline-zone-seg {
     position: relative; overflow: hidden;
     flex: 1 1 0; min-width: 0; border-radius: 5px;
@@ -245,16 +247,6 @@
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
   .label-arrow { flex-shrink: 0; }
-  .label-arrow-btn {
-    background: none; border: none; padding: 4px; margin: -4px;
-    display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 999px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  }
-  .label-arrow-btn:hover .label-arrow,
-  .label-arrow-btn:focus-visible .label-arrow { opacity: 1; }
-  .label-arrow-btn:focus-visible {
-    outline: 2px solid #fff; outline-offset: 1px;
-  }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
     50% { transform: translateX(-3px); opacity: 1; }
@@ -415,19 +407,15 @@
                 <div class="timeline-node" id="advanceNode" tabindex="0" role="slider" aria-label="Advance booking limit, days ahead" aria-valuemin="0" aria-valuemax="30">
                   <div class="anchor-pin"></div>
                   <div class="label-time primary">
-                    <button type="button" class="label-arrow-btn" id="advanceArrowLeft" aria-label="Decrease advance booking days by 1">
-                      <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
+                    <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span id="advanceNodeLabel">8 days</span>
-                    <button type="button" class="label-arrow-btn" id="advanceArrowRight" aria-label="Increase advance booking days by 1">
-                      <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
+                    <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </div>
                   <div class="label-desc">Book ahead</div>
                 </div>
               </div>
             </div>
-            <p class="timeline-drag-hint">Drag the pin — or tap the arrows — to change how many days ahead.</p>
+            <p class="timeline-drag-hint">Drag the pin — or the filled bar — to change how many days ahead.</p>
           </div>
         </div>
       </div>
@@ -922,6 +910,28 @@ text colour, rather than either of their previous lighter greys). Nothing else a
 — size, weight, spacing, position — changed. Verified via an inline HTMLParser tag-balance check,
 `node --check` on the extracted script block (untouched), and a Playwright check confirming both
 elements' computed `color` now resolves to `rgb(29, 29, 31)`, plus a screenshot of the rendered card.
+
+MOST RECENT CHANGE: per a request to remove the arrows' clickable behaviour and instead make the
+filled zone bar itself draggable, the two chevrons went back to being purely decorative — the
+`<button>` wrappers (`#advanceArrowLeft`/`#advanceArrowRight`, with their `.label-arrow-btn` CSS,
+click handlers, and `stepAdvanceDays()` helper) were removed entirely, leaving bare
+`<svg class="label-arrow label-arrow-left/-right">` elements with no id and no listeners — they
+still flash/nudge via the existing keyframe animations, but no longer respond to taps. In their
+place, `#advanceZone` (the segmented blue fill from 0 up to the current value) is now a drag target
+in its own right: its `pointerdown` is wired to the same `startAdvanceDrag()` function as
+`#advanceNode` (the pointerdown handler was factored out of its former inline arrow-function form
+into a named `startAdvanceDrag(e)` so both elements share it), so grabbing anywhere in the fill
+starts the identical drag as grabbing the pin itself — same `onAdvancePointerMove`/
+`onAdvancePointerUp` document listeners, same `dragging` class toggle on `#advanceNode` for the
+pin's highlight. `.timeline-zone` gained `cursor: grab`/`.timeline-zone.dragging { cursor: grabbing
+}` (mirroring `.timeline-node`'s existing cursor treatment) and `touch-action: none` to match. The
+drag-hint caption's copy changed from "...or tap the arrows..." to "...or the filled bar..." to
+match the new interaction. Click-drag on the pin and keyboard arrow-key stepping are unchanged.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a Playwright test confirming: the arrow elements are bare `<svg>`s with no id and clicking one
+leaves the value unchanged; starting a drag with the mouse pressed down inside the filled zone (not
+on the pin) sets the `dragging` class and moves the value correctly on drag/release; and regression
+checks confirm dragging the pin directly and pressing the arrow keys both still work.
 -->
 
 
@@ -1086,13 +1096,17 @@ elements' computed `color` now resolves to `rgb(29, 29, 31)`, plus a screenshot 
     document.removeEventListener('pointerup', onAdvancePointerUp);
     queueSave();
   }
-  advanceNode.addEventListener('pointerdown', (e) => {
+  function startAdvanceDrag(e) {
     e.preventDefault();
     advanceNode.classList.add('dragging');
     advanceNode.focus();
     document.addEventListener('pointermove', onAdvancePointerMove);
     document.addEventListener('pointerup', onAdvancePointerUp);
-  });
+  }
+  advanceNode.addEventListener('pointerdown', startAdvanceDrag);
+  /* the filled zone bar (0 up to the current value) is also a drag target, alongside the pin
+     itself -- grabbing anywhere in the fill starts the exact same drag as grabbing the pin. */
+  advanceZone.addEventListener('pointerdown', startAdvanceDrag);
   advanceNode.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
       e.preventDefault();
@@ -1107,32 +1121,6 @@ elements' computed `color` now resolves to `rgb(29, 29, 31)`, plus a screenshot 
       renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
       queueSave();
     }
-  });
-
-  /* ---------------- tap-to-step arrows: for anyone who can't (or doesn't want to) drag the pin,
-     the two arrow buttons flanking the pill step the value by 1 day per tap, reusing the exact
-     same clampPrebookingDays()/renderAdvanceDiagram()/queueSave() plumbing as the keyboard arrow
-     keys above. Each button's own 'pointerdown' is stopped from bubbling up to #advanceNode so a
-     tap doesn't also toggle the node's 'dragging' class / start the document-level drag listeners
-     above -- a tap is a click, not a drag. ---------- */
-  const advanceArrowLeftBtn = document.getElementById('advanceArrowLeft');
-  const advanceArrowRightBtn = document.getElementById('advanceArrowRight');
-  function stepAdvanceDays(delta) {
-    prebookingAdvanceDays.value = clampPrebookingDays() + delta;
-    clampPrebookingDays();
-    renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
-    queueSave();
-  }
-  [advanceArrowLeftBtn, advanceArrowRightBtn].forEach((btn) => {
-    btn.addEventListener('pointerdown', (e) => e.stopPropagation());
-  });
-  advanceArrowLeftBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    stepAdvanceDays(-1);
-  });
-  advanceArrowRightBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    stepAdvanceDays(1);
   });
 
   function save() {
