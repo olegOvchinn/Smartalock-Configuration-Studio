@@ -167,11 +167,36 @@
     background: rgba(232,241,252,0.7);
     box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
   }
-  /* ---------- tick-box marker removed per a request to drop it while keeping the whole card
-     clickable — see the MOST RECENT CHANGE note below. The row is still a <label> wrapping the
-     hidden checkbox, so clicking anywhere on the card (icon, title, description, whitespace) still
-     toggles selection; .desk-check-card.checked's border/background change is now the only
-     "selected" indicator. ---------- */
+  /* ---------- tick box re-added per a request to match smartalock-reservation-type-01.html's own
+     card styling — that page's `.tcard-radio` (a 22px rounded-square that fills solid with a white
+     checkmark once its card is chosen) was itself originally propagated FROM this page, back when
+     this page still had its own `.desk-tick` marker (removed in an earlier change — see the older
+     MOST RECENT CHANGE note on that removal, further down). Re-implemented here as `.desk-tick`,
+     matching `.tcard-radio`'s exact sizing/shape, but tinted per-card via a `--tc` custom property
+     (set per `data-template` below) so each tick's checked colour matches that card's own existing
+     `.desk-icon-badge` accent (blue/pink/purple/teal/amber) instead of one flat colour — the same
+     "per-type accent on the tick" idea `.tcard-radio` uses via its own `--tc`, just driven by this
+     page's existing 5-colour badge system rather than introducing a new one. The row is still a
+     <label> wrapping the hidden checkbox, so clicking anywhere on the card still toggles selection;
+     the tick is a second, more explicit indicator alongside the existing checked background/shadow
+     change, not a replacement for it. ---------- */
+  .desk-check-card[data-template="fixed"] { --tc: #4A8DF0; }
+  .desk-check-card[data-template="adhoc"] { --tc: #EC6BA5; }
+  .desk-check-card[data-template="team-leader"] { --tc: #9B6BEC; }
+  .desk-check-card[data-template="booked-on-behalf"] { --tc: #2FBF9F; }
+  .desk-check-card[data-template="ai-agent"] { --tc: #F2A154; }
+  .desk-tick {
+    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .desk-check-card.checked .desk-tick { border-color: var(--tc, var(--accent)); background: var(--tc, var(--accent)); }
+  .desk-tick::after {
+    content: ''; width: 6px; height: 10px; margin-top: -1px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    opacity: 0; transition: opacity .15s;
+  }
+  .desk-check-card.checked .desk-tick::after { opacity: 1; }
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-card-body { min-width: 0; flex: 1; }
@@ -301,6 +326,7 @@
         <div class="desk-check-card" data-template="fixed">
           <label class="desk-row">
             <input type="checkbox" value="fixed">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.12"/><circle cx="12" cy="9" r="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
@@ -315,6 +341,7 @@
         <div class="desk-check-card" data-template="adhoc">
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fill-opacity="0.12"/><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.4l2.6 2.6l5.2-5.6" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
@@ -326,6 +353,7 @@
         <div class="desk-check-card" data-template="team-leader">
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
@@ -337,6 +365,7 @@
         <div class="desk-check-card" data-template="booked-on-behalf">
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
@@ -348,6 +377,7 @@
         <div class="desk-check-card coming-soon" data-template="ai-agent">
           <label class="desk-row">
             <input type="checkbox" value="ai-agent" disabled>
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-amber"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.08"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked <span class="group-tag">Coming Soon</span></h3>
@@ -801,6 +831,30 @@ resulting card.
   "Coming Soon" tag text and reduced opacity are both present, and every other card (tested via
   "Reserved by User as Needed," which starts checked per `DEFAULT_RESERVATION_TYPES`) still toggles
   normally.
+
+  MOST RECENT CHANGE: per a request to match this page's styling/behaviour to
+  `smartalock-reservation-type-01.html`'s own reservation-type cards, re-added a visible tick-box
+  indicator to all 5 `.desk-check-card`s — the same `.desk-tick` marker this page had before an
+  earlier request removed it (see that removal's own MOST RECENT CHANGE note further up), sized and
+  shaped identically to `smartalock-reservation-type-01.html`'s `.tcard-radio` (22px rounded square,
+  3px `var(--line)` border when unchecked, filling solid with a white checkmark once selected). That
+  page colours its checkmark per card via a `--tc` custom property (one of blue/green/purple, set
+  per `data-type`); rather than introducing a new colour palette here, this page's new `--tc` is set
+  per `data-template` using the exact hex values its own `.desk-icon-badge` modifier classes already
+  use (`badge-blue` #4A8DF0 on "fixed", `badge-pink` #EC6BA5 on "adhoc", `badge-purple` #9B6BEC on
+  "team-leader", `badge-teal` #2FBF9F on "booked-on-behalf", `badge-amber` #F2A154 on "ai-agent"),
+  so each card's tick and icon badge always agree. `<span class="desk-tick" aria-hidden="true">` was
+  added as the first visible child of each `.desk-row`, before the icon badge; `.desk-check-card
+  .checked .desk-tick`/`.desk-tick::after` opacity toggle drives the checkmark exactly as
+  `.tcard-radio`/`.tcard.chosen .tcard-radio::after` do on the smartalock page. No JS changes were
+  needed — the existing checkbox-wiring loop already toggles `.checked` on the card, which the new
+  CSS now also reads. The "Coming Soon" AI Agent card's tick uses the same `--tc` (amber) for
+  consistency, but can never actually fill since its checkbox stays permanently `disabled`. Verified
+  via an HTMLParser tag-balance check, `node --check` on the untouched script block, and a
+  Playwright test confirming: exactly 5 `.desk-tick` elements exist; the default-selected "Reserved
+  by User as Needed" card's tick renders filled pink on load; clicking "Dedicated Workstations"
+  fills its tick blue; and the disabled "AI Agent Auto-Prebooked" card's tick stays unfilled even
+  after a forced click.
 -->
 
 <script>

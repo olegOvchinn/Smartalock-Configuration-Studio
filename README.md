@@ -411,6 +411,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added an "Applies to" choice below that card's Authentication method select, letting the client scope Single Sign-On to the mobile app only, the admin portal only, or both (the default) — shown only once an actual SSO method is selected.
 - Replaced the "Configure / Optional" eyebrow at the top of `smartalock-it-configuration-02.html` with a notice offering to send the page to the client's IT contact instead, with a "Send Email" button that opens a mailto to the IT Contact Email from Project Registration with a link back to this page — the same email also fires silently when "Save & continue" is clicked.
 - Marked "AI Agent Auto-Prebooked" on `floorsense-reservation-types-01.html` as not yet available: added a "Coming Soon" tag to its title, disabled its checkbox, and greyed out the whole card so it can't be selected.
+- Re-added a visible tick-box indicator to all 5 cards on `floorsense-reservation-types-01.html`, matching `smartalock-reservation-type-01.html`'s own reservation-type card styling, tinted per card to match its existing icon badge colour.
 
 ## Status
 
