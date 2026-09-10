@@ -314,16 +314,10 @@
   }
   .kiosk-toggle-subfields .field input[type="file"]:hover::file-selector-button { border-color: var(--accent); background: var(--accent-wash); }
 
-  .kiosk-field-row {
-    margin-top: 14px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-md);
-    background: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  }
-  .kiosk-field-row label { font-family: var(--font-display); font-weight: 500; font-size: 12.3px; color: var(--header-grey); }
-  .kiosk-field-row input {
-    width: 160px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft); text-align: right;
-  }
-  .kiosk-field-row input:focus { outline: none; border-color: var(--ink); background: #fff; }
+  /* ---------- Background Colour: was a standalone .kiosk-field-row below the option grid; now
+     lives as a hasFields option card inside it (see the customBgEnabled TOGGLES entry), so only
+     the input/button styling below is still needed — the row/label/flex rules for the old
+     standalone layout were removed as now-unused. ---------- */
   .kiosk-field-actions { display: flex; gap: 8px; align-items: center; }
   .kiosk-colour-input-wrap { position: relative; display: flex; align-items: center; }
   .kiosk-colour-hash {
@@ -568,17 +562,6 @@
 
       <div class="kiosk-toggle-list" id="kioskToggleList"></div>
 
-      <div class="kiosk-field-row">
-        <label for="bgColourInput">Background Colour</label>
-        <div class="kiosk-field-actions">
-          <div class="kiosk-colour-input-wrap">
-            <span class="kiosk-colour-hash">#</span>
-            <input type="text" id="bgColourInput" placeholder="5B8FD7">
-          </div>
-          <button type="button" id="bgColourSetBtn" class="kiosk-set-btn">Set</button>
-        </div>
-      </div>
-
       <div class="page-nav">
         <a class="page-nav-btn" href="smartalock-user-policy-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
@@ -667,6 +650,30 @@ python3 /tmp/validate_generic.py (tag balance), node --check on the extracted sc
 test of the switch/select/field wiring, and Playwright screenshots (with a real uploaded PNG) of
 both the left-panel and right-panel placements, confirming the banner text is hidden only in the
 latter case.
+
+MOST RECENT CHANGE: per a request to turn "Background Colour" into an option in the same grid as
+the other toggles (rather than a standalone .kiosk-field-row below it), moved it into the TOGGLES
+array as a new customBgEnabled entry, appended last so it lands to the right of "Allow User to Add
+New Card" in the 2-column grid. It reuses the hasFields pattern: a switch (default off) plus a
+revealed field holding the existing hex input + "Set" button, now rendered inside a
+.kiosk-toggle-subfields .field like every other option's fields, instead of its own bordered row.
+Since a kiosk always has *some* background colour, the switch's meaning is "use a custom colour
+instead of the default Smartalock blue" — applyBgColour() now only applies state.bgColour when
+state.customBgEnabled is true, otherwise falling back to DEFAULT_BG regardless of whether a hex was
+previously saved (so switching the option off always shows default blue, and switching it back on
+restores the remembered custom colour). The #bgColourInput/#bgColourSetBtn elements and their
+commitBgColour() listener are now created fresh inside buildToggleList() each render (mirroring how
+every other hasFields field is wired) rather than existing once in static markup, since the whole
+card — like the rest of the grid — is rebuilt on load and on Reset. The old standalone
+.kiosk-field-row/label/input CSS rules were removed as now-unused; the still-needed
+input/button/hash-prefix styling (.kiosk-field-actions, .kiosk-colour-input-wrap,
+.kiosk-colour-hash, #bgColourInput, .kiosk-set-btn) was kept as-is. No icon existed for "colour", so
+it reuses icon-kiosk-customisation.png (already part of this page's asset set). Verified via
+python3 /tmp/validate_generic.py (tag balance), node --check on the extracted script block, a jsdom
+test (grid ordering, default colour, enabling reveals the field and applies a custom hex, disabling
+reverts to default, re-enabling restores the remembered custom colour, zero JS errors), and a
+Playwright screenshot confirming the card's placement and that a custom colour applies live to both
+panels.
 -->
 
 <script>
@@ -714,6 +721,7 @@ latter case.
     cardEnabled: true,
     changePinEnabled: true,
     addCardEnabled: true,
+    customBgEnabled: false,
     bgColour: ""
   }, project.smartalock.wizard.kioskCustomisation || {});
 
@@ -732,7 +740,8 @@ latter case.
     { key: "qrEnabled",     elementId: "scanQRButton",        label: "Scan QR Code",      desc: "Authenticates the user by scanning a QR code instead of a badge or PIN.", icon: "icon-kiosk-scan-qr.png" },
     { key: "cardEnabled",   elementId: "placeCardHere",       label: "Place Card Here",   desc: "Prompts the user to tap or place their access card on the reader.", icon: "icon-kiosk-place-card.png" },
     { key: "changePinEnabled", label: "Allow User to Change PIN", desc: "Lets users update their own PIN from the kiosk without administrator involvement.", icon: "icon-kiosk-change-pin.png" },
-    { key: "addCardEnabled",   label: "Allow User to Add New Card", desc: "Lets users register an additional access card to their profile from the kiosk.", icon: "icon-kiosk-add-card.png" }
+    { key: "addCardEnabled",   label: "Allow User to Add New Card", desc: "Lets users register an additional access card to their profile from the kiosk.", icon: "icon-kiosk-add-card.png" },
+    { key: "customBgEnabled",  label: "Background Colour", desc: "Optional — set a custom kiosk screen colour instead of the default Smartalock blue.", hasFields: true, icon: "icon-kiosk-customisation.png" }
   ];
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
@@ -774,7 +783,6 @@ latter case.
   const toggleList = document.getElementById('kioskToggleList');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
-  const bgColourInput = document.getElementById('bgColourInput');
   const DEFAULT_BG = '#5B8FD7';
 
   const CENTERED_ELEMENT_IDS = ['smartalockLogo', 'welcomeMessage'];
@@ -837,7 +845,7 @@ latter case.
   }
 
   function applyBgColour(){
-    const colour = state.bgColour || DEFAULT_BG;
+    const colour = (state.customBgEnabled && state.bgColour) ? state.bgColour : DEFAULT_BG;
     document.querySelector('.left-panel').style.background = colour;
     document.querySelector('.right-panel').style.background = colour;
   }
@@ -970,6 +978,38 @@ latter case.
         });
       }
 
+      if (t.hasFields && t.key === 'customBgEnabled') {
+        const fields = document.createElement('div');
+        fields.className = 'kiosk-toggle-subfields' + (state.customBgEnabled ? ' show' : '');
+        fields.id = 'fields-' + t.key;
+        fields.innerHTML = `
+          <div class="field">
+            <label>Custom Colour</label>
+            <div class="kiosk-field-actions">
+              <div class="kiosk-colour-input-wrap">
+                <span class="kiosk-colour-hash">#</span>
+                <input type="text" id="bgColourInput" placeholder="5B8FD7" value="${(state.bgColour || '').replace(/^#/, '')}">
+              </div>
+              <button type="button" id="bgColourSetBtn" class="kiosk-set-btn">Set</button>
+            </div>
+          </div>
+        `;
+        item.appendChild(fields);
+
+        const bgColourInput = fields.querySelector('#bgColourInput');
+        function commitBgColour(){
+          const hex = bgColourInput.value.trim().replace(/^#/, '');
+          bgColourInput.value = hex;
+          state.bgColour = hex ? ('#' + hex) : '';
+          applyBgColour();
+          queueSave();
+        }
+        fields.querySelector('#bgColourSetBtn').addEventListener('click', commitBgColour);
+        bgColourInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); commitBgColour(); }
+        });
+      }
+
       toggleList.appendChild(item);
     });
 
@@ -995,6 +1035,7 @@ latter case.
     }
 
     if (key === 'customLogoEnabled') updateCustomLogo();
+    if (key === 'customBgEnabled') applyBgColour();
 
     queueSave();
   }
@@ -1026,20 +1067,7 @@ latter case.
     updateBannerText();
     updateCustomLogo();
     applyBgColour();
-    bgColourInput.value = (state.bgColour || '').replace(/^#/, '');
   }
-
-  function commitBgColour(){
-    const hex = bgColourInput.value.trim().replace(/^#/, '');
-    bgColourInput.value = hex;
-    state.bgColour = hex ? ('#' + hex) : '';
-    applyBgColour();
-    queueSave();
-  }
-  document.getElementById('bgColourSetBtn').addEventListener('click', commitBgColour);
-  bgColourInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); commitBgColour(); }
-  });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.logoEnabled = true;
@@ -1058,6 +1086,7 @@ latter case.
     state.cardEnabled = true;
     state.changePinEnabled = true;
     state.addCardEnabled = true;
+    state.customBgEnabled = false;
     state.bgColour = '';
     buildToggleList();
     applyInitialState();
