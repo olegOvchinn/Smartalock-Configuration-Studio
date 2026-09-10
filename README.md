@@ -403,6 +403,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - `floorsense-checkin-window-08.html`'s intro copy was rewritten to explain why the check-in window exists (so a desk isn't released the instant someone is a little early or late) and to describe dragging "either edge" of the diagram instead of "either dot." The "Check in using {method}" footer strip and its clipboard icon were removed entirely.
 - That same page's header icon was swapped for a supplied calendar-with-red-clock illustration (`assets/images/icon-checkin-window.png`), with the badge border recoloured to match the icon's own red accent.
 - Added a small gap between the pre-window and post-window zone segments on `floorsense-checkin-window-08.html`'s timeline, so the two blocks nearest the centre "Booking start" pin no longer sit flush against each other.
+- Split each of the 5 contact fields on `smartalock-templates-00.html`'s Contacts card (Policy, IT, Training, Support/Helpdesk, Facilities) into separate Name and Email inputs, instead of one combined free-text field per contact.
 
 ## Status
 
