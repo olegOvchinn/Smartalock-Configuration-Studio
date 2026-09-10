@@ -165,6 +165,10 @@
     border-radius: 10px; display: none;
   }
   .guide-box.show { display: block; animation: fadeIn .22s ease; }
+  /* ---------- sso-scope-field: a second choice under Authentication method, only relevant (and only
+     shown) once an actual SSO method is selected — same show/hide convention as .guide-box above. ---------- */
+  .sso-scope-field { margin-top: 16px; display: none; }
+  .sso-scope-field.show { display: block; animation: fadeIn .22s ease; }
   .guide-box p { margin: 0 0 12px; font-size: 10.66px; color: var(--accent-deep); }
   .guide-button {
     display: inline-block; padding: 9px 16px; background: var(--accent); color: #fff; border-radius: 100px;
@@ -260,6 +264,15 @@
               <option value="okta">Okta</option>
               <option value="other">Other SSO</option>
             </select>
+
+            <div class="sso-scope-field" id="ssoScopeField">
+              <label>Applies to</label>
+              <select id="ssoScope">
+                <option value="both">Mobile app &amp; admin portal (both)</option>
+                <option value="app">Mobile app only (end users)</option>
+                <option value="portal">Admin portal only (system admins)</option>
+              </select>
+            </div>
 
             <div class="guide-box" id="ssoGuide">
               <p>Need help configuring SSO?</p>
@@ -444,6 +457,28 @@ description didn't spell out. The label, select options, and guide-box copy belo
 unchanged. Verified via an HTMLParser tag-balance check, `node --check` on the untouched script
 block, a Playwright test re-confirming selecting an SSO method still autosaves and reveals the
 guide box, and a screenshot of the reworded card.
+
+MOST RECENT CHANGE: per a request to let the client scope Single Sign-On to a specific surface,
+added a second choice below "Authentication method": a new `<div class="sso-scope-field"
+id="ssoScopeField">` containing a "`Applies to`" label and `<select id="ssoScope">` with 3 options
+— "Mobile app & admin portal (both)" (`value="both"`, the default), "Mobile app only (end users)"
+(`value="app"`), and "Admin portal only (system admins)" (`value="portal"`) — directly answering
+the choice the description above it already promises ("who can access the mobile app...and who
+can manage the full system portal"). Like the existing `.guide-box`, this field is hidden
+(`.sso-scope-field`, `display:none` by default, `.show` to reveal via a new CSS rule mirroring
+`.guide-box.show`) until an actual SSO method is selected, since the scope is meaningless while
+"No SSO" is chosen — `applySSOVisibility()` now toggles both `ssoGuide` and `ssoScopeField`
+together. State gained `ssoScope` (default `"both"`) on `project.smartalock.wizard.it`, loaded/
+saved the same way every other field on this page already works; the Reset button's generic
+"blank every state key" loop is followed by an explicit `state.ssoScope = "both"` (and matching
+`ssoScope.value = "both"`) immediately after, since `""` isn't one of this select's own option
+values the way it is for `ssoMethod`/`scimProvisioning`. `ssoScope` doesn't affect
+`computeArchMode()` or the hover-preview architecture diagram — no visual distinguishes the 3
+scopes there, only the label above the select does. Verified via an HTMLParser tag-balance check,
+`node --check` on the script block, and a Playwright test confirming the field stays hidden with
+"No SSO", appears (defaulting to "both") once an SSO method is chosen, autosaves a changed scope
+and persists it across a reload, and that Reset restores both the hidden state and the "both"
+default.
 -->
 
 <script>
@@ -476,6 +511,7 @@ guide box, and a screenshot of the reworded card.
 
   const state = Object.assign({
     ssoMethod: "",
+    ssoScope: "both",
     scimProvisioning: "",
     apiRequirements: "",
     gallagherIntegration: ""
@@ -489,6 +525,8 @@ guide box, and a screenshot of the reworded card.
 
   /* ---------------- fields ---------------- */
   const ssoMethod = document.getElementById('ssoMethod');
+  const ssoScope = document.getElementById('ssoScope');
+  const ssoScopeField = document.getElementById('ssoScopeField');
   const ssoGuide = document.getElementById('ssoGuide');
   const scimProvisioning = document.getElementById('scimProvisioning');
   const scimGuide = document.getElementById('scimGuide');
@@ -501,6 +539,7 @@ guide box, and a screenshot of the reworded card.
   function applySSOVisibility() {
     const show = state.ssoMethod !== "";
     ssoGuide.classList.toggle('show', show);
+    ssoScopeField.classList.toggle('show', show);
   }
   function applySCIMVisibility() {
     scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
@@ -538,6 +577,7 @@ guide box, and a screenshot of the reworded card.
   wireHoverVisual(apiRequirements, 'api');
 
   ssoMethod.value = state.ssoMethod;
+  ssoScope.value = state.ssoScope;
   scimProvisioning.value = state.scimProvisioning;
   apiRequirements.value = state.apiRequirements;
   gallagherIntegration.value = state.gallagherIntegration;
@@ -546,13 +586,15 @@ guide box, and a screenshot of the reworded card.
   applyArchVisual();
 
   ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); applyArchVisual(); queueSave(); });
+  ssoScope.addEventListener('change', () => { state.ssoScope = ssoScope.value; queueSave(); });
   scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); applyArchVisual(); queueSave(); });
   apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; applyArchVisual(); queueSave(); });
   gallagherIntegration.addEventListener('change', () => { state.gallagherIntegration = gallagherIntegration.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     Object.keys(state).forEach(k => { state[k] = ""; });
-    ssoMethod.value = ""; scimProvisioning.value = "";
+    state.ssoScope = "both";
+    ssoMethod.value = ""; ssoScope.value = "both"; scimProvisioning.value = "";
     apiRequirements.value = ""; gallagherIntegration.value = "";
     applySSOVisibility();
     applySCIMVisibility();
