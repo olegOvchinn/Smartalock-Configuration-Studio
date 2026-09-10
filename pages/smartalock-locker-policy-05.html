@@ -343,11 +343,15 @@
         <p class="qdesc">Define how many lockers a user can reserve.</p>
         <label>Maximum lockers per user</label>
         <select id="lockerLimit">
-          <option value="2">2</option>
           <option value="1">1</option>
-          <option value="3">3</option>
-          <option value="unlimited">No limit</option>
+          <option value="custom">Custom...</option>
         </select>
+
+        <div class="qcard-subfield" id="customLockerLimitWrap">
+          <label>Specify maximum lockers per user</label>
+          <input type="number" min="1" id="customLockerLimit" placeholder="Example: 5">
+          <div class="field-error" id="customLockerLimitError">Please specify a number of lockers.</div>
+        </div>
       </div>
 
       <div class="qcard" id="qcard-behaviour" data-visual="behaviour">
@@ -406,6 +410,31 @@ MOST RECENT CHANGE: Replaced the arbitrary blue/pink/purple palette rotation on 
 MOST RECENT CHANGE: per a request to apply smartalock-reservation-type-01.html's hover-preview behavior to this page, added `pointerenter`/`pointerleave` listeners to all 3 `.qcard[data-visual]`s. Unlike reservation-type-01 (where selection is a persisted `state.reservationTypes` array separate from hover), this page has no separate "selection" concept — `showPolicyVisual(key)` already runs on `focusin`/`click` to both set the visible image and mark the interacted card `.visual-active`. So a new `previewPolicyVisual(key)` function was added that only sets the image (no `.visual-active` marking), wired to `pointerenter`; `pointerleave` looks up whichever card currently carries `.visual-active` (querying the DOM rather than tracking a separate JS variable, since the class is already the page's existing source of truth) and calls the existing `showPolicyVisual` on that card's key to restore it, falling back to `'idle'` if none is somehow active. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test hovering each card (image swaps live) then leaving (image reverts to the `idle` default) and, separately, clicking a card to make it active, hovering a different one, then leaving (image correctly restores to the clicked/active card's image, not the default).
 
 MOST RECENT CHANGE: per a request to remove the edge border on this page's image placeholder (applied identically to smartalock-reservation-type-01.html), dropped `.page-visual-frame`'s base `border: 1.5px dashed var(--line)` and `.page-visual-frame.show-image`'s `border-style: solid; border-color: var(--line);` override — the `box-shadow: var(--shadow)` (depth) and rounded corners on the show-image state are untouched, only the hard border edge is gone. This page's frame markup already carries `show-image` unconditionally (it never shows the dashed empty-placeholder state), so this removes the border seen on every load. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched), and a Playwright screenshot confirming the frame's computed `border` resolves to `0px none`.
+
+MOST RECENT CHANGE: per a request that the Lockers per User card offer only two options — 1 and
+Custom — with 1 as the default, `#lockerLimit` dropped its old 2/1/3/unlimited option set down to just
+`<option value="1">1</option>` and `<option value="custom">Custom...</option>`. Selecting Custom reveals
+a new `.qcard-subfield` (`#customLockerLimitWrap`, mirroring the existing `#customIdleWrap` pattern used
+by the Release-when-idle card's own "Custom..." option one card up): a labeled `<input type="number"
+min="1" id="customLockerLimit">` plus a `.field-error` shown if Continue is clicked while Custom is
+selected but the field is empty. `applyLockerLimitVisibility()`/`showLockerLimitError()`/
+`clearLockerLimitError()` mirror `applyIdleVisibility()`/`showIdleError()`/`clearIdleError()` 1:1, just
+scoped to the new field. State gained a `customLockerLimit` field (default `""`); `lockerLimit`'s
+default changed from `"2"` to `"1"`, updated in both the state-defaults object and the Reset handler
+(which also now clears `customLockerLimit` and re-hides the subfield). Continue's existing validation
+block gained a second guard alongside the idle-duration one, blocking navigation with the same
+show-error-and-focus pattern if Custom is selected with an empty value. `smartalock-locker-guide-live.
+html`'s `limitPhrase`/`limitTitle`/`limitText` logic and `smartalock-configuration-summary-08.html`'s
+Lockers per User summary row were both updated to read `lockerLimit`/`customLockerLimit` this same way
+(a plain "1 locker"/"1 per user" default, or the custom number when set) instead of the old fixed
+1/2/3/unlimited label maps — see each file's own NOTE. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and a jsdom test confirming: the select only has
+the 2 expected options and defaults to "1" with the subfield hidden; choosing Custom reveals the
+subfield; clicking Continue with Custom selected and an empty field shows the error and blocks
+navigation; filling in a value clears the error and saves `{ lockerLimit: 'custom', customLockerLimit:
+'5' }`; Reset restores `lockerLimit: '1'` and clears `customLockerLimit`; and a previously-saved custom
+value re-loads into the select/input correctly. Also a Playwright screenshot of the card in both its
+default and Custom-selected states.
 -->
 
 <script>
@@ -439,7 +468,8 @@ MOST RECENT CHANGE: per a request to remove the edge border on this page's image
   const state = Object.assign({
     idleDuration: "",
     customIdleDuration: "",
-    lockerLimit: "2",
+    lockerLimit: "1",
+    customLockerLimit: "",
     releaseBehaviour: "grace"
   }, project.smartalock.wizard.locker || {});
 
@@ -471,6 +501,9 @@ MOST RECENT CHANGE: per a request to remove the edge border on this page's image
   const customIdleDuration = document.getElementById('customIdleDuration');
   const customIdleError = document.getElementById('customIdleError');
   const lockerLimit = document.getElementById('lockerLimit');
+  const customLockerLimitWrap = document.getElementById('customLockerLimitWrap');
+  const customLockerLimit = document.getElementById('customLockerLimit');
+  const customLockerLimitError = document.getElementById('customLockerLimitError');
   const releaseBehaviour = document.getElementById('releaseBehaviour');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
@@ -488,11 +521,26 @@ MOST RECENT CHANGE: per a request to remove the edge border on this page's image
     customIdleError.classList.remove('show');
   }
 
+  function applyLockerLimitVisibility() {
+    customLockerLimitWrap.classList.toggle('show', state.lockerLimit === 'custom');
+    if (state.lockerLimit !== 'custom') clearLockerLimitError();
+  }
+  function showLockerLimitError() {
+    customLockerLimitWrap.classList.add('error');
+    customLockerLimitError.classList.add('show');
+  }
+  function clearLockerLimitError() {
+    customLockerLimitWrap.classList.remove('error');
+    customLockerLimitError.classList.remove('show');
+  }
+
   idleDuration.value = state.idleDuration;
   customIdleDuration.value = state.customIdleDuration;
   lockerLimit.value = state.lockerLimit;
+  customLockerLimit.value = state.customLockerLimit;
   releaseBehaviour.value = state.releaseBehaviour;
   applyIdleVisibility();
+  applyLockerLimitVisibility();
 
   /* ---------------- policy visual (switches per card, defaults to idle) ---------------- */
   const lockerPolicyVisualImg = document.getElementById('lockerPolicyVisualImg');
@@ -535,19 +583,27 @@ MOST RECENT CHANGE: per a request to remove the edge border on this page's image
     if (customIdleDuration.value.trim() !== '') clearIdleError();
     queueSave();
   });
-  lockerLimit.addEventListener('change', () => { state.lockerLimit = lockerLimit.value; queueSave(); });
+  lockerLimit.addEventListener('change', () => { state.lockerLimit = lockerLimit.value; applyLockerLimitVisibility(); queueSave(); });
+  customLockerLimit.addEventListener('input', () => {
+    state.customLockerLimit = customLockerLimit.value;
+    if (customLockerLimit.value.trim() !== '') clearLockerLimitError();
+    queueSave();
+  });
   releaseBehaviour.addEventListener('change', () => { state.releaseBehaviour = releaseBehaviour.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.idleDuration = '';
     state.customIdleDuration = '';
-    state.lockerLimit = '2';
+    state.lockerLimit = '1';
+    state.customLockerLimit = '';
     state.releaseBehaviour = 'grace';
     idleDuration.value = '';
     customIdleDuration.value = '';
-    lockerLimit.value = '2';
+    lockerLimit.value = '1';
+    customLockerLimit.value = '';
     releaseBehaviour.value = 'grace';
     applyIdleVisibility();
+    applyLockerLimitVisibility();
     save();
   });
 
@@ -555,6 +611,11 @@ MOST RECENT CHANGE: per a request to remove the edge border on this page's image
     if (state.idleDuration === 'custom' && customIdleDuration.value.trim() === '') {
       showIdleError();
       customIdleDuration.focus();
+      return;
+    }
+    if (state.lockerLimit === 'custom' && customLockerLimit.value.trim() === '') {
+      showLockerLimitError();
+      customLockerLimit.focus();
       return;
     }
     save();

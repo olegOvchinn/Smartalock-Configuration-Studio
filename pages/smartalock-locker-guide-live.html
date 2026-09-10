@@ -85,6 +85,18 @@
   confirming the correct URL/link text/body text in each and that `.footer-note` no longer exists
   while `#kioskNotOnBox` still does, and a full-page Playwright screenshot confirming the new section
   renders correctly directly below Locker Types Available.
+
+  MOST RECENT CHANGE: per a follow-up to smartalock-locker-policy-05.html reducing "Lockers per User"
+  to just a "1" default plus a "Custom..." option (see that file's own NOTE), the fixed `LIMIT_LABELS`
+  map here (`'1'`/`'2'`/`'3'`/`unlimited`) no longer matches the wizard's possible values, so it was
+  replaced with a small `lockerLimitPhrase()` function: returns `'1 locker'` for the default, or reads
+  `locker.customLockerLimit` when `lockerLimit === 'custom'` (pluralizing "N lockers" for anything
+  other than exactly 1, falling back to "a custom number of lockers" if no valid number was saved).
+  `limitTitle` and `limitText` both consume this same phrase, dropping their old separate "no limit"
+  branches since that option no longer exists. Verified via an inline HTMLParser tag-balance check,
+  `node --check` on the extracted script block, and a jsdom test covering the default, a custom value
+  of 5, a custom value of 1 (singular), an empty custom value, and no saved locker state at all — all
+  five render the expected title/text with zero runtime errors.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -441,12 +453,20 @@
 
   /* ---------------- Locker Policy ---------------- */
   const locker = wizard.locker || {};
-  const LIMIT_LABELS = { '1': 'one locker', '2': 'two lockers', '3': 'three lockers', unlimited: 'as many lockers as you need' };
-  const limitPhrase = LIMIT_LABELS[locker.lockerLimit] || LIMIT_LABELS['2'];
-  document.getElementById('limitTitle').textContent = locker.lockerLimit === 'unlimited' ? 'No limit on lockers at once' : 'Hold ' + limitPhrase + ' at a time';
-  document.getElementById('limitText').textContent = locker.lockerLimit === 'unlimited'
-    ? 'There\'s no limit to how many lockers you can hold reserved at once.'
-    : 'You can have ' + limitPhrase + ' reserved at once.';
+  // Per a follow-up, the wizard's Lockers per User field is now a plain "1" default plus a
+  // "Custom..." option (customLockerLimit holds the actual number) rather than a fixed 1/2/3/
+  // unlimited choice, so the phrase is built dynamically instead of looked up in a fixed label map.
+  function lockerLimitPhrase() {
+    if (locker.lockerLimit === 'custom') {
+      const n = parseInt(locker.customLockerLimit, 10);
+      if (Number.isFinite(n) && n > 0) return n === 1 ? '1 locker' : n + ' lockers';
+      return 'a custom number of lockers';
+    }
+    return '1 locker';
+  }
+  const limitPhrase = lockerLimitPhrase();
+  document.getElementById('limitTitle').textContent = 'Hold ' + limitPhrase + ' at a time';
+  document.getElementById('limitText').textContent = 'You can have ' + limitPhrase + ' reserved at once.';
 
   if (locker.idleDuration) {
     const idlePhrase = locker.idleDuration === 'custom' ? (locker.customIdleDuration || 'a set period') : '48 hours';

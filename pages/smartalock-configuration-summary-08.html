@@ -607,6 +607,16 @@ zero `.progress-card` elements remain, exactly 2 `.progress-seg` elements exist 
 `data-module`/`.saved`/`.current` states, and the confirm-button click handler runs with no errors,
 and a Playwright screenshot confirming the header now shows a 2-segment bar (matching the Floorsense
 branch's own layout) with no "Modules saved" card below it.
+
+MOST RECENT CHANGE: per a follow-up to smartalock-locker-policy-05.html reducing "Lockers per User" to
+just a "1" default plus a "Custom..." option (see that file's own NOTE), the fixed `limitLabels` map
+here (`"1"`/`"2"`/`"3"`/`unlimited`) no longer matches the wizard's possible values, so the Lockers per
+User row's value is now built inline: `"1 per user"` for the default, or `l.customLockerLimit + ' per
+user'` (falling back to `"Not specified"` if empty) when `l.lockerLimit === 'custom'`. The row's own
+label and description text are unchanged. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and a jsdom test confirming the row reads "1 per user" by
+default, "5 per user" for a saved custom value of 5, and "Not specified" for Custom selected with no
+value saved, with zero runtime errors.
 -->
 
 <script>
@@ -823,7 +833,6 @@ branch's own layout) with no "Modules saved" card below it.
   (function () {
     const l = wizard.locker || {};
     const idleLabels = { "": "Off", "48h": "48 hours" };
-    const limitLabels = { "1": "1 per user", "2": "2 per user", "3": "3 per user", unlimited: "No limit" };
     const releaseLabels = { grace: "Allow one final locker access after expiry", immediate: "Release when reservation expires" };
     const wrap = document.getElementById('group-locker');
 
@@ -835,7 +844,15 @@ branch's own layout) with no "Modules saved" card below it.
     }
     wrap.appendChild(row('Open When Idle', idleValue,
       "Automatically releases a locker that hasn't been opened for a set period of time."));
-    wrap.appendChild(row('Lockers per User', limitLabels[l.lockerLimit] ?? (l.lockerLimit || '2 per user'),
+    // Per a follow-up, Lockers per User is now a plain "1" default plus a "Custom..." option
+    // (customLockerLimit holds the actual number) rather than a fixed 1/2/3/unlimited choice.
+    let limitValue;
+    if (l.lockerLimit === 'custom') {
+      limitValue = l.customLockerLimit ? l.customLockerLimit + ' per user' : 'Not specified';
+    } else {
+      limitValue = '1 per user';
+    }
+    wrap.appendChild(row('Lockers per User', limitValue,
       'Maximum number of lockers a single user can hold reserved at once.'));
     wrap.appendChild(row('Release Behaviour', releaseLabels[l.releaseBehaviour] ?? (l.releaseBehaviour || 'Allow one final locker access after expiry'),
       "What happens to a user's locker access once their reservation expires."));
