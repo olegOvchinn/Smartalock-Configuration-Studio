@@ -343,24 +343,6 @@
     .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
-  .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
-  /* ---------- footer icon badge: was a bare 56x56px svg (see the note this replaces, above). Per
-     the same site-wide icon-badge propagation, wrapped in a new .checkin-footer-icon-badge
-     (64px/56px, same sizing rationale as .checkin-card-icon-badge above), svg renamed to
-     .checkin-footer-icon-glyph. This icon (a clipboard with a checkmark) has no `fill-opacity="0.15"`
-     highlight shape alongside its `rx="2.5"` rect, so it doesn't match "Style 1" and was in scope. As
-     the lone footer icon on this page (not a repeating option group), it kept plain var(--accent)
-     blue. ---------- */
-  .checkin-footer-icon-badge {
-    width: 64px; height: 64px; border-radius: 19px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .checkin-footer-icon-glyph { width: 56px; height: 56px; color: var(--accent); position: relative; z-index: 1; }
-  .checkin-footer-text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
   /* ---------- default-times explainer diagrams + grouped sub-sections ---------- */
   .policy-diagram-frame {
@@ -479,9 +461,12 @@
         <div class="checkin-card-header">
           <div class="checkin-card-icon-badge"><svg class="checkin-card-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3A9 9 0 0 1 19 16.5L12 12Z"/></svg></div>
           <p class="checkin-card-desc">
-            Users can confirm (check in) their desk booking at the desk within a window before and
-            after the booking start time — drag either dot on the diagram below to set how wide that
-            window is. Outside that window, an unclaimed desk automatically reverts to being
+            People don't always arrive at the exact second their booking starts — some are a few
+            minutes early, others run a little late — so a desk shouldn't release the instant
+            someone misses the start time. This check-in window gives them a grace period either
+            side of the booking start to confirm they've arrived: drag either edge of the diagram
+            below to set how early check-in can begin and how late it can still be accepted. Only
+            once that window closes with no check-in does the desk automatically revert to being
             generally available.
           </p>
         </div>
@@ -521,10 +506,6 @@
           </div>
         </div>
 
-        <div class="checkin-footer">
-          <div class="checkin-footer-icon-badge"><svg class="checkin-footer-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><line x1="9" y1="18" x2="15" y2="18"/><path d="M9 8l2 2 4-4"/></svg></div>
-          <p class="checkin-footer-text">Check in using <span id="checkinMethodsList">any of the methods enabled</span>.</p>
-        </div>
       </div>
 
       <div class="page-nav">
@@ -1110,6 +1091,26 @@ arrows, no click behaviour. Verified via an inline HTMLParser tag-balance check,
 the extracted script block, and a Playwright test confirming `#startNode`/`#endNode` each render 2
 arrows (the center node renders 0), and dragging `#startNode` still updates
 `#checkinEarliestTime`'s text correctly.
+
+MOST RECENT CHANGE: per a request to make the intro copy clearer about what the two pins represent
+and why, and to describe the interaction as "edges" rather than "dots" (per a follow-up on this
+page's earlier drum-to-pin conversion, which coined "drag either dot"), `.checkin-card-desc` was
+rewritten from "Users can confirm (check in) their desk booking at the desk within a window before
+and after the booking start time — drag either dot on the diagram below to set how wide that window
+is. Outside that window, an unclaimed desk automatically reverts to being generally available." to
+explain the *purpose* first — people don't arrive at the exact second their booking starts, so a
+desk shouldn't release the instant someone is a little early or late — before describing the
+interaction as "drag either edge of the diagram below" and naming what each edge controls (how
+early check-in can begin, how late it can still be accepted). Separately, per a request to remove
+the "Check in using {method}" footer strip entirely, the whole `.checkin-footer` block (its
+clipboard-checkmark icon badge and text paragraph) was deleted from the markup, along with its now
+fully-unused CSS (`.checkin-footer`, `.checkin-footer-icon-badge`, `.checkin-footer-icon-glyph`,
+`.checkin-footer-text`) and JS (`CHECKIN_METHOD_LABELS`, `renderCheckinMethodsFooter()`, and its
+call) — this was the only place on the page reading `project.floorsense.wizard.checkinMethods`, so
+no other code was affected. Verified via an inline HTMLParser tag-balance check, `node --check` on
+the extracted script block, and a Playwright test confirming the new copy text renders verbatim,
+`.checkin-footer` no longer exists in the DOM, and both pins still drag and update their labels
+correctly.
 -->
 
 <script>
@@ -1154,33 +1155,6 @@ arrows (the center node renders 0), and dragging `#startNode` still updates
   const businessHours = project.floorsense.wizard.businessHours || {};
   const defaultReservationTimes = project.floorsense.wizard.defaultReservationTimes || {};
   const savedDefaultStartTime = businessHours.arrivalTime || defaultReservationTimes.defaultStartTime || '08:30';
-
-  /* ---------------- check-in methods footer text, sourced from page 02's saved selection ---------------- */
-  const CHECKIN_METHOD_LABELS = {
-    card: 'building access card',
-    app: 'Floorsense App',
-    qr: 'QR code',
-    wallet: 'wallet pass'
-  };
-  function renderCheckinMethodsFooter() {
-    const listEl = document.getElementById('checkinMethodsList');
-    if (!listEl) return;
-    const savedMethods = project.floorsense.wizard.checkinMethods || {};
-    const selected = Array.isArray(savedMethods.selected) ? savedMethods.selected : ['card'];
-    const labels = selected.map(m => CHECKIN_METHOD_LABELS[m]).filter(Boolean);
-    let text;
-    if (labels.length === 0) {
-      text = 'a method enabled';
-    } else if (labels.length === 1) {
-      text = labels[0];
-    } else if (labels.length === 2) {
-      text = labels[0] + ' or ' + labels[1];
-    } else {
-      text = labels.slice(0, -1).join(', ') + ', or ' + labels[labels.length - 1];
-    }
-    listEl.textContent = text;
-  }
-  renderCheckinMethodsFooter();
 
   /* ---------------- horizontal progress bar ---------------- */
   function renderProgressBar() {
