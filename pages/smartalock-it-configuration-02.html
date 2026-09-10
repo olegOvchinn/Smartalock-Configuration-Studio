@@ -251,8 +251,8 @@
         <div class="page-text">
 
           <div class="qcard">
-            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>Company Sign-In <span class="group-tag">Recommended</span></h3>
-            <p class="qdesc">Select how users will authenticate with the Smartalock system, if Single Sign-On is required.</p>
+            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>Sign-In &amp; Access Control <span class="group-tag">Recommended</span></h3>
+            <p class="qdesc">Decide who controls sign-in for this deployment: connect your company's own login system so you decide who can access the mobile app as a user and who can manage the full system portal as an admin, using Single Sign-On. If you don't set this up, Floorsense will handle authentication for you using our own tools.</p>
             <label>Authentication method</label>
             <select id="ssoMethod">
               <option value="">No SSO</option>
@@ -431,6 +431,19 @@ selecting an SSO method and enabling SCIM provisioning still autosaves to
 `project.smartalock.wizard.it` and still reveals both guide boxes, and screenshots of both cards
 showing the new plain-language headings, the "Recommended" pill, and the full "Single Sign-On"
 wording in the first card's description.
+
+MOST RECENT CHANGE: per a follow-up request that "Company Sign-In" wasn't an obvious enough
+heading and needed more explanation of what the choice actually does, the first card's `<h3>` was
+reworded again to "Sign-In & Access Control" and its `<p class="qdesc">` rewritten to spell out the
+actual purpose: "Decide who controls sign-in for this deployment: connect your company's own login
+system so you decide who can access the mobile app as a user and who can manage the full system
+portal as an admin, using Single Sign-On. If you don't set this up, Floorsense will handle
+authentication for you using our own tools." — covering both halves of the choice (client-managed
+via their own login system vs. Floorsense-managed by default) that the previous, shorter
+description didn't spell out. The label, select options, and guide-box copy below it are
+unchanged. Verified via an HTMLParser tag-balance check, `node --check` on the untouched script
+block, a Playwright test re-confirming selecting an SSO method still autosaves and reveals the
+guide box, and a screenshot of the reworded card.
 -->
 
 <script>
