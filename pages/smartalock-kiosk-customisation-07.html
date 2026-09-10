@@ -302,17 +302,6 @@
   .kiosk-toggle-subfields .field select:focus { outline: none; border-color: var(--ink); }
   .kiosk-toggle-subfields .field.field-optional { display: none; }
   .kiosk-toggle-subfields .field.field-optional.show { display: block; animation: fadeIn .22s ease; }
-  .kiosk-toggle-subfields .field input[type="file"] {
-    width: 100%; border: 1px dashed var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 10.66px; background: var(--paper-soft); color: var(--ink-soft);
-  }
-  .kiosk-toggle-subfields .field input[type="file"]:hover { border-color: var(--accent); }
-  .kiosk-toggle-subfields .field input[type="file"]::file-selector-button {
-    font-family: var(--font-text); font-weight: 600; font-size: 10.4px; color: var(--accent-deep);
-    background: var(--paper); border: 1px solid var(--line); border-radius: 980px; padding: 5px 11px;
-    margin-right: 9px; cursor: pointer; transition: border-color .15s, background .15s;
-  }
-  .kiosk-toggle-subfields .field input[type="file"]:hover::file-selector-button { border-color: var(--accent); background: var(--accent-wash); }
 
   /* ---------- Background Colour: was a standalone .kiosk-field-row below the option grid; now
      lives as a hasFields option card inside it (see the customBgEnabled TOGGLES entry), so only
@@ -680,6 +669,20 @@ just "Place it in the free space of the left panel above the Home button, or on 
 of the banners." — dropping the leading "Optional — display your own logo image instead of text."
 sentence. No functional change; the toggle still defaults to off. Verified via
 python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted script block.
+
+MOST RECENT CHANGE: per a request to remove "choose a file" style upload controls from the site's
+live pages, removed the "Logo Image" file input from the Custom Logo option — the master switch
+and "Placement" select are kept in place, per an explicit choice to narrow the removal to just the
+file picker rather than the whole feature. This means Custom Logo, as configured through the UI
+now, can never actually have an image to show (customLogoDataUrl is never set, since nothing
+writes to it anymore), so toggling it on and choosing a placement is inert — no image ever appears
+in either mockup slot. state.customLogoFileName, the customLogoDataUrl variable, and
+updateCustomLogo() were deliberately left in place (not further gutted) to keep this change narrow;
+only the now-fully-unused `.kiosk-toggle-subfields .field input[type="file"]` CSS (this page's only
+file input) was removed as dead. Verified via python3 /tmp/validate_generic.py (tag balance), node
+--check on the extracted script block, a jsdom test (file input gone, Placement select still
+present and wired, enabling/toggling/resetting all run with zero JS errors, right-panel slot never
+shows since no image is ever set), and a Playwright screenshot of the resulting card.
 -->
 
 <script>
@@ -946,10 +949,6 @@ python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted
         fields.id = 'fields-' + t.key;
         fields.innerHTML = `
           <div class="field">
-            <label>Logo Image</label>
-            <input type="file" id="customLogoFileInput" accept="image/*">
-          </div>
-          <div class="field">
             <label>Placement</label>
             <select id="customLogoPlacementSelect">
               <option value="left"${state.customLogoPlacement === 'left' ? ' selected' : ''}>Left panel, above Home button</option>
@@ -959,24 +958,6 @@ python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted
         `;
         item.appendChild(fields);
 
-        fields.querySelector('#customLogoFileInput').addEventListener('change', e => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) {
-            state.customLogoFileName = '';
-            customLogoDataUrl = '';
-            updateCustomLogo();
-            queueSave();
-            return;
-          }
-          state.customLogoFileName = file.name;
-          const reader = new FileReader();
-          reader.onload = () => {
-            customLogoDataUrl = reader.result;
-            updateCustomLogo();
-          };
-          reader.readAsDataURL(file);
-          queueSave();
-        });
         fields.querySelector('#customLogoPlacementSelect').addEventListener('change', e => {
           state.customLogoPlacement = e.target.value;
           updateCustomLogo();

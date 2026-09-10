@@ -178,22 +178,13 @@
   .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .desk-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
-  /* ---------- dedicated workstations bulk-upload sub-panel (matches access-subfields pattern) ---------- */
+  /* ---------- dedicated workstations bulk-upload sub-panel (matches access-subfields pattern) ----------
+     The file-input field this sub-panel originally held was removed per a later request (the .field
+     input[type="file"] rules that styled it were removed as now-unused); only the label sentence
+     remains, describing sending a spreadsheet as an off-app/manual process. ---------- */
   .desk-subfields { display: none; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
   .desk-subfields.show { display: flex; }
   .desk-subfields-label { font-size: 12.1px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-  .desk-subfields > .field label { display: block; font-size: 10.82px; font-weight: 600; margin-bottom: 6px; color: var(--ink-soft); }
-  .desk-subfields > .field input[type="file"] {
-    width: 100%; border: 1px dashed var(--line); border-radius: 8px; padding: 9px 11px;
-    font-family: var(--font-text); font-size: 11.73px; background: var(--paper-soft); color: var(--ink-soft);
-  }
-  .desk-subfields > .field input[type="file"]:hover { border-color: var(--accent); }
-  .desk-subfields > .field input[type="file"]::file-selector-button {
-    font-family: var(--font-text); font-weight: 600; font-size: 11.48px; color: var(--accent-deep);
-    background: var(--paper); border: 1px solid var(--line); border-radius: 980px; padding: 6px 12px;
-    margin-right: 10px; cursor: pointer; transition: border-color .15s, background .15s;
-  }
-  .desk-subfields > .field input[type="file"]:hover::file-selector-button { border-color: var(--accent); background: var(--accent-wash); }
 
   /* ---------- prev / next page nav ---------- */
   .page-nav {
@@ -305,10 +296,6 @@
           </label>
           <div class="desk-subfields" id="dedicatedSubfields">
             <div class="desk-subfields-label">Setting up a lot of these? Send us a spreadsheet of employee names and desk numbers and we'll load them in for you — just this once, to help you get live faster.</div>
-            <div class="field">
-              <label for="dedicatedSpreadsheet">Spreadsheet (optional)</label>
-              <input type="file" id="dedicatedSpreadsheet" accept=".csv,.xlsx,.xls">
-            </div>
           </div>
         </div>
 
@@ -759,6 +746,23 @@ with the "AI Agent Auto-Prebooked" card's `badge-amber`) — that reasoning stil
 glyph's shape changed here, not its colour, so `badge-pink` remains correct and non-colliding. Verified
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
 and a Playwright screenshot confirming the tick-box glyph renders cleanly in pink.
+
+MOST RECENT CHANGE: per a request to remove "choose a file" style upload controls from the site's
+live pages, removed the "Spreadsheet (optional)" file input (and its label) from the Dedicated
+Workstations card's subfields — per an explicit choice to keep the surrounding sentence ("Send us
+a spreadsheet of employee names...") describing the manual/off-app process of sending a file to
+Smartalock directly, rather than removing that whole sub-section. Removed the now-dead JS that
+referenced the input directly: the top-level `dedicatedSpreadsheet` const, the file-name read in
+save(), its 'change' listener, and its `.value = ''` reset — all of which would have thrown a
+null-reference error once the element no longer existed. `state.dedicatedSpreadsheetName` itself
+was deliberately left in place (still round-trips through save/localStorage) even though nothing
+can set it anymore, to keep the change narrow. Also removed the now fully-unused
+`.desk-subfields > .field` CSS (label + file-input + file-selector-button styling), since the
+`.field` wrapper it targeted no longer exists anywhere on this page. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, a jsdom test (file
+input gone, sentence still present, checking "Dedicated Workstations" still reveals the subfields
+panel, Reset and Continue both run with zero JS errors), and a Playwright screenshot of the
+resulting card.
 -->
 
 <script>
@@ -827,13 +831,11 @@ and a Playwright screenshot confirming the tick-box glyph renders cleanly in pin
   /* ---------------- reservation type grid ---------------- */
   const grid = document.getElementById('templateGrid');
   const dedicatedSubfields = document.getElementById('dedicatedSubfields');
-  const dedicatedSpreadsheet = document.getElementById('dedicatedSpreadsheet');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
   const continueBtn = document.getElementById('continueBtn');
 
   function save() {
-    state.dedicatedSpreadsheetName = dedicatedSpreadsheet.files && dedicatedSpreadsheet.files[0] ? dedicatedSpreadsheet.files[0].name : state.dedicatedSpreadsheetName;
     project.floorsense.wizard.reservationTypes = state;
     saveProject(project);
   }
@@ -870,8 +872,6 @@ and a Playwright screenshot confirming the tick-box glyph renders cleanly in pin
     });
   });
 
-  dedicatedSpreadsheet.addEventListener('change', queueSave);
-
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.selected = DEFAULT_RESERVATION_TYPES.slice();
     state.dedicatedSpreadsheetName = "";
@@ -882,7 +882,6 @@ and a Playwright screenshot confirming the tick-box glyph renders cleanly in pin
       card.querySelector('input[type="checkbox"]').checked = isDefault;
     });
     dedicatedSubfields.classList.remove('show');
-    dedicatedSpreadsheet.value = '';
     updateSummary();
     queueSave();
   });
