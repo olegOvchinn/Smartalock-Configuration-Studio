@@ -232,6 +232,13 @@
     position: absolute; top: 7.5px; bottom: 7.5px;
     display: flex; align-items: stretch; gap: 3px;
   }
+  /* the pre-window zone ends and the post-window zone begins at the same 50% centre point (the
+     booking-start pin), so their nearest segments would otherwise sit flush against each other with
+     no visible seam — a small margin on each pulls them apart slightly, giving the first two
+     segments in the diagram (the last pre-window block and the first post-window block) a bit of
+     breathing room around the centre pin. */
+  .timeline-zone.pre-window { margin-right: 2px; }
+  .timeline-zone.post-window { margin-left: 2px; }
   .timeline-zone-seg {
     position: relative; overflow: hidden;
     flex: 1 1 0; min-width: 0; border-radius: 5px;
@@ -1123,6 +1130,19 @@ accent, matching the sitewide convention of a badge border echoing its icon's re
 placeholder glyph is replaced with a real asset. Verified via an inline HTMLParser tag-balance
 check, `node --check` on the extracted script block (untouched — markup/CSS-only change), and a
 Playwright screenshot confirming the new icon renders inside its badge with the red border.
+
+MOST RECENT CHANGE: per a request to add space between the first two segments in the timeline, a
+small gap now separates the pre-window zone's last block from the post-window zone's first block —
+the two segments nearest the centre "Booking start" pin, which previously sat flush against each
+other since `#preWindowZone` ends and `#postWindowZone` begins at the same 50% point. Added
+`.timeline-zone.pre-window { margin-right: 2px; }` and `.timeline-zone.post-window { margin-left:
+2px; }` (both zones already carry these modifier classes, used elsewhere only for the reveal
+animation) — a pure CSS visual inset that doesn't touch either zone's JS-computed `left`/`width`
+percentages, so the underlying position math driving drag/keyboard interaction is unaffected.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched), a Playwright screenshot showing the new ~2px seam around the centre pin, and a
+regression check confirming dragging `#startNode` still updates its label correctly and the two
+zones' rendered gap remains consistent afterward.
 -->
 
 <script>
