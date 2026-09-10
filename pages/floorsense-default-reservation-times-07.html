@@ -326,11 +326,23 @@
     box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .label-arrow { flex-shrink: 0; }
+  @keyframes label-arrow-nudge-left {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+  @keyframes label-arrow-nudge-right {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(3px); opacity: 1; }
+  }
+  .label-arrow-left { animation: label-arrow-nudge-left 1.4s ease-in-out infinite; }
+  .label-arrow-right { animation: label-arrow-nudge-right 1.4s ease-in-out infinite; animation-delay: 0.7s; }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -357,6 +369,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
+    .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
 
@@ -499,7 +512,11 @@
                     </div>
                     <div class="timeline-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
                       <div class="anchor-pin"></div>
-                      <div class="label-time primary" id="card1StartTime">8:30 AM</div>
+                      <div class="label-time primary">
+                        <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span id="card1StartTime">8:30 AM</span>
+                        <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </div>
                       <div class="label-desc">Custom start</div>
                     </div>
                   </div>
@@ -542,7 +559,11 @@
                       </div>
                       <div class="timeline-node draggable" id="durationEndNode" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="960">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary" id="durationEndTime">5:30 PM</div>
+                        <div class="label-time primary">
+                          <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <span id="durationEndTime">5:30 PM</span>
+                          <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                         <div class="label-desc">Ends</div>
                       </div>
                     </div>
@@ -580,7 +601,11 @@
                       </div>
                       <div class="timeline-node draggable" id="fixedEndEndNode" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="960">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary" id="fixedEndEndTime">5:00 PM</div>
+                        <div class="label-time primary">
+                          <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <span id="fixedEndEndTime">5:00 PM</span>
+                          <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                         <div class="label-desc">Ends</div>
                       </div>
                     </div>
@@ -1225,6 +1250,24 @@ palette color instead of the plain `var(--accent)` blue it had before. Updated t
 CSS comment accordingly. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block (untouched), and a Playwright screenshot confirming card 1's icon badge now
 renders with an orange border (`rgb(242, 161, 84)`).
+
+MOST RECENT CHANGE: per a request to apply the same pin treatment used on
+floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html to this page's three
+draggable pins, `#card1StartNode`, `#durationEndNode`, and `#fixedEndEndNode` each gained a small
+decorative left/right chevron (stroked `#fff`) flanking their `#card1StartTime`/`#durationEndTime`/
+`#fixedEndEndTime` label text — each id moved onto a new inner `<span>` so the existing
+`card1StartTime.textContent =`/`durationEndTime.textContent =`/`fixedEndEndTime.textContent =`
+assignments in `updateCard1Diagram()`/`updateDurationDiagram()`/`updateFixedEndDiagram()` keep only
+touching the number/unit. The three fixed, non-draggable reference pins (`#durationStartNode`,
+`#fixedEndStartNode`) were left untouched — no arrows, since they aren't drag targets. The shared
+`.timeline-node .label-time` rule gained `display: inline-flex; align-items: center; gap: 5px`, the
+`label-arrow-nudge-left`/`-right` keyframes and `prefers-reduced-motion` opt-out (matching the
+reference pages), and `margin-bottom` shrank from `14px` to `6px` across all pills on all three
+cards (including the two fixed reference pins, which share the same unscoped rule, moving them
+closer to the rail too for visual consistency). Purely decorative arrows, no click behaviour.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a Playwright test confirming all three draggable pins render 2 arrows each while the two fixed
+reference pins render 0, with `#card1StartTime` reading correctly on load.
 -->
 
 <script>

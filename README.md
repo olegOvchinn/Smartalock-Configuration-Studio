@@ -399,6 +399,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Per a follow-up, the two flashing arrows are decorative again (no longer clickable), and the filled zone bar itself is now a drag target alongside the pin — grabbing anywhere in the blue fill starts the same drag as grabbing the pin. The caption below the timeline updated to match ("...or the filled bar...").
 - The floating days pill on that same timeline now sits closer to the rail (tighter gap above the pin).
 - `floorsense-business-hours-05.html`'s Arrival and Departure pins each got the same treatment: flashing white left/right arrows on their pill, and the pill moved closer to the rail.
+- The same flashing-arrow-plus-closer-pill treatment was rolled out to every other draggable timeline pin on the site: `floorsense-anti-desk-hogging-13.html`'s Time Window pin (and its mirrored copy on the `floorsense-optional-features-06.html` hub), both check-in pins on `floorsense-checkin-window-08.html`, all three draggable pins on `floorsense-default-reservation-times-07.html`, and the idle-release duration pin on `floorsense-idle-release-09.html`. Fixed, non-draggable reference markers (booking-start, duration-start, fixed-end-start, idle-start) were left untouched.
 
 ## Status
 

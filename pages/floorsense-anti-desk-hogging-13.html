@@ -209,11 +209,23 @@
     box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .label-arrow { flex-shrink: 0; }
+  @keyframes label-arrow-nudge-left {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+  @keyframes label-arrow-nudge-right {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(3px); opacity: 1; }
+  }
+  .label-arrow-left { animation: label-arrow-nudge-left 1.4s ease-in-out infinite; }
+  .label-arrow-right { animation: label-arrow-nudge-right 1.4s ease-in-out infinite; animation-delay: 0.7s; }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -235,6 +247,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
+    .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
   /* ---------- Max Same-Desk Bookings: a plain fill-in number field, styled and structured exactly
@@ -386,7 +399,11 @@
                 </div>
                 <div class="timeline-node" id="windowNode" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
                   <div class="anchor-pin"></div>
-                  <div class="label-time primary" id="windowNodeLabel">2 days</div>
+                  <div class="label-time primary">
+                    <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span id="windowNodeLabel">2 days</span>
+                    <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
                   <div class="label-desc">Window</div>
                 </div>
               </div>
@@ -725,6 +742,20 @@ phrasing matches the new field name. Verified via an inline HTMLParser tag-balan
 --check` on all three files' extracted script blocks, jsdom tests confirming the new label/hint/suffix
 text and the renamed summary helper all render correctly with zero runtime errors, and a Playwright
 screenshot of the card confirming the new copy reads cleanly.
+
+MOST RECENT CHANGE: per a request to apply the same pin treatment used on
+floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html to this page's own pin,
+`#windowNode` gained a small decorative left/right chevron flanking its `#windowNodeLabel` text
+(stroked `#fff`) — the `id` moved from the `.label-time.primary` div onto a new inner `<span>`
+wrapping just the text, so the existing `windowNodeLabel.textContent = formatDays(days)` assignment
+continues to only touch the number/unit; no JS changes were needed. `.timeline-node .label-time`
+gained `display: inline-flex; align-items: center; gap: 5px`, the same `label-arrow-nudge-left`/
+`-right` keyframes (1.4s ease-in-out infinite, right delayed 0.7s) and `prefers-reduced-motion`
+opt-out as the reference pages — purely decorative, no click behaviour. Separately, `margin-bottom`
+on the pill shrank from `14px` to `6px`, moving it closer to the rail. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test
+confirming the pin renders 2 arrows with `#fff` stroke and dragging still updates the label text
+correctly.
 -->
 
 <script>

@@ -281,11 +281,23 @@
     box-shadow: 0 0 0 4px var(--accent-wash), 0 2px 6px rgba(16,42,67,0.2);
   }
   .timeline-node .label-time {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 14px;
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
     font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
     background: var(--accent-deep); padding: 4px 11px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .label-arrow { flex-shrink: 0; }
+  @keyframes label-arrow-nudge-left {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+  @keyframes label-arrow-nudge-right {
+    0%, 100% { transform: translateX(0); opacity: 0.4; }
+    50% { transform: translateX(3px); opacity: 1; }
+  }
+  .label-arrow-left { animation: label-arrow-nudge-left 1.4s ease-in-out infinite; }
+  .label-arrow-right { animation: label-arrow-nudge-right 1.4s ease-in-out infinite; animation-delay: 0.7s; }
   .timeline-node .label-desc {
     position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px;
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -328,6 +340,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .timeline-card.animate-in * { animation: none !important; }
+    .label-arrow-left, .label-arrow-right { animation: none !important; opacity: 0.85; }
   }
 
   .checkin-footer { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-top: 1px solid var(--line); }
@@ -483,7 +496,11 @@
               </div>
               <div class="timeline-node start-node draggable" id="startNode" tabindex="0" role="slider" aria-label="Earliest check-in time, minutes before booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
-                <div class="label-time" id="checkinEarliestTime">7:30 AM</div>
+                <div class="label-time">
+                  <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="checkinEarliestTime">7:30 AM</span>
+                  <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
                 <div class="label-desc" id="startGapLabel">30 min before</div>
               </div>
               <div class="timeline-node center-node">
@@ -493,7 +510,11 @@
               </div>
               <div class="timeline-node end-node draggable" id="endNode" tabindex="0" role="slider" aria-label="Latest check-in time, minutes after booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
-                <div class="label-time" id="checkinLatestTime">9:30 AM</div>
+                <div class="label-time">
+                  <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="checkinLatestTime">9:30 AM</span>
+                  <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
                 <div class="label-desc" id="endGapLabel">60 min after</div>
               </div>
             </div>
@@ -1072,6 +1093,23 @@ neither set, and conflicting values with businessHours correctly taking priority
 test simulating an edit on floorsense-business-hours-05.html and confirming the resulting localStorage
 state renders the correct start time on this page on a fresh load, and a Playwright screenshot
 confirming the "6:45 AM" label renders correctly when seeded only via `businessHours.arrivalTime`.
+
+MOST RECENT CHANGE: per a request to apply the same pin treatment used on
+floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html to this page's two
+draggable pins, both `#startNode` and `#endNode` gained a small decorative left/right chevron
+(stroked `#fff`) flanking their `#checkinEarliestTime`/`#checkinLatestTime` label text — each id
+moved onto a new inner `<span>` so the existing `checkinEarliestTime.textContent =`/
+`checkinLatestTime.textContent =` assignments in `updateCheckinExample()` keep only touching the
+number/unit. The fixed, non-draggable `.center-node` ("Booking start") was left untouched — no
+arrows, since it isn't a drag target. `.timeline-node .label-time` gained
+`display: inline-flex; align-items: center; gap: 5px`, the shared `label-arrow-nudge-left`/`-right`
+keyframes and `prefers-reduced-motion` opt-out (matching the reference pages), and `margin-bottom`
+shrank from `14px` to `6px` on all three pills (including the fixed center one, which shares the
+same unscoped rule, moving it closer to the rail too for visual consistency). Purely decorative
+arrows, no click behaviour. Verified via an inline HTMLParser tag-balance check, `node --check` on
+the extracted script block, and a Playwright test confirming `#startNode`/`#endNode` each render 2
+arrows (the center node renders 0), and dragging `#startNode` still updates
+`#checkinEarliestTime`'s text correctly.
 -->
 
 <script>
