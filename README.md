@@ -394,6 +394,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Every wizard page reachable via an "Edit" link from either branch's summary page now returns to that summary when its Save/Continue button is clicked, instead of proceeding to its normal next page in the linear wizard sequence. This extends the pre-existing `?return=summary` convention to all remaining Edit-linked pages on both `smartalock-configuration-summary-08.html` and `floorsense-out-of-box-policy.html`, and adds a branch-aware `?return=summary&branch=smartalock|floorsense` variant for the two pages shared between both branches (`smartalock-templates-00.html` and `pages/smartalock-it-configuration-02.html`).
 - `floorsense-prebooking-advance-04.html`'s floating days-ahead pill now has small amber left/right arrows (matching the page's icon colour) that continuously flash and nudge outward in alternation, signalling that the pin can be dragged in either direction.
 - Per a follow-up, those two arrows are now white and are real tap/click targets: each steps the advance-booking value by 1 day, for anyone who can't (or doesn't want to) drag the pin directly.
+- Added a small caption below `floorsense-prebooking-advance-04.html`'s timeline — "Drag the pin — or tap the arrows — to change how many days ahead." — spelling out in words that the pill/pin is interactive.
 
 ## Status
 

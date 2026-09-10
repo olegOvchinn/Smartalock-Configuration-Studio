@@ -270,6 +270,10 @@
     font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
     color: var(--ink-soft); text-align: center; white-space: nowrap;
   }
+  .timeline-drag-hint {
+    margin: 4px 0 0; font-size: 11.89px; font-weight: 500; color: var(--header-grey-light);
+    line-height: 1.5; text-align: center;
+  }
 
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ci-grow {
@@ -423,6 +427,7 @@
                 </div>
               </div>
             </div>
+            <p class="timeline-drag-hint">Drag the pin — or tap the arrows — to change how many days ahead.</p>
           </div>
         </div>
       </div>
@@ -896,6 +901,19 @@ times and the left arrow 5 times moves the value exactly as expected (8 -> 11 ->
 setting the `dragging` class; repeated clicks correctly clamp at 0 (showing "Off") and at 30; the
 stepped value persists to localStorage; and a reload + click-drag regression check confirms the
 original drag interaction still works unchanged.
+
+MOST RECENT CHANGE: per a request to call out that the days pill is draggable, added a small static
+caption, `<p class="timeline-drag-hint">Drag the pin — or tap the arrows — to change how many days
+ahead.</p>`, as a sibling of `.timeline-diagram-row` inside `.timeline-card` (so it sits in normal
+document flow below the whole diagram, not tied to the pin's own horizontal position). Styled to
+match this page's existing `.policy-hint` caption convention (`font-size: 11.89px`, `var(--header-
+grey-light)`), just centered and with a small `4px` top margin — the `.timeline-track-wrapper`'s own
+`46px` bottom margin already provides enough clearance below the absolutely-positioned "BOOK AHEAD"
+tick caption and ticks, so this new line doesn't need extra spacing of its own to avoid overlapping
+them. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block (untouched — markup/CSS-only change), and a Playwright test measuring the gap between the
+"BOOK AHEAD" label's bottom edge and the new hint's top edge (30.5px, confirming no overlap) plus a
+screenshot of the rendered card.
 -->
 
 
