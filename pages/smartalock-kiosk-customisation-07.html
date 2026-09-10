@@ -674,6 +674,12 @@ test (grid ordering, default colour, enabling reveals the field and applies a cu
 reverts to default, re-enabling restores the remembered custom colour, zero JS errors), and a
 Playwright screenshot confirming the card's placement and that a custom colour applies live to both
 panels.
+
+MOST RECENT CHANGE: per a follow-up request, trimmed the Custom Logo card's description down to
+just "Place it in the free space of the left panel above the Home button, or on the right in place
+of the banners." — dropping the leading "Optional — display your own logo image instead of text."
+sentence. No functional change; the toggle still defaults to off. Verified via
+python3 /tmp/validate_generic.py (tag balance) and node --check on the extracted script block.
 -->
 
 <script>
@@ -734,7 +740,7 @@ panels.
   const TOGGLES = [
     { key: "logoEnabled",   elementId: "smartalockLogo",     label: "Main Information Banner", desc: "Shows a headline on the kiosk home screen — the Smartalock wordmark by default, or your own custom text.", hasFields: true, icon: "icon-kiosk-logo.png" },
     { key: "bannerEnabled", elementId: "welcomeMessage",      label: "Information Banner", desc: "Short instructional message shown beneath the logo.", hasFields: true, icon: "icon-kiosk-banner.png" },
-    { key: "customLogoEnabled", label: "Custom Logo", desc: "Optional — display your own logo image instead of text. Place it in the free space of the left panel above the Home button, or on the right in place of the banners.", hasFields: true, icon: "icon-kiosk-logo.png" },
+    { key: "customLogoEnabled", label: "Custom Logo", desc: "Place it in the free space of the left panel above the Home button, or on the right in place of the banners.", hasFields: true, icon: "icon-kiosk-logo.png" },
     { key: "openEnabled",   elementId: "openExistingButton",  label: "Open Existing",     desc: "Look up and reopen a locker the user already has assigned.", icon: "icon-kiosk-open-existing.png" },
     { key: "lockerEnabled", elementId: "getLockerButton",     label: "Get A Locker",      desc: "Primary flow — assigns and opens an available locker to the user.", icon: "icon-kiosk-get-locker.png" },
     { key: "qrEnabled",     elementId: "scanQRButton",        label: "Scan QR Code",      desc: "Authenticates the user by scanning a QR code instead of a badge or PIN.", icon: "icon-kiosk-scan-qr.png" },

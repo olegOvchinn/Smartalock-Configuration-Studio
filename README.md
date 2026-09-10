@@ -387,6 +387,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - `smartalock-kiosk-customisation-07.html`'s "Smartalock Logo" toggle was renamed to "Main Information Banner" and now offers a "Banner Text" select (Smartalock wordmark default, or "Replace existing with custom") that reveals a one-line "Banner Line 1" fill-in field, live-updating the kiosk preview's headline. `smartalock-configuration-summary-08.html`'s Kiosk Customisation summary row was updated to match.
 - `smartalock-kiosk-customisation-07.html` gained a new, optional "Custom Logo" toggle (off by default) with a file upload and a Placement choice — the free space of the left panel above the Home button, or the right panel in place of the Main Information Banner / Information Banner text — with the kiosk preview updating live as the file and placement change. `smartalock-configuration-summary-08.html`'s Kiosk Customisation group gained a matching summary row.
 - `smartalock-kiosk-customisation-07.html`'s "Background Colour" control moved out of its own standalone row and into the option grid itself, as a toggle (default off = default Smartalock blue) that reveals the existing hex input and Set button when switched on — placed last in the grid so it sits to the right of "Allow User to Add New Card".
+- `smartalock-kiosk-customisation-07.html`'s Custom Logo card description was trimmed to drop the leading "Optional — display your own logo image instead of text." sentence.
 
 ## Status
 
