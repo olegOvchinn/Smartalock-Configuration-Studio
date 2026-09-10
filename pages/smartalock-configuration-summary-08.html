@@ -244,6 +244,16 @@
     transition: border-color .15s, background .15s;
   }
   button.ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+  /* ---------- deliberately a fixed green, not var(--accent) (which is this branch's own blue) —
+     signals "leave this branch" rather than an in-flow action, and matches the site's own former
+     Floorsense green (#1FAA59/#178A48) before that branch was rebranded to blue. ---------- */
+  a.product-picker-btn {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: #1FAA59; border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center; transition: background .15s, transform .1s;
+  }
+  a.product-picker-btn:hover { background: #178A48; }
+  a.product-picker-btn:active { transform: scale(0.98); }
 
   /* ---------- post-submit confirmation: shown once "Save & Email Me Summary" is clicked,
      mirroring the same pattern on the Floorsense Configuration Summary
@@ -458,6 +468,7 @@
     <div class="panel-inner">
       <div class="save-note"><span id="saveText">Read-only — nothing to save on this page</span></div>
       <div style="display:flex; gap:10px;">
+        <a class="product-picker-btn" href="pick-a-product.html">Back to Product Picker</a>
         <button class="ghost" id="printBtn" type="button">Print</button>
         <button class="primary" id="confirmBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
@@ -638,6 +649,16 @@ map for customLogoPlacement's "left"/"right" values) and either the saved custom
 --check on the extracted script block, and a jsdom test of three cases — a pre-existing project
 with no customLogoEnabled key at all (reads "Off"), enabled with a right-panel file (names the
 placement and file), and enabled left-panel with no file chosen yet (says so) — all matching.
+
+MOST RECENT CHANGE: per a request that both branches' summary pages have a green button back to
+the product picker, added `a.product-picker-btn` (href="pick-a-product.html") to the action bar,
+first in the button group before Print/Save & Email Me Summary. Deliberately styled with a fixed
+green (#1FAA59, hover #178A48) rather than `var(--accent)` (this branch's own blue) — the button
+means "leave this branch entirely", so it intentionally doesn't look like the branch's own
+in-flow actions. That exact green matches the site's own former Floorsense accent colour, from
+before that branch was rebranded to match this one's blue (see floorsense-out-of-box-policy.html's
+own NOTE on that rebrand). Verified via python3 /tmp/validate_generic.py (tag balance), node
+--check on the extracted script block, and a Playwright screenshot of the action bar.
 -->
 
 <script>

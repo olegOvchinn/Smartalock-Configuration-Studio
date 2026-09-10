@@ -389,6 +389,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - `smartalock-kiosk-customisation-07.html`'s "Background Colour" control moved out of its own standalone row and into the option grid itself, as a toggle (default off = default Smartalock blue) that reveals the existing hex input and Set button when switched on — placed last in the grid so it sits to the right of "Allow User to Add New Card".
 - `smartalock-kiosk-customisation-07.html`'s Custom Logo card description was trimmed to drop the leading "Optional — display your own logo image instead of text." sentence.
 - Removed the two remaining "choose a file" style upload controls from the site's live pages: the "Logo Image" file input on `smartalock-kiosk-customisation-07.html`'s Custom Logo option (the toggle and Placement select remain, but the option is now inert with no way to supply an image), and the "Spreadsheet (optional)" file input on `floorsense-reservation-types-01.html`'s Dedicated Workstations card (its descriptive sentence about sending a spreadsheet directly to Smartalock remains).
+- Both branch summary pages — `smartalock-configuration-summary-08.html` and `floorsense-out-of-box-policy.html` — gained a green "Back to Product Picker" button in the action bar, linking to `pick-a-product.html`. It's a fixed green (matching the site's own former pre-rebrand Floorsense accent colour) rather than either branch's own blue, since it means leaving the branch entirely.
 
 ## Status
 

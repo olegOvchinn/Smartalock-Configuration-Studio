@@ -523,6 +523,17 @@
   button.primary:active { transform: scale(0.98); }
   button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  /* ---------- deliberately a fixed green, not var(--accent) (this branch's own blue since the
+     site-wide rebrand) — signals "leave this branch" rather than an in-flow action, and matches
+     the site's own former Floorsense green (#1FAA59/#178A48) from before that rebrand. ---------- */
+  a.product-picker-btn {
+    font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
+    background: #1FAA59; border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center; transition: background .15s, transform .1s;
+  }
+  a.product-picker-btn:hover { background: #178A48; }
+  a.product-picker-btn:active { transform: scale(0.98); }
+
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
 </style>
@@ -932,6 +943,7 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to go — no changes needed</span></div>
       <div style="display:flex; gap:10px;">
+        <a class="product-picker-btn" href="pick-a-product.html">Back to Product Picker</a>
         <button class="primary" id="continueBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
@@ -2345,6 +2357,17 @@ wording-only change — `antiDeskHogging.maxBookings` is still the same 1-5 numb
 path. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
 block, and a 3-scenario jsdom test confirming the off state, a singular "1 booking" enabled state, and
 a plural "N bookings" enabled state all render correctly with zero runtime errors.
+
+MOST RECENT CHANGE: per a request that both branches' summary pages have a green button back to
+the product picker, added `a.product-picker-btn` (href="pick-a-product.html") to the action bar,
+first in the button group before Save & Email Me Summary (this page has no separate Print button).
+Deliberately styled with a fixed green (#1FAA59, hover #178A48) rather than `var(--accent)` (this
+page's own blue, since the site-wide Floorsense-to-blue rebrand described earlier in this file) —
+the button means "leave this branch entirely", so it intentionally doesn't look like the branch's
+own in-flow actions; that exact green is in fact this page's own former accent colour, from before
+that rebrand. Mirrors the identical addition on smartalock-configuration-summary-08.html. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a
+Playwright screenshot of the action bar.
 -->
 
 
