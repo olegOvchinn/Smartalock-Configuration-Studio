@@ -529,10 +529,11 @@
   a.product-picker-btn {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
     background: #1FAA59; border: none; border-radius: 980px; padding: 11px 22px; cursor: pointer;
-    text-decoration: none; display: inline-flex; align-items: center; transition: background .15s, transform .1s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background .15s, transform .1s;
   }
   a.product-picker-btn:hover { background: #178A48; }
   a.product-picker-btn:active { transform: scale(0.98); }
+  a.product-picker-btn svg { width: 14px; height: 14px; stroke: #fff; flex-shrink: 0; }
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
@@ -943,7 +944,10 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to go — no changes needed</span></div>
       <div style="display:flex; gap:10px;">
-        <a class="product-picker-btn" href="pick-a-product.html">Back to Product Picker</a>
+        <a class="product-picker-btn" href="smartalock-access-methods-09.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Configure Lockers
+        </a>
         <button class="primary" id="continueBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
@@ -2368,6 +2372,17 @@ own in-flow actions; that exact green is in fact this page's own former accent c
 that rebrand. Mirrors the identical addition on smartalock-configuration-summary-08.html. Verified
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a
 Playwright screenshot of the action bar.
+
+MOST RECENT CHANGE: per a follow-up request, the button now cross-navigates to the Smartalock
+branch rather than the generic product picker — relabeled "Configure Lockers" (this page's own
+product is desks, so the other branch is the locker one) and repointed from pick-a-product.html
+straight to smartalock-access-methods-09.html, the Smartalock wizard's own entry point (confirmed
+via pick-a-product.html's own PRODUCTS.smartalock.dest). Added a left-facing chevron svg (the same
+`M15 18l-6-6 6-6` path already used for every other "back" arrow on this site) before the label —
+`a.product-picker-btn` gained `gap: 6px` and a `svg { width/height: 14px; stroke: #fff }` rule for
+it. The green colour and placement are unchanged. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and a Playwright screenshot confirming the
+label, arrow, and href.
 -->
 
 
