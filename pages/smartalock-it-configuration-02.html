@@ -260,7 +260,7 @@
     <div class="panel-inner">
 
       <div class="it-help-notice">
-        <p>Not confident about any of this? You can send this page to your IT contact to review and fill in for you instead.</p>
+        <p>Not sure? Send this page to your IT contact to review and confirm.</p>
         <button class="it-help-notice-btn" id="sendItEmailBtn" type="button">Send Email</button>
       </div>
 
@@ -520,6 +520,15 @@ raises no error and doesn't navigate the page away (consistent with how browsers
 assignments — confirmed via the same reasoning documented in `floorsense-out-of-box-policy.html`'s
 own NOTE); and that "Save & continue" still saves `moduleStatus.it`, shows no alert, and still
 redirects to the next page on schedule.
+
+MOST RECENT CHANGE: per a request to shorten the IT-hand-off notice's copy and avoid a phrasing
+that could read as questioning the client's competence, "Not confident about any of this? You can
+send this page to your IT contact to review and fill in for you instead." was replaced with the
+shorter, neutral "Not sure? Send this page to your IT contact to review and confirm." — framed as an
+optional double-check rather than implying the client can't handle the page themselves. Only this
+`<p>` text changed; the surrounding `.it-help-notice` markup, the "Send Email" button, and its JS
+wiring are all unchanged. Verified via an inline HTMLParser tag-balance check and `node --check` on
+the extracted script block (untouched — copy-only change).
 -->
 
 <script>

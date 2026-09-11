@@ -416,6 +416,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Applied the same tick-box + per-card colouring treatment to `floorsense-checkin-methods-02.html`'s 4 check-in method cards.
 - Applied the same per-choice colouring treatment (tick-box already existed) to `floorsense-desk-user-groups-03.html`'s 6 choice cards, keyed off each one's `none`/`provide`/`policy` mode rather than per-card — deliberately excluding the two `.groups-card` column canvases that wrap them, which stay a plain uncoloured wrapper.
 - `smartalock-locker-behaviour-03.html`'s Pop Open and Push to Open cards are now independently selectable instead of a two-way exclusive choice, so a site can use both (e.g. Pop Open everywhere except a specific Push to Open bank) — state changed from one `lockerBehaviour` string to two `popOpenEnabled`/`pushOpenEnabled` booleans (with automatic migration from older single-select saves), and `smartalock-configuration-summary-08.html`/`smartalock-locker-guide-live.html` were updated to describe the combined "Pop Open and Push to Open (mixed by locker)" state.
+- Shortened the IT-hand-off notice on `smartalock-it-configuration-02.html` from "Not confident about any of this? You can send this page to your IT contact to review and fill in for you instead." to "Not sure? Send this page to your IT contact to review and confirm." — a neutral double-check framing rather than one that could read as questioning the client's competence.
 
 ## Status
 
