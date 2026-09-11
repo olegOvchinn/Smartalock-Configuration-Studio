@@ -822,15 +822,15 @@ render correctly.
   (function () {
     const it = wizard.it || {};
     const ssoLabels = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
-    const scimLabels = { "": "Not required", enabled: "Enabled" };
+    const scimLabels = { "": "Not required", scim: "SCIM", ldap: "LDAP", "rest-api": "REST API", enabled: "SCIM" };
     const gallagherLabels = { "": "Not required", required: "Required" };
     const wrap = document.getElementById('group-it');
 
     wrap.appendChild(row('Single Sign-On (SSO)', ssoLabels[it.ssoMethod] ?? (it.ssoMethod || 'No SSO'),
       'Identity provider used for staff and administrator login to the kiosk and admin console.'));
 
-    wrap.appendChild(row('SCIM User Provisioning', scimLabels[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'),
-      'Automatic creation, update and removal of user accounts from your identity provider.'));
+    wrap.appendChild(row('Provisioning Method', scimLabels[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'),
+      'Automatic creation, update and removal of user accounts from your identity provider, via SCIM, LDAP or a REST API.'));
     wrap.appendChild(row('API / Integration Requirements', it.apiRequirements || 'None specified',
       'Additional systems or APIs this site needs Smartalock to integrate with.'));
     wrap.appendChild(row('Gallagher Integration', gallagherLabels[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required'),

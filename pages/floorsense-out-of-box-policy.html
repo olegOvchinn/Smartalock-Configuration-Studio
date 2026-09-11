@@ -644,7 +644,7 @@
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
-            <span class="label">SCIM User Provisioning</span>
+            <span class="label">Provisioning Method</span>
             <span class="value" id="itScimSummaryValue">Not required</span>
           </div>
         </div>
@@ -2465,7 +2465,7 @@ tests confirming each target page's Continue button now lands back on this summa
 
     const it = (project.smartalock && project.smartalock.wizard && project.smartalock.wizard.it) || {};
     const SSO_LABELS = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
-    const SCIM_LABELS = { "": "Not required", enabled: "Enabled" };
+    const SCIM_LABELS = { "": "Not required", scim: "SCIM", ldap: "LDAP", "rest-api": "REST API", enabled: "SCIM" };
     const GALLAGHER_LABELS = { "": "Not required", required: "Required" };
     document.getElementById('itSsoSummaryValue').textContent = SSO_LABELS[it.ssoMethod] ?? (it.ssoMethod || 'No SSO');
     document.getElementById('itScimSummaryValue').textContent = SCIM_LABELS[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required');
