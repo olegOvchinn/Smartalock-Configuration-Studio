@@ -161,16 +161,38 @@
     transition: box-shadow .2s, background .2s;
   }
   .desk-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+    box-shadow: 0 16px 40px -8px var(--tc-glow, rgba(0,113,227,0.22)), 0 3px 12px rgba(16,42,67,0.08);
   }
   .desk-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    background: var(--tc-wash, rgba(232,241,252,0.7));
+    box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
   }
+  /* ---------- per-card theme colour + tick box, ported from floorsense-reservation-types-01.html
+     (itself matching smartalock-reservation-type-01.html's `--tc`-per-card treatment): each card's
+     `--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong` reuse the exact hex already used by its own
+     `.desk-icon-badge` modifier below, so heading colour, hover/checked glow, checked-state
+     background wash, and the tick's fill colour all agree — see that file's own NOTE for the wash/
+     glow derivation (a ~90%-white tint at 0.7 alpha; the raw colour at 0.22/0.3 alpha). ---------- */
+  .desk-check-card[data-method="card"] { --tc: #4A8DF0; --tc-wash: rgba(237,244,254,0.7); --tc-glow: rgba(74,141,240,0.22); --tc-glow-strong: rgba(74,141,240,0.3); }
+  .desk-check-card[data-method="prebooking"] { --tc: #EC6BA5; --tc-wash: rgba(253,240,246,0.7); --tc-glow: rgba(236,107,165,0.22); --tc-glow-strong: rgba(236,107,165,0.3); }
+  .desk-check-card[data-method="qr"] { --tc: #9B6BEC; --tc-wash: rgba(245,240,253,0.7); --tc-glow: rgba(155,107,236,0.22); --tc-glow-strong: rgba(155,107,236,0.3); }
+  .desk-check-card[data-method="wallet"] { --tc: #2FBF9F; --tc-wash: rgba(234,249,245,0.7); --tc-glow: rgba(47,191,159,0.22); --tc-glow-strong: rgba(47,191,159,0.3); }
+  .desk-tick {
+    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
+    margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .desk-check-card.checked .desk-tick { border-color: var(--tc, var(--accent)); background: var(--tc, var(--accent)); }
+  .desk-tick::after {
+    content: ''; width: 6px; height: 10px; margin-top: -1px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    opacity: 0; transition: opacity .15s;
+  }
+  .desk-check-card.checked .desk-tick::after { opacity: 1; }
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-card-body { min-width: 0; flex: 1; }
-  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--tc, var(--header-grey)); margin: 0 0 8px; }
   .desk-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
@@ -295,6 +317,7 @@
         <div class="desk-check-card" data-method="card">
           <label class="desk-row">
             <input type="checkbox" value="card">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="3" y="9" width="18" height="3" fill="currentColor" fill-opacity="0.15"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Building Access Cards at Desk</h3>
@@ -309,6 +332,7 @@
         <div class="desk-check-card" data-method="prebooking">
           <label class="desk-row">
             <input type="checkbox" value="prebooking">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.2" y="3.5" width="14" height="10.5" rx="1.5"/><line x1="2.2" y1="6.8" x2="16.2" y2="6.8"/><rect x="12.5" y="9.5" width="8" height="12.5" rx="2" fill="#fff" stroke="currentColor"/><line x1="15" y1="19.2" x2="18" y2="19.2"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Mobile App or Desktop Browser Booking <span class="desk-tag">Default</span></h3>
@@ -320,6 +344,7 @@
         <div class="desk-check-card" data-method="qr">
           <label class="desk-row">
             <input type="checkbox" value="qr">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="4.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="15.5" y="2.5" width="6" height="6" rx="1"/><rect x="17.3" y="4.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="2.5" y="15.5" width="6" height="6" rx="1"/><rect x="4.3" y="17.3" width="2.4" height="2.4" fill="currentColor" stroke="none"/><rect x="13.4" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="13.4" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="13.4" y="17.3" width="2.6" height="2.6" fill="currentColor" stroke="none"/><rect x="17.3" y="17.3" width="2.6" height="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">QR Code at Desk</h3>
@@ -331,6 +356,7 @@
         <div class="desk-check-card" data-method="wallet">
           <label class="desk-row">
             <input type="checkbox" value="wallet">
+            <span class="desk-tick" aria-hidden="true"></span>
             <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
@@ -645,6 +671,26 @@ remains fully functional -- it just has no progress-bar entry point anywhere any
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: per a request to apply the same tick-box + per-card colour treatment already
+done on floorsense-reservation-types-01.html to this page, ported that fix verbatim onto this
+page's 4 `.desk-check-card`s (`card`/`prebooking`/`qr`/`wallet`, via `data-method` rather than that
+page's `data-template`). Re-added `<span class="desk-tick" aria-hidden="true"></span>` (removed
+from this page in an earlier change — see that removal's own MOST RECENT CHANGE note above) as the
+first visible child of each `.desk-row`, plus `--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong`
+custom properties per `data-method`, reusing the exact hex each card's own `.desk-icon-badge`
+modifier already uses (`badge-blue` #4A8DF0 on "card", `badge-pink` #EC6BA5 on "prebooking",
+`badge-purple` #9B6BEC on "qr", `badge-teal` #2FBF9F on "wallet"). `.desk-check-card:hover`/
+`.desk-check-card.checked` now read `var(--tc-glow)`/`var(--tc-wash)`/`var(--tc-glow-strong)`
+instead of the previous fixed blue (kept only as fallback), and `.desk-title`'s `color` changed
+from the fixed `var(--header-grey)` to `var(--tc, var(--header-grey))` so each heading is always
+tinted its own card colour, matching floorsense-reservation-types-01.html/
+smartalock-reservation-type-01.html. No JS changes needed — the existing checkbox-wiring loop
+already toggles `.checked`, which the new CSS now also reads. Verified via an HTMLParser
+tag-balance check, `node --check` on the untouched script block, a Playwright test confirming
+exactly 4 `.desk-tick` elements exist, selecting "QR Code at Desk" fills its tick and washes its
+card in purple, "Wallet Pass at Desk"'s heading reads teal even while unselected, and a screenshot
+of all 4 cards.
 -->
 
 

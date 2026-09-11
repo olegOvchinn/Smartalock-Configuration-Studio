@@ -413,6 +413,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Marked "AI Agent Auto-Prebooked" on `floorsense-reservation-types-01.html` as not yet available: added a "Coming Soon" tag to its title, disabled its checkbox, and greyed out the whole card so it can't be selected.
 - Re-added a visible tick-box indicator to all 5 cards on `floorsense-reservation-types-01.html`, matching `smartalock-reservation-type-01.html`'s own reservation-type card styling, tinted per card to match its existing icon badge colour.
 - Extended that per-card colouring to the whole card, matching `smartalock-reservation-type-01.html` more closely: each heading is now always tinted its own card colour, and selecting a card washes its background/shadow in that same colour instead of one flat blue.
+- Applied the same tick-box + per-card colouring treatment to `floorsense-checkin-methods-02.html`'s 4 check-in method cards.
 
 ## Status
 
