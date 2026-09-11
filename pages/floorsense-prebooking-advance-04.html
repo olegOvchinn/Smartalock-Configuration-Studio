@@ -246,6 +246,20 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  /* ---------- tap-to-type: the pill is now a tap target of its own (separate from dragging the pin
+     or the filled bar), swapping #advanceNodeLabel for a small inline number input so a value can be
+     typed directly instead of only ever being set by dragging. ---------- */
+  .timeline-node .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 28px; border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    text-align: center; padding: 0 0 1px; -moz-appearance: textfield;
+  }
+  .timeline-node .label-value-input::-webkit-outer-spin-button,
+  .timeline-node .label-value-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing #advanceNodeLabel { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -406,16 +420,17 @@
                 </div>
                 <div class="timeline-node" id="advanceNode" tabindex="0" role="slider" aria-label="Advance booking limit, days ahead" aria-valuemin="0" aria-valuemax="30">
                   <div class="anchor-pin"></div>
-                  <div class="label-time primary">
+                  <div class="label-time primary" id="advanceLabelPill" title="Tap to type a value">
                     <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span id="advanceNodeLabel">8 days</span>
+                    <input type="number" id="advanceNodeInput" class="label-value-input" min="0" max="30" step="1" inputmode="numeric" aria-label="Type the advance booking limit directly, in days">
                     <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </div>
                   <div class="label-desc">Book ahead</div>
                 </div>
               </div>
             </div>
-            <p class="timeline-drag-hint">Drag the pin — or the filled bar — to change how many days ahead.</p>
+            <p class="timeline-drag-hint">Drag the pin — or the filled bar — to change how many days ahead, or tap the number to type a value.</p>
           </div>
         </div>
       </div>
@@ -939,6 +954,34 @@ box, so this directly tightens the gap between the pill's bottom edge and the ra
 about the pill, arrows, or rail changed. Verified via an inline HTMLParser tag-balance check,
 `node --check` on the extracted script block (untouched — CSS-only change), and a before/after
 Playwright screenshot comparison confirming the pill sits noticeably closer to the rail.
+
+MOST RECENT CHANGE: per a request to let the floating pill also accept a typed value instead of only
+ever being set by dragging, the pill (`#advanceLabelPill`, the `.label-time.primary` div wrapping the
+decorative arrows and `#advanceNodeLabel`) is now its own tap target, independent of the pin/filled-bar
+drag handlers. A new `<input type="number" id="advanceNodeInput" class="label-value-input">` sits next
+to `#advanceNodeLabel` inside the pill (hidden by default via `.label-time:not(.editing)
+.label-value-input { display: none; }`); tapping/clicking the pill adds an `.editing` class that swaps
+the label span for the input (small, transparent background, white text, a subtle underline, no native
+number spinners), focuses it, and selects its current value so typing immediately overwrites it.
+`advanceLabelPill`'s own `pointerdown`/`click` listeners call `e.stopPropagation()` so a tap on the pill
+never reaches `advanceNode`'s own `pointerdown` listener and starts a pin drag — dragging the pin itself
+or the filled zone bar is completely unaffected, since those listeners live on separate elements
+(`#advanceNode`/`#advanceZone`). Committing (Enter, or blurring the input) routes through the exact same
+`clampPrebookingDays()`/`renderAdvanceDiagram()`/`queueSave()` plumbing every other input path on this
+page already uses, so a typed value is clamped to 0-30 identically to the number field below the card,
+updates the pin/zone/label, and persists to `localStorage` the same way. Escape cancels and reverts to
+display mode without changing the value. `exitAdvanceEditMode()` is also called at the start of a pin/
+zone drag and from the existing number-field `input` handler and Reset, so the pill can never get stuck
+showing its input if something else changes the value while it's open. The drag-hint caption below the
+diagram was reworded to mention this: "Drag the pin — or the filled bar — to change how many days
+ahead, or tap the number to type a value." Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, and a Playwright test confirming: clicking the pill shows
+the input (focused, pre-filled, label hidden) and hides it again on commit; typing 23 and pressing Enter
+commits 23, updates the label/pin position, and persists `{ prebookingAdvanceDays: 23 }` to
+`localStorage`; typing 99 clamps to 30 on commit; typing a value and pressing Escape cancels with no
+change; typing a value and clicking elsewhere (blur) commits it; dragging the pin to the rail's midpoint
+still correctly sets 15 days; and the pill still opens correctly on a subsequent tap after a drag — plus
+a screenshot of the pill in its open, editable state.
 -->
 
 
@@ -1049,6 +1092,57 @@ Playwright screenshot comparison confirming the pill sits noticeably closer to t
   const advanceTicksEl = document.getElementById('advanceTicks');
   const timelineTrackWrapper = document.querySelector('.timeline-track-wrapper');
 
+  /* ---------------- tap-to-type: the floating pill can also be tapped/clicked to reveal a small
+     inline number input, so a value can be typed directly instead of only ever being set by
+     dragging the pin or the filled bar. Kept independent of the drag handlers below — a
+     pointerdown/click on the pill itself stops propagating so it never starts a pin drag, and
+     committing routes through the exact same clampPrebookingDays()/renderAdvanceDiagram()/
+     queueSave() plumbing every other input path on this page already uses. ---------- */
+  const advanceLabelPill = document.getElementById('advanceLabelPill');
+  const advanceNodeInput = document.getElementById('advanceNodeInput');
+
+  function enterAdvanceEditMode() {
+    advanceLabelPill.classList.add('editing');
+    advanceNodeInput.value = clampPrebookingDays();
+    advanceNodeInput.focus();
+    advanceNodeInput.select();
+  }
+
+  function exitAdvanceEditMode() {
+    advanceLabelPill.classList.remove('editing');
+  }
+
+  function commitAdvanceEditValue() {
+    if (advanceNodeInput.value !== '') {
+      prebookingAdvanceDays.value = advanceNodeInput.value;
+    }
+    clampPrebookingDays();
+    renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
+    queueSave();
+    exitAdvanceEditMode();
+  }
+
+  advanceLabelPill.addEventListener('pointerdown', (e) => e.stopPropagation());
+  advanceLabelPill.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!advanceLabelPill.classList.contains('editing')) enterAdvanceEditMode();
+  });
+  advanceNodeInput.addEventListener('keydown', (e) => {
+    e.stopPropagation(); // don't let Arrow keys/etc also nudge the pin while typing
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitAdvanceEditValue();
+      advanceNode.focus();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      exitAdvanceEditMode();
+      advanceNode.focus();
+    }
+  });
+  advanceNodeInput.addEventListener('blur', () => {
+    if (advanceLabelPill.classList.contains('editing')) commitAdvanceEditValue();
+  });
+
   function renderZoneSegments(days) {
     const segCount = Math.max(0, Math.round(days));
     let html = '';
@@ -1105,6 +1199,7 @@ Playwright screenshot comparison confirming the pill sits noticeably closer to t
   }
   function startAdvanceDrag(e) {
     e.preventDefault();
+    exitAdvanceEditMode();
     advanceNode.classList.add('dragging');
     advanceNode.focus();
     document.addEventListener('pointermove', onAdvancePointerMove);
@@ -1172,12 +1267,14 @@ Playwright screenshot comparison confirming the pill sits noticeably closer to t
   }
 
   prebookingAdvanceDays.addEventListener('input', () => {
+    exitAdvanceEditMode();
     clampPrebookingDays();
     renderAdvanceDiagram(parseInt(prebookingAdvanceDays.value, 10));
     queueSave();
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    exitAdvanceEditMode();
     state.prebookingAdvanceDays = 8;
     applyState();
     queueSave();
