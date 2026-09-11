@@ -313,6 +313,11 @@
             <p class="qdesc">Specify any external systems that need to integrate with Smartalock, if applicable.</p>
             <label>Integration requirements</label>
             <textarea id="apiRequirements" placeholder="Describe any API or integration requirements..."></textarea>
+
+            <div class="guide-box show" id="apiGuide">
+              <p>Need help with API or integration setup?</p>
+              <a class="guide-button" href="https://apiguide.smartalock.com/" target="_blank" rel="noopener">Get the Floorsense API guide</a>
+            </div>
           </div>
 
           <div class="qcard">
@@ -538,6 +543,20 @@ pair (values ""/"enabled") unchanged, along with the guide-box visibility logic,
 diagram mode, and every downstream reader of `it.scimProvisioning`. Purely a visible-copy change.
 Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script
 block (untouched).
+
+MOST RECENT CHANGE: per a request to add a Floorsense API guide link to the API / Integration
+Requirements card, formatted the same way as the Automatic User Provisioning card's existing SCIM
+guide-box above it — a new `.guide-box` (`#apiGuide`) sits directly below the `#apiRequirements`
+textarea, with the same "Need help with ...?" prompt + `.guide-button` pill link pattern
+(`href="https://apiguide.smartalock.com/"`, `target="_blank" rel="noopener"`), reading "Need help
+with API or integration setup?" / "Get the Floorsense API guide". Unlike the SSO/SCIM guide-boxes,
+which start hidden (`display: none`) and are only toggled visible via `applySSOVisibility()`/
+`applySCIMVisibility()` once a real method is chosen, this card has no such enabled/disabled state —
+it's a free-text field with nothing to gate on — so the box was given the `.show` class directly in
+the markup rather than wired to any JS toggle, making it always visible. No JS was touched. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
+and a full-page Playwright screenshot confirming the new guide-box renders identically in style/
+placement to the SCIM card's own guide-box above it.
 -->
 
 <script>
