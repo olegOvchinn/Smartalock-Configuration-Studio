@@ -145,6 +145,8 @@
   .feature-row-icon.badge-purple { color: #9B6BEC; }
   .feature-row-icon.badge-teal { color: #2FBF9F; }
   .feature-row-icon.badge-amber { color: #F2A154; }
+  .feature-row-icon.badge-green { color: #4CAF6D; }
+  .feature-row-icon.badge-coral { color: #EC6B6B; }
   .feature-row-body { flex: 1; min-width: 0; }
   .feature-row-title { font-size: 14.76px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
   .feature-row-desc { font-size: 13.12px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
@@ -423,22 +425,7 @@
       <div class="feature-card">
 
         <div class="feature-row">
-          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
-          " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
-          <div class="feature-row-body">
-            <p class="feature-row-title">Auto-Release on No Show</p>
-            <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
-            <span class="feature-row-status" id="noShowReleaseStatus">Off</span>
-            <div class="feature-row-hours" id="noShowHoursField">
-              <label for="noShowHoursInput">Auto-release after</label>
-              <span class="policy-number-field"><input type="number" min="0.5" max="24" step="0.5" class="policy-number-input" id="noShowHoursInput" value="0.5"><span class="policy-field-unit">hours</span></span>
-            </div>
-          </div>
-          <button type="button" class="switch" id="noShowReleaseSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on No Show"></button>
-        </div>
-
-        <div class="feature-row">
-          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
@@ -453,7 +440,7 @@
         </div>
 
         <div class="feature-row">
-          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          <svg class="feature-row-icon badge-coral" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.3 12l1.8 1.8l3.6-4.4"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto Check-In on Occupancy</p>
@@ -1213,6 +1200,30 @@ Auto Check-In on Occupancy, then FME); the field is hidden until its own switch 
 minutes persist to their own key without affecting the other two rows' state when all three are
 enabled together; disabling just this row hides only its own field while the other two rows'
 fields stay shown; and Reset turns all three off and restores their fields to 0.5/0.5/10.
+
+MOST RECENT CHANGE: per a follow-up request to give every feature-row icon its own distinct color and
+sync all this session's changes into the Configuration Summary and end-user guide pages, then a
+same-turn interrupting request to remove "Auto-Release on No Show" entirely. Icon colors: each of the
+6 feature rows now has a unique `badge-*` color (extending this file's existing 5-color palette —
+blue/pink/purple/teal/amber — with two more colors already established elsewhere in the codebase,
+`floorsense-out-of-box-policy.html`'s `.summary-icon-badge` rules: `badge-green #4CAF6D` for
+Auto-Release on Idle and `badge-coral #EC6B6B` for Auto Check-In on Occupancy), so no two rows share a
+color. "Auto-Release on No Show" (added earlier this session, duplicating Auto-Release on Idle as a
+new first row) was then removed completely per explicit follow-up instruction: its feature-row
+markup, its `FEATURES` array entry (`key: 'noShowRelease'`), its dedicated hours-field wiring block
+(`noShowHoursField`/`noShowHoursInput`/`renderNoShowHoursField`), and its Reset-handler lines/
+re-render call were all deleted. The `FEATURES[0]` hardcoded lookups that the original No-Show
+duplication had already prompted refactoring to `FEATURES.find(f => f.key === ...)` (see the
+duplication's own NOTE above) stayed refactored — this removal is exactly the kind of reordering that
+by-key lookup was made robust against, so no further lookup changes were needed. Auto-Release on
+Idle's own row is unaffected by the removal (it now sits first again, as it did before the
+duplication). Net effect: this page ends the session with 6 rows in order — Auto-Release on Idle
+(green), Auto Check-In on Occupancy (coral), FME (purple), Anti Desk Hogging (teal), Remote Booking
+Confirmation (pink), Recurring Bookings (amber) — "Auto-Release on No Show" never shipped in a
+committed state on this page or anywhere downstream (Configuration Summary, end-user guide). Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a grep
+confirming zero remaining live references to `noShow` (only this file's own historical NOTE describing
+the original addition still mentions it by name, left untouched per convention).
 -->
 
 <script>
@@ -1278,19 +1289,6 @@ fields stay shown; and Reset turns all three off and restores their fields to 0.
   }
 
   const FEATURES = [
-    {
-      /* Duplicate of the idleRelease card below (per a request to add a first "Auto-Release on No
-         Show" option) with its own independent state key, project.floorsense.wizard.noShowRelease
-         = { enabled, hours } — same shape as idleRelease, but kept fully separate so it doesn't
-         disturb floorsense-idle-release-09.html's own real idleRelease feature or any of the other
-         files that already read/write that key. */
-      key: 'noShowRelease', switchEl: 'noShowReleaseSwitch', statusEl: 'noShowReleaseStatus',
-      isOn: () => !!(project.floorsense.wizard.noShowRelease && project.floorsense.wizard.noShowRelease.enabled),
-      setOn: (on) => {
-        project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
-        project.floorsense.wizard.noShowRelease.enabled = on;
-      }
-    },
     {
       key: 'idleRelease', switchEl: 'idleReleaseSwitch', statusEl: 'idleReleaseStatus',
       isOn: () => !!(project.floorsense.wizard.idleRelease && project.floorsense.wizard.idleRelease.enabled),
@@ -1378,9 +1376,8 @@ fields stay shown; and Reset turns all three off and restores their fields to 0.
      project.floorsense.wizard.idleRelease.idleHours with floorsense-idle-release-09.html's own
      drum, but defaults to 0.5 (30 min) here rather than that page's 3-hour default, since this
      hub is meant to be a quick minimum-viable setting rather than the full explainer. Only shown
-     while the Auto-Release switch itself is on. Looked up by key (not array position) since the
-     "Auto-Release on No Show" duplicate above was inserted at FEATURES[0], pushing this one to
-     index 1. ---------- */
+     while the Auto-Release switch itself is on. Looked up by key (not array position) for
+     robustness against future reordering of the FEATURES array. ---------- */
   const idleReleaseFeature = FEATURES.find(f => f.key === 'idleRelease');
   const idleHoursField = document.getElementById('idleHoursField');
   const idleHoursInput = document.getElementById('idleHoursInput');
@@ -1401,30 +1398,6 @@ fields stay shown; and Reset turns all three off and restores their fields to 0.
   });
 
   document.getElementById(idleReleaseFeature.switchEl).addEventListener('click', renderIdleHoursField);
-
-  /* ---------------- Auto-Release on No Show's own inline hours field: exact duplicate of the
-     wiring above, reading/writing project.floorsense.wizard.noShowRelease.hours instead, fully
-     independent of idleRelease's own hours value. ---------- */
-  const noShowReleaseFeature = FEATURES.find(f => f.key === 'noShowRelease');
-  const noShowHoursField = document.getElementById('noShowHoursField');
-  const noShowHoursInput = document.getElementById('noShowHoursInput');
-
-  function renderNoShowHoursField() {
-    noShowHoursField.classList.toggle('show', noShowReleaseFeature.isOn());
-  }
-
-  const savedNoShowHours = project.floorsense.wizard.noShowRelease && project.floorsense.wizard.noShowRelease.hours;
-  noShowHoursInput.value = Number.isFinite(savedNoShowHours) ? savedNoShowHours : 0.5;
-  renderNoShowHoursField();
-
-  noShowHoursInput.addEventListener('input', () => {
-    const hours = parseFloat(noShowHoursInput.value);
-    project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
-    project.floorsense.wizard.noShowRelease.hours = Number.isFinite(hours) ? hours : 0.5;
-    queueSave();
-  });
-
-  document.getElementById(noShowReleaseFeature.switchEl).addEventListener('click', renderNoShowHoursField);
 
   /* ---------------- Auto Check-In on Occupancy's own inline minutes field: same wiring pattern as
      the two Auto-Release fields above, but in minutes rather than hours (checking someone in only
@@ -1656,9 +1629,6 @@ fields stay shown; and Reset turns all three off and restores their fields to 0.
   document.getElementById('resetBtn').addEventListener('click', () => {
     document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     FEATURES.forEach(feature => feature.setOn(false));
-    project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
-    project.floorsense.wizard.noShowRelease.hours = 0.5;
-    noShowHoursInput.value = 0.5;
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
     project.floorsense.wizard.idleRelease.idleHours = 0.5;
     idleHoursInput.value = 0.5;
@@ -1676,7 +1646,6 @@ fields stay shown; and Reset turns all three off and restores their fields to 0.
     adhRenderWindowDiagram(2);
     adhBookingDaysInput.value = 1;
     renderAll();
-    renderNoShowHoursField();
     renderIdleHoursField();
     renderAutoOccupancyCheckinField();
     renderFmeAckField();
