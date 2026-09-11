@@ -442,7 +442,7 @@
           " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
-            <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
+            <p class="feature-row-desc">Automatically frees up a desk reservation if it hasn't been occupied for a set number of hours, starting at any point during the booking.</p>
             <span class="feature-row-status" id="idleReleaseStatus">Off</span>
             <div class="feature-row-hours" id="idleHoursField">
               <label for="idleHoursInput">Auto-release after</label>
@@ -1160,6 +1160,18 @@ test confirming: both rows render in the correct order with independent switches
 row's switch shows only that row's own hours field and leaves the other row untouched; typed hours
 values save to their own separate state keys without cross-contamination; and Reset correctly turns
 both off and restores both hours fields to 0.5.
+
+MOST RECENT CHANGE: per a request to clarify the "Auto-Release on Idle" row's description now that
+it sits alongside the near-identical-sounding "Auto-Release on No Show" row above it, its
+`.feature-row-desc` changed from "Automatically frees up a desk reservation if the desk hasn't been
+checked into within a set number of hours." (which described a no-show/never-checked-in condition,
+not an idle one) to "Automatically frees up a desk reservation if it hasn't been occupied for a set
+number of hours, starting at any point during the booking." — distinguishing Idle release (a desk
+that was in use but has since sat unoccupied, at any point in the booking) from No Show release (a
+desk never checked into at all). Only this row's own description text changed; "Auto-Release on No
+Show"'s description directly above it, the state/ids/hours-field wiring for both rows, and every
+other row on this page are untouched. Verified via an inline HTMLParser tag-balance check (JS
+untouched — copy-only change).
 -->
 
 <script>

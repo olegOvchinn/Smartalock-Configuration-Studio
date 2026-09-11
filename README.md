@@ -427,6 +427,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Mirrored that same Time Window tap-to-type pin onto `floorsense-optional-features-06.html`'s inline hub-row copy of the same control, completing the rollout across every timeline page.
 - Relabeled `smartalock-it-configuration-02.html`'s "SCIM provisioning" field to "SCIM/LDAP/REST API" — a label-only change; the select's own Not required/Enabled options are unchanged.
 - Duplicated `floorsense-optional-features-06.html`'s "Auto-Release on Idle" row into a new first row, "Auto-Release on No Show," with its own independent switch, hours field, and state key (`noShowRelease`) — the original "Auto-Release on Idle" row is unchanged, just shifted to second position.
+- Reworded that same "Auto-Release on Idle" row's description to distinguish it from the new "Auto-Release on No Show" row above it: it now describes releasing a desk that's sat unoccupied for a set number of hours starting at any point during the booking, rather than the no-show/never-checked-in wording both rows previously shared.
 
 ## Status
 
