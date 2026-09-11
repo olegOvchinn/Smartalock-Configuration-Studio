@@ -314,7 +314,7 @@
             <label>Integration requirements</label>
             <textarea id="apiRequirements" placeholder="Describe any API or integration requirements..."></textarea>
 
-            <div class="guide-box show" id="apiGuide">
+            <div class="guide-box" id="apiGuide">
               <p>Need help with API or integration setup?</p>
               <a class="guide-button" href="https://apiguide.smartalock.com/" target="_blank" rel="noopener">Get the Floorsense API guide</a>
             </div>
@@ -557,6 +557,19 @@ the markup rather than wired to any JS toggle, making it always visible. No JS w
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
 and a full-page Playwright screenshot confirming the new guide-box renders identically in style/
 placement to the SCIM card's own guide-box above it.
+
+MOST RECENT CHANGE: per a follow-up request, the API guide-box added above is no longer always
+visible — it now follows the exact same show/hide convention as `ssoGuide`/`scimGuide`, gated on
+whether the client has actually typed something into `#apiRequirements` rather than being permanently
+shown. Added a new `applyApiGuideVisibility()` function (`apiGuide.classList.toggle('show',
+state.apiRequirements.trim() !== '')`), called once on load alongside `applySSOVisibility()`/
+`applySCIMVisibility()`, again from the `apiRequirements` `input` listener (so it reacts live as the
+client types or clears the field), and again from the Reset handler (so a reset correctly hides it
+along with clearing the textarea). The `.show` class was removed from the `#apiGuide` markup itself
+since visibility is now entirely JS-driven, matching the other two guide-boxes. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test
+confirming: hidden on load with an empty field, shown immediately after typing, hidden again after
+clearing the field, shown again after retyping, and hidden after Reset.
 -->
 
 <script>
@@ -609,6 +622,7 @@ placement to the SCIM card's own guide-box above it.
   const scimProvisioning = document.getElementById('scimProvisioning');
   const scimGuide = document.getElementById('scimGuide');
   const apiRequirements = document.getElementById('apiRequirements');
+  const apiGuide = document.getElementById('apiGuide');
   const gallagherIntegration = document.getElementById('gallagherIntegration');
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
@@ -621,6 +635,12 @@ placement to the SCIM card's own guide-box above it.
   }
   function applySCIMVisibility() {
     scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
+  }
+  // The API guide-box only makes sense once the client has actually described a real integration
+  // need — an empty textarea has nothing for the guide to help with, so the box stays hidden until
+  // there's real text in it (same show/hide convention as ssoGuide/scimGuide above).
+  function applyApiGuideVisibility() {
+    apiGuide.classList.toggle('show', state.apiRequirements.trim() !== '');
   }
 
   /* ---------------- architecture diagram: SSO / SCIM / API modes ---------------- */
@@ -661,12 +681,13 @@ placement to the SCIM card's own guide-box above it.
   gallagherIntegration.value = state.gallagherIntegration;
   applySSOVisibility();
   applySCIMVisibility();
+  applyApiGuideVisibility();
   applyArchVisual();
 
   ssoMethod.addEventListener('change', () => { state.ssoMethod = ssoMethod.value; applySSOVisibility(); applyArchVisual(); queueSave(); });
   ssoScope.addEventListener('change', () => { state.ssoScope = ssoScope.value; queueSave(); });
   scimProvisioning.addEventListener('change', () => { state.scimProvisioning = scimProvisioning.value; applySCIMVisibility(); applyArchVisual(); queueSave(); });
-  apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; applyArchVisual(); queueSave(); });
+  apiRequirements.addEventListener('input', () => { state.apiRequirements = apiRequirements.value; applyApiGuideVisibility(); applyArchVisual(); queueSave(); });
   gallagherIntegration.addEventListener('change', () => { state.gallagherIntegration = gallagherIntegration.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
@@ -676,6 +697,7 @@ placement to the SCIM card's own guide-box above it.
     apiRequirements.value = ""; gallagherIntegration.value = "";
     applySSOVisibility();
     applySCIMVisibility();
+    applyApiGuideVisibility();
     applyArchVisual();
     save();
   });

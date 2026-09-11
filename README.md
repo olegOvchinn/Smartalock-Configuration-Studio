@@ -435,6 +435,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added `floorsense-tech-summary.html`, a new internal-only "Tech Summary" page mirroring `floorsense-out-of-box-policy.html`'s Configuration Summary fields with no descriptions, and every duration/time-of-day value normalized to days/hours/minutes plus its raw total in minutes (e.g. a 1-day value renders "1 day, 1440 min"). Reflects the same live `configurationProject` state as the other summary/guide pages; not linked from the client-facing wizard.
 - Wired up SSO Scope, FME's motor-details acknowledgment, and NSNP's "other" (custom arrangement) note on both `floorsense-out-of-box-policy.html` and `floorsense-tech-summary.html` — each only appears when there's a real input to show (SSO Scope while SSO is enabled; the FME acknowledgment while FME is on and actually checked; the NSNP note while its mode is "other" and text was actually typed), with no row or mention otherwise.
 - Added a Floorsense API guide link (`https://apiguide.smartalock.com/`) to the API / Integration Requirements card on `smartalock-it-configuration-02.html`, formatted as the same guide-box/button pattern used by the Automatic User Provisioning card's SCIM guide above it.
+- That API guide-box now only appears once the client has actually typed something into the Integration Requirements field, matching the show/hide behavior of the SSO and SCIM guide-boxes above it, rather than always being visible.
 
 ## Status
 
