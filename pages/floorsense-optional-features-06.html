@@ -274,6 +274,16 @@
     display: inline-flex; align-items: center; gap: 4px;
   }
   .feature-row-adh .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .feature-row-adh .timeline-node .label-time { cursor: pointer; }
+  .feature-row-adh .timeline-node .label-value-input {
+    display: none; width: 26px;
+    border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 12px; font-weight: 700;
+    padding: 0 0 1px; text-align: center;
+  }
+  .feature-row-adh .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .feature-row-adh .timeline-node .label-time.editing .label-static-text { display: none; }
+  .feature-row-adh .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .feature-row-adh .label-arrow { flex-shrink: 0; }
   @keyframes adh-label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -474,9 +484,10 @@
                     </div>
                     <div class="timeline-node" id="adhWindowNode" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
                       <div class="anchor-pin"></div>
-                      <div class="label-time primary">
+                      <div class="label-time primary" id="adhWindowLabelPill" title="Tap to type a value">
                         <svg class="label-arrow label-arrow-left" width="7" height="9" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <span id="adhWindowNodeLabel">2 days</span>
+                        <span id="adhWindowNodeLabel" class="label-static-text">2 days</span>
+                        <input type="number" id="adhWindowDaysInput" class="label-value-input" min="1" max="14" step="1" inputmode="numeric" aria-label="Type the time window in days directly">
                         <svg class="label-arrow label-arrow-right" width="7" height="9" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                       </div>
                       <div class="label-desc">Window</div>
@@ -1094,6 +1105,21 @@ this row's more compact `14px`/`66px`-vs-reference geometry. Purely decorative, 
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and a Playwright test confirming the pin renders 2 arrows and its label reflects the same value as
 the standalone page.
+
+MOST RECENT CHANGE: mirrors the same tap-to-type pin editing added to
+floorsense-anti-desk-hogging-13.html's own `#windowLabelPill` (see that file's own NOTE) onto this
+hub row's nested copy. `#adhWindowLabelPill` gained a `title="Tap to type a value"`,
+`#adhWindowNodeLabel` got `class="label-static-text"`, and a sibling
+`<input type="number" id="adhWindowDaysInput">` (min 1, max 14) was added, scoped under
+`.feature-row-adh` like the rest of this row's CSS. Commit routes through the existing
+`adhSetWindowDays()`/`adhSaveSettings()`, so the same `adhClampWindowDays()` bounds the drag/
+arrow-key handlers already use apply here too. Not nested inside a `<label>`/radio, so only
+`stopPropagation()` was needed on the pill's own `pointerdown`/`click`. A safety clear of any stray
+`.label-time.editing` state was added to the drag pointerdown handler and the page's Reset button.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a Playwright test confirming: tapping the pill (after enabling Anti Desk Hogging via its switch)
+enters edit mode and commits typed values; values above 14 or below 1 clamp correctly; Escape
+cancels without committing; dragging still works; and tap-to-edit still works right after a drag.
 -->
 
 <script>
@@ -1367,6 +1393,7 @@ the standalone page.
   }
   adhWindowNode.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     adhWindowNode.classList.add('dragging');
     adhWindowNode.focus();
     document.addEventListener('pointermove', adhOnWindowPointerMove);
@@ -1379,6 +1406,39 @@ the standalone page.
       e.preventDefault(); adhSetWindowDays(adhState.windowDays - 1); adhSaveSettings();
     }
   });
+
+  /* ---------------- tap-to-type: mirrors floorsense-anti-desk-hogging-13.html's own
+     #windowLabelPill treatment onto this hub row's nested copy. Not nested inside a
+     <label>/radio, so no focus-stealing concern applies. ---------------- */
+  const adhWindowLabelPill = document.getElementById('adhWindowLabelPill');
+  const adhWindowDaysInput = document.getElementById('adhWindowDaysInput');
+
+  function adhEnterWindowEditMode() {
+    adhWindowLabelPill.classList.add('editing');
+    adhWindowDaysInput.value = adhState.windowDays;
+    adhWindowDaysInput.focus();
+  }
+  function adhExitWindowEditMode() {
+    adhWindowLabelPill.classList.remove('editing');
+  }
+  function adhCommitWindowEditValue() {
+    if (adhWindowDaysInput.value !== '') {
+      adhSetWindowDays(parseInt(adhWindowDaysInput.value, 10));
+      adhSaveSettings();
+    }
+    adhExitWindowEditMode();
+  }
+  adhWindowLabelPill.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+  adhWindowLabelPill.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!adhWindowLabelPill.classList.contains('editing')) adhEnterWindowEditMode();
+  });
+  adhWindowDaysInput.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); adhCommitWindowEditValue(); adhWindowNode.focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); adhExitWindowEditMode(); adhWindowNode.focus(); }
+  });
+  adhWindowDaysInput.addEventListener('blur', () => { if (adhWindowLabelPill.classList.contains('editing')) adhCommitWindowEditValue(); });
 
   /* ---------------- Max Same-Desk Bookings: a plain fill-in number field, wired exactly like
      floorsense-prebooking-advance-04.html's own "Advance booking limit" field —
@@ -1423,6 +1483,7 @@ the standalone page.
   document.getElementById(adhFeature.switchEl).addEventListener('click', renderAdhSettingsField);
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     FEATURES.forEach(feature => feature.setOn(false));
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
     project.floorsense.wizard.idleRelease.idleHours = 0.5;
