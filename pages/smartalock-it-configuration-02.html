@@ -296,7 +296,7 @@
           <div class="qcard">
             <h3><div class="qcard-icon-badge icon-scim"><img class="qcard-icon" src="../assets/images/icon-scim.png" alt=""></div>Automatic User Provisioning <span class="group-tag">Recommended</span></h3>
             <p class="qdesc">Configure automatic user provisioning and deprovisioning, if required.</p>
-            <label>SCIM provisioning</label>
+            <label>SCIM/LDAP/REST API</label>
             <select id="scimProvisioning">
               <option value="">Not required</option>
               <option value="enabled">Enabled</option>
@@ -529,6 +529,15 @@ optional double-check rather than implying the client can't handle the page them
 `<p>` text changed; the surrounding `.it-help-notice` markup, the "Send Email" button, and its JS
 wiring are all unchanged. Verified via an inline HTMLParser tag-balance check and `node --check` on
 the extracted script block (untouched — copy-only change).
+
+MOST RECENT CHANGE: per a request to modify "SCIM provisioning" to "SCIM/LDAP/REST API", only the
+Automatic User Provisioning card's `<label>` text was changed, from "SCIM provisioning" to
+"SCIM/LDAP/REST API" — a follow-up clarified this should be label-only, not a change to the
+`<select id="scimProvisioning">`'s actual options, which remain the original Not required/Enabled
+pair (values ""/"enabled") unchanged, along with the guide-box visibility logic, the architecture
+diagram mode, and every downstream reader of `it.scimProvisioning`. Purely a visible-copy change.
+Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script
+block (untouched).
 -->
 
 <script>

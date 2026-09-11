@@ -425,6 +425,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Rolled the same tap-to-type feature out to `floorsense-idle-release-09.html`'s "Released" pin too — since its displayed value ("3h"/"1h 30m") isn't a plain absolute time, tapping it opens a decimal-hours number input (step 0.5) instead of a time picker, clamped/snapped through the same range the drag and arrow-key handlers already use.
 - Rolled the same tap-to-type feature out to `floorsense-anti-desk-hogging-13.html`'s Time Window pin — since its displayed value ("N days") is already the plain integer the user would type, this one uses the same simple pattern as `floorsense-prebooking-advance-04.html`'s pin.
 - Mirrored that same Time Window tap-to-type pin onto `floorsense-optional-features-06.html`'s inline hub-row copy of the same control, completing the rollout across every timeline page.
+- Relabeled `smartalock-it-configuration-02.html`'s "SCIM provisioning" field to "SCIM/LDAP/REST API" — a label-only change; the select's own Not required/Enabled options are unchanged.
 
 ## Status
 
