@@ -50,6 +50,21 @@
   field (autoOccupancyCheckin.minutes, including the sub-60-minute no-duplicate-total case), a
   clock-time field (businessHours.arrivalTime), and that non-temporal fields (mode selects, booleans,
   multi-select lists) render their raw values with no description text and no unit conversion.
+
+  MOST RECENT CHANGE: per a follow-up request to wire up three of the "not yet on summary" gaps this
+  page's own NOTE above had flagged — SSO Scope, FME's motor-details acknowledgment, and NSNP's
+  "other" note — once floorsense-out-of-box-policy.html gained the same three (see that file's own
+  NOTE for the shared reasoning), mirrored the identical conditional-visibility rule here rather than
+  always showing a row: a new `#tsSsoScopeRow` (shown only while `it.ssoMethod` isn't `""`), a new
+  `#tsFmeMotorAckRow` (shown only while FME's mode isn't `'none'` AND `motorDetailsAck` is `true`), and
+  a new `#tsNsnpOtherNoteRow` (shown only while NSNP's mode is `'other'` AND `otherNote` is a non-empty
+  trimmed string) — each `<tr hidden>` by default, toggled via a small new `showRow(id, show)` helper
+  alongside the existing `set(id, text)` one. This closes 3 of the 6 gaps the original research pass
+  found; FME's relay-confirmation-adjacent NSNP checkbox, Desk/User Groups setup itself, and the
+  orphaned legacy `reservationLength`/`maxDesksPerUser` object remain out of scope for both this page
+  and the client summary until requested. Verified via an inline HTMLParser tag-balance check, `node
+  --check` on the extracted script block, and a jsdom test covering all three fields' "no input" and
+  "input provided" states, matching the equivalent test added for floorsense-out-of-box-policy.html.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -156,6 +171,7 @@
       <tr><td class="label">Floorsight Admin Portal Access</td><td class="value" id="tsPortalAccess"></td></tr>
       <tr><td class="label">Target Dates</td><td class="value" id="tsDates"></td></tr>
       <tr><td class="label">Single Sign-On (SSO)</td><td class="value" id="tsSso"></td></tr>
+      <tr id="tsSsoScopeRow" hidden><td class="label">SSO Scope</td><td class="value" id="tsSsoScope"></td></tr>
       <tr><td class="label">SCIM User Provisioning</td><td class="value" id="tsScim"></td></tr>
       <tr><td class="label">API / Integration Requirements</td><td class="value" id="tsApi"></td></tr>
       <tr><td class="label">Gallagher Integration</td><td class="value" id="tsGallagher"></td></tr>
@@ -206,7 +222,9 @@
       <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="value" id="tsNsnpMode"></td></tr>
       <tr><td class="label">NSNP — Grace Period Enabled</td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
+      <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="value" id="tsNsnpOtherNote"></td></tr>
       <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="value" id="tsFmeMode"></td></tr>
+      <tr id="tsFmeMotorAckRow" hidden><td class="label">FME — Motor Details Acknowledged</td><td class="value" id="tsFmeMotorAck"></td></tr>
       <tr><td class="label">Anti Desk Hogging — Mode</td><td class="value" id="tsAdhMode"></td></tr>
       <tr><td class="label">Anti Desk Hogging — Window</td><td class="value" id="tsAdhWindow"></td></tr>
       <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="value" id="tsAdhMaxBookings"></td></tr>
@@ -262,6 +280,7 @@
 
   const YES_NO = v => (v ? 'Yes' : 'No');
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  const showRow = (id, show) => { const el = document.getElementById(id); if (el) el.hidden = !show; };
 
   /* ---------------- duration / clock-time normalization ---------------- */
   // Composes the largest applicable day/hour/minute units (skipping zero ones) and always appends
@@ -341,9 +360,14 @@
   set('tsDates', dateParts.length ? dateParts.join(' | ') : 'Not specified');
 
   const SSO_LABELS = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
+  const SSO_SCOPE_LABELS = { both: "Mobile app & admin portal", app: "Mobile app only", portal: "Admin portal only" };
   const SCIM_LABELS = { "": "Not required", enabled: "Enabled" };
   const GALLAGHER_LABELS = { "": "Not required", required: "Required" };
   set('tsSso', SSO_LABELS[it.ssoMethod] ?? (it.ssoMethod || 'No SSO'));
+  // SSO Scope only exists as a real field once SSO itself is enabled — matches
+  // floorsense-out-of-box-policy.html's own SSO Scope row logic.
+  showRow('tsSsoScopeRow', !!it.ssoMethod);
+  if (it.ssoMethod) set('tsSsoScope', SSO_SCOPE_LABELS[it.ssoScope] || SSO_SCOPE_LABELS.both);
   set('tsScim', SCIM_LABELS[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'));
   set('tsApi', (it.apiRequirements && it.apiRequirements.trim()) ? it.apiRequirements : 'None specified');
   set('tsGallagher', GALLAGHER_LABELS[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required'));
@@ -420,10 +444,20 @@
   set('tsNsnpMode', NSNP_MODE_LABELS[nsnp.mode] || 'Off');
   set('tsNsnpGraceEnabled', YES_NO(!!nsnp.graceEnabled));
   set('tsNsnpGraceMinutes', nsnp.graceEnabled ? formatDuration(Number.isFinite(nsnp.graceMinutes) ? nsnp.graceMinutes : 15) : 'n/a');
+  // Custom-arrangement note only exists (and only matters) when mode is 'other' and the client
+  // actually typed something — matches floorsense-out-of-box-policy.html's own NSNP row logic.
+  const nsnpOtherNoteGiven = nsnp.mode === 'other' && !!(nsnp.otherNote && nsnp.otherNote.trim());
+  showRow('tsNsnpOtherNoteRow', nsnpOtherNoteGiven);
+  if (nsnpOtherNoteGiven) set('tsNsnpOtherNote', nsnp.otherNote.trim());
 
   const FME_MODE_LABELS = { all: 'On (all desks)', list: 'On (selected desks)', none: 'Off' };
   const fme = wizard.fme || {};
   set('tsFmeMode', FME_MODE_LABELS[fme.mode] || 'Off');
+  // Motor-details acknowledgment only matters while FME is actually on and only when actually
+  // checked — matches floorsense-out-of-box-policy.html's own FME row logic.
+  const fmeMotorAckGiven = fme.mode && fme.mode !== 'none' && !!fme.motorDetailsAck;
+  showRow('tsFmeMotorAckRow', fmeMotorAckGiven);
+  if (fmeMotorAckGiven) set('tsFmeMotorAck', 'Yes');
 
   const ADH_MODE_LABELS = { enable: 'On', none: 'Off' };
   const adh = wizard.antiDeskHogging || {};

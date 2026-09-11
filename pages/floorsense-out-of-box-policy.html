@@ -642,6 +642,12 @@
             <span class="value" id="itSsoSummaryValue">No SSO</span>
           </div>
         </div>
+        <div class="summary-row" id="ssoScopeSummaryRow" hidden>
+          <div class="summary-row-top">
+            <span class="label">SSO Scope</span>
+            <span class="value" id="itSsoScopeSummaryValue"></span>
+          </div>
+        </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">SCIM User Provisioning</span>
@@ -2418,6 +2424,36 @@ per explicit follow-up instruction, before ever being committed — this page th
 anywhere; it never shipped. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block, and a grep confirming zero remaining references to "No Show"/`noShow` anywhere
 in this file.
+
+MOST RECENT CHANGE: per a request to wire up three fields a research pass had flagged as configured by
+a wizard page but never surfaced here — SSO Scope, FME's motor-details acknowledgment, and NSNP's
+"other" (custom arrangement) note — with the explicit rule that each should only appear when there's
+a real input to show, never as an empty/placeholder row. All three follow the same pattern: hidden or
+omitted entirely unless the underlying condition is actually met.
+- SSO Scope: a new row, `#ssoScopeSummaryRow` (`#itSsoScopeSummaryValue`), added right after "Single
+  Sign-On (SSO)". Reads `project.smartalock.wizard.it.ssoScope` (default `"both"`). Since this field
+  only exists as a real, visible control on smartalock-it-configuration-02.html once SSO itself is
+  enabled, "an input provided" here just means `ssoMethod` isn't `""` — the row stays `hidden` when
+  SSO is off, and shows the scope label (Mobile app & admin portal / Mobile app only / Admin portal
+  only) whenever it's on, including the unmodified "both" default (that default is itself a real,
+  visible value once the field is showing, not a placeholder).
+- FME motor-details acknowledgment: no new row — `renderFmeSummary()` now appends "Client has
+  acknowledged desk motor details will need to be provided for FME setup." to the existing Sit-Stand
+  Desks description, but only when FME's mode isn't `'none'` AND
+  `project.floorsense.wizard.fme.motorDetailsAck` is `true`. Left unmentioned in every other case
+  (FME off, or FME on but the box left unchecked), since an unchecked acknowledgment isn't an input to
+  report.
+- NSNP "other" note: no new row — `renderNsnpSummary()` now appends a `Client-provided arrangement:
+  "..."` sentence to the existing NSNP description, but only when `mode === 'other'` AND
+  `project.floorsense.wizard.nsnp.otherNote` is a non-empty (trimmed) string. A custom-setup mode with
+  no note typed, or any other mode with a stray/leftover `otherNote` value, renders exactly as before
+  with no mention of it.
+
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and
+a jsdom test covering all three fields across their "no input" and "input provided" states (SSO
+off/on with default and custom scope; FME off, on-without-ack, and on-with-ack; NSNP "other" mode with
+an empty note, with a note, and a non-"other" mode carrying a stray note) confirming each renders or
+stays silent exactly as described above.
 -->
 
 
@@ -2491,9 +2527,21 @@ in this file.
 
     const it = (project.smartalock && project.smartalock.wizard && project.smartalock.wizard.it) || {};
     const SSO_LABELS = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
+    const SSO_SCOPE_LABELS = { both: "Mobile app & admin portal", app: "Mobile app only", portal: "Admin portal only" };
     const SCIM_LABELS = { "": "Not required", enabled: "Enabled" };
     const GALLAGHER_LABELS = { "": "Not required", required: "Required" };
     document.getElementById('itSsoSummaryValue').textContent = SSO_LABELS[it.ssoMethod] ?? (it.ssoMethod || 'No SSO');
+    // SSO Scope only exists as a real, user-facing field once SSO itself is enabled (it's hidden on
+    // smartalock-it-configuration-02.html otherwise) — so "an input provided" here just means SSO is
+    // on; the row is left out of the summary entirely when it's "No SSO", rather than showing an
+    // irrelevant scope value.
+    const ssoScopeRow = document.getElementById('ssoScopeSummaryRow');
+    if (it.ssoMethod) {
+      document.getElementById('itSsoScopeSummaryValue').textContent = SSO_SCOPE_LABELS[it.ssoScope] || SSO_SCOPE_LABELS.both;
+      ssoScopeRow.hidden = false;
+    } else {
+      ssoScopeRow.hidden = true;
+    }
     document.getElementById('itScimSummaryValue').textContent = SCIM_LABELS[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required');
     document.getElementById('itApiSummaryValue').textContent =
       (it.apiRequirements && it.apiRequirements.trim()) ? it.apiRequirements : 'None specified';
@@ -2638,6 +2686,13 @@ in this file.
     if (mode !== 'none' && savedNsnp.graceEnabled) {
       const graceMinutes = Number.isFinite(savedNsnp.graceMinutes) ? savedNsnp.graceMinutes : 15;
       desc += ' Grace period on: stays powered ' + graceMinutes + ' min after the reservation ends.';
+    }
+    // "Custom setup" (mode 'other') has its own free-text arrangement note on
+    // floorsense-nsnp-11.html (project.floorsense.wizard.nsnp.otherNote) — only mention it here when
+    // the client actually typed something; an empty note just falls back to the plain "custom setup"
+    // value line above with no extra description text.
+    if (mode === 'other' && savedNsnp.otherNote && savedNsnp.otherNote.trim()) {
+      desc += ' Client-provided arrangement: "' + savedNsnp.otherNote.trim() + '"';
     }
     document.getElementById('nsnpSummaryDesc').textContent = desc;
   })();
@@ -2796,12 +2851,18 @@ in this file.
   (function renderFmeSummary() {
     const savedFme = project.floorsense.wizard.fme || {};
     const mode = savedFme.mode || 'none';
+    // The motor-details acknowledgment checkbox on floorsense-optional-features-06.html only ever
+    // matters while FME is actually on, and only when it's actually been checked — an unchecked (or
+    // FME-off) state just falls back to the plain mode description below with no extra mention.
+    const motorAckGiven = mode !== 'none' && !!savedFme.motorDetailsAck;
     if (mode === 'all') {
       document.getElementById('fmeSummaryValue').textContent = 'On (all desks)';
-      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for all desks.';
+      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for all desks.' +
+        (motorAckGiven ? ' Client has acknowledged desk motor details will need to be provided for FME setup.' : '');
     } else if (mode === 'list') {
       document.getElementById('fmeSummaryValue').textContent = 'On (selected desks)';
-      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for a specific list of desks provided during setup.';
+      document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is enabled for a specific list of desks provided during setup.' +
+        (motorAckGiven ? ' Client has acknowledged desk motor details will need to be provided for FME setup.' : '');
     } else {
       document.getElementById('fmeSummaryValue').textContent = 'Off';
       document.getElementById('fmeSummaryDesc').textContent = 'Sit-stand desk integration is disabled by default.';
