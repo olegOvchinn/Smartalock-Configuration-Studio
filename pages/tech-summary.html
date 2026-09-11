@@ -65,13 +65,51 @@
   and the client summary until requested. Verified via an inline HTMLParser tag-balance check, `node
   --check` on the extracted script block, and a jsdom test covering all three fields' "no input" and
   "input provided" states, matching the equivalent test added for floorsense-out-of-box-policy.html.
+
+  MOST RECENT CHANGE: per a request that this be one Tech Summary for BOTH branches, with the
+  Smartalock section appearing before Floorsense, renamed this file from
+  `floorsense-tech-summary.html` to `tech-summary.html` (unprefixed, matching the naming convention
+  already used for other shared/cross-branch pages like `register.html`/`pick-a-product.html`) and
+  added a full "Smartalock" section, positioned between the shared "Project Details" section and the
+  (renamed, for symmetry) "Floorsense" section — matching the requested Smartalock-before-Floorsense
+  order. The new Smartalock section mirrors every field on
+  `smartalock-configuration-summary-08.html` (its own client-facing Configuration Summary) across its
+  7 groups: Initial Locker Access Methods, Locker Door Behaviour, Reservation Type, Locker Policy,
+  User Policy, Kiosk Customisation, and Locker Types — reformatted the same way the existing
+  Floorsense section already is: no descriptions, and every duration field normalized through the same
+  shared `formatDuration()` helper. Notable per-field handling:
+  - Self-Allocation Duration's custom mode stores a value + a client-chosen unit (hours/days/weeks) —
+    converted to minutes via a small `DURATION_UNIT_MINUTES` map before calling `formatDuration()`,
+    the same normalize-then-format approach used everywhere else on this page.
+  - Locker Policy's "Open When Idle" custom mode (`customIdleDuration`) is unstructured free text
+    (e.g. "72 hours"), not a number+unit pair, so — like NSNP's own custom note — it's shown verbatim
+    with no attempted conversion, since parsing arbitrary text into minutes isn't reliable.
+  - Sub-fields that only make sense conditionally (Push to Open Scope/Locker Bank/Locker Numbers,
+    Self-Allocation Duration, the User Policy group fields, Main Information Banner's custom text,
+    Information Banner's text, Custom Logo's placement/file name) use the same `showRow()` helper
+    already established for the Floorsense section's SSO Scope/FME/NSNP rows.
+  - Locker Types renders one row per selected type (or a single "No locker types selected yet." row),
+    built the same way the Additional Policies list already builds its dynamic blocks.
+  - This section intentionally mirrors `smartalock-configuration-summary-08.html`'s existing field set
+    exactly, including its own pre-existing gaps (cardAssignMethod/pinAssignMethod, two kiosk toggles
+    the summary's own TOGGLES array omits, and the Background Colour row not checking
+    `customBgEnabled`) rather than also fixing those — same posture as the Floorsense section's
+    "reproduce the client summary's gaps, don't fix them unless asked" rule.
+  The doc header/title/kicker were generalized to no longer say "Floorsense" only, and the dev-only
+  footer link now points at both branches' Configuration Summary pages. Verified via an inline
+  HTMLParser tag-balance check, `node --check` on the extracted script block, a jsdom test covering
+  the Smartalock section's defaults, a fully-populated custom state (push-to-open with a specific
+  locker bank, a 2-week custom self-allocation duration, 48-hour idle release, grouped user access,
+  custom kiosk logo, and two locker types), and a "never expires"/"idle off" case — plus confirming
+  the four top-level section headings render in the order Project Details → Smartalock → Floorsense →
+  Additional Policies — and a full-page Playwright screenshot of the combined page.
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Technical Configuration Summary (Internal) — Floorsense Configuration Studio</title>
+<title>Technical Configuration Summary (Internal) — Smartalock Configuration Studio</title>
 <style>
   :root {
     --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
@@ -149,7 +187,7 @@
   </div>
 
   <div class="doc-header">
-    <p class="doc-kicker">Floorsense · Technical Configuration Summary</p>
+    <p class="doc-kicker">Smartalock &amp; Floorsense · Technical Configuration Summary</p>
     <h1 class="doc-title">Raw configuration values, normalized to days / hours / minutes</h1>
     <div class="meta-grid">
       <div><span class="k">Project ID</span><span class="v" id="metaProjectId"></span></div>
@@ -179,7 +217,66 @@
   </div>
 
   <div class="tsec">
-    <h2 class="tsec-title">Core Policy</h2>
+    <h2 class="tsec-title">Smartalock</h2>
+
+    <p class="tsec-sub">Initial Locker Access Methods</p>
+    <table class="trow">
+      <tr><td class="label">Access Methods Selected</td><td class="value" id="saAccessMethods"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Locker Door Behaviour</p>
+    <table class="trow">
+      <tr><td class="label">Open Behaviour</td><td class="value" id="saOpenBehaviour"></td></tr>
+      <tr id="saPushScopeRow" hidden><td class="label">Push to Open Scope</td><td class="value" id="saPushScope"></td></tr>
+      <tr id="saLockerBankRow" hidden><td class="label">Locker Bank</td><td class="value" id="saLockerBank"></td></tr>
+      <tr id="saLockerNumbersRow" hidden><td class="label">Locker Numbers</td><td class="value" id="saLockerNumbers"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Reservation Type</p>
+    <table class="trow">
+      <tr><td class="label">Reservation Types Selected</td><td class="value" id="saReservationTypes"></td></tr>
+      <tr id="saSelfAllocRow" hidden><td class="label">Self-Allocation Duration</td><td class="value" id="saSelfAllocDuration"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Locker Policy</p>
+    <table class="trow">
+      <tr><td class="label">Open When Idle</td><td class="value" id="saIdle"></td></tr>
+      <tr><td class="label">Lockers Per User</td><td class="value" id="saLockerLimit"></td></tr>
+      <tr><td class="label">Release Behaviour</td><td class="value" id="saReleaseBehaviour"></td></tr>
+    </table>
+
+    <p class="tsec-sub">User Policy</p>
+    <table class="trow">
+      <tr><td class="label">Who Can Use Lockers</td><td class="value" id="saUserAccessPolicy"></td></tr>
+      <tr id="saLockerGroupRow" hidden><td class="label">Locker Group</td><td class="value" id="saLockerGroup"></td></tr>
+      <tr id="saUserGroupRow" hidden><td class="label">User Group</td><td class="value" id="saUserGroup"></td></tr>
+      <tr id="saAllocationDetailsRow" hidden><td class="label">Allocation Details</td><td class="value" id="saAllocationDetails"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Kiosk Customisation</p>
+    <table class="trow">
+      <tr><td class="label">Main Information Banner</td><td class="value" id="saLogoEnabled"></td></tr>
+      <tr id="saLogoCustomTextRow" hidden><td class="label">Main Information Banner — Custom Text</td><td class="value" id="saLogoCustomText"></td></tr>
+      <tr><td class="label">Open Existing</td><td class="value" id="saOpenExisting"></td></tr>
+      <tr><td class="label">Get A Locker</td><td class="value" id="saGetLocker"></td></tr>
+      <tr><td class="label">Scan QR Code</td><td class="value" id="saScanQr"></td></tr>
+      <tr><td class="label">Place Card Here</td><td class="value" id="saPlaceCard"></td></tr>
+      <tr><td class="label">Information Banner</td><td class="value" id="saBannerEnabled"></td></tr>
+      <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="value" id="saBannerText"></td></tr>
+      <tr><td class="label">Custom Logo</td><td class="value" id="saCustomLogo"></td></tr>
+      <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="value" id="saCustomLogoPlacement"></td></tr>
+      <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="value" id="saCustomLogoFile"></td></tr>
+      <tr><td class="label">Background Colour</td><td class="value" id="saBgColour"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Locker Types</p>
+    <table class="trow" id="saLockerTypesTable">
+      <tr id="saLockerTypesEmptyRow"><td class="label" colspan="2">No locker types selected yet.</td></tr>
+    </table>
+  </div>
+
+  <div class="tsec">
+    <h2 class="tsec-title">Floorsense</h2>
 
     <p class="tsec-sub">Desk Allocation Method</p>
     <table class="trow">
@@ -246,7 +343,7 @@
     <div id="additionalPoliciesList"></div>
   </div>
 
-  <div class="dev-link">Dev convenience only (not shown to the client): <a href="floorsense-out-of-box-policy.html">View Configuration Summary</a></div>
+  <div class="dev-link">Dev convenience only (not shown to the client): <a href="smartalock-configuration-summary-08.html">View Smartalock Configuration Summary</a> · <a href="floorsense-out-of-box-policy.html">View Floorsense Configuration Summary</a></div>
 
 </div>
 
@@ -371,6 +468,168 @@
   set('tsScim', SCIM_LABELS[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'));
   set('tsApi', (it.apiRequirements && it.apiRequirements.trim()) ? it.apiRequirements : 'None specified');
   set('tsGallagher', GALLAGHER_LABELS[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required'));
+
+  /* ==================== SMARTALOCK ==================== */
+  const saWizard = project.smartalock.wizard;
+
+  /* ---------------- Initial Locker Access Methods ---------------- */
+  const ACCESS_LABELS = {
+    card: 'Building access cards',
+    pin: 'PIN number at touchscreen',
+    app: 'Floorsense app',
+    qr: 'QR code',
+    wallet: 'Digital Pass (Apple or Google Wallet)'
+  };
+  const accessMethods = saWizard.accessMethods || {};
+  const selectedAccess = Array.isArray(accessMethods.selected) ? accessMethods.selected : [];
+  set('saAccessMethods', selectedAccess.length
+    ? Object.keys(ACCESS_LABELS).filter(k => selectedAccess.includes(k)).map(k => ACCESS_LABELS[k]).join(', ')
+    : 'None selected');
+
+  /* ---------------- Locker Door Behaviour ---------------- */
+  const lockerBehaviour = saWizard.lockerBehaviour || {};
+  // Legacy single-select save (lockerBehaviour.lockerBehaviour was '' for Pop Open or 'push-open')
+  // migrated the same way smartalock-configuration-summary-08.html's own reader does.
+  const popOpenEnabled = typeof lockerBehaviour.popOpenEnabled === 'boolean' ? lockerBehaviour.popOpenEnabled : lockerBehaviour.lockerBehaviour !== 'push-open';
+  const pushOpenEnabled = typeof lockerBehaviour.pushOpenEnabled === 'boolean' ? lockerBehaviour.pushOpenEnabled : lockerBehaviour.lockerBehaviour === 'push-open';
+  const BEHAVIOUR_SCOPE_LABELS = { "": "All lockers", unknown: "Don't know yet", specific: "Specific locker bank or lockers" };
+  let behaviourLabel;
+  if (popOpenEnabled && pushOpenEnabled) behaviourLabel = 'Pop Open and Push to Open (mixed by locker)';
+  else if (pushOpenEnabled) behaviourLabel = 'Push to Open';
+  else behaviourLabel = 'Pop Open (default)';
+  set('saOpenBehaviour', behaviourLabel);
+  showRow('saPushScopeRow', pushOpenEnabled);
+  if (pushOpenEnabled) set('saPushScope', BEHAVIOUR_SCOPE_LABELS[lockerBehaviour.pushOpenScope] ?? (lockerBehaviour.pushOpenScope || 'All lockers'));
+  const behaviourIsSpecific = pushOpenEnabled && lockerBehaviour.pushOpenScope === 'specific';
+  showRow('saLockerBankRow', behaviourIsSpecific);
+  showRow('saLockerNumbersRow', behaviourIsSpecific);
+  if (behaviourIsSpecific) {
+    set('saLockerBank', lockerBehaviour.behaviourLockerBank || 'None specified');
+    set('saLockerNumbers', lockerBehaviour.behaviourLockerNumbers || 'None specified');
+  }
+
+  /* ---------------- Reservation Type ---------------- */
+  const RESERVATION_MODEL_LABELS = { admin: 'Allocated by Administrator', user: 'User Self-Allocated', parcel: 'Parcel Delivery' };
+  const reservationType = saWizard.reservationType || {};
+  const reservationTypesSelected = Array.isArray(reservationType.reservationTypes) ? reservationType.reservationTypes : [];
+  set('saReservationTypes', reservationTypesSelected.length
+    ? reservationTypesSelected.map(t => RESERVATION_MODEL_LABELS[t] || t).join(', ')
+    : 'None selected');
+  const userSelfAllocation = reservationTypesSelected.includes('user');
+  showRow('saSelfAllocRow', userSelfAllocation);
+  if (userSelfAllocation) {
+    // userDurationUnit is whichever of hours/days/weeks the client picked for a custom duration —
+    // converted to minutes here the same way every other duration field on this page is.
+    const DURATION_UNIT_MINUTES = { hours: 60, days: 1440, weeks: 10080 };
+    let selfAllocValue;
+    if (reservationType.userDuration === 'custom') {
+      const unit = reservationType.userDurationUnit || 'days';
+      const rawValue = Number(reservationType.userDurationValue);
+      selfAllocValue = Number.isFinite(rawValue) && rawValue > 0
+        ? formatDuration(rawValue * (DURATION_UNIT_MINUTES[unit] || DURATION_UNIT_MINUTES.days))
+        : 'Not specified';
+    } else if (reservationType.userDuration === 'never') {
+      selfAllocValue = 'Never expires';
+    } else {
+      selfAllocValue = formatDuration(24 * 60); // '24h' default/fallback, matching the summary's own fallback
+    }
+    set('saSelfAllocDuration', selfAllocValue);
+  }
+
+  /* ---------------- Locker Policy ---------------- */
+  const locker = saWizard.locker || {};
+  let idleValue;
+  if (locker.idleDuration === 'custom') {
+    // customIdleDuration is an unstructured free-text field (e.g. "72 hours"), not a number+unit
+    // pair, so it can't be safely converted to minutes — shown as-is.
+    idleValue = locker.customIdleDuration || 'Not specified';
+  } else if (locker.idleDuration === '48h') {
+    idleValue = formatDuration(48 * 60);
+  } else {
+    idleValue = 'Off';
+  }
+  set('saIdle', idleValue);
+  let lockerLimitValue;
+  if (locker.lockerLimit === 'custom') {
+    lockerLimitValue = locker.customLockerLimit ? (locker.customLockerLimit + ' per user') : 'Not specified';
+  } else {
+    lockerLimitValue = '1 per user';
+  }
+  set('saLockerLimit', lockerLimitValue);
+  const RELEASE_LABELS = { grace: 'Allow one final locker access after expiry', immediate: 'Release when reservation expires' };
+  set('saReleaseBehaviour', RELEASE_LABELS[locker.releaseBehaviour] ?? (locker.releaseBehaviour || RELEASE_LABELS.grace));
+
+  /* ---------------- User Policy ---------------- */
+  const user = saWizard.user || {};
+  const USER_ACCESS_LABELS = { "": "All registered users", all: "All registered users", groups: "Selected user groups" };
+  set('saUserAccessPolicy', USER_ACCESS_LABELS[user.userAccessPolicy] ?? (user.userAccessPolicy || USER_ACCESS_LABELS.all));
+  const userGroupsMode = user.userAccessPolicy === 'groups';
+  showRow('saLockerGroupRow', userGroupsMode);
+  showRow('saUserGroupRow', userGroupsMode);
+  showRow('saAllocationDetailsRow', userGroupsMode);
+  if (userGroupsMode) {
+    set('saLockerGroup', user.lockerGroupName || 'None specified');
+    set('saUserGroup', user.userGroupName || 'None specified');
+    set('saAllocationDetails', user.allocationDetails || 'None specified');
+  }
+
+  /* ---------------- Kiosk Customisation ---------------- */
+  const kiosk = saWizard.kioskCustomisation || {};
+  const kioskFlag = (key) => kiosk.hasOwnProperty(key) ? !!kiosk[key] : true;
+  const logoOn = kioskFlag('logoEnabled');
+  set('saLogoEnabled', logoOn ? 'Enabled' : 'Removed');
+  const logoCustomTextGiven = logoOn && !!kiosk.logoCustomEnabled && !!(kiosk.logoCustomText && kiosk.logoCustomText.trim());
+  showRow('saLogoCustomTextRow', logoCustomTextGiven);
+  if (logoCustomTextGiven) set('saLogoCustomText', kiosk.logoCustomText.trim());
+
+  set('saOpenExisting', kioskFlag('openEnabled') ? 'Enabled' : 'Removed');
+  set('saGetLocker', kioskFlag('lockerEnabled') ? 'Enabled' : 'Removed');
+  set('saScanQr', kioskFlag('qrEnabled') ? 'Enabled' : 'Removed');
+  set('saPlaceCard', kioskFlag('cardEnabled') ? 'Enabled' : 'Removed');
+
+  const bannerOn = kioskFlag('bannerEnabled');
+  set('saBannerEnabled', bannerOn ? 'Enabled' : 'Removed');
+  showRow('saBannerTextRow', bannerOn);
+  if (bannerOn) {
+    const line1 = kiosk.bannerLine1 || 'Scan your access card or';
+    const line2 = kiosk.bannerLine2 || 'select an option to get started';
+    set('saBannerText', line2 ? (line1 + ' / ' + line2) : line1);
+  }
+
+  const customLogoOn = !!kiosk.customLogoEnabled;
+  set('saCustomLogo', customLogoOn ? 'On' : 'Off');
+  showRow('saCustomLogoPlacementRow', customLogoOn);
+  const customLogoFileGiven = customLogoOn && !!(kiosk.customLogoFileName && kiosk.customLogoFileName.trim());
+  showRow('saCustomLogoFileRow', customLogoFileGiven);
+  if (customLogoOn) {
+    const PLACEMENT_LABELS = { left: 'left panel, above the Home button', right: 'right panel, in place of the banners' };
+    set('saCustomLogoPlacement', PLACEMENT_LABELS[kiosk.customLogoPlacement] || PLACEMENT_LABELS.left);
+    if (customLogoFileGiven) set('saCustomLogoFile', kiosk.customLogoFileName.trim());
+  }
+
+  set('saBgColour', kiosk.bgColour || 'Default (#5B8FD7)');
+
+  /* ---------------- Locker Types ---------------- */
+  const LOCKER_TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type' };
+  const LOCKER_TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+  const lockerType = saWizard.lockerType || {};
+  const selectedLockerTypes = Array.isArray(lockerType.selected) ? lockerType.selected : [];
+  const lockerTypesTable = document.getElementById('saLockerTypesTable');
+  const lockerTypesEmptyRow = document.getElementById('saLockerTypesEmptyRow');
+  if (selectedLockerTypes.length) {
+    lockerTypesEmptyRow.remove();
+    const exampleNumbers = lockerType.exampleNumbers || {};
+    LOCKER_TYPE_ORDER.filter(t => selectedLockerTypes.includes(t)).forEach(t => {
+      const tr = document.createElement('tr');
+      const value = t === 'custom'
+        ? (exampleNumbers[t] ? 'Custom name: ' + exampleNumbers[t] : 'No custom name set yet')
+        : (exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet');
+      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="value">' + value + '</td>';
+      lockerTypesTable.appendChild(tr);
+    });
+  }
+
+  /* ==================== FLOORSENSE ==================== */
 
   /* ---------------- Desk Allocation Method ---------------- */
   const RESERVATION_TYPE_LABELS = {
