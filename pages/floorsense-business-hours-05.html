@@ -213,6 +213,19 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  /* ---------- tap-to-type: matches floorsense-prebooking-advance-04.html's pattern — the pill is
+     its own tap target (separate from dragging the pin), swapping the time text for a small inline
+     <input type="time"> so a value can be typed/picked directly instead of only ever set by
+     dragging. ---------- */
+  .timeline-node .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 76px; border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 0 0 1px; color-scheme: dark;
+  }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing .label-static-text { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -355,10 +368,10 @@
           <svg class="checkin-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <p class="checkin-card-desc">
-            Most users share the same standard business hours — drag either pin on the timeline
-            below to set when most people arrive and when they head out for the day. These hours
-            apply across the floor by default; individual modules further on can still carve out
-            exceptions.
+            Most users share the same standard business hours — grab and drag either pin on the
+            timeline below, or tap and change either pin's time directly, to set when most people
+            arrive and when they head out for the day. These hours apply across the floor by
+            default; individual modules further on can still carve out exceptions.
           </p>
         </div>
 
@@ -371,18 +384,20 @@
               </div>
               <div class="timeline-node" id="arrivalNode" tabindex="0" role="slider" aria-label="Arrival time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
-                <div class="label-time">
+                <div class="label-time" id="arrivalLabelPill" title="Tap to type a value">
                   <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="arrivalTime">9:00 AM</span>
+                  <span id="arrivalTime" class="label-static-text">9:00 AM</span>
+                  <input type="time" id="arrivalTimeInput" class="label-value-input" aria-label="Type the arrival time directly">
                   <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="label-desc">Arrives</div>
               </div>
               <div class="timeline-node" id="departureNode" tabindex="0" role="slider" aria-label="Departure time" aria-valuemin="270" aria-valuemax="1320">
                 <div class="anchor-pin"></div>
-                <div class="label-time primary">
+                <div class="label-time primary" id="departureLabelPill" title="Tap to type a value">
                   <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="departureTime">5:00 PM</span>
+                  <span id="departureTime" class="label-static-text">5:00 PM</span>
+                  <input type="time" id="departureTimeInput" class="label-value-input" aria-label="Type the departure time directly">
                   <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="label-desc">Departs</div>
@@ -886,6 +901,37 @@ page. Verified via an inline HTMLParser tag-balance check, `node --check` on the
 block, and a Playwright test confirming: both pins render 2 arrows each (4 total) with `#fff`
 stroke and the expected keyframe animations/delay; and dragging each pin still updates its own
 label correctly (regression check), confirming the id-to-span move didn't break `renderDiagram()`.
+
+MOST RECENT CHANGE: per a request to let the floating pills also accept a typed value instead of
+only ever being set by dragging (matching the same feature added to
+floorsense-prebooking-advance-04.html), both `#arrivalLabelPill`/`#departureLabelPill` (the
+`.label-time`/`.label-time.primary` divs wrapping the decorative arrows and the time text) are now
+their own tap targets, independent of each pin's own drag handling. The time text
+(`#arrivalTime`/`#departureTime`) gained a shared `.label-static-text` class, and a sibling
+`<input type="time" class="label-value-input">` (`#arrivalTimeInput`/`#departureTimeInput`) sits next
+to it, hidden by default via `.label-time:not(.editing) .label-value-input { display: none; }`.
+Tapping/clicking a pill adds `.editing`, swapping the static text for the time input (pre-filled via
+the exact same `getMinutes()`/`minutesToHHMM()` used for rendering) and focusing it — using a native
+`<input type="time">` rather than a free-text field since `state.arrivalTime`/`departureTime` are
+already stored as 24-hour `HH:MM` strings, an exact match for the input's own value format, so no
+extra parsing was needed. A new `wireTapToEditTime(pillEl, inputEl, nodeEl, opts)` helper (called once
+per pin, reusing each pin's own `arrivalPinOpts`/`departurePinOpts` — the same
+`getMinutes`/`clampMinutes`/`onChange` objects `makeDraggableNode()` already used, now hoisted to named
+consts instead of being passed as anonymous object literals so both the drag and tap-to-edit paths
+share the identical clamping logic and can never drift out of sync) handles the pill's own
+`pointerdown`/`click` (stopping propagation so a tap never starts a pin drag), Enter to commit,
+Escape to cancel, and committing on blur. A pointerdown on either `.timeline-node` itself (i.e.
+grabbing the pin to drag it) and the Reset button both close any pill left open mid-edit, so the UI
+can't get stuck showing an input if the value changes some other way. The card's intro paragraph was
+reworded from "drag either pin on the timeline below to set when most people arrive..." to "grab and
+drag either pin on the timeline below, or tap and change either pin's time directly, to set when most
+people arrive...", matching the phrasing used on `floorsense-prebooking-advance-04.html`'s own
+caption. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a Playwright test confirming: tapping a pill opens its time input; typing 07:15 into
+Arrival and pressing Enter commits it and updates the label/state; typing a Departure time only 5
+minutes after that Arrival clamps to the enforced 60-minute minimum gap (08:15) on commit; pressing
+Escape after typing a value leaves the state unchanged and closes the input; and dragging a pin still
+works correctly afterward.
 -->
 
 
@@ -1079,6 +1125,7 @@ label correctly (regression check), confirming the id-to-span move didn't break 
     }
     nodeEl.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
       nodeEl.classList.add('dragging');
       nodeEl.focus();
       document.addEventListener('pointermove', onPointerMove);
@@ -1099,16 +1146,56 @@ label correctly (regression check), confirming the id-to-span move didn't break 
     });
   }
 
-  makeDraggableNode(arrivalNode, {
+  const arrivalPinOpts = {
     getMinutes: () => parseTimeToMinutes(state.arrivalTime),
     clampMinutes: (minutes) => Math.max(RAIL_START_MIN, Math.min(minutes, parseTimeToMinutes(state.departureTime) - MIN_BUSINESS_HOURS_MINUTES)),
     onChange: (minutes) => { state.arrivalTime = minutesToHHMM(minutes); }
-  });
-  makeDraggableNode(departureNode, {
+  };
+  const departurePinOpts = {
     getMinutes: () => parseTimeToMinutes(state.departureTime),
     clampMinutes: (minutes) => Math.min(RAIL_END_MIN, Math.max(minutes, parseTimeToMinutes(state.arrivalTime) + MIN_BUSINESS_HOURS_MINUTES)),
     onChange: (minutes) => { state.departureTime = minutesToHHMM(minutes); }
-  });
+  };
+  makeDraggableNode(arrivalNode, arrivalPinOpts);
+  makeDraggableNode(departureNode, departurePinOpts);
+
+  /* ---------------- tap-to-type: each pill is its own tap target (separate from dragging), swapping
+     the time text for a small inline <input type="time"> so a value can be typed/picked directly.
+     Shares the exact same getMinutes/clampMinutes/onChange as the pin's own drag handling above, so a
+     typed time is clamped identically and can never drift out of sync with dragging. ---------- */
+  function wireTapToEditTime(pillEl, inputEl, nodeEl, opts) {
+    function enterEditMode() {
+      pillEl.classList.add('editing');
+      inputEl.value = minutesToHHMM(opts.getMinutes());
+      inputEl.focus();
+    }
+    function exitEditMode() { pillEl.classList.remove('editing'); }
+    function commit() {
+      if (inputEl.value) {
+        opts.onChange(opts.clampMinutes(parseTimeToMinutes(inputEl.value)));
+        renderDiagram();
+        queueSave();
+      }
+      exitEditMode();
+    }
+    pillEl.addEventListener('pointerdown', (e) => e.stopPropagation());
+    pillEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!pillEl.classList.contains('editing')) enterEditMode();
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commit(); nodeEl.focus(); }
+      else if (e.key === 'Escape') { e.preventDefault(); exitEditMode(); nodeEl.focus(); }
+    });
+    inputEl.addEventListener('blur', () => { if (pillEl.classList.contains('editing')) commit(); });
+  }
+  wireTapToEditTime(
+    document.getElementById('arrivalLabelPill'), document.getElementById('arrivalTimeInput'), arrivalNode, arrivalPinOpts
+  );
+  wireTapToEditTime(
+    document.getElementById('departureLabelPill'), document.getElementById('departureTimeInput'), departureNode, departurePinOpts
+  );
 
   /* ---------------- fields ---------------- */
   const saveText = document.getElementById('saveText');
@@ -1147,6 +1234,7 @@ label correctly (regression check), confirming the id-to-span move didn't break 
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     state.arrivalTime = '08:30';
     state.departureTime = '17:00';
     renderDiagram();
