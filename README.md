@@ -428,6 +428,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Relabeled `smartalock-it-configuration-02.html`'s "SCIM provisioning" field to "SCIM/LDAP/REST API" — a label-only change; the select's own Not required/Enabled options are unchanged.
 - Duplicated `floorsense-optional-features-06.html`'s "Auto-Release on Idle" row into a new first row, "Auto-Release on No Show," with its own independent switch, hours field, and state key (`noShowRelease`) — the original "Auto-Release on Idle" row is unchanged, just shifted to second position.
 - Reworded that same "Auto-Release on Idle" row's description to distinguish it from the new "Auto-Release on No Show" row above it: it now describes releasing a desk that's sat unoccupied for a set number of hours starting at any point during the booking, rather than the no-show/never-checked-in wording both rows previously shared.
+- Added a new "Auto Check-In on Occupancy" row on `floorsense-optional-features-06.html`, below "Auto-Release on Idle" — automatically checks a desk in if it's occupied for a set number of minutes without a proper check-in (the system can't tell who's occupying it, so the booking stays anonymous), with its own switch, minutes fill-in field, and independent state key (`autoOccupancyCheckin`).
 
 ## Status
 

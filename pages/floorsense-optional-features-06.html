@@ -453,6 +453,21 @@
         </div>
 
         <div class="feature-row">
+          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.3 12l1.8 1.8l3.6-4.4"/></svg>
+          <div class="feature-row-body">
+            <p class="feature-row-title">Auto Check-In on Occupancy</p>
+            <p class="feature-row-desc">Automatically checks a desk in if it's detected as occupied for a set number of minutes without a proper check-in — the system won't be able to tell who's occupying it, so the booking stays anonymous.</p>
+            <span class="feature-row-status" id="autoOccupancyCheckinStatus">Off</span>
+            <div class="feature-row-hours" id="autoOccupancyCheckinField">
+              <label for="autoOccupancyCheckinInput">Auto-check-in after</label>
+              <span class="policy-number-field"><input type="number" min="1" max="60" step="1" class="policy-number-input" id="autoOccupancyCheckinInput" value="10"><span class="policy-field-unit">minutes</span></span>
+            </div>
+          </div>
+          <button type="button" class="switch" id="autoOccupancyCheckinSwitch" role="switch" aria-checked="false" aria-label="Enable Auto Check-In on Occupancy"></button>
+        </div>
+
+        <div class="feature-row">
           <svg class="feature-row-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.2 10.3L9.5 8L10.8 10.3"/><path d="M13.2 13.7L14.5 16L15.8 13.7"/></svg>
           <div class="feature-row-body">
@@ -1172,6 +1187,32 @@ desk never checked into at all). Only this row's own description text changed; "
 Show"'s description directly above it, the state/ids/hours-field wiring for both rows, and every
 other row on this page are untouched. Verified via an inline HTMLParser tag-balance check (JS
 untouched — copy-only change).
+
+MOST RECENT CHANGE: per a request to add a new function below Auto-Release on Idle that checks a
+user in automatically if a desk is occupied but was never properly checked in — with the caveat
+that the system can't tell WHO is occupying it — added a third feature row, "Auto Check-In on
+Occupancy," directly below "Auto-Release on Idle" and above FME. Reuses the same
+icon/badge-blue/canvas treatment as the two Auto-Release rows above it (a circle-and-checkmark
+glyph, matching Remote Booking Confirmation's icon design, since this is conceptually the
+"opposite" action — checking a desk IN rather than releasing it). Its description is explicit that
+the booking stays anonymous: "...the system won't be able to tell who's occupying it, so the
+booking stays anonymous."
+
+Wired identically to the two Auto-Release rows: its own `FEATURES` entry (`key:
+'autoOccupancyCheckin'`), its own independent state,
+`project.floorsense.wizard.autoOccupancyCheckin = { enabled, minutes }` (a new key, not read
+anywhere else in the site), and its own inline fill-in field (`#autoOccupancyCheckinField`/
+`#autoOccupancyCheckinInput`, looked up via `FEATURES.find(f => f.key === ...)` per the same
+by-key convention the other two rows already use, rather than array position). Unlike the two
+Auto-Release fields (hours, 0.5–24 step 0.5), this one is in minutes (1–60 step 1, default 10),
+since confirming genuine occupancy only needs to wait long enough to rule out someone briefly
+passing by, not hours. Reset now also restores `autoOccupancyCheckin.minutes` to 10 and re-renders
+its field, alongside the other two. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and a Playwright test confirming: row order (No Show, Idle,
+Auto Check-In on Occupancy, then FME); the field is hidden until its own switch is on; typed
+minutes persist to their own key without affecting the other two rows' state when all three are
+enabled together; disabling just this row hides only its own field while the other two rows'
+fields stay shown; and Reset turns all three off and restores their fields to 0.5/0.5/10.
 -->
 
 <script>
@@ -1256,6 +1297,19 @@ untouched — copy-only change).
       setOn: (on) => {
         project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
         project.floorsense.wizard.idleRelease.enabled = on;
+      }
+    },
+    {
+      /* Independent of both Auto-Release rows above it — this is the opposite direction (checking
+         a desk IN rather than releasing it) — with its own state key,
+         project.floorsense.wizard.autoOccupancyCheckin = { enabled, minutes }. The system can only
+         detect that a desk is occupied (via its own presence sensor), not who's sitting in it, so
+         the resulting check-in is anonymous; nothing here attempts to resolve or store an identity. */
+      key: 'autoOccupancyCheckin', switchEl: 'autoOccupancyCheckinSwitch', statusEl: 'autoOccupancyCheckinStatus',
+      isOn: () => !!(project.floorsense.wizard.autoOccupancyCheckin && project.floorsense.wizard.autoOccupancyCheckin.enabled),
+      setOn: (on) => {
+        project.floorsense.wizard.autoOccupancyCheckin = project.floorsense.wizard.autoOccupancyCheckin || {};
+        project.floorsense.wizard.autoOccupancyCheckin.enabled = on;
       }
     },
     {
@@ -1371,6 +1425,31 @@ untouched — copy-only change).
   });
 
   document.getElementById(noShowReleaseFeature.switchEl).addEventListener('click', renderNoShowHoursField);
+
+  /* ---------------- Auto Check-In on Occupancy's own inline minutes field: same wiring pattern as
+     the two Auto-Release fields above, but in minutes rather than hours (checking someone in only
+     needs to wait long enough to be confident the desk is genuinely occupied, not hours), reading/
+     writing project.floorsense.wizard.autoOccupancyCheckin.minutes. ---------------- */
+  const autoOccupancyCheckinFeature = FEATURES.find(f => f.key === 'autoOccupancyCheckin');
+  const autoOccupancyCheckinField = document.getElementById('autoOccupancyCheckinField');
+  const autoOccupancyCheckinInput = document.getElementById('autoOccupancyCheckinInput');
+
+  function renderAutoOccupancyCheckinField() {
+    autoOccupancyCheckinField.classList.toggle('show', autoOccupancyCheckinFeature.isOn());
+  }
+
+  const savedAutoOccupancyCheckinMinutes = project.floorsense.wizard.autoOccupancyCheckin && project.floorsense.wizard.autoOccupancyCheckin.minutes;
+  autoOccupancyCheckinInput.value = Number.isFinite(savedAutoOccupancyCheckinMinutes) ? savedAutoOccupancyCheckinMinutes : 10;
+  renderAutoOccupancyCheckinField();
+
+  autoOccupancyCheckinInput.addEventListener('input', () => {
+    const minutes = parseFloat(autoOccupancyCheckinInput.value);
+    project.floorsense.wizard.autoOccupancyCheckin = project.floorsense.wizard.autoOccupancyCheckin || {};
+    project.floorsense.wizard.autoOccupancyCheckin.minutes = Number.isFinite(minutes) ? minutes : 10;
+    queueSave();
+  });
+
+  document.getElementById(autoOccupancyCheckinFeature.switchEl).addEventListener('click', renderAutoOccupancyCheckinField);
 
   /* ---------------- FME's own inline acknowledgment checkbox: recorded at
      project.floorsense.wizard.fme.motorDetailsAck, shown only while the FME switch itself is on.
@@ -1583,6 +1662,9 @@ untouched — copy-only change).
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
     project.floorsense.wizard.idleRelease.idleHours = 0.5;
     idleHoursInput.value = 0.5;
+    project.floorsense.wizard.autoOccupancyCheckin = project.floorsense.wizard.autoOccupancyCheckin || {};
+    project.floorsense.wizard.autoOccupancyCheckin.minutes = 10;
+    autoOccupancyCheckinInput.value = 10;
     project.floorsense.wizard.fme = project.floorsense.wizard.fme || {};
     project.floorsense.wizard.fme.motorDetailsAck = false;
     fmeAckCheckbox.checked = false;
@@ -1596,6 +1678,7 @@ untouched — copy-only change).
     renderAll();
     renderNoShowHoursField();
     renderIdleHoursField();
+    renderAutoOccupancyCheckinField();
     renderFmeAckField();
     renderAdhSettingsField();
     queueSave();
