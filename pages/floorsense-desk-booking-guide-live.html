@@ -57,6 +57,28 @@
   end-user's point of view, and it reads as an admin-facing safety-net setting rather than a
   distinct thing an end user needs to be told about; flag if it should get its own row.
 
+MOST RECENT CHANGE: per a request to sync this guide with today's floorsense-optional-features-06.html
+changes (icon-color differentiation, and the add-then-remove of "Auto-Release on No Show" within the
+same session), reviewed both. Icon-color changes are a hub-page-only visual affordance (distinguishing
+feature rows in a settings list) and don't correspond to any end-user-facing behaviour, so nothing to
+add here for that. "Auto-Release on No Show" was added and then fully removed before ever being
+committed to the summary page or reflected here, so it never needed a row and none was added — moot,
+noted only in case its brief existence causes confusion later. The remaining net-new feature from that
+session, "Auto Check-In on Occupancy" (project.floorsense.wizard.autoOccupancyCheckin
+{ enabled, minutes }, default off), got its own conditional row here, `#row-auto-checkin` under
+"Tapping In & Out" (right after Remote Booking Confirmation, since it's another way the tap-in step
+itself can be satisfied) — shown only when enabled, naming the configured minutes threshold. Unlike
+Auto-Release on Idle (excluded above as a pure admin-facing safety net with no end-user-visible
+difference), this feature directly changes what an end user needs to do: when it's on, forgetting to
+tap in no longer necessarily costs you the booking, which is exactly the kind of reassurance the
+check-in-window row above would otherwise leave the reader worried about, so it earns its own row
+rather than being folded into or excluded like Idle. Icon is a plain checkmark-in-box glyph (not the
+`.warm` amber treatment used for NSNP/DND) since this reads as reassuring, not something demanding
+extra attention — same plain tier as Remote Booking Confirmation. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a jsdom test covering the row
+hidden by default, shown with the default 10-minute threshold, and shown with custom 1-minute/25-minute
+thresholds (confirming correct minute/minutes singular-plural wording in each case).
+
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's hardcoded green values (which, unlike the wizard pages, aren't driven by CSS variables) were swapped one-for-one using this page's own Smartalock parallel (smartalock-locker-guide-live.html) as the reference: #1FAA59 -> #0071E3, #146B3A -> #0058B0, #E6F7ED -> #E8F1FC, #178A48 -> #0058B0. Covers the toolbar's primary button, the hero gradient, section-eyebrow headings, and the row-icon badges. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 
 MOST RECENT CHANGE: per a site-wide request to propagate the glass-card/icon-badge styling already
@@ -396,6 +418,14 @@ directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on th
       </div>
     </div>
 
+    <div class="row" id="row-auto-checkin" hidden>
+      <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9.3 12l1.8 1.8l3.6-4.4"/></svg></div>
+      <div class="row-body">
+        <h3>Forgot to tap in? You might still be covered</h3>
+        <p id="autoCheckinText"></p>
+      </div>
+    </div>
+
     <div class="section-eyebrow">Ways to Check In</div>
 
     <div class="row">
@@ -612,6 +642,17 @@ directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on th
   /* ---------------- remote booking confirmation ---------------- */
   const remoteConfirmOn = !!(wizard.remoteConfirm && wizard.remoteConfirm.enabled);
   if (remoteConfirmOn) document.getElementById('row-remote-confirm').hidden = false;
+
+  /* ---------------- auto check-in on occupancy ---------------- */
+  const autoOccupancyCheckin = wizard.autoOccupancyCheckin || {};
+  const autoCheckinOn = !!autoOccupancyCheckin.enabled;
+  if (autoCheckinOn) {
+    const autoCheckinMinutes = Number.isFinite(autoOccupancyCheckin.minutes) ? autoOccupancyCheckin.minutes : 10;
+    document.getElementById('autoCheckinText').textContent =
+      'If a desk detects you\'re sitting at it for about ' + autoCheckinMinutes + (autoCheckinMinutes === 1 ? ' minute' : ' minutes') +
+      ' without a manual tap-in, it\'ll check you in automatically so you don\'t lose the booking. The system can\'t always tell who\'s sitting there in that case, so it\'s still best to tap in yourself whenever you can.';
+    document.getElementById('row-auto-checkin').hidden = false;
+  }
 
   /* ---------------- sit-stand / FME ---------------- */
   const fme = wizard.fme || {};

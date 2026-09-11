@@ -431,6 +431,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a new "Auto Check-In on Occupancy" row on `floorsense-optional-features-06.html`, below "Auto-Release on Idle" — automatically checks a desk in if it's occupied for a set number of minutes without a proper check-in (the system can't tell who's occupying it, so the booking stays anonymous), with its own switch, minutes fill-in field, and independent state key (`autoOccupancyCheckin`).
 - Gave every feature-row icon on `floorsense-optional-features-06.html` its own distinct color (extending the existing 5-color badge palette with `badge-green` for Auto-Release on Idle and `badge-coral` for Auto Check-In on Occupancy), and removed "Auto-Release on No Show" entirely per a same-session follow-up request — its row, state key, and wiring never shipped in a committed state.
 - Synced `floorsense-out-of-box-policy.html`'s Configuration Summary with the above: reworded the "Auto-Release on Idle" summary row's description to match the hub's new phrasing, and added a new "Auto Check-In on Occupancy" summary row with its own dynamic value/description text and Edit link back to the hub.
+- Synced `floorsense-desk-booking-guide-live.html`'s end-user guide with a new conditional "Auto Check-In on Occupancy" row under "Tapping In & Out," shown only when the feature is enabled — unlike Auto-Release on Idle (deliberately excluded as an admin-facing safety net), this feature changes what an end user needs to do, so it earns its own row.
 
 ## Status
 
