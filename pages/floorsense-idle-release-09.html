@@ -253,6 +253,16 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .timeline-node.draggable .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 44px;
+    border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 0 0 1px; text-align: center;
+  }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing .label-static-text { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -422,9 +432,10 @@
               </div>
               <div class="timeline-node draggable" id="idleEndNode" tabindex="0" role="slider" aria-label="Auto-release on idle, duration" aria-valuemin="30" aria-valuemax="300">
                 <div class="anchor-pin"></div>
-                <div class="label-time primary">
+                <div class="label-time primary" id="idleLabelPill" title="Tap to type a value">
                   <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="idleEndTime">3h</span>
+                  <span id="idleEndTime" class="label-static-text">3h</span>
+                  <input type="number" id="idleHoursInput" class="label-value-input" min="0.5" max="5" step="0.5" inputmode="decimal" aria-label="Type the idle duration in hours directly">
                   <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="label-desc">Released</div>
@@ -769,6 +780,25 @@ the rail. Purely decorative arrows, no click behaviour. Verified via an inline H
 tag-balance check, `node --check` on the extracted script block, and a Playwright test (after
 enabling the Auto-Release toggle to reveal the hidden `.idle-body`) confirming the pin renders 2
 arrows and dragging still updates the label text correctly.
+
+MOST RECENT CHANGE: per a request to apply the same tap-to-type pin editing rolled out to the
+other timeline pages to this page's own "Released" pin, `#idleLabelPill` gained a
+`title="Tap to type a value"`, its `#idleEndTime` span got `class="label-static-text"`, and a
+sibling `<input type="number" id="idleHoursInput">` (decimal hours, step 0.5, min 0.5, max 5) was
+added, only shown while editing. Since the pill's displayed value ("3h"/"1h 30m") isn't a plain
+absolute time, decimal hours was used instead of an `<input type="time">`, matching the same
+30-minute snap the drag/keyboard handlers already use. `commitIdleEditValue()` rounds the typed
+value to the nearest 30 minutes and clamps it through the exact same `MIN_IDLE_MINUTES`/
+`DURATION_MAX_MINUTES` bounds `minutesFromClientX()` already enforces, so typing, dragging, and
+arrow-key stepping can never disagree on range. This pin isn't nested inside a `<label>`/radio (the
+page's only selection control is the separate on/off switch), so unlike
+floorsense-default-reservation-times-07.html's cards 2/3, no native focus-stealing workaround was
+needed here — the pill's `click`/`pointerdown` only need `stopPropagation()`. A safety clear of any
+stray `.label-time.editing` state was added to the drag pointerdown handler and the Reset button.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a Playwright test confirming: tapping the pill enters edit mode and typing 2.5 commits "2h 30m";
+values above 5h or below 0.5h clamp correctly; Escape cancels without committing; dragging the pin
+still works and updates state; and tap-to-edit still works again immediately after a drag.
 -->
 
 <script>
@@ -952,6 +982,7 @@ arrows and dragging still updates the label text correctly.
   }
   idleEndNode.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     idleEndNode.classList.add('dragging');
     idleEndNode.focus();
     document.addEventListener('pointermove', onIdlePointerMove);
@@ -971,6 +1002,46 @@ arrows and dragging still updates the label text correctly.
       queueSave();
     }
   });
+
+  /* ---------------- tap-to-type: the "Released" pill can also be tapped to type the idle
+     duration directly, in decimal hours, instead of only ever being set by dragging or arrow-key
+     stepping — same pattern as the other timeline pin pages. Since the displayed format ("3h"/"1h
+     30m") isn't a plain absolute time, the input takes decimal hours (step 0.5, matching the
+     30-minute drag/keyboard snap) rather than an <input type="time">, run through the exact same
+     MIN_IDLE_MINUTES/DURATION_MAX_MINUTES clamp the drag handler uses. This pin isn't nested inside
+     a <label>/radio (the page's only selection control is the separate on/off switch), so no native
+     focus-stealing concern applies here. ---------------- */
+  const idleLabelPill = document.getElementById('idleLabelPill');
+  const idleHoursInput = document.getElementById('idleHoursInput');
+
+  function enterIdleEditMode() {
+    idleLabelPill.classList.add('editing');
+    idleHoursInput.value = Math.round((parseFloat(state.idleHours) || 0) * 2) / 2;
+    idleHoursInput.focus();
+  }
+  function exitIdleEditMode() {
+    idleLabelPill.classList.remove('editing');
+  }
+  function commitIdleEditValue() {
+    if (idleHoursInput.value !== '') {
+      const typedMinutes = Math.round((parseFloat(idleHoursInput.value) || 0) * 60 / 30) * 30;
+      state.idleHours = Math.max(MIN_IDLE_MINUTES, Math.min(DURATION_MAX_MINUTES, typedMinutes)) / 60;
+      updateDiagram();
+      queueSave();
+    }
+    exitIdleEditMode();
+  }
+  idleLabelPill.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+  idleLabelPill.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!idleLabelPill.classList.contains('editing')) enterIdleEditMode();
+  });
+  idleHoursInput.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); commitIdleEditValue(); idleEndNode.focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); exitIdleEditMode(); idleEndNode.focus(); }
+  });
+  idleHoursInput.addEventListener('blur', () => { if (idleLabelPill.classList.contains('editing')) commitIdleEditValue(); });
 
   /* ---------------- on/off switch — this feature is optional and off by default; the diagram is
      hidden entirely (not just dimmed) until switched on, same convention used for
@@ -1016,6 +1087,7 @@ arrows and dragging still updates the label text correctly.
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     state.enabled = false;
     state.idleHours = 3;
     applyState();
