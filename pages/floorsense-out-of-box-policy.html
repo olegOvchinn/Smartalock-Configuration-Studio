@@ -802,7 +802,14 @@
             <span class="label">Auto-Release on Idle</span>
             <span class="value-group"><span class="value" id="idleReleaseSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-idle-release-09.html?return=summary">Edit</a></span>
           </div>
-          <p class="summary-desc" id="idleReleaseSummaryDesc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn't checked into in time. Enable and configure it from Optional Features if required.</p>
+          <p class="summary-desc" id="idleReleaseSummaryDesc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk hasn't been occupied for a set time, at any point during the booking. Enable and configure it from Optional Features if required.</p>
+        </div>
+        <div class="summary-row">
+          <div class="summary-row-top">
+            <span class="label">Auto Check-In on Occupancy</span>
+            <span class="value-group"><span class="value" id="autoOccupancyCheckinSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-optional-features-06.html?return=summary">Edit</a></span>
+          </div>
+          <p class="summary-desc" id="autoOccupancyCheckinSummaryDesc">Not part of the fixed defaults — this optional feature automatically checks a desk in if it's detected as occupied without a proper check-in; the system can't identify who's occupying it, so the booking stays anonymous. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -2392,6 +2399,25 @@ branch — Project Registration and IT Configuration & Integrations — addition
 param purely for href consistency, since those target pages needed no JS change). This page's own
 JS is unchanged; only the href strings were edited. Verified via Playwright end-to-end navigation
 tests confirming each target page's Continue button now lands back on this summary.
+
+MOST RECENT CHANGE: per a request to sync this summary with floorsense-optional-features-06.html's
+same-session changes (icon-color differentiation, Auto-Release on Idle's reworded description, the new
+Auto Check-In on Occupancy row, and a same-turn follow-up removing "Auto-Release on No Show" entirely),
+reviewed and updated the "Additional Options" group. Icon-color changes are hub-page-only and don't
+correspond to summary content, so nothing needed there. "Auto-Release on Idle"'s row description was
+reworded to match the hub's new phrasing (hasn't-been-occupied-for-a-set-time, starting at any point
+during the booking, rather than the old isn't-checked-into wording) in both its `renderIdleReleaseSummary()`
+enabled- and disabled-state text. A new row, "Auto Check-In on Occupancy," was added right after it
+(<- `project.floorsense.wizard.autoOccupancyCheckin { enabled, minutes }`, default off), with its own
+`renderAutoOccupancyCheckinSummary()` IIFE mirroring the Idle row's on/off value+description pattern,
+and an Edit link pointing at `floorsense-optional-features-06.html?return=summary` (the hub itself,
+since — like Idle — it has no dedicated wizard page of its own). "Auto-Release on No Show" was briefly
+added as a summary row earlier in this same session (duplicating the Idle row) but was removed again,
+per explicit follow-up instruction, before ever being committed — this page therefore has no
+`renderNoShowReleaseSummary()` function, no `noShowRelease*` element ids, and no row referencing it
+anywhere; it never shipped. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a grep confirming zero remaining references to "No Show"/`noShow` anywhere
+in this file.
 -->
 
 
@@ -2743,11 +2769,27 @@ tests confirming each target page's Continue button now lands back on this summa
       const hoursLabel = idleHours + (idleHours === 1 ? ' hour' : ' hours');
       document.getElementById('idleReleaseSummaryValue').textContent = 'After ' + hoursLabel;
       document.getElementById('idleReleaseSummaryDesc').textContent =
-        'Enabled — automatically frees up a reservation if the desk isn\'t checked into within ' + hoursLabel + ' of the booking start.';
+        'Enabled — automatically frees up a reservation if the desk hasn\'t been occupied for ' + hoursLabel + ', starting at any point during the booking.';
     } else {
       document.getElementById('idleReleaseSummaryValue').textContent = 'Off by default';
       document.getElementById('idleReleaseSummaryDesc').textContent =
-        'Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk isn\'t checked into in time. Enable and configure it from Optional Features if required.';
+        'Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk hasn\'t been occupied for a set time, at any point during the booking. Enable and configure it from Optional Features if required.';
+    }
+  })();
+
+  (function renderAutoOccupancyCheckinSummary() {
+    const savedOcc = project.floorsense.wizard.autoOccupancyCheckin || {};
+    const enabled = !!savedOcc.enabled;
+    const minutes = Number.isFinite(savedOcc.minutes) ? savedOcc.minutes : 10;
+    if (enabled) {
+      const minutesLabel = minutes + (minutes === 1 ? ' minute' : ' minutes');
+      document.getElementById('autoOccupancyCheckinSummaryValue').textContent = 'After ' + minutesLabel;
+      document.getElementById('autoOccupancyCheckinSummaryDesc').textContent =
+        'Enabled — automatically checks a desk in after ' + minutesLabel + ' of detected occupancy without a proper check-in; the system can\'t identify who\'s occupying it, so the booking stays anonymous.';
+    } else {
+      document.getElementById('autoOccupancyCheckinSummaryValue').textContent = 'Off by default';
+      document.getElementById('autoOccupancyCheckinSummaryDesc').textContent =
+        'Not part of the fixed defaults — this optional feature automatically checks a desk in if it\'s detected as occupied without a proper check-in; the system can\'t identify who\'s occupying it, so the booking stays anonymous. Enable and configure it from Optional Features if required.';
     }
   })();
 
