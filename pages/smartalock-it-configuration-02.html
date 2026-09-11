@@ -296,12 +296,10 @@
           <div class="qcard">
             <h3><div class="qcard-icon-badge icon-scim"><img class="qcard-icon" src="../assets/images/icon-scim.png" alt=""></div>Automatic User Provisioning <span class="group-tag">Recommended</span></h3>
             <p class="qdesc">Configure automatic user provisioning and deprovisioning, if required.</p>
-            <label>Provisioning method</label>
+            <label>SCIM provisioning</label>
             <select id="scimProvisioning">
               <option value="">Not required</option>
-              <option value="scim">SCIM</option>
-              <option value="ldap">LDAP</option>
-              <option value="rest-api">REST API</option>
+              <option value="enabled">Enabled</option>
             </select>
 
             <div class="guide-box" id="scimGuide">
@@ -531,30 +529,6 @@ optional double-check rather than implying the client can't handle the page them
 `<p>` text changed; the surrounding `.it-help-notice` markup, the "Send Email" button, and its JS
 wiring are all unchanged. Verified via an inline HTMLParser tag-balance check and `node --check` on
 the extracted script block (untouched — copy-only change).
-
-MOST RECENT CHANGE: per a request to expand "SCIM provisioning" into a choice of SCIM/LDAP/REST
-API, the Automatic User Provisioning card's `<select id="scimProvisioning">` changed from a plain
-Not required/Enabled toggle to four options: Not required, SCIM, LDAP, REST API (values ""/"scim"/
-"ldap"/"rest-api"); its `<label>` changed from "SCIM provisioning" to "Provisioning method" to match.
-The id/state key (`scimProvisioning`) was deliberately left unchanged, consistent with this page's
-earlier copy-only SSO/SCIM renames (see above) — only its accepted values changed. `applySCIMVisibility()`
-now shows the SCIM setup-guide box only for `state.scimProvisioning === 'scim'` (LDAP/REST API have
-no guide link of their own to show). `computeArchMode()` now routes LDAP and REST API to the same
-'api' architecture diagram already used for the API/Integration card, alongside the existing 'scim'
-diagram for SCIM specifically — there's no dedicated LDAP diagram, and both read as a comparable
-"external system talks to Smartalock via a protocol" integration shape. A legacy migration
-(`if (state.scimProvisioning === 'enabled') state.scimProvisioning = 'scim';`) maps old saved
-"enabled" values (from before this change) onto "scim", the closest equivalent, so a returning
-project doesn't silently show no selection. `smartalock-configuration-summary-08.html` and
-floorsense-out-of-box-policy.html's own scimLabels/SCIM_LABELS maps were updated to the same four
-values (retaining an `enabled: "SCIM"` alias so either page displays legacy raw storage correctly
-even before this page's own migration has run), and both pages' "SCIM User Provisioning" row label
-was renamed to "Provisioning Method" to match. Verified via an inline HTMLParser tag-balance check,
-`node --check` on all three touched files' extracted script blocks, and a Playwright test confirming:
-all four options render with correct values; selecting SCIM shows its guide box and the scim
-diagram; selecting LDAP or REST API hides the guide box and shows the api diagram; a legacy
-"enabled" saved value migrates to a "scim" selection on load; and both summary pages render "SCIM"/
-"LDAP"/"REST API"/"Not required" (and "SCIM" for a raw legacy "enabled" value) correctly.
 -->
 
 <script>
@@ -592,11 +566,6 @@ diagram; selecting LDAP or REST API hides the guide box and shows the api diagra
     apiRequirements: "",
     gallagherIntegration: ""
   }, project.smartalock.wizard.it || {});
-  // Legacy migration: this field used to be a plain "SCIM provisioning: Enabled" toggle
-  // (value "enabled") before it was expanded to a choice of provisioning method. "enabled" isn't
-  // one of the current option values, so an old saved project would otherwise show no selection —
-  // map it onto "scim", the closest equivalent (it was the only protocol this field ever named).
-  if (state.scimProvisioning === 'enabled') state.scimProvisioning = 'scim';
 
   /* ---------------- module-status tracking (no visible progress bar on this page) ---------------- */
   function markModuleSaved(key) {
@@ -623,7 +592,7 @@ diagram; selecting LDAP or REST API hides the guide box and shows the api diagra
     ssoScopeField.classList.toggle('show', show);
   }
   function applySCIMVisibility() {
-    scimGuide.classList.toggle('show', state.scimProvisioning === 'scim');
+    scimGuide.classList.toggle('show', state.scimProvisioning === 'enabled');
   }
 
   /* ---------------- architecture diagram: SSO / SCIM / API modes ---------------- */
@@ -633,8 +602,7 @@ diagram; selecting LDAP or REST API hides the guide box and shows the api diagra
     api: { src: '../assets/images/it-configuration-architecture-api.png' }
   };
   function computeArchMode() {
-    if (state.scimProvisioning === 'scim') return 'scim';
-    if (state.scimProvisioning === 'ldap' || state.scimProvisioning === 'rest-api') return 'api';
+    if (state.scimProvisioning === 'enabled') return 'scim';
     if (state.apiRequirements.trim() !== '') return 'api';
     return 'sso';
   }
