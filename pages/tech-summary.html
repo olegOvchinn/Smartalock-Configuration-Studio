@@ -103,6 +103,26 @@
   custom kiosk logo, and two locker types), and a "never expires"/"idle off" case — plus confirming
   the four top-level section headings render in the order Project Details → Smartalock → Floorsense →
   Additional Policies — and a full-page Playwright screenshot of the combined page.
+
+  MOST RECENT CHANGE: per a request to not show either branch's section in the Tech Summary "if all
+  settings after product picker page are default (no changes made)," added a per-branch
+  saChanged/fsChanged tracking flag, each starting false and flipped to true the moment any field in
+  that branch's own wizard state is found to differ from the exact same default value its own row
+  already falls back to when rendering (e.g. Smartalock's Locker Door Behaviour defaulting to Pop
+  Open with no push-to-open scope, Floorsense's NSNP/FME/Anti-Desk-Hogging all defaulting to Off,
+  Check-in thresholds defaulting to 30/60 min) — reusing those existing fallback defaults rather than
+  maintaining a second, separately-declared defaults object that could drift out of sync. At the end
+  of the script, `smartalockSection.hidden = !saChanged` and `floorsenseSection.hidden = !fsChanged`
+  hide either or both sections entirely when nothing in that branch was actually changed. "Project
+  Details" (Registration + IT Configuration, which run before the product picker and are shared
+  across both branches) is explicitly out of scope for this hiding behavior and always shows.
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
+  jsdom test covering all-default (both sections hidden), Smartalock-only, Floorsense-only, and
+  both-changed cases, a boundary case confirming a shared IT Configuration change alone does not
+  affect either branch section's visibility, two "non-obvious default flip" cases (Smartalock's
+  push-to-open behaviour, Floorsense's idle-release toggled on with its threshold left at the
+  default), and a Playwright screenshot confirming no visual gap when the Smartalock section is
+  hidden and Project Details flows directly into Floorsense.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -216,7 +236,7 @@
     </table>
   </div>
 
-  <div class="tsec">
+  <div class="tsec" id="smartalockSection">
     <h2 class="tsec-title">Smartalock</h2>
 
     <p class="tsec-sub">Initial Locker Access Methods</p>
@@ -275,7 +295,7 @@
     </table>
   </div>
 
-  <div class="tsec">
+  <div class="tsec" id="floorsenseSection">
     <h2 class="tsec-title">Floorsense</h2>
 
     <p class="tsec-sub">Desk Allocation Method</p>
@@ -471,6 +491,11 @@
 
   /* ==================== SMARTALOCK ==================== */
   const saWizard = project.smartalock.wizard;
+  // Tracks whether ANY Smartalock-branch field differs from the same shipped default this page
+  // already falls back to when rendering it — if nothing below ever flips this to true, the client
+  // never changed a single Smartalock setting from what it starts as, and the whole section is
+  // hidden (see the end of this script) rather than showing a wall of defaults.
+  let saChanged = false;
 
   /* ---------------- Initial Locker Access Methods ---------------- */
   const ACCESS_LABELS = {
@@ -485,6 +510,7 @@
   set('saAccessMethods', selectedAccess.length
     ? Object.keys(ACCESS_LABELS).filter(k => selectedAccess.includes(k)).map(k => ACCESS_LABELS[k]).join(', ')
     : 'None selected');
+  if (selectedAccess.length) saChanged = true;
 
   /* ---------------- Locker Door Behaviour ---------------- */
   const lockerBehaviour = saWizard.lockerBehaviour || {};
@@ -507,6 +533,8 @@
     set('saLockerBank', lockerBehaviour.behaviourLockerBank || 'None specified');
     set('saLockerNumbers', lockerBehaviour.behaviourLockerNumbers || 'None specified');
   }
+  if (!popOpenEnabled || pushOpenEnabled || (lockerBehaviour.pushOpenScope && lockerBehaviour.pushOpenScope !== '')
+    || lockerBehaviour.behaviourLockerBank || lockerBehaviour.behaviourLockerNumbers) saChanged = true;
 
   /* ---------------- Reservation Type ---------------- */
   const RESERVATION_MODEL_LABELS = { admin: 'Allocated by Administrator', user: 'User Self-Allocated', parcel: 'Parcel Delivery' };
@@ -535,6 +563,10 @@
     }
     set('saSelfAllocDuration', selfAllocValue);
   }
+  // Reservation Type has no other default state to check beyond "was anything selected" — the
+  // default shipped state is an empty selection, so any selection (including which unlocks the
+  // Self-Allocation Duration sub-row above) already means the client changed this group.
+  if (reservationTypesSelected.length) saChanged = true;
 
   /* ---------------- Locker Policy ---------------- */
   const locker = saWizard.locker || {};
@@ -558,6 +590,10 @@
   set('saLockerLimit', lockerLimitValue);
   const RELEASE_LABELS = { grace: 'Allow one final locker access after expiry', immediate: 'Release when reservation expires' };
   set('saReleaseBehaviour', RELEASE_LABELS[locker.releaseBehaviour] ?? (locker.releaseBehaviour || RELEASE_LABELS.grace));
+  // Defaults this group ships with: idle release Off, 1 locker per user, "grace" release behaviour —
+  // changed if any of the three differ from those same defaults used in the fallbacks just above.
+  if ((locker.idleDuration && locker.idleDuration !== '') || locker.lockerLimit === 'custom'
+    || (locker.releaseBehaviour && locker.releaseBehaviour !== 'grace')) saChanged = true;
 
   /* ---------------- User Policy ---------------- */
   const user = saWizard.user || {};
@@ -572,6 +608,9 @@
     set('saUserGroup', user.userGroupName || 'None specified');
     set('saAllocationDetails', user.allocationDetails || 'None specified');
   }
+  // Default is "All registered users" with no group scoping — changed only once the client
+  // switches this to group-scoped access (the same condition that reveals the sub-rows above).
+  if (userGroupsMode) saChanged = true;
 
   /* ---------------- Kiosk Customisation ---------------- */
   const kiosk = saWizard.kioskCustomisation || {};
@@ -608,6 +647,15 @@
   }
 
   set('saBgColour', kiosk.bgColour || 'Default (#5B8FD7)');
+  // Every Kiosk Customisation toggle above ships enabled by default (via kioskFlag's own
+  // hasOwnProperty ? value : true fallback) except Custom Logo (default off) and Background
+  // Colour (default the stock blue) — changed if any toggle was explicitly turned off, any
+  // custom text/logo/colour was actually supplied, or Custom Logo was turned on.
+  if (!logoOn || logoCustomTextGiven || !kioskFlag('openEnabled') || !kioskFlag('lockerEnabled')
+    || !kioskFlag('qrEnabled') || !kioskFlag('cardEnabled') || !bannerOn
+    || (kiosk.bannerLine1 && kiosk.bannerLine1 !== 'Scan your access card or')
+    || (kiosk.bannerLine2 && kiosk.bannerLine2 !== 'select an option to get started')
+    || customLogoOn || (kiosk.bgColour && kiosk.bgColour !== '')) saChanged = true;
 
   /* ---------------- Locker Types ---------------- */
   const LOCKER_TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type' };
@@ -628,8 +676,13 @@
       lockerTypesTable.appendChild(tr);
     });
   }
+  // Default is no locker types selected at all — any selection is a change.
+  if (selectedLockerTypes.length) saChanged = true;
 
   /* ==================== FLOORSENSE ==================== */
+  // Same "did anything move from its shipped default" tracking as saChanged above, checked against
+  // the exact same fallback defaults each Floorsense field already renders with.
+  let fsChanged = false;
 
   /* ---------------- Desk Allocation Method ---------------- */
   const RESERVATION_TYPE_LABELS = {
@@ -644,6 +697,9 @@
   set('tsReservationTypes', selectedReservationTypes.length
     ? selectedReservationTypes.map(t => RESERVATION_TYPE_LABELS[t] || t).join(', ')
     : 'None selected');
+  // Ships defaulting to ["adhoc"] only (the fallback above) — changed if the saved selection is
+  // anything other than exactly that single default type.
+  if (!(selectedReservationTypes.length === 1 && selectedReservationTypes[0] === 'adhoc')) fsChanged = true;
 
   /* ---------------- Prebooking & Duration ---------------- */
   const prebookingAdvance = wizard.prebookingAdvance || {};
@@ -666,7 +722,12 @@
     set('tsDefaultEnd', 'n/a (duration mode)');
     const durationHours = Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9;
     set('tsDefaultDuration', formatDuration(durationHours * 60));
+    if (durationHours !== 9) fsChanged = true;
   }
+  // Ships defaulting to: 8-day advance window, duration mode, 8:30am start — changed if any of
+  // those differ from the same fallbacks used just above (the fixed-end branch's own end-time/
+  // duration checks are folded in above since they only apply in that mode).
+  if (advanceDays !== 8 || endMode === 'fixed-end' || startMinutes !== 510) fsChanged = true;
 
   /* ---------------- Check-in Window ---------------- */
   const checkinWindow = wizard.checkinWindow || {};
@@ -674,29 +735,39 @@
   const lateMin = Number.isFinite(checkinWindow.checkInLateMinutes) ? checkinWindow.checkInLateMinutes : 60;
   set('tsCheckinEarly', formatDuration(earlyMin));
   set('tsCheckinLate', formatDuration(lateMin));
+  // Ships defaulting to 30 min early / 60 min late.
+  if (earlyMin !== 30 || lateMin !== 60) fsChanged = true;
 
   /* ---------------- Check-in Behaviour ---------------- */
   const outOfBoxPolicy = wizard.outOfBoxPolicy || {};
   set('tsSwipeOut', YES_NO(outOfBoxPolicy.swipeOutRequired !== false));
   set('tsAutoCancel', YES_NO(outOfBoxPolicy.autoCancelOnElsewhere !== false));
+  // Both ship enabled by default (the !== false fallback) — changed only if either was explicitly
+  // turned off.
+  if (outOfBoxPolicy.swipeOutRequired === false || outOfBoxPolicy.autoCancelOnElsewhere === false) fsChanged = true;
 
   /* ---------------- Access Methods ---------------- */
   const CHECKIN_METHOD_LABELS = { card: 'Cards', prebooking: 'App/Desktop', qr: 'QR Code', wallet: 'Wallet Pass' };
   const selectedMethods = Array.isArray((wizard.checkinMethods || {}).selected) && wizard.checkinMethods.selected.length
     ? wizard.checkinMethods.selected : ['prebooking'];
   set('tsCheckinMethods', selectedMethods.map(m => CHECKIN_METHOD_LABELS[m] || m).join(', '));
+  // Ships defaulting to ["prebooking"] only.
+  if (!(selectedMethods.length === 1 && selectedMethods[0] === 'prebooking')) fsChanged = true;
 
   /* ---------------- Additional Options ---------------- */
   const maxDesks = Number.isFinite(outOfBoxPolicy.maxDesksPerUser) ? outOfBoxPolicy.maxDesksPerUser : 1;
   set('tsMaxDesks', String(maxDesks));
+  if (maxDesks !== 1) fsChanged = true;
 
   const idleRelease = wizard.idleRelease || {};
   set('tsIdleEnabled', YES_NO(!!idleRelease.enabled));
   set('tsIdleHours', formatDuration((Number.isFinite(idleRelease.idleHours) ? idleRelease.idleHours : 3) * 60));
+  if (idleRelease.enabled) fsChanged = true;
 
   const autoOccupancyCheckin = wizard.autoOccupancyCheckin || {};
   set('tsAutoCheckinEnabled', YES_NO(!!autoOccupancyCheckin.enabled));
   set('tsAutoCheckinMinutes', formatDuration(Number.isFinite(autoOccupancyCheckin.minutes) ? autoOccupancyCheckin.minutes : 10));
+  if (autoOccupancyCheckin.enabled) fsChanged = true;
 
   const NSNP_MODE_LABELS = { all: 'On — all desks', list: 'On — selected desks', other: 'On — custom setup', none: 'Off' };
   const nsnp = wizard.nsnp || {};
@@ -708,6 +779,8 @@
   const nsnpOtherNoteGiven = nsnp.mode === 'other' && !!(nsnp.otherNote && nsnp.otherNote.trim());
   showRow('tsNsnpOtherNoteRow', nsnpOtherNoteGiven);
   if (nsnpOtherNoteGiven) set('tsNsnpOtherNote', nsnp.otherNote.trim());
+  // NSNP ships Off by default — changed if a mode is actually set.
+  if (nsnp.mode && nsnp.mode !== 'none') fsChanged = true;
 
   const FME_MODE_LABELS = { all: 'On (all desks)', list: 'On (selected desks)', none: 'Off' };
   const fme = wizard.fme || {};
@@ -717,6 +790,8 @@
   const fmeMotorAckGiven = fme.mode && fme.mode !== 'none' && !!fme.motorDetailsAck;
   showRow('tsFmeMotorAckRow', fmeMotorAckGiven);
   if (fmeMotorAckGiven) set('tsFmeMotorAck', 'Yes');
+  // FME ships Off by default — changed if a mode is actually set.
+  if (fme.mode && fme.mode !== 'none') fsChanged = true;
 
   const ADH_MODE_LABELS = { enable: 'On', none: 'Off' };
   const adh = wizard.antiDeskHogging || {};
@@ -726,10 +801,16 @@
   const adhMaxBookings = Number.isFinite(adh.maxBookings) ? adh.maxBookings : 1;
   set('tsAdhWindow', adh.mode && adh.mode !== 'none' ? formatDuration(adhWindowDays * 1440) : 'n/a');
   set('tsAdhMaxBookings', adh.mode && adh.mode !== 'none' ? String(adhMaxBookings) + ' booking(s)' : 'n/a');
+  // Anti Desk Hogging ships Off by default — changed if a mode is actually set.
+  if (adh.mode && adh.mode !== 'none') fsChanged = true;
 
   set('tsRecurring', YES_NO(!!outOfBoxPolicy.recurringEnabled));
   set('tsRemoteConfirm', YES_NO(!!(wizard.remoteConfirm && wizard.remoteConfirm.enabled)));
   set('tsDnd', YES_NO(outOfBoxPolicy.dndEnabled !== false));
+  // Recurring Bookings and Remote Booking Confirmation ship off by default; Privacy/DND ships on
+  // by default (the !== false fallback) — changed if any of the three differ from that.
+  if (outOfBoxPolicy.recurringEnabled || (wizard.remoteConfirm && wizard.remoteConfirm.enabled)
+    || outOfBoxPolicy.dndEnabled === false) fsChanged = true;
 
   /* ---------------- Training Requested ---------------- */
   const trainingRequested = outOfBoxPolicy.trainingRequested || {};
@@ -740,6 +821,9 @@
   set('tsTrainingTeams', YES_NO(!!autoTrainingFromTypes.teams || !!trainingRequested.teams));
   set('tsTrainingBookOnBehalf', YES_NO(!!autoTrainingFromTypes.bookOnBehalf || !!trainingRequested.bookOnBehalf));
   set('tsTrainingNotifications', YES_NO(!!trainingRequested.notifications));
+  // Auto-training-from-reservation-type is already covered by the Desk Allocation Method check
+  // above, so only the client's own explicit training requests are checked here.
+  if (trainingRequested.teams || trainingRequested.bookOnBehalf || trainingRequested.notifications) fsChanged = true;
 
   /* ---------------- Additional Policies (per desk/user group override) ---------------- */
   const additionalPolicies = Array.isArray(wizard.additionalPolicies) ? wizard.additionalPolicies.filter(p => p && p.saved) : [];
@@ -773,6 +857,14 @@
       list.appendChild(block);
     });
   }
+
+  /* ---------------- hide branch sections with no changes from default ---------------- */
+  // "Project Details" (Registration + IT Configuration) always shows — it runs before the product
+  // picker and isn't part of this per-branch behaviour. Only the Smartalock and/or Floorsense
+  // sections are hidden, and only when literally nothing in that branch's own wizard flow was
+  // changed from its shipped default value.
+  document.getElementById('smartalockSection').hidden = !saChanged;
+  document.getElementById('floorsenseSection').hidden = !fsChanged;
 })();
 </script>
 
