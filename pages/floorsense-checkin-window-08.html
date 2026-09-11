@@ -290,6 +290,20 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  /* ---------- tap-to-type: matches floorsense-prebooking-advance-04.html's pattern — each draggable
+     pill is its own tap target (separate from dragging), swapping its time text for a small inline
+     <input type="time"> so a value can be typed/picked directly instead of only ever set by
+     dragging. Not applied to the fixed #checkinStartTime center pill, since that one isn't
+     draggable/editable at all. ---------- */
+  .timeline-node.draggable .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 76px; border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 0 0 1px; color-scheme: dark;
+  }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing .label-static-text { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -467,10 +481,10 @@
             People don't always arrive at the exact second their booking starts — some are a few
             minutes early, others run a little late — so a desk shouldn't release the instant
             someone misses the start time. This check-in window gives them a grace period either
-            side of the booking start to confirm they've arrived: drag either edge of the diagram
-            below to set how early check-in can begin and how late it can still be accepted. Only
-            once that window closes with no check-in does the desk automatically revert to being
-            generally available.
+            side of the booking start to confirm they've arrived: grab and drag either edge of the
+            diagram below, or tap and change either time directly, to set how early check-in can
+            begin and how late it can still be accepted. Only once that window closes with no
+            check-in does the desk automatically revert to being generally available.
           </p>
         </div>
 
@@ -484,9 +498,10 @@
               </div>
               <div class="timeline-node start-node draggable" id="startNode" tabindex="0" role="slider" aria-label="Earliest check-in time, minutes before booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
-                <div class="label-time">
+                <div class="label-time" id="startLabelPill" title="Tap to type a value">
                   <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="checkinEarliestTime">7:30 AM</span>
+                  <span id="checkinEarliestTime" class="label-static-text">7:30 AM</span>
+                  <input type="time" id="startTimeInput" class="label-value-input" aria-label="Type the earliest check-in time directly">
                   <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="label-desc" id="startGapLabel">30 min before</div>
@@ -498,9 +513,10 @@
               </div>
               <div class="timeline-node end-node draggable" id="endNode" tabindex="0" role="slider" aria-label="Latest check-in time, minutes after booking start" aria-valuemin="30" aria-valuemax="180">
                 <div class="handle"></div>
-                <div class="label-time">
+                <div class="label-time" id="endLabelPill" title="Tap to type a value">
                   <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="checkinLatestTime">9:30 AM</span>
+                  <span id="checkinLatestTime" class="label-static-text">9:30 AM</span>
+                  <input type="time" id="endTimeInput" class="label-value-input" aria-label="Type the latest check-in time directly">
                   <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <div class="label-desc" id="endGapLabel">60 min after</div>
@@ -1143,6 +1159,37 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 (untouched), a Playwright screenshot showing the new ~2px seam around the centre pin, and a
 regression check confirming dragging `#startNode` still updates its label correctly and the two
 zones' rendered gap remains consistent afterward.
+
+MOST RECENT CHANGE: per a request to let the two draggable pills also accept a typed value instead
+of only ever being set by dragging (matching the same feature added to
+floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html), `#startLabelPill`/
+`#endLabelPill` (the `.label-time` divs wrapping the decorative arrows and
+`#checkinEarliestTime`/`#checkinLatestTime`) are now their own tap targets — the fixed, non-draggable
+`#checkinStartTime` center pill is untouched, since it isn't editable at all. Each time span gained a
+shared `.label-static-text` class, and a sibling `<input type="time" class="label-value-input">`
+(`#startTimeInput`/`#endTimeInput`) sits next to it, hidden by default. Tapping a pill swaps the
+static text for the time input, pre-filled with the absolute time it already displays — even though
+the underlying state (`state.checkInEarlyMinutes`/`checkInLateMinutes`) is really a before/after gap
+in minutes from the fixed booking-start reference, not an absolute time. Committing converts the
+typed absolute time back to that gap (`rawGap = startMinutes - typed` for the "before" pin,
+`typed - startMinutes` for "after", wrapped mod 1440 for any day-boundary edge case, then clamped to
+the same `0-MAX_OFFSET_MINUTES` (180min) range and snapped to the nearest 30 minutes the drag path
+already enforces) before routing through each pin's own existing `opts.onChange()`/`clampMinutes()` —
+now hoisted into named `startPinOpts`/`endPinOpts` consts (previously anonymous object literals
+passed straight into `makeDraggableCheckinNode()`) so both the drag and tap-to-edit paths share the
+identical clamp logic and can never drift out of sync. A new `minutesToHHMM()` helper (this page
+previously only ever read times, never needed to format one back into a `<input type="time">`-
+compatible 24-hour string) handles that conversion for pre-filling the input. Enter commits, Escape
+cancels, blur commits; grabbing either pin to drag it, and Reset, both close any pill left open
+mid-edit. The card's intro paragraph was reworded from "drag either edge of the diagram below to
+set..." to "grab and drag either edge of the diagram below, or tap and change either time directly,
+to set...", matching the phrasing used on the other timeline pages. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a Playwright test confirming:
+tapping a pill opens its time input pre-filled with the correct absolute time; typing 07:00 for the
+earliest time (booking start 8:30 AM) commits a 90-minute "before" gap; typing 10:00 for the latest
+time commits a 90-minute "after" gap; typing a wildly out-of-range latest time clamps to the enforced
+180-minute maximum; pressing Escape leaves the state unchanged; and dragging a pin still works
+correctly afterward.
 -->
 
 <script>
@@ -1231,6 +1278,12 @@ zones' rendered gap remains consistent afterward.
   }
 
   const startMinutes = parseTimeToMinutes(savedDefaultStartTime);
+  function minutesToHHMM(totalMinutes) {
+    totalMinutes = ((Math.round(totalMinutes) % 1440) + 1440) % 1440;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  }
 
   /* ---------------- rail: earliest/latest dots + shaded zones, directly draggable ---------------- */
   // Scaled down from a 12h range so the minimum 30-minute gap (MIN_GAP_MINUTES) still lands a
@@ -1368,6 +1421,7 @@ zones' rendered gap remains consistent afterward.
     }
     nodeEl.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
       nodeEl.classList.add('dragging');
       nodeEl.focus();
       document.addEventListener('pointermove', onPointerMove);
@@ -1390,17 +1444,66 @@ zones' rendered gap remains consistent afterward.
     });
   }
 
-  makeDraggableCheckinNode(startNode, 'before', {
+  const startPinOpts = {
     getMinutes: () => state.checkInEarlyMinutes,
     clampMinutes: (minutes) => Math.max(MIN_GAP_MINUTES, minutes),
     onChange: (minutes) => { state.checkInEarlyMinutes = minutes; }
-  });
-  makeDraggableCheckinNode(endNode, 'after', {
+  };
+  const endPinOpts = {
     getMinutes: () => state.checkInLateMinutes,
     clampMinutes: (minutes) => Math.max(MIN_GAP_MINUTES, minutes),
     onChange: (minutes) => { state.checkInLateMinutes = minutes; }
-  });
+  };
+  makeDraggableCheckinNode(startNode, 'before', startPinOpts);
+  makeDraggableCheckinNode(endNode, 'after', endPinOpts);
   renderRailPositions();
+
+  /* ---------------- tap-to-type: each draggable pill is its own tap target, swapping its time text
+     for a native <input type="time"> pre-filled with the absolute time it already displays (the
+     early/late pin's own value is really a before/after gap from startMinutes, so a typed absolute
+     time is converted back to that gap — clamped/snapped exactly like dragging — before being routed
+     through the same opts.onChange()/clampMinutes() every drag path already uses). ---------- */
+  function wireTapToEditCheckinTime(pillEl, inputEl, nodeEl, side, opts) {
+    function currentAbsoluteMinutes() {
+      return side === 'before' ? startMinutes - opts.getMinutes() : startMinutes + opts.getMinutes();
+    }
+    function enterEditMode() {
+      pillEl.classList.add('editing');
+      inputEl.value = minutesToHHMM(currentAbsoluteMinutes());
+      inputEl.focus();
+    }
+    function exitEditMode() { pillEl.classList.remove('editing'); }
+    function commit() {
+      if (inputEl.value) {
+        const typedMinutes = parseTimeToMinutes(inputEl.value);
+        let rawGap = side === 'before' ? (startMinutes - typedMinutes) : (typedMinutes - startMinutes);
+        rawGap = ((rawGap % 1440) + 1440) % 1440;
+        rawGap = Math.max(0, Math.min(MAX_OFFSET_MINUTES, Math.round(rawGap / 30) * 30));
+        opts.onChange(opts.clampMinutes(rawGap));
+        renderRailPositions();
+        updateCheckinExample();
+        queueSave();
+      }
+      exitEditMode();
+    }
+    pillEl.addEventListener('pointerdown', (e) => e.stopPropagation());
+    pillEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!pillEl.classList.contains('editing')) enterEditMode();
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commit(); nodeEl.focus(); }
+      else if (e.key === 'Escape') { e.preventDefault(); exitEditMode(); nodeEl.focus(); }
+    });
+    inputEl.addEventListener('blur', () => { if (pillEl.classList.contains('editing')) commit(); });
+  }
+  wireTapToEditCheckinTime(
+    document.getElementById('startLabelPill'), document.getElementById('startTimeInput'), startNode, 'before', startPinOpts
+  );
+  wireTapToEditCheckinTime(
+    document.getElementById('endLabelPill'), document.getElementById('endTimeInput'), endNode, 'after', endPinOpts
+  );
 
   /* ---------------- check-in window live example ---------------- */
   const checkinStartTime = document.getElementById('checkinStartTime');
@@ -1437,6 +1540,7 @@ zones' rendered gap remains consistent afterward.
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     state.checkInEarlyMinutes = 30;
     state.checkInLateMinutes = 60;
     applyState();
