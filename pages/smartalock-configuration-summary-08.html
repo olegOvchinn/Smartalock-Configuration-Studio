@@ -681,6 +681,18 @@ Project Registration and IT Configuration & Integrations — additionally carry 
 so those shared pages know which summary to return to). This page's own JS is unchanged; only the
 href strings were edited. Verified via Playwright end-to-end navigation tests confirming each
 target page's Continue button now lands back on this summary.
+
+MOST RECENT CHANGE: per the companion change making Pop Open and Push to Open independently
+selectable on `smartalock-locker-behaviour-03.html` (see that file's own NOTE), this page's Locker
+Door Behaviour group no longer assumes exactly one of the two is ever chosen. It now reads
+`lockerBehaviour.popOpenEnabled`/`pushOpenEnabled` (falling back to migrating the legacy
+`lockerBehaviour.lockerBehaviour` string for older saves) and renders the Open Behaviour row as
+"Pop Open and Push to Open (mixed by locker)" when both are enabled, "Push to Open" when only that
+one is, or "Pop Open (default)" otherwise — the Push to Open Scope/Locker Bank/Locker Numbers rows
+below it now show whenever Push to Open is enabled at all, not only when it was the sole choice.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a Playwright test confirming the combined-state row text and the legacy-migration fallback both
+render correctly.
 -->
 
 <script>
@@ -850,14 +862,22 @@ target page's Continue button now lands back on this summary.
   /* ---------------- Locker Door Behaviour ---------------- */
   (function () {
     const b = wizard.lockerBehaviour || {};
-    const behaviourLabels = { "": "Pop Open (default)", "push-open": "Push to Open" };
+    // Migrate a legacy single-select save (b.lockerBehaviour was '' for Pop Open or 'push-open',
+    // never both) for projects saved before Pop Open / Push to Open became independently selectable.
+    const popOpenEnabled = typeof b.popOpenEnabled === 'boolean' ? b.popOpenEnabled : b.lockerBehaviour !== 'push-open';
+    const pushOpenEnabled = typeof b.pushOpenEnabled === 'boolean' ? b.pushOpenEnabled : b.lockerBehaviour === 'push-open';
     const scopeLabels = { "": "All lockers", unknown: "Don't know yet", specific: "Specific locker bank or lockers" };
     const wrap = document.getElementById('group-behaviour');
 
-    wrap.appendChild(row('Open Behaviour', behaviourLabels[b.lockerBehaviour] ?? (b.lockerBehaviour || 'Pop Open (default)'),
+    let behaviourLabel;
+    if (popOpenEnabled && pushOpenEnabled) behaviourLabel = 'Pop Open and Push to Open (mixed by locker)';
+    else if (pushOpenEnabled) behaviourLabel = 'Push to Open';
+    else behaviourLabel = 'Pop Open (default)';
+
+    wrap.appendChild(row('Open Behaviour', behaviourLabel,
       'How a locker opens for the user once access has been granted.'));
 
-    if (b.lockerBehaviour === 'push-open') {
+    if (pushOpenEnabled) {
       wrap.appendChild(row('Push to Open Scope', scopeLabels[b.pushOpenScope] ?? (b.pushOpenScope || 'All lockers'),
         'Which lockers use the 15 second grace-period Push to Open behaviour.'));
 

@@ -17,10 +17,12 @@
   - Getting Your Locker <- reservationType.reservationTypes (['admin','user','parcel']) — builds a
     sentence covering whichever combination is selected; when 'user' is included, a duration
     sub-sentence is added from reservationType.userDuration/userDurationValue/userDurationUnit.
-  - Opening Your Locker <- lockerBehaviour.lockerBehaviour ('' = Pop Open default, or 'push-open')
-    and, for push-open, lockerBehaviour.pushOpenScope ('unknown'/'specific' — specific is described
-    only as "certain lockers" rather than naming the actual bank/number range, since that's an
-    admin-facing detail not meant for an end-user document).
+  - Opening Your Locker <- lockerBehaviour.popOpenEnabled / lockerBehaviour.pushOpenEnabled (either
+    or both can be true — Pop Open and Push to Open are independently selectable, not a two-way
+    choice; a legacy lockerBehaviour.lockerBehaviour string ('' or 'push-open') is migrated on read
+    for older saves) and, when Push to Open is enabled, lockerBehaviour.pushOpenScope
+    ('unknown'/'specific' — specific is described only as "certain lockers" rather than naming the
+    actual bank/number range, since that's an admin-facing detail not meant for an end-user document).
   - Ways to Access Your Locker <- accessMethods.selected, built into a plain-language list the same
     way floorsense-desk-booking-guide-live.html builds its check-in-methods sentence.
   - Locker Policy (two rows: how many at once, what happens at expiry) <- locker.lockerLimit,
@@ -97,6 +99,17 @@
   `node --check` on the extracted script block, and a jsdom test covering the default, a custom value
   of 5, a custom value of 1 (singular), an empty custom value, and no saved locker state at all — all
   five render the expected title/text with zero runtime errors.
+
+MOST RECENT CHANGE: per the companion change making Pop Open and Push to Open independently
+selectable on `smartalock-locker-behaviour-03.html` (see that file's own NOTE), the Opening Your
+Locker section no longer assumes exactly one of the two is ever chosen. It now reads
+`lockerBehaviour.popOpenEnabled`/`pushOpenEnabled` (falling back to migrating the legacy
+`lockerBehaviour.lockerBehaviour` string for older saves) and, when both are enabled, shows a new
+"Pop Open or Push to Open" title with copy explaining most lockers pop open automatically while
+specific ones instead require a push within 15 seconds — falling back to the existing single-behaviour
+copy when only one is enabled. Verified via an inline HTMLParser tag-balance check, `node --check` on
+the extracted script block, and a Playwright test confirming the combined-state copy and the
+legacy-migration fallback both render correctly.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -416,17 +429,30 @@
 
   /* ---------------- Opening Your Locker ---------------- */
   const lockerBehaviour = wizard.lockerBehaviour || {};
-  const isPushOpen = lockerBehaviour.lockerBehaviour === 'push-open';
-  document.getElementById('openingTitle').textContent = isPushOpen ? 'Push to Open' : 'Pop Open';
-  if (isPushOpen) {
-    let openingText = 'Once you\'re granted access, gently push the door within 15 seconds to open it.';
+  // Migrate a legacy single-select save (lockerBehaviour.lockerBehaviour was '' for Pop Open or
+  // 'push-open', never both) for projects saved before Pop Open / Push to Open became independently
+  // selectable.
+  const popOpenEnabled = typeof lockerBehaviour.popOpenEnabled === 'boolean' ? lockerBehaviour.popOpenEnabled : lockerBehaviour.lockerBehaviour !== 'push-open';
+  const pushOpenEnabled = typeof lockerBehaviour.pushOpenEnabled === 'boolean' ? lockerBehaviour.pushOpenEnabled : lockerBehaviour.lockerBehaviour === 'push-open';
+  let openingTitle, openingText;
+  if (popOpenEnabled && pushOpenEnabled) {
+    openingTitle = 'Pop Open or Push to Open';
+    openingText = 'Most lockers pop open automatically once you\'re granted access — no need to touch them. Some lockers instead use Push to Open: the lock disengages, then gently push the door within 15 seconds to open it.';
+    if (lockerBehaviour.pushOpenScope === 'specific') {
+      openingText += ' Look for signage or ask your workplace team if you\'re not sure which lockers use Push to Open.';
+    }
+  } else if (pushOpenEnabled) {
+    openingTitle = 'Push to Open';
+    openingText = 'Once you\'re granted access, gently push the door within 15 seconds to open it.';
     if (lockerBehaviour.pushOpenScope === 'specific') {
       openingText += ' This applies to certain lockers on this site — look for signage or ask your workplace team if you\'re not sure which.';
     }
-    document.getElementById('openingText').textContent = openingText;
   } else {
-    document.getElementById('openingText').textContent = 'Once you\'re granted access, the locker door pops open automatically — no need to touch it.';
+    openingTitle = 'Pop Open';
+    openingText = 'Once you\'re granted access, the locker door pops open automatically — no need to touch it.';
   }
+  document.getElementById('openingTitle').textContent = openingTitle;
+  document.getElementById('openingText').textContent = openingText;
 
   /* ---------------- Ways to Access Your Locker ---------------- */
   const accessMethods = wizard.accessMethods || {};

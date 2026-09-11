@@ -447,6 +447,28 @@ consumes the `?return=summary` query param carried by its Edit link on
 smartalock-configuration-summary-08.html — Continue goes there when the param is present, and to
 smartalock-locker-types-04.html as before when it is absent. Verified via Playwright end-to-end
 navigation tests covering both cases.
+
+MOST RECENT CHANGE: per a request to allow selecting both cards, Pop Open and Push to Open are now
+independently toggleable instead of a two-way exclusive choice — clicking one no longer deselects
+the other, so a site can use Pop Open for most lockers and Push to Open for a specific bank at the
+same time (the existing "Apply Push to Open behaviour to" scope panel already supports exactly this
+mixed scenario). State changed from a single `lockerBehaviour` string (`''`/`'push-open'`) to two
+independent booleans, `popOpenEnabled`/`pushOpenEnabled` (defaulting to `true`/`false`, matching the
+old default). `selectBehaviour(value)` was replaced with `updateCardUI()` (renders both cards' chosen
+state and the scope panel from the two booleans) plus `toggleBehaviour(key)` (flips one card's own
+boolean and re-renders) — deselecting a card is blocked when it is the only one still enabled, so a
+site can never end up with zero door-open behaviour configured. A legacy single-select save
+(`lockerBehaviour: '' | 'push-open'`) is migrated to the two booleans on load for projects saved
+before this change. `smartalock-configuration-summary-08.html`'s Open Behaviour row and
+`smartalock-locker-guide-live.html`'s Opening Your Locker section were both updated to read the two
+booleans (with the same legacy-migration fallback) and describe a "Pop Open and Push to Open (mixed
+by locker)" state when both are enabled, rather than assuming exactly one is always chosen — see
+those files' own NOTEs. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a Playwright test covering: default state (Pop Open only), clicking Push
+to Open enables both without deselecting Pop Open, deselecting Pop Open leaves Push to Open alone,
+attempting to deselect the last-enabled card is blocked, the saved localStorage shape, persistence
+across a reload, migration of a legacy `lockerBehaviour: 'push-open'` save, and Reset restoring the
+original Pop-Open-only default.
 -->
 
 <script>
@@ -478,12 +500,22 @@ navigation tests covering both cases.
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
+  const savedBehaviour = project.smartalock.wizard.lockerBehaviour || {};
   const state = Object.assign({
-    lockerBehaviour: "",
+    popOpenEnabled: true,
+    pushOpenEnabled: false,
     pushOpenScope: "",
     behaviourLockerBank: "",
     behaviourLockerNumbers: ""
-  }, project.smartalock.wizard.lockerBehaviour || {});
+  }, savedBehaviour);
+  // Migrate a legacy single-select save (state.lockerBehaviour was '' for Pop Open or 'push-open',
+  // never both) for projects saved before Pop Open / Push to Open became independently selectable —
+  // older saves have neither popOpenEnabled nor pushOpenEnabled at all.
+  if (typeof savedBehaviour.popOpenEnabled !== 'boolean' && typeof savedBehaviour.pushOpenEnabled !== 'boolean') {
+    state.pushOpenEnabled = savedBehaviour.lockerBehaviour === 'push-open';
+    state.popOpenEnabled = !state.pushOpenEnabled;
+  }
+  delete state.lockerBehaviour;
 
   /* ---------------- horizontal progress bar (replaces module-nav) ---------------- */
   function renderProgressBar() {
@@ -539,17 +571,28 @@ navigation tests covering both cases.
   const saveText = document.getElementById('saveText');
   const saveDot = document.getElementById('saveDot');
 
-  function selectBehaviour(value) {
-    state.lockerBehaviour = value;
-    cardPop.classList.toggle('chosen', value === '');
-    cardPush.classList.toggle('chosen', value === 'push-open');
-    scopePanel.classList.toggle('show', value === 'push-open');
-    if (value !== 'push-open') {
+  function updateCardUI() {
+    cardPop.classList.toggle('chosen', state.popOpenEnabled);
+    cardPush.classList.toggle('chosen', state.pushOpenEnabled);
+    scopePanel.classList.toggle('show', state.pushOpenEnabled);
+    if (!state.pushOpenEnabled) {
       state.pushOpenScope = '';
       scopeFields.classList.remove('show');
       document.querySelectorAll('.scope-option').forEach(o => o.classList.remove('selected'));
       document.querySelector('.scope-option[data-scope=""]').classList.add('selected');
     }
+  }
+
+  // Pop Open and Push to Open now toggle independently (both can be enabled at once — e.g. most
+  // lockers pop open, a specific bank uses Push to Open instead) rather than acting as a two-way
+  // radio choice. Deselecting a card is blocked when it's the only one still enabled, since a site
+  // needs at least one door-open behaviour configured.
+  function toggleBehaviour(key) {
+    const other = key === 'popOpenEnabled' ? 'pushOpenEnabled' : 'popOpenEnabled';
+    const next = !state[key];
+    if (!next && !state[other]) return;
+    state[key] = next;
+    updateCardUI();
     queueSave();
   }
 
@@ -560,8 +603,8 @@ navigation tests covering both cases.
     queueSave();
   }
 
-  cardPop.addEventListener('click', () => selectBehaviour(''));
-  cardPush.addEventListener('click', () => selectBehaviour('push-open'));
+  cardPop.addEventListener('click', () => toggleBehaviour('popOpenEnabled'));
+  cardPush.addEventListener('click', () => toggleBehaviour('pushOpenEnabled'));
 
   document.querySelectorAll('.scope-option').forEach(opt => {
     opt.addEventListener('click', () => selectScope(opt.getAttribute('data-scope')));
@@ -573,7 +616,9 @@ navigation tests covering both cases.
   numbersInput.addEventListener('input', () => { state.behaviourLockerNumbers = numbersInput.value; queueSave(); });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    selectBehaviour('');
+    state.popOpenEnabled = true;
+    state.pushOpenEnabled = false;
+    updateCardUI();
     bankInput.value = ''; numbersInput.value = '';
     state.behaviourLockerBank = ''; state.behaviourLockerNumbers = '';
     save();
@@ -605,7 +650,7 @@ navigation tests covering both cases.
     saveDot.classList.add('show');
   }
 
-  selectBehaviour(state.lockerBehaviour || '');
+  updateCardUI();
   if (state.pushOpenScope) selectScope(state.pushOpenScope);
 })();
 </script>

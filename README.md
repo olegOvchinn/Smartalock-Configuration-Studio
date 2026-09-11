@@ -415,6 +415,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Extended that per-card colouring to the whole card, matching `smartalock-reservation-type-01.html` more closely: each heading is now always tinted its own card colour, and selecting a card washes its background/shadow in that same colour instead of one flat blue.
 - Applied the same tick-box + per-card colouring treatment to `floorsense-checkin-methods-02.html`'s 4 check-in method cards.
 - Applied the same per-choice colouring treatment (tick-box already existed) to `floorsense-desk-user-groups-03.html`'s 6 choice cards, keyed off each one's `none`/`provide`/`policy` mode rather than per-card — deliberately excluding the two `.groups-card` column canvases that wrap them, which stay a plain uncoloured wrapper.
+- `smartalock-locker-behaviour-03.html`'s Pop Open and Push to Open cards are now independently selectable instead of a two-way exclusive choice, so a site can use both (e.g. Pop Open everywhere except a specific Push to Open bank) — state changed from one `lockerBehaviour` string to two `popOpenEnabled`/`pushOpenEnabled` booleans (with automatic migration from older single-select saves), and `smartalock-configuration-summary-08.html`/`smartalock-locker-guide-live.html` were updated to describe the combined "Pop Open and Push to Open (mixed by locker)" state.
 
 ## Status
 
