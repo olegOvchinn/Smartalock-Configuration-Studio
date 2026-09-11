@@ -190,12 +190,21 @@
     transition: box-shadow .2s, background .2s;
   }
   .group-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+    box-shadow: 0 16px 40px -8px var(--tc-glow, rgba(0,113,227,0.22)), 0 3px 12px rgba(16,42,67,0.08);
   }
   .group-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    background: var(--tc-wash, rgba(232,241,252,0.7));
+    box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
   }
+  /* ---------- per-choice colour theming, ported from floorsense-reservation-types-01.html /
+     floorsense-checkin-methods-02.html's --tc mechanism — applied only to these individual choice
+     cards, NOT to the .groups-card column canvases above them (those stay a plain static wrapper
+     per the request to leave the main card canvases alone). Same three modes (none/provide/policy)
+     repeat in both the Desk Group and User Group grids, so one rule per data-mode colours matching
+     choices in both grids consistently rather than needing per-grid variants. ---------- */
+  .group-check-card[data-mode="none"] { --tc: #8E8E93; --tc-wash: rgba(244,244,244,0.7); --tc-glow: rgba(142,142,147,0.22); --tc-glow-strong: rgba(142,142,147,0.3); }
+  .group-check-card[data-mode="provide"] { --tc: #4A8DF0; --tc-wash: rgba(237,244,254,0.7); --tc-glow: rgba(74,141,240,0.22); --tc-glow-strong: rgba(74,141,240,0.3); }
+  .group-check-card[data-mode="policy"] { --tc: #9B6BEC; --tc-wash: rgba(245,240,253,0.7); --tc-glow: rgba(155,107,236,0.22); --tc-glow-strong: rgba(155,107,236,0.3); }
   .group-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .group-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .group-tick {
@@ -203,7 +212,7 @@
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
-  .group-check-card.checked .group-tick { border-color: var(--accent); background: var(--accent); }
+  .group-check-card.checked .group-tick { border-color: var(--tc, var(--accent)); background: var(--tc, var(--accent)); }
   .group-tick::after {
     content: ''; width: 6px; height: 10px; margin-top: -1px;
     border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
@@ -215,7 +224,7 @@
      no content icons at all, just the tick + title text used by every other card grid on the
      site. ---------- */
   .group-card-body { min-width: 0; flex: 1; }
-  .group-title { font-weight: 600; font-size: 14.76px; color: var(--ink); display: block; margin: 0 0 4px; }
+  .group-title { font-weight: 600; font-size: 14.76px; color: var(--tc, var(--ink)); display: block; margin: 0 0 4px; }
   .group-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px; margin-left: 6px;
@@ -813,6 +822,29 @@ tags were removed; the paragraph before them, the "Tick 1 or more..." lead-in, a
 below are all unchanged, and Desk Group Setup's own card (identical layout, no such paragraphs) is
 unaffected. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
 script block (untouched — markup-only change, no JS logic affected).
+
+MOST RECENT CHANGE: per a request to port the per-card tick+colour theming already applied to
+floorsense-reservation-types-01.html and floorsense-checkin-methods-02.html onto this page, but to
+the individual choice cards only — explicitly NOT to the `.groups-card` column canvases that wrap
+each of the two grids. Added `--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong` custom properties keyed
+off each `.group-check-card`'s existing `data-mode` attribute (`none`/`provide`/`policy`), which
+repeats identically in both the Desk Group and User Group grids, so one set of three rules colours
+matching choices consistently in both grids rather than needing per-grid variants: `none` (declining
+the feature) gets a neutral slate grey `#8E8E93`, `provide` (supplying data) reuses the sitewide blue
+`#4A8DF0`, and `policy` (override rules) reuses the sitewide purple `#9B6BEC` — the same two hexes
+already used elsewhere on this branch. `.group-check-card:hover`/`.checked` now read
+`var(--tc-glow)`/`var(--tc-wash)`/`var(--tc-glow-strong)` instead of a fixed blue (old blue values kept
+as `var()` fallbacks), `.checked .group-tick` reads `var(--tc, var(--accent))`, and `.group-title`'s
+color changed from a flat `var(--ink)` to `var(--tc, var(--ink))` so each choice's heading is always
+tinted its own colour, matching the `.desk-title` treatment on the two ported-from pages. `.groups-card`
+(the two column wrappers) was left completely untouched — it already had no hover/checked state of its
+own, so nothing needed removing, and no `--tc` rule targets it. No JS changes needed — the existing
+`wireGroup()` checkbox-toggle logic already adds/removes the `.checked` class the new CSS reads.
+Verified via a Playwright test confirming: both `.groups-card` elements resolve no `--tc` value at all
+(untouched); all 6 `.group-check-card` choices resolve the correct `--tc` per `data-mode` in both
+grids; clicking "provide" in the Desk Group grid turns its tick, heading, and card background blue;
+clicking "policy" in the User Group grid turns its heading purple; and a full-page screenshot
+confirming the visual result.
 -->
 
 
