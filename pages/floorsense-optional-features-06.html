@@ -426,6 +426,21 @@
           <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
           " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
           <div class="feature-row-body">
+            <p class="feature-row-title">Auto-Release on No Show</p>
+            <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
+            <span class="feature-row-status" id="noShowReleaseStatus">Off</span>
+            <div class="feature-row-hours" id="noShowHoursField">
+              <label for="noShowHoursInput">Auto-release after</label>
+              <span class="policy-number-field"><input type="number" min="0.5" max="24" step="0.5" class="policy-number-input" id="noShowHoursInput" value="0.5"><span class="policy-field-unit">hours</span></span>
+            </div>
+          </div>
+          <button type="button" class="switch" id="noShowReleaseSwitch" role="switch" aria-checked="false" aria-label="Enable Auto-Release on No Show"></button>
+        </div>
+
+        <div class="feature-row">
+          <svg class="feature-row-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8
+          " stroke-linecap="round" stroke-linejoin="round"><path d="M12,12 L6.5,12 A5.5,5.5 0 1 1 14.75,16.76 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="15.5" y2="12"/></svg>
+          <div class="feature-row-body">
             <p class="feature-row-title">Auto-Release on Idle</p>
             <p class="feature-row-desc">Automatically frees up a desk reservation if the desk hasn't been checked into within a set number of hours.</p>
             <span class="feature-row-status" id="idleReleaseStatus">Off</span>
@@ -1120,6 +1135,31 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 and a Playwright test confirming: tapping the pill (after enabling Anti Desk Hogging via its switch)
 enters edit mode and commits typed values; values above 14 or below 1 clamp correctly; Escape
 cancels without committing; dragging still works; and tap-to-edit still works right after a drag.
+
+MOST RECENT CHANGE: per a request to duplicate the first option and name the new first option
+"Auto-Release on No Show," the "Auto-Release on Idle" feature row (icon, description, switch, and
+inline hours field) was copied verbatim into a new row placed above it, with the copy's title
+changed to "Auto-Release on No Show" and its ids uniquely renamed (`noShowReleaseSwitch`/
+`noShowReleaseStatus`/`noShowHoursField`/`noShowHoursInput`, vs the original's `idleRelease*`/
+`idleHours*`). The original "Auto-Release on Idle" row is completely unchanged, just shifted down
+to second position. The new row gets its own independent state,
+`project.floorsense.wizard.noShowRelease = { enabled, hours }` — the same shape as `idleRelease`,
+but a separate key so it doesn't disturb floorsense-idle-release-09.html's own real feature or any
+of the other files that already read/write `idleRelease`; this new key is not read anywhere else in
+the site. A new `FEATURES` entry (`key: 'noShowRelease'`) was inserted before the existing
+`idleRelease` entry, which meant the two places that previously grabbed the idle feature via the
+hardcoded `FEATURES[0]` (the inline hours field's show/hide toggle and its switch-click listener)
+would have silently started referring to the new noShow entry instead — both were changed to look
+the feature up by key (`FEATURES.find(f => f.key === 'idleRelease')`) instead of by array position,
+and a parallel `noShowReleaseFeature`/`renderNoShowHoursField()` pair was added, wired the same way,
+for the new row's own hours field. The Reset button now also zeroes `noShowRelease.hours` back to
+0.5 and re-renders its field, alongside the existing `idleRelease` reset (both features are already
+covered by the existing `FEATURES.forEach(feature => feature.setOn(false))` call). Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright
+test confirming: both rows render in the correct order with independent switches; enabling one
+row's switch shows only that row's own hours field and leaves the other row untouched; typed hours
+values save to their own separate state keys without cross-contamination; and Reset correctly turns
+both off and restores both hours fields to 0.5.
 -->
 
 <script>
@@ -1185,6 +1225,19 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   }
 
   const FEATURES = [
+    {
+      /* Duplicate of the idleRelease card below (per a request to add a first "Auto-Release on No
+         Show" option) with its own independent state key, project.floorsense.wizard.noShowRelease
+         = { enabled, hours } — same shape as idleRelease, but kept fully separate so it doesn't
+         disturb floorsense-idle-release-09.html's own real idleRelease feature or any of the other
+         files that already read/write that key. */
+      key: 'noShowRelease', switchEl: 'noShowReleaseSwitch', statusEl: 'noShowReleaseStatus',
+      isOn: () => !!(project.floorsense.wizard.noShowRelease && project.floorsense.wizard.noShowRelease.enabled),
+      setOn: (on) => {
+        project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
+        project.floorsense.wizard.noShowRelease.enabled = on;
+      }
+    },
     {
       key: 'idleRelease', switchEl: 'idleReleaseSwitch', statusEl: 'idleReleaseStatus',
       isOn: () => !!(project.floorsense.wizard.idleRelease && project.floorsense.wizard.idleRelease.enabled),
@@ -1259,12 +1312,15 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
      project.floorsense.wizard.idleRelease.idleHours with floorsense-idle-release-09.html's own
      drum, but defaults to 0.5 (30 min) here rather than that page's 3-hour default, since this
      hub is meant to be a quick minimum-viable setting rather than the full explainer. Only shown
-     while the Auto-Release switch itself is on. ---------- */
+     while the Auto-Release switch itself is on. Looked up by key (not array position) since the
+     "Auto-Release on No Show" duplicate above was inserted at FEATURES[0], pushing this one to
+     index 1. ---------- */
+  const idleReleaseFeature = FEATURES.find(f => f.key === 'idleRelease');
   const idleHoursField = document.getElementById('idleHoursField');
   const idleHoursInput = document.getElementById('idleHoursInput');
 
   function renderIdleHoursField() {
-    idleHoursField.classList.toggle('show', FEATURES[0].isOn());
+    idleHoursField.classList.toggle('show', idleReleaseFeature.isOn());
   }
 
   const savedIdleHours = project.floorsense.wizard.idleRelease && project.floorsense.wizard.idleRelease.idleHours;
@@ -1278,7 +1334,31 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
     queueSave();
   });
 
-  document.getElementById(FEATURES[0].switchEl).addEventListener('click', renderIdleHoursField);
+  document.getElementById(idleReleaseFeature.switchEl).addEventListener('click', renderIdleHoursField);
+
+  /* ---------------- Auto-Release on No Show's own inline hours field: exact duplicate of the
+     wiring above, reading/writing project.floorsense.wizard.noShowRelease.hours instead, fully
+     independent of idleRelease's own hours value. ---------- */
+  const noShowReleaseFeature = FEATURES.find(f => f.key === 'noShowRelease');
+  const noShowHoursField = document.getElementById('noShowHoursField');
+  const noShowHoursInput = document.getElementById('noShowHoursInput');
+
+  function renderNoShowHoursField() {
+    noShowHoursField.classList.toggle('show', noShowReleaseFeature.isOn());
+  }
+
+  const savedNoShowHours = project.floorsense.wizard.noShowRelease && project.floorsense.wizard.noShowRelease.hours;
+  noShowHoursInput.value = Number.isFinite(savedNoShowHours) ? savedNoShowHours : 0.5;
+  renderNoShowHoursField();
+
+  noShowHoursInput.addEventListener('input', () => {
+    const hours = parseFloat(noShowHoursInput.value);
+    project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
+    project.floorsense.wizard.noShowRelease.hours = Number.isFinite(hours) ? hours : 0.5;
+    queueSave();
+  });
+
+  document.getElementById(noShowReleaseFeature.switchEl).addEventListener('click', renderNoShowHoursField);
 
   /* ---------------- FME's own inline acknowledgment checkbox: recorded at
      project.floorsense.wizard.fme.motorDetailsAck, shown only while the FME switch itself is on.
@@ -1485,6 +1565,9 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   document.getElementById('resetBtn').addEventListener('click', () => {
     document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     FEATURES.forEach(feature => feature.setOn(false));
+    project.floorsense.wizard.noShowRelease = project.floorsense.wizard.noShowRelease || {};
+    project.floorsense.wizard.noShowRelease.hours = 0.5;
+    noShowHoursInput.value = 0.5;
     project.floorsense.wizard.idleRelease = project.floorsense.wizard.idleRelease || {};
     project.floorsense.wizard.idleRelease.idleHours = 0.5;
     idleHoursInput.value = 0.5;
@@ -1499,6 +1582,7 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
     adhRenderWindowDiagram(2);
     adhBookingDaysInput.value = 1;
     renderAll();
+    renderNoShowHoursField();
     renderIdleHoursField();
     renderFmeAckField();
     renderAdhSettingsField();

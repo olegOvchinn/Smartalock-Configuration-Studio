@@ -426,6 +426,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Rolled the same tap-to-type feature out to `floorsense-anti-desk-hogging-13.html`'s Time Window pin — since its displayed value ("N days") is already the plain integer the user would type, this one uses the same simple pattern as `floorsense-prebooking-advance-04.html`'s pin.
 - Mirrored that same Time Window tap-to-type pin onto `floorsense-optional-features-06.html`'s inline hub-row copy of the same control, completing the rollout across every timeline page.
 - Relabeled `smartalock-it-configuration-02.html`'s "SCIM provisioning" field to "SCIM/LDAP/REST API" — a label-only change; the select's own Not required/Enabled options are unchanged.
+- Duplicated `floorsense-optional-features-06.html`'s "Auto-Release on Idle" row into a new first row, "Auto-Release on No Show," with its own independent switch, hours field, and state key (`noShowRelease`) — the original "Auto-Release on Idle" row is unchanged, just shifted to second position.
 
 ## Status
 
