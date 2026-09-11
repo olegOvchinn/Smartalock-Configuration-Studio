@@ -1,0 +1,487 @@
+<!--
+  MOST RECENT CHANGE: new file. Per a request describing the real deployment model for this
+  prototype (hosted on a local/internal server behind a per-client link, no public DNS entry; each
+  client's saved Project Registration + IT Configuration becomes its own persisted project entity;
+  the client emails themselves a link to their own Configuration Summary; and a SEPARATE "Tech
+  Summary" page is generated and emailed to oleg@smartalock.com only, never shown to the client) —
+  this file is the Tech Summary page itself. The hosting/unique-link/email-delivery/per-save
+  persistence mechanics described are real backend/deployment concerns this static prototype has no
+  way to implement (no server, no email sending), so only the page itself was built: a live,
+  JS-populated view of the SAME project.floorsense.wizard.* / project.smartalock.wizard.it.* /
+  project.registration.* state that floorsense-out-of-box-policy.html (the client-facing
+  "Configuration Summary") already reads from the shared "configurationProject" localStorage key —
+  reformatted for an internal engineering audience rather than an end client.
+
+  Differences from the Configuration Summary this page mirrors:
+  - No prose descriptions anywhere — every row is just "Function header" + a raw value, for fast
+    scanning rather than explaining what a setting does.
+  - No "Not part of the fixed defaults, enable it from Optional Features" framing, no Edit links, no
+    hero/marketing copy, no icons — this is a dense internal reference table, not a client-facing
+    page, so it intentionally does NOT reuse the glass-card/icon-badge visual language used
+    everywhere else on this site.
+  - Every duration/time-of-day field is shown in normalized day/hour/minute form via a shared
+    formatDuration(totalMinutes) helper that composes the largest applicable units (skipping zero
+    ones) and always appends the raw total in minutes, e.g. a 1-day value renders "1 day, 1440 min";
+    a 3.5-hour value renders "3 hours 30 min, 210 min"; a pure sub-hour minutes value (e.g. 30 min)
+    renders just "30 min" rather than the redundant "30 min, 30 min". Clock-time fields (e.g.
+    Business Hours arrival/departure, "HH:MM" strings) are shown as their 12-hour clock reading plus
+    their own minutes-since-midnight total, e.g. "8:30 AM, 510 min". Non-temporal fields (mode
+    selects, booleans, free text, counts, multi-select lists) are shown as their raw configured value
+    with no unit conversion, since "days/hours/minutes" only applies to values that are actually
+    durations or times.
+  - Field set intentionally mirrors floorsense-out-of-box-policy.html's existing summary rows exactly
+    (Project Details, Core Policy groups, and any saved Additional Policies) rather than also
+    surfacing every field ever written by a wizard page — a research pass turned up several
+    configured-but-never-shown fields (SSO Scope, FME's motor-details acknowledgment, NSNP's "other"
+    free-text note and relay-confirmation checkbox, Desk/User Groups setup itself, and an orphaned
+    legacy `reservationLength`/`maxDesksPerUser` object written by a page not reachable from the
+    current wizard flow) that are pre-existing gaps in what the *client-facing* summary itself
+    surfaces. Reproducing those same gaps here keeps this page an exact reformatting of "what the
+    client's summary shows," which is what was asked for; extending either summary to also cover
+    those orphaned fields is a separate, not-yet-requested piece of work.
+  - This page is reachable only via direct link (like the two live-preview pages before it) and,
+    unlike them, carries no toolbar link back into the client-facing wizard — nothing here should
+    imply a client could stumble onto or navigate from it. A single small dev-convenience link back
+    to the Configuration Summary is included for local QA only.
+
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+  and a jsdom test seeding representative wizard state and confirming: day/hour/minute normalization
+  for a days-based field (prebookingAdvanceDays), an hours-based field (idleHours), a minutes-based
+  field (autoOccupancyCheckin.minutes, including the sub-60-minute no-duplicate-total case), a
+  clock-time field (businessHours.arrivalTime), and that non-temporal fields (mode selects, booleans,
+  multi-select lists) render their raw values with no description text and no unit conversion.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Configuration Summary (Internal) — Floorsense Configuration Studio</title>
+<style>
+  :root {
+    --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    --ink: #1D1D1F;
+    --ink-soft: #6E6E73;
+    --paper: #FFFFFF;
+    --paper-soft: #F5F5F7;
+    --line: #D2D2D7;
+    --accent: #0071E3;
+    --accent-deep: #0058B0;
+    --warn-bg: #FFF4E5;
+    --warn-ink: #8A5300;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper-soft); color: var(--ink);
+    font-family: var(--font-text); -webkit-font-smoothing: antialiased;
+    padding: 32px 24px 64px;
+  }
+  .sheet { max-width: 880px; margin: 0 auto; }
+
+  .internal-flag {
+    display: flex; align-items: center; gap: 10px; background: var(--warn-bg); color: var(--warn-ink);
+    border-radius: 10px; padding: 12px 16px; font-size: 13px; font-weight: 700; margin-bottom: 20px;
+  }
+  .internal-flag svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .doc-header { margin-bottom: 22px; }
+  .doc-kicker {
+    font-size: 11.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-deep); margin: 0 0 6px;
+  }
+  .doc-title { font-size: 26px; font-weight: 800; margin: 0 0 14px; letter-spacing: -0.01em; }
+
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 20px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
+    font-family: var(--font-mono); font-size: 12.5px;
+  }
+  .meta-grid div span.k { color: var(--ink-soft); display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .meta-grid div span.v { color: var(--ink); font-weight: 600; word-break: break-word; }
+
+  .tsec { margin-top: 26px; }
+  .tsec-title {
+    font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-deep); margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1.5px solid var(--line);
+  }
+  .tsec-sub {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 16px 0 6px;
+  }
+  table.trow { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  table.trow td {
+    padding: 8px 14px; font-size: 13px; border-top: 1px solid var(--line); vertical-align: top;
+  }
+  table.trow tr:first-child td { border-top: none; }
+  table.trow td.label { width: 46%; color: var(--ink-soft); font-weight: 600; }
+  table.trow td.value { font-family: var(--font-mono); color: var(--ink); font-weight: 600; }
+
+  .policy-block { border: 1.5px dashed var(--line); border-radius: 10px; padding: 12px 14px 4px; margin: 10px 0 18px; }
+  .policy-block-title { font-size: 12.5px; font-weight: 800; margin: 0 0 8px; color: var(--ink); }
+
+  .dev-link { display: block; margin-top: 36px; font-size: 12px; color: var(--ink-soft); }
+  .dev-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <div class="internal-flag">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/></svg>
+    Internal engineering reference — sent only to oleg@smartalock.com. Not accessible to the client and not linked from the client-facing wizard.
+  </div>
+
+  <div class="doc-header">
+    <p class="doc-kicker">Floorsense · Technical Configuration Summary</p>
+    <h1 class="doc-title">Raw configuration values, normalized to days / hours / minutes</h1>
+    <div class="meta-grid">
+      <div><span class="k">Project ID</span><span class="v" id="metaProjectId"></span></div>
+      <div><span class="k">Client</span><span class="v" id="metaClient"></span></div>
+      <div><span class="k">Site</span><span class="v" id="metaSite"></span></div>
+      <div><span class="k">Created</span><span class="v" id="metaCreated"></span></div>
+      <div><span class="k">Last Updated</span><span class="v" id="metaUpdated"></span></div>
+      <div><span class="k">Generated</span><span class="v" id="metaGenerated"></span></div>
+    </div>
+  </div>
+
+  <div class="tsec">
+    <h2 class="tsec-title">Project Details</h2>
+    <table class="trow">
+      <tr><td class="label">Company Name</td><td class="value" id="tsCompany"></td></tr>
+      <tr><td class="label">Site Address</td><td class="value" id="tsSite"></td></tr>
+      <tr><td class="label">Primary Contact Email</td><td class="value" id="tsPrimaryEmail"></td></tr>
+      <tr><td class="label">Additional Contacts</td><td class="value" id="tsContacts"></td></tr>
+      <tr><td class="label">Floorsight Admin Portal Access</td><td class="value" id="tsPortalAccess"></td></tr>
+      <tr><td class="label">Target Dates</td><td class="value" id="tsDates"></td></tr>
+      <tr><td class="label">Single Sign-On (SSO)</td><td class="value" id="tsSso"></td></tr>
+      <tr><td class="label">SCIM User Provisioning</td><td class="value" id="tsScim"></td></tr>
+      <tr><td class="label">API / Integration Requirements</td><td class="value" id="tsApi"></td></tr>
+      <tr><td class="label">Gallagher Integration</td><td class="value" id="tsGallagher"></td></tr>
+    </table>
+  </div>
+
+  <div class="tsec">
+    <h2 class="tsec-title">Core Policy</h2>
+
+    <p class="tsec-sub">Desk Allocation Method</p>
+    <table class="trow">
+      <tr><td class="label">Reservation Types Selected</td><td class="value" id="tsReservationTypes"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Prebooking &amp; Duration</p>
+    <table class="trow">
+      <tr><td class="label">Allow Booking In Advance</td><td class="value" id="tsPrebookingAdvance"></td></tr>
+      <tr><td class="label">Default Reservation Mode</td><td class="value" id="tsReservationMode"></td></tr>
+      <tr><td class="label">Default Start Time</td><td class="value" id="tsDefaultStart"></td></tr>
+      <tr><td class="label">Default End Time</td><td class="value" id="tsDefaultEnd"></td></tr>
+      <tr><td class="label">Default Reservation Duration</td><td class="value" id="tsDefaultDuration"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Check-in Window</p>
+    <table class="trow">
+      <tr><td class="label">Check-in Early Threshold</td><td class="value" id="tsCheckinEarly"></td></tr>
+      <tr><td class="label">Check-in Late Threshold</td><td class="value" id="tsCheckinLate"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Check-in Behaviour</p>
+    <table class="trow">
+      <tr><td class="label">Second Swipe Checks Out</td><td class="value" id="tsSwipeOut"></td></tr>
+      <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="value" id="tsAutoCancel"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Access Methods</p>
+    <table class="trow">
+      <tr><td class="label">Enabled Methods</td><td class="value" id="tsCheckinMethods"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Additional Options</p>
+    <table class="trow">
+      <tr><td class="label">Maximum Desks Per User</td><td class="value" id="tsMaxDesks"></td></tr>
+      <tr><td class="label">Auto-Release on Idle — Enabled</td><td class="value" id="tsIdleEnabled"></td></tr>
+      <tr><td class="label">Auto-Release on Idle — Threshold</td><td class="value" id="tsIdleHours"></td></tr>
+      <tr><td class="label">Auto Check-In on Occupancy — Enabled</td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
+      <tr><td class="label">Auto Check-In on Occupancy — Threshold</td><td class="value" id="tsAutoCheckinMinutes"></td></tr>
+      <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="value" id="tsNsnpMode"></td></tr>
+      <tr><td class="label">NSNP — Grace Period Enabled</td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
+      <tr><td class="label">NSNP — Grace Period</td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
+      <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="value" id="tsFmeMode"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Mode</td><td class="value" id="tsAdhMode"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Window</td><td class="value" id="tsAdhWindow"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="value" id="tsAdhMaxBookings"></td></tr>
+      <tr><td class="label">Recurring Bookings</td><td class="value" id="tsRecurring"></td></tr>
+      <tr><td class="label">Remote Booking Confirmation</td><td class="value" id="tsRemoteConfirm"></td></tr>
+      <tr><td class="label">Privacy (Do Not Disturb)</td><td class="value" id="tsDnd"></td></tr>
+    </table>
+
+    <p class="tsec-sub">Training Requested</p>
+    <table class="trow">
+      <tr><td class="label">Teams</td><td class="value" id="tsTrainingTeams"></td></tr>
+      <tr><td class="label">Book on Behalf</td><td class="value" id="tsTrainingBookOnBehalf"></td></tr>
+      <tr><td class="label">Notifications</td><td class="value" id="tsTrainingNotifications"></td></tr>
+    </table>
+  </div>
+
+  <div class="tsec" id="additionalPoliciesSection" hidden>
+    <h2 class="tsec-title">Additional Policies (Per Desk/User Group)</h2>
+    <div id="additionalPoliciesList"></div>
+  </div>
+
+  <div class="dev-link">Dev convenience only (not shown to the client): <a href="floorsense-out-of-box-policy.html">View Configuration Summary</a></div>
+
+</div>
+
+<script>
+(function () {
+  const PROJECT_KEY = "configurationProject";
+
+  function loadProject() {
+    try {
+      const data = localStorage.getItem(PROJECT_KEY);
+      if (data) return JSON.parse(data);
+    } catch (e) {}
+    return {
+      id: Date.now().toString(),
+      created: new Date().toISOString(),
+      registration: {},
+      smartalock: { wizard: {} },
+      floorsense: { wizard: {} }
+    };
+  }
+
+  const project = loadProject();
+  project.registration = project.registration || {};
+  project.smartalock = project.smartalock || { wizard: {} };
+  project.smartalock.wizard = project.smartalock.wizard || {};
+  project.floorsense = project.floorsense || { wizard: {} };
+  project.floorsense.wizard = project.floorsense.wizard || {};
+  const wizard = project.floorsense.wizard;
+  const it = project.smartalock.wizard.it || {};
+  const reg = project.registration;
+
+  const YES_NO = v => (v ? 'Yes' : 'No');
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  /* ---------------- duration / clock-time normalization ---------------- */
+  // Composes the largest applicable day/hour/minute units (skipping zero ones) and always appends
+  // the raw total in minutes — e.g. 1440 -> "1 day, 1440 min"; 210 -> "3 hours 30 min, 210 min".
+  // A pure sub-hour value (e.g. 30) renders just "30 min" rather than the redundant "30 min, 30 min".
+  function formatDuration(totalMinutesRaw) {
+    const totalMinutes = Math.round(totalMinutesRaw);
+    if (!Number.isFinite(totalMinutes)) return 'n/a';
+    if (totalMinutes < 60) return totalMinutes + ' min';
+    const days = Math.floor(totalMinutes / 1440);
+    const remAfterDays = totalMinutes % 1440;
+    const hours = Math.floor(remAfterDays / 60);
+    const mins = remAfterDays % 60;
+    const parts = [];
+    if (days) parts.push(days + (days === 1 ? ' day' : ' days'));
+    if (hours) parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
+    if (mins) parts.push(mins + (mins === 1 ? ' min' : ' min'));
+    return parts.join(' ') + ', ' + totalMinutes + ' min';
+  }
+
+  function formatClock(totalMinutesFromMidnight) {
+    let m = ((totalMinutesFromMidnight % 1440) + 1440) % 1440;
+    let hour24 = Math.floor(m / 60);
+    const minute = m % 60;
+    const suffix = hour24 >= 12 ? 'PM' : 'AM';
+    let hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12;
+    return hour12 + (minute === 0 ? '' : ':' + String(minute).padStart(2, '0')) + ' ' + suffix;
+  }
+
+  function clockStringToMinutes(hhmm, fallbackMinutes) {
+    if (typeof hhmm !== 'string' || !hhmm.includes(':')) return fallbackMinutes;
+    const [h, m] = hhmm.split(':').map(Number);
+    if (!Number.isFinite(h) || !Number.isFinite(m)) return fallbackMinutes;
+    return h * 60 + m;
+  }
+
+  function formatClockWithMinutes(totalMinutesFromMidnight) {
+    return formatClock(totalMinutesFromMidnight) + ', ' + totalMinutesFromMidnight + ' min since midnight';
+  }
+
+  /* ---------------- metadata ---------------- */
+  set('metaProjectId', project.id || 'n/a');
+  set('metaClient', reg.customer || 'Not specified');
+  set('metaSite', reg.site || 'Not specified');
+  set('metaCreated', project.created ? new Date(project.created).toLocaleString() : 'n/a');
+  set('metaUpdated', project.updated ? new Date(project.updated).toLocaleString() : 'n/a');
+  set('metaGenerated', new Date().toLocaleString());
+
+  /* ---------------- Project Details ---------------- */
+  set('tsCompany', reg.customer || 'Not specified');
+  set('tsSite', reg.site || 'Not specified');
+  set('tsPrimaryEmail', reg.email || 'Not specified');
+
+  const contactPairs = [
+    ['Policy', reg.policy], ['IT', reg.it], ['Training', reg.training],
+    ['Support', reg.support], ['Facilities', reg.facilities]
+  ].filter(([, v]) => v && v.trim());
+  set('tsContacts', contactPairs.length ? contactPairs.map(([label, v]) => label + ': ' + v).join(' | ') : 'None specified');
+
+  const portalAccessLines = (reg.portalAccess || '').split('\n').map(l => l.trim()).filter(Boolean);
+  set('tsPortalAccess', portalAccessLines.length ? portalAccessLines.join(' | ') : 'None specified');
+
+  function formatMonthYear(value) {
+    if (!value) return null;
+    const parts = value.split('-');
+    const y = Number(parts[0]), m = Number(parts[1]);
+    if (!y || !m) return null;
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return MONTHS[m - 1] + ' ' + y;
+  }
+  const installLabel = formatMonthYear(reg.installationDate);
+  const completeLabel = formatMonthYear(reg.completionDate);
+  const dateParts = [];
+  if (installLabel) dateParts.push('Installation: ' + installLabel);
+  if (completeLabel) dateParts.push('Go-live: ' + completeLabel);
+  set('tsDates', dateParts.length ? dateParts.join(' | ') : 'Not specified');
+
+  const SSO_LABELS = { "": "No SSO", entra: "Microsoft Entra ID / Azure AD", okta: "Okta", other: "Other SSO" };
+  const SCIM_LABELS = { "": "Not required", enabled: "Enabled" };
+  const GALLAGHER_LABELS = { "": "Not required", required: "Required" };
+  set('tsSso', SSO_LABELS[it.ssoMethod] ?? (it.ssoMethod || 'No SSO'));
+  set('tsScim', SCIM_LABELS[it.scimProvisioning] ?? (it.scimProvisioning || 'Not required'));
+  set('tsApi', (it.apiRequirements && it.apiRequirements.trim()) ? it.apiRequirements : 'None specified');
+  set('tsGallagher', GALLAGHER_LABELS[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required'));
+
+  /* ---------------- Desk Allocation Method ---------------- */
+  const RESERVATION_TYPE_LABELS = {
+    fixed: 'Dedicated Workstations',
+    adhoc: 'Reserved by User as Needed',
+    'team-leader': 'Team Leader Allocated',
+    'booked-on-behalf': 'Booked on Behalf',
+    'ai-agent': 'AI Agent Auto-Prebooked'
+  };
+  const selectedReservationTypes = Array.isArray((wizard.reservationTypes || {}).selected)
+    ? wizard.reservationTypes.selected : ['adhoc'];
+  set('tsReservationTypes', selectedReservationTypes.length
+    ? selectedReservationTypes.map(t => RESERVATION_TYPE_LABELS[t] || t).join(', ')
+    : 'None selected');
+
+  /* ---------------- Prebooking & Duration ---------------- */
+  const prebookingAdvance = wizard.prebookingAdvance || {};
+  const advanceDays = Number.isFinite(prebookingAdvance.prebookingAdvanceDays) ? prebookingAdvance.prebookingAdvanceDays : 8;
+  set('tsPrebookingAdvance', advanceDays <= 0 ? 'Off (same-day only), 0 min' : formatDuration(advanceDays * 1440));
+
+  const defaultReservationTimes = wizard.defaultReservationTimes || {};
+  const businessHours = wizard.businessHours || {};
+  const endMode = defaultReservationTimes.endMode || 'duration';
+  const startMinutes = clockStringToMinutes(businessHours.arrivalTime || defaultReservationTimes.defaultStartTime, 8 * 60 + 30);
+  set('tsReservationMode', endMode === 'fixed-end' ? 'fixed-end (fixed start & end clock times)' : 'duration (start + fixed length)');
+  set('tsDefaultStart', formatClockWithMinutes(startMinutes));
+
+  if (endMode === 'fixed-end') {
+    const endMinutes = clockStringToMinutes(businessHours.departureTime || defaultReservationTimes.defaultEndTime, 17 * 60);
+    set('tsDefaultEnd', formatClockWithMinutes(endMinutes));
+    const spanMinutes = ((endMinutes - startMinutes) + 1440) % 1440;
+    set('tsDefaultDuration', formatDuration(spanMinutes));
+  } else {
+    set('tsDefaultEnd', 'n/a (duration mode)');
+    const durationHours = Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9;
+    set('tsDefaultDuration', formatDuration(durationHours * 60));
+  }
+
+  /* ---------------- Check-in Window ---------------- */
+  const checkinWindow = wizard.checkinWindow || {};
+  const earlyMin = Number.isFinite(checkinWindow.checkInEarlyMinutes) ? checkinWindow.checkInEarlyMinutes : 30;
+  const lateMin = Number.isFinite(checkinWindow.checkInLateMinutes) ? checkinWindow.checkInLateMinutes : 60;
+  set('tsCheckinEarly', formatDuration(earlyMin));
+  set('tsCheckinLate', formatDuration(lateMin));
+
+  /* ---------------- Check-in Behaviour ---------------- */
+  const outOfBoxPolicy = wizard.outOfBoxPolicy || {};
+  set('tsSwipeOut', YES_NO(outOfBoxPolicy.swipeOutRequired !== false));
+  set('tsAutoCancel', YES_NO(outOfBoxPolicy.autoCancelOnElsewhere !== false));
+
+  /* ---------------- Access Methods ---------------- */
+  const CHECKIN_METHOD_LABELS = { card: 'Cards', prebooking: 'App/Desktop', qr: 'QR Code', wallet: 'Wallet Pass' };
+  const selectedMethods = Array.isArray((wizard.checkinMethods || {}).selected) && wizard.checkinMethods.selected.length
+    ? wizard.checkinMethods.selected : ['prebooking'];
+  set('tsCheckinMethods', selectedMethods.map(m => CHECKIN_METHOD_LABELS[m] || m).join(', '));
+
+  /* ---------------- Additional Options ---------------- */
+  const maxDesks = Number.isFinite(outOfBoxPolicy.maxDesksPerUser) ? outOfBoxPolicy.maxDesksPerUser : 1;
+  set('tsMaxDesks', String(maxDesks));
+
+  const idleRelease = wizard.idleRelease || {};
+  set('tsIdleEnabled', YES_NO(!!idleRelease.enabled));
+  set('tsIdleHours', formatDuration((Number.isFinite(idleRelease.idleHours) ? idleRelease.idleHours : 3) * 60));
+
+  const autoOccupancyCheckin = wizard.autoOccupancyCheckin || {};
+  set('tsAutoCheckinEnabled', YES_NO(!!autoOccupancyCheckin.enabled));
+  set('tsAutoCheckinMinutes', formatDuration(Number.isFinite(autoOccupancyCheckin.minutes) ? autoOccupancyCheckin.minutes : 10));
+
+  const NSNP_MODE_LABELS = { all: 'On — all desks', list: 'On — selected desks', other: 'On — custom setup', none: 'Off' };
+  const nsnp = wizard.nsnp || {};
+  set('tsNsnpMode', NSNP_MODE_LABELS[nsnp.mode] || 'Off');
+  set('tsNsnpGraceEnabled', YES_NO(!!nsnp.graceEnabled));
+  set('tsNsnpGraceMinutes', nsnp.graceEnabled ? formatDuration(Number.isFinite(nsnp.graceMinutes) ? nsnp.graceMinutes : 15) : 'n/a');
+
+  const FME_MODE_LABELS = { all: 'On (all desks)', list: 'On (selected desks)', none: 'Off' };
+  const fme = wizard.fme || {};
+  set('tsFmeMode', FME_MODE_LABELS[fme.mode] || 'Off');
+
+  const ADH_MODE_LABELS = { enable: 'On', none: 'Off' };
+  const adh = wizard.antiDeskHogging || {};
+  const adhMode = adh.mode && adh.mode !== 'none' ? (ADH_MODE_LABELS[adh.mode] || adh.mode) : 'Off';
+  set('tsAdhMode', adhMode);
+  const adhWindowDays = Number.isFinite(adh.windowDays) ? adh.windowDays : 2;
+  const adhMaxBookings = Number.isFinite(adh.maxBookings) ? adh.maxBookings : 1;
+  set('tsAdhWindow', adh.mode && adh.mode !== 'none' ? formatDuration(adhWindowDays * 1440) : 'n/a');
+  set('tsAdhMaxBookings', adh.mode && adh.mode !== 'none' ? String(adhMaxBookings) + ' booking(s)' : 'n/a');
+
+  set('tsRecurring', YES_NO(!!outOfBoxPolicy.recurringEnabled));
+  set('tsRemoteConfirm', YES_NO(!!(wizard.remoteConfirm && wizard.remoteConfirm.enabled)));
+  set('tsDnd', YES_NO(outOfBoxPolicy.dndEnabled !== false));
+
+  /* ---------------- Training Requested ---------------- */
+  const trainingRequested = outOfBoxPolicy.trainingRequested || {};
+  const autoTrainingFromTypes = {
+    teams: selectedReservationTypes.includes('team-leader'),
+    bookOnBehalf: selectedReservationTypes.includes('booked-on-behalf')
+  };
+  set('tsTrainingTeams', YES_NO(!!autoTrainingFromTypes.teams || !!trainingRequested.teams));
+  set('tsTrainingBookOnBehalf', YES_NO(!!autoTrainingFromTypes.bookOnBehalf || !!trainingRequested.bookOnBehalf));
+  set('tsTrainingNotifications', YES_NO(!!trainingRequested.notifications));
+
+  /* ---------------- Additional Policies (per desk/user group override) ---------------- */
+  const additionalPolicies = Array.isArray(wizard.additionalPolicies) ? wizard.additionalPolicies.filter(p => p && p.saved) : [];
+  if (additionalPolicies.length) {
+    document.getElementById('additionalPoliciesSection').hidden = false;
+    const list = document.getElementById('additionalPoliciesList');
+    additionalPolicies.forEach((p, i) => {
+      const block = document.createElement('div');
+      block.className = 'policy-block';
+      const groupTypeLabel = p.groupType === 'user' ? 'User Group' : 'Desk Group';
+      const nsnpPolicyLabel = p.nsnpMode === 'all' ? 'On — all desks' : (p.nsnpMode === 'none' ? 'Off' : 'Depends on desk-level NSNP setting');
+      const prebookingDays = Number.isFinite(p.prebookingDays) ? p.prebookingDays : 8;
+      const durationHours = Number.isFinite(p.reservationDurationHours) ? p.reservationDurationHours : 9;
+      const checkinBefore = Number.isFinite(p.checkinBeforeMin) ? p.checkinBeforeMin : 30;
+      const checkinAfter = Number.isFinite(p.checkinAfterMin) ? p.checkinAfterMin : 60;
+      const policyMaxDesks = Number.isFinite(p.maxDesksPerUser) ? p.maxDesksPerUser : 1;
+      block.innerHTML =
+        '<p class="policy-block-title">Policy ' + (i + 1) + ': ' + (p.name || 'Unnamed') + ' (' + groupTypeLabel + ')</p>' +
+        '<table class="trow">' +
+          '<tr><td class="label">Allow Booking In Advance</td><td class="value">' + (prebookingDays <= 0 ? 'Off (same-day only), 0 min' : formatDuration(prebookingDays * 1440)) + '</td></tr>' +
+          '<tr><td class="label">Default Reservation Duration</td><td class="value">' + formatDuration(durationHours * 60) + '</td></tr>' +
+          '<tr><td class="label">Check-in Early Threshold</td><td class="value">' + formatDuration(checkinBefore) + '</td></tr>' +
+          '<tr><td class="label">Check-in Late Threshold</td><td class="value">' + formatDuration(checkinAfter) + '</td></tr>' +
+          '<tr><td class="label">Second Swipe Checks Out</td><td class="value">' + YES_NO(p.swipeOutRequired !== false) + '</td></tr>' +
+          '<tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="value">' + YES_NO(p.autoCancelOnElsewhere !== false) + '</td></tr>' +
+          '<tr><td class="label">Maximum Desks Per User</td><td class="value">' + policyMaxDesks + '</td></tr>' +
+          '<tr><td class="label">No Swipe No Power (NSNP)</td><td class="value">' + nsnpPolicyLabel + '</td></tr>' +
+          '<tr><td class="label">Sit-Stand Desks</td><td class="value">' + YES_NO(!!p.sitStandEnabled) + '</td></tr>' +
+          '<tr><td class="label">Privacy (Do Not Disturb)</td><td class="value">' + YES_NO(p.dndEnabled !== false) + '</td></tr>' +
+        '</table>';
+      list.appendChild(block);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
