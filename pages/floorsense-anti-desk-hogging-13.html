@@ -215,6 +215,16 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  .timeline-node .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 28px;
+    border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 0 0 1px; text-align: center;
+  }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing .label-static-text { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -399,9 +409,10 @@
                 </div>
                 <div class="timeline-node" id="windowNode" tabindex="0" role="slider" aria-label="Time window, days" aria-valuemin="1" aria-valuemax="14">
                   <div class="anchor-pin"></div>
-                  <div class="label-time primary">
+                  <div class="label-time primary" id="windowLabelPill" title="Tap to type a value">
                     <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span id="windowNodeLabel">2 days</span>
+                    <span id="windowNodeLabel" class="label-static-text">2 days</span>
+                    <input type="number" id="windowDaysInput" class="label-value-input" min="1" max="14" step="1" inputmode="numeric" aria-label="Type the time window in days directly">
                     <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </div>
                   <div class="label-desc">Window</div>
@@ -756,6 +767,20 @@ on the pill shrank from `14px` to `6px`, moving it closer to the rail. Verified 
 HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test
 confirming the pin renders 2 arrows with `#fff` stroke and dragging still updates the label text
 correctly.
+
+MOST RECENT CHANGE: per a request to apply the same tap-to-type pin editing rolled out to the
+other timeline pages to this page's Time Window pin, `#windowLabelPill` gained a
+`title="Tap to type a value"`, `#windowNodeLabel` got `class="label-static-text"`, and a sibling
+`<input type="number" id="windowDaysInput">` (min 1, max 14) was added, matching
+floorsense-prebooking-advance-04.html's plain-integer pattern since the displayed value ("N days")
+is already the same number the user types. Commit routes through the existing `setWindowDays()`,
+so the same `clampWindowDays()` bounds the drag/arrow-key handlers already use apply here too. The
+pin isn't nested inside a `<label>`/radio, so only `stopPropagation()` was needed on the pill's own
+`pointerdown`/`click`. A safety clear of any stray `.label-time.editing` state was added to the
+drag pointerdown handler and the Reset button. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, and a Playwright test confirming: tapping the pill
+enters edit mode and typing commits the value; typing above 14 or below 1 clamps correctly; Escape
+cancels without committing; dragging still works; and tap-to-edit still works right after a drag.
 -->
 
 <script>
@@ -921,6 +946,7 @@ correctly.
   }
   windowNode.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     windowNode.classList.add('dragging');
     windowNode.focus();
     document.addEventListener('pointermove', onWindowPointerMove);
@@ -937,6 +963,40 @@ correctly.
       queueSave();
     }
   });
+
+  /* ---------------- tap-to-type: the pill can also be tapped to type the window's day count
+     directly, matching floorsense-prebooking-advance-04.html's plain-integer pattern (the value
+     already displayed, "N days", is the same number the user types). Not nested inside a
+     <label>/radio, so no focus-stealing concern applies. ---------------- */
+  const windowLabelPill = document.getElementById('windowLabelPill');
+  const windowDaysInput = document.getElementById('windowDaysInput');
+
+  function enterWindowEditMode() {
+    windowLabelPill.classList.add('editing');
+    windowDaysInput.value = state.windowDays;
+    windowDaysInput.focus();
+  }
+  function exitWindowEditMode() {
+    windowLabelPill.classList.remove('editing');
+  }
+  function commitWindowEditValue() {
+    if (windowDaysInput.value !== '') {
+      setWindowDays(parseInt(windowDaysInput.value, 10));
+      queueSave();
+    }
+    exitWindowEditMode();
+  }
+  windowLabelPill.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+  windowLabelPill.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!windowLabelPill.classList.contains('editing')) enterWindowEditMode();
+  });
+  windowDaysInput.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); commitWindowEditValue(); windowNode.focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); exitWindowEditMode(); windowNode.focus(); }
+  });
+  windowDaysInput.addEventListener('blur', () => { if (windowLabelPill.classList.contains('editing')) commitWindowEditValue(); });
 
   /* ---------------- Max Same-Desk Bookings: a plain fill-in number field, wired exactly like
      floorsense-prebooking-advance-04.html's own "Advance booking limit" field — clampBookingDays()
@@ -1027,6 +1087,7 @@ correctly.
   if (prevEntry) pageNavPrev.href = prevEntry.href; // always resolves (reservation-length is the floor, never skippable)
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     state.windowDays = 2;
     state.maxBookings = 1;
     applyState();
