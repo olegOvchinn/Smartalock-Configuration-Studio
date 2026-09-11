@@ -332,6 +332,20 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
+  /* ---------- tap-to-type: matches floorsense-prebooking-advance-04.html's pattern — each draggable
+     pill is its own tap target (separate from dragging), swapping its time text for a small inline
+     <input type="time"> so a value can be typed/picked directly instead of only ever set by
+     dragging. Not applied to the fixed #durationStartNode/#fixedEndStartNode "Starts" pins, which
+     aren't draggable/editable at all. ---------- */
+  .timeline-node.draggable .label-time { cursor: pointer; }
+  .timeline-node .label-value-input {
+    display: none; width: 76px; border: none; border-bottom: 1px solid rgba(255,255,255,0.6);
+    background: transparent; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 0 0 1px; color-scheme: dark;
+  }
+  .timeline-node .label-value-input:focus { outline: none; border-bottom-color: #fff; }
+  .timeline-node .label-time.editing .label-static-text { display: none; }
+  .timeline-node .label-time.editing .label-value-input { display: inline-block; }
   .label-arrow { flex-shrink: 0; }
   @keyframes label-arrow-nudge-left {
     0%, 100% { transform: translateX(0); opacity: 0.4; }
@@ -512,9 +526,10 @@
                     </div>
                     <div class="timeline-node draggable" id="card1StartNode" tabindex="0" role="slider" aria-label="Custom start time" aria-valuemin="0" aria-valuemax="1410">
                       <div class="anchor-pin"></div>
-                      <div class="label-time primary">
+                      <div class="label-time primary" id="card1StartLabelPill" title="Tap to type a value">
                         <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <span id="card1StartTime">8:30 AM</span>
+                        <span id="card1StartTime" class="label-static-text">8:30 AM</span>
+                        <input type="time" id="card1StartTimeInput" class="label-value-input" aria-label="Type the custom start time directly">
                         <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                       </div>
                       <div class="label-desc">Custom start</div>
@@ -559,9 +574,10 @@
                       </div>
                       <div class="timeline-node draggable" id="durationEndNode" tabindex="0" role="slider" aria-label="Fixed reservation duration" aria-valuemin="30" aria-valuemax="960">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary">
+                        <div class="label-time primary" id="durationEndLabelPill" title="Tap to type a value">
                           <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                          <span id="durationEndTime">5:30 PM</span>
+                          <span id="durationEndTime" class="label-static-text">5:30 PM</span>
+                          <input type="time" id="durationEndTimeInput" class="label-value-input" aria-label="Type the reservation end time directly">
                           <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="label-desc">Ends</div>
@@ -601,9 +617,10 @@
                       </div>
                       <div class="timeline-node draggable" id="fixedEndEndNode" tabindex="0" role="slider" aria-label="Shared reservation end time" aria-valuemin="0" aria-valuemax="960">
                         <div class="anchor-pin"></div>
-                        <div class="label-time primary">
+                        <div class="label-time primary" id="fixedEndEndLabelPill" title="Tap to type a value">
                           <svg class="label-arrow label-arrow-left" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 1.5L2 5l4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                          <span id="fixedEndEndTime">5:00 PM</span>
+                          <span id="fixedEndEndTime" class="label-static-text">5:00 PM</span>
+                          <input type="time" id="fixedEndEndTimeInput" class="label-value-input" aria-label="Type the shared reservation end time directly">
                           <svg class="label-arrow label-arrow-right" width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.5 1.5L6 5l-4.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <div class="label-desc">Ends</div>
@@ -1268,6 +1285,32 @@ closer to the rail too for visual consistency). Purely decorative arrows, no cli
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and a Playwright test confirming all three draggable pins render 2 arrows each while the two fixed
 reference pins render 0, with `#card1StartTime` reading correctly on load.
+
+MOST RECENT CHANGE: per a request to apply the same tap-to-type pin editing added to
+floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html/floorsense-checkin-window-08.html
+to this page's three draggable pins. Each pin's floating pill (`#card1StartLabelPill`/
+`#durationEndLabelPill`/`#fixedEndEndLabelPill`) gained a `title="Tap to type a value"`, its existing
+label text wrapped in `class="label-static-text"`, and a sibling `<input type="time">`
+(`#card1StartTimeInput`/`#durationEndTimeInput`/`#fixedEndEndTimeInput`) that only becomes visible
+while editing. The three drag-handler option objects passed to `makeDraggablePin()` were hoisted into
+named consts (`card1StartPinOpts`/`durationEndPinOpts`/`fixedEndEndPinOpts`) so both the drag path and
+the new tap-to-edit path share identical clamp/onChange logic. A new `wireTapToEditPinTime()` handles
+tap/type/commit for all three, converting the typed absolute time back to each pin's own underlying
+value: card 1's is a direct passthrough (its pin already stores an absolute time), while cards 2/3's
+pins store values relative to card 1's start time (a duration and an offset respectively), so their
+commit path subtracts `state.defaultStartTime` back out before calling `setMinutes()`. Cards 2/3's
+pins sit inside a `<label class="path-row">` wrapping that card's own radio input, whose native default
+behaviour on click is to shift focus onto the radio — since that happens right after our own click
+listener focuses the newly-revealed input, it immediately blurred it again and auto-committed/exited
+edit mode in the same tick, so tapping either pill appeared to silently do nothing. Fixed by calling
+`e.preventDefault()` on the pill's `click` listener (not just its `pointerdown`, which already had it),
+matching why the drag handlers above do the same. Safety-clears (`.label-time.editing` removal) were
+added to the shared drag pointerdown handler and the Reset button, same pattern as the other pin pages.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and
+a Playwright test confirming: all three pins enter edit mode on tap and commit typed absolute times
+(correctly converting to/from duration and offset for cards 2/3); Escape cancels without committing;
+dragging all three pins still works and still updates `endMode`/the underlying values exactly as
+before; and tap-to-edit still works again immediately after a drag.
 -->
 
 <script>
@@ -1557,6 +1600,7 @@ reference pins render 0, with `#card1StartTime` reading correctly on load.
     }
     nodeEl.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
       nodeEl.classList.add('dragging');
       nodeEl.focus();
       document.addEventListener('pointermove', onPointerMove);
@@ -1575,15 +1619,15 @@ reference pins render 0, with `#card1StartTime` reading correctly on load.
     });
   }
 
-  makeDraggablePin(card1StartNode, {
+  const card1StartPinOpts = {
     minutesFromPercent: (percent) => Math.max(0, Math.min(1410, Math.round((percent / 100) * 1440 / 30) * 30)),
     getMinutes: () => parseTimeToMinutes(state.defaultStartTime),
     setMinutes: (minutes) => {
       state.defaultStartTime = minutesToHHMM(Math.max(0, Math.min(1410, minutes)));
       updateAllDiagrams();
     }
-  });
-  makeDraggablePin(durationEndNode, {
+  };
+  const durationEndPinOpts = {
     minutesFromPercent: (percent) => {
       const t = Math.max(0, Math.min(1, (percent - ROW_EDGE_PERCENT) / (100 - 2 * ROW_EDGE_PERCENT)));
       return Math.max(30, Math.min(DURATION_MAX_MINUTES, Math.round((t * DURATION_MAX_MINUTES) / 30) * 30));
@@ -1593,8 +1637,8 @@ reference pins render 0, with `#card1StartTime` reading correctly on load.
       state.defaultDurationHours = Math.max(30, Math.min(DURATION_MAX_MINUTES, minutes)) / 60;
       updateAllDiagrams();
     }
-  });
-  makeDraggablePin(fixedEndEndNode, {
+  };
+  const fixedEndEndPinOpts = {
     minutesFromPercent: (percent) => {
       const t = Math.max(0, Math.min(1, (percent - ROW_EDGE_PERCENT) / (100 - 2 * ROW_EDGE_PERCENT)));
       return Math.max(0, Math.min(DURATION_MAX_MINUTES, Math.round((t * DURATION_MAX_MINUTES) / 30) * 30));
@@ -1605,7 +1649,67 @@ reference pins render 0, with `#card1StartTime` reading correctly on load.
       state.defaultEndTime = minutesToHHMM(parseTimeToMinutes(state.defaultStartTime) + clampedOffset);
       updateAllDiagrams();
     }
-  });
+  };
+  makeDraggablePin(card1StartNode, card1StartPinOpts);
+  makeDraggablePin(durationEndNode, durationEndPinOpts);
+  makeDraggablePin(fixedEndEndNode, fixedEndEndPinOpts);
+
+  /* ---------------- tap-to-type: each draggable pill is its own tap target, swapping its time text
+     for a native <input type="time"> so a value can be typed/picked directly instead of only ever
+     set by dragging. Card 1's pin is a genuine absolute time, so its typed value is passed straight
+     to setMinutes(); cards 2/3's pins are really a duration/offset relative to card 1's start time,
+     so the typed absolute time is converted to that relative value first — the same conversion
+     getMinutes() itself already does in reverse to read the pin's current position. ---------- */
+  function wireTapToEditPinTime(pillEl, inputEl, nodeEl, opts, toRelativeMinutes) {
+    function currentAbsoluteMinutes() {
+      const relative = opts.getMinutes();
+      return toRelativeMinutes ? parseTimeToMinutes(state.defaultStartTime) + relative : relative;
+    }
+    function enterEditMode() {
+      pillEl.classList.add('editing');
+      inputEl.value = minutesToHHMM(currentAbsoluteMinutes());
+      inputEl.focus();
+    }
+    function exitEditMode() { pillEl.classList.remove('editing'); }
+    function commit() {
+      if (inputEl.value) {
+        const typedMinutes = parseTimeToMinutes(inputEl.value);
+        const relative = toRelativeMinutes ? (typedMinutes - parseTimeToMinutes(state.defaultStartTime)) : typedMinutes;
+        opts.setMinutes(relative);
+        queueSave();
+      }
+      exitEditMode();
+    }
+    // Cards 2/3's diagrams sit inside a <label class="path-row"> wrapping that card's own radio
+    // input (the whole option card is clickable to select it). A label's native default action on
+    // click is to move focus to (and activate) its wrapped control, which — since that runs right
+    // after our own click listener — immediately steals focus back from the input we just focused
+    // in enterEditMode(), firing its 'blur' handler and auto-committing/exiting edit mode in the
+    // same tick. preventDefault() on 'click' itself (not just 'pointerdown') stops that native
+    // focus-stealing, the same reason the drag handlers above already call preventDefault() on
+    // their own pointerdown.
+    pillEl.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); });
+    pillEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!pillEl.classList.contains('editing')) enterEditMode();
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commit(); nodeEl.focus(); }
+      else if (e.key === 'Escape') { e.preventDefault(); exitEditMode(); nodeEl.focus(); }
+    });
+    inputEl.addEventListener('blur', () => { if (pillEl.classList.contains('editing')) commit(); });
+  }
+  wireTapToEditPinTime(
+    document.getElementById('card1StartLabelPill'), document.getElementById('card1StartTimeInput'), card1StartNode, card1StartPinOpts, false
+  );
+  wireTapToEditPinTime(
+    document.getElementById('durationEndLabelPill'), document.getElementById('durationEndTimeInput'), durationEndNode, durationEndPinOpts, true
+  );
+  wireTapToEditPinTime(
+    document.getElementById('fixedEndEndLabelPill'), document.getElementById('fixedEndEndTimeInput'), fixedEndEndNode, fixedEndEndPinOpts, true
+  );
 
   function applyState() {
     setEndModeCards(state.endMode);
@@ -1633,6 +1737,7 @@ reference pins render 0, with `#card1StartTime` reading correctly on load.
   }
 
   document.getElementById('resetBtn').addEventListener('click', () => {
+    document.querySelectorAll('.label-time.editing').forEach((p) => p.classList.remove('editing'));
     state.defaultStartTime = '08:30';
     state.defaultEndTime = '17:00';
     state.defaultDurationHours = 9;
