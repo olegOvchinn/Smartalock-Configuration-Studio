@@ -161,30 +161,27 @@
     transition: box-shadow .2s, background .2s;
   }
   .desk-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+    box-shadow: 0 16px 40px -8px var(--tc-glow, rgba(0,113,227,0.22)), 0 3px 12px rgba(16,42,67,0.08);
   }
   .desk-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    background: var(--tc-wash, rgba(232,241,252,0.7));
+    box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
   }
-  /* ---------- tick box re-added per a request to match smartalock-reservation-type-01.html's own
-     card styling — that page's `.tcard-radio` (a 22px rounded-square that fills solid with a white
-     checkmark once its card is chosen) was itself originally propagated FROM this page, back when
-     this page still had its own `.desk-tick` marker (removed in an earlier change — see the older
-     MOST RECENT CHANGE note on that removal, further down). Re-implemented here as `.desk-tick`,
-     matching `.tcard-radio`'s exact sizing/shape, but tinted per-card via a `--tc` custom property
-     (set per `data-template` below) so each tick's checked colour matches that card's own existing
-     `.desk-icon-badge` accent (blue/pink/purple/teal/amber) instead of one flat colour — the same
-     "per-type accent on the tick" idea `.tcard-radio` uses via its own `--tc`, just driven by this
-     page's existing 5-colour badge system rather than introducing a new one. The row is still a
-     <label> wrapping the hidden checkbox, so clicking anywhere on the card still toggles selection;
-     the tick is a second, more explicit indicator alongside the existing checked background/shadow
-     change, not a replacement for it. ---------- */
-  .desk-check-card[data-template="fixed"] { --tc: #4A8DF0; }
-  .desk-check-card[data-template="adhoc"] { --tc: #EC6BA5; }
-  .desk-check-card[data-template="team-leader"] { --tc: #9B6BEC; }
-  .desk-check-card[data-template="booked-on-behalf"] { --tc: #2FBF9F; }
-  .desk-check-card[data-template="ai-agent"] { --tc: #F2A154; }
+  /* ---------- per-card theme colour, matching smartalock-reservation-type-01.html's own `--tc`
+     custom-property pattern more fully: that page tints its whole card (heading text colour, chosen
+     background wash, hover/chosen shadow glow) per `data-type`, not just a small tick mark — a
+     follow-up screenshot confirmed the mismatch (this page's cards all still glowed/washed the same
+     flat blue on hover/select, while its heading text stayed a fixed grey, unlike the smartalock
+     page's coloured headings + coloured chosen-card wash). `--tc-wash`/`--tc-glow`/`--tc-glow-strong`
+     were added per `data-template` alongside `--tc` — each a light tint/rgba of that same card
+     colour (already used by `.desk-icon-badge`'s border and now `.desk-tick`'s fill) — and
+     `.desk-check-card:hover`/`.desk-check-card.checked` below now read those instead of the
+     previous fixed blue values, with the original blue kept only as each property's fallback. ---------- */
+  .desk-check-card[data-template="fixed"] { --tc: #4A8DF0; --tc-wash: rgba(237,244,254,0.7); --tc-glow: rgba(74,141,240,0.22); --tc-glow-strong: rgba(74,141,240,0.3); }
+  .desk-check-card[data-template="adhoc"] { --tc: #EC6BA5; --tc-wash: rgba(253,240,246,0.7); --tc-glow: rgba(236,107,165,0.22); --tc-glow-strong: rgba(236,107,165,0.3); }
+  .desk-check-card[data-template="team-leader"] { --tc: #9B6BEC; --tc-wash: rgba(245,240,253,0.7); --tc-glow: rgba(155,107,236,0.22); --tc-glow-strong: rgba(155,107,236,0.3); }
+  .desk-check-card[data-template="booked-on-behalf"] { --tc: #2FBF9F; --tc-wash: rgba(234,249,245,0.7); --tc-glow: rgba(47,191,159,0.22); --tc-glow-strong: rgba(47,191,159,0.3); }
+  .desk-check-card[data-template="ai-agent"] { --tc: #F2A154; --tc-wash: rgba(254,246,238,0.7); --tc-glow: rgba(242,161,84,0.22); --tc-glow-strong: rgba(242,161,84,0.3); }
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
@@ -200,7 +197,7 @@
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-card-body { min-width: 0; flex: 1; }
-  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
+  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--tc, var(--header-grey)); margin: 0 0 8px; }
   .desk-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
   /* ---------- group-tag: small pill for a card-level status callout (e.g. "Coming Soon"), same
      treatment already used sitewide (floorsense-desk-user-groups-03.html's "Recommended",
@@ -855,6 +852,27 @@ resulting card.
   by User as Needed" card's tick renders filled pink on load; clicking "Dedicated Workstations"
   fills its tick blue; and the disabled "AI Agent Auto-Prebooked" card's tick stays unfilled even
   after a forced click.
+
+  MOST RECENT CHANGE: per a follow-up (with a screenshot of smartalock-reservation-type-01.html
+  showing a coloured heading plus a coloured chosen-card wash/glow), the tick-box change above only
+  went as far as tinting the small tick itself — the rest of each card (heading text, hover glow,
+  and the checked-state background wash/shadow) was still the one flat blue regardless of card,
+  unlike the smartalock page where the whole card themes per type. Fixed by adding
+  `--tc-wash`/`--tc-glow`/`--tc-glow-strong` custom properties alongside the existing `--tc`, one
+  set per `data-template`, each derived from that same card colour: `--tc-wash` is a ~90%-white tint
+  of it at 0.7 alpha (matching this page's own prior flat-blue wash formula, `rgba(232,241,252,0.7)`,
+  which is itself just that same tint-and-alpha applied to blue), and `--tc-glow`/`--tc-glow-strong`
+  are the raw colour at 0.22/0.3 alpha (the exact ratios the previous flat-blue hover/checked shadows
+  already used). `.desk-check-card:hover` and `.desk-check-card.checked` now read
+  `var(--tc-glow)`/`var(--tc-wash)`/`var(--tc-glow-strong)` (falling back to the original blue
+  values if `--tc` were ever unset), and `.desk-title`'s `color` changed from the fixed
+  `var(--header-grey)` to `var(--tc, var(--header-grey))` so each heading is always tinted its own
+  card colour — matching `.tcard h3 { color: var(--tc); }` on the smartalock page, independent of
+  whether that card is currently selected. Verified via an HTMLParser tag-balance check, `node
+  --check` on the untouched script block, re-ran the existing tick-fill Playwright test (unaffected),
+  and a screenshot confirming each of the 5 cards now shows its own heading colour, and that
+  selecting a card washes its background/shadow in that same colour rather than the previous flat
+  blue.
 -->
 
 <script>
