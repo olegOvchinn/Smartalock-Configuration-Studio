@@ -430,7 +430,7 @@
                 </div>
               </div>
             </div>
-            <p class="timeline-drag-hint">Drag the pin — or the filled bar — to change how many days ahead, or tap the number to type a value.</p>
+            <p class="timeline-drag-hint">Grab the blue edge in the timeline, or tap the number in the pin, to adjust.</p>
           </div>
         </div>
       </div>
@@ -982,6 +982,15 @@ commits 23, updates the label/pin position, and persists `{ prebookingAdvanceDay
 change; typing a value and clicking elsewhere (blur) commits it; dragging the pin to the rail's midpoint
 still correctly sets 15 days; and the pill still opens correctly on a subsequent tap after a drag — plus
 a screenshot of the pill in its open, editable state.
+
+MOST RECENT CHANGE: per a follow-up request to phrase the caption around the two interaction points
+themselves (the blue filled edge in the rail, and the number inside the pin) rather than around the
+generic verb "drag," `.timeline-drag-hint`'s text changed from "Drag the pin — or the filled bar — to
+change how many days ahead, or tap the number to type a value." to "Grab the blue edge in the
+timeline, or tap the number in the pin, to adjust." Only this caption's text changed; the drag/tap
+behaviour, the pill's edit mode, and every other element on the page are unchanged. Verified via an
+inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
+copy-only change).
 -->
 
 
