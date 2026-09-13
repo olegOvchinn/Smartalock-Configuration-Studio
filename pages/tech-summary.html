@@ -239,6 +239,14 @@
   and a jsdom test covering: the static key rendering regardless of state, the 48h preset, a
   hours-phrased custom value, a days-phrased custom value, an already-minutes-phrased custom value
   (left alone), an unparseable custom value (left alone), and an empty custom value ("Not specified").
+
+  MOST RECENT CHANGE: per a request that Lockers Per User also show "res_user_limit_force" whenever
+  its value is 3 or more, the row's setting-key cell now reads "res_user_limit, res_user_limit_force"
+  in that case (appended alongside the existing static "res_user_limit", rather than replacing it) —
+  compared against the custom limit's numeric value, so the default 1-per-user case and any custom
+  value under 3 keep showing just "res_user_limit". Verified via an inline HTMLParser tag-balance
+  check, `node --check` on the extracted script block, and a jsdom test covering the default, a custom
+  value of 2 (below the threshold), custom values of 3 and 10 (both keys), and an empty custom value.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -389,7 +397,7 @@
     <p class="tsec-sub">Locker Policy</p>
     <table class="trow">
       <tr><td class="label">Release When Idle</td><td class="key" id="saIdleKey">res_release_idle_time</td><td class="value" id="saIdle"></td></tr>
-      <tr><td class="label">Lockers Per User</td><td class="key">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
+      <tr><td class="label">Lockers Per User</td><td class="key" id="saLockerLimitKey">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
       <tr><td class="label">Release Behaviour</td><td class="key"></td><td class="value" id="saReleaseBehaviour"></td></tr>
     </table>
 
@@ -785,12 +793,18 @@
   }
   set('saIdle', idleValue);
   let lockerLimitValue;
+  let lockerLimitNumber = 1;
   if (locker.lockerLimit === 'custom') {
     lockerLimitValue = locker.customLockerLimit ? (locker.customLockerLimit + ' per user') : 'Not specified';
+    const customLockerLimitNum = Number(locker.customLockerLimit);
+    if (Number.isFinite(customLockerLimitNum)) lockerLimitNumber = customLockerLimitNum;
   } else {
     lockerLimitValue = '1 per user';
   }
   set('saLockerLimit', lockerLimitValue);
+  // res_user_limit is always shown (static, in the markup); res_user_limit_force is added alongside
+  // it whenever the client set a custom limit of 3 or more lockers per user.
+  if (lockerLimitNumber >= 3) set('saLockerLimitKey', 'res_user_limit, res_user_limit_force');
   const RELEASE_LABELS = { grace: 'Allow one final locker access after expiry', immediate: 'Release when reservation expires' };
   set('saReleaseBehaviour', RELEASE_LABELS[locker.releaseBehaviour] ?? (locker.releaseBehaviour || RELEASE_LABELS.grace));
   // Defaults this group ships with: idle release Off, 1 locker per user, "grace" release behaviour —
