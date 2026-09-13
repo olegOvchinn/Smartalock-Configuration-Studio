@@ -205,6 +205,13 @@
   .summary-desc { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); margin: 4px 0 0; line-height: 1.5; }
   .summary-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); font-style: italic; margin: 8px 0 0; }
 
+  /* ---------- Outstanding: items the client still has to provide before this configuration can go
+     live. Reuses the same amber tone as the existing .status-pill.pending, so it reads as "needs
+     attention" using a colour already established on this page rather than a new one. ---------- */
+  .summary-group.outstanding-group { border-left: 3px solid #F2A154; }
+  .summary-group.outstanding-group .summary-group-head h3 { color: #B25E09; }
+  .summary-group.outstanding-group .summary-row-top .value { color: #B25E09; }
+
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -442,6 +449,15 @@
           </div>
         </div>
         <div id="group-locker-type"></div>
+      </div>
+
+      <!-- Outstanding: derived list of items the client still has to provide, hidden entirely
+           unless there's actually something outstanding. -->
+      <div class="summary-group outstanding-group" id="outstandingGroup" hidden>
+        <div class="summary-group-head">
+          <h3>Outstanding</h3>
+        </div>
+        <div id="group-outstanding"></div>
       </div>
 
       <div class="page-nav">
@@ -693,6 +709,23 @@ below it now show whenever Push to Open is enabled at all, not only when it was 
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and a Playwright test confirming the combined-state row text and the legacy-migration fallback both
 render correctly.
+
+MOST RECENT CHANGE: per a request to add an "Outstanding" section listing items the client still has
+to provide, added a new `.summary-group.outstanding-group` (`#outstandingGroup`, hidden unless
+populated) after the Locker Types group and before the page-nav, styled with the same amber
+(`#B25E09`/`#F2A154`) already used by this page's own `.status-pill.pending`. Populated via a new
+IIFE that reads `wizard.accessMethods` and appends a plain-language `row()` item (reusing the
+existing row/note helpers, so it's automatically picked up by `buildSummaryText()`'s generic
+`.summary-group`/`.summary-row` walk for the emailed summary) for either of two triggers: Building
+access cards selected with `cardAssignMethod !== 'self'` (the spreadsheet-import default is in
+effect, so the client still owes us a spreadsheet of usernames + swipe card Chip Serial Numbers), or
+PIN number at touchscreen selected with `pinAssignMethod === 'list'` (the client still owes us that
+PIN list). Neither the Initial Locker Access Methods group above it nor its "Enabled" values were
+changed — this page still doesn't surface the underlying assignment-method choice itself (that detail
+was added to tech-summary.html instead, for an internal audience); Outstanding only surfaces the
+action item derived from it. Verified via an inline HTMLParser tag-balance check, `node --check` on
+the extracted script block, and a jsdom test covering: default card import (Outstanding shows), card
+self-allocate (hidden), PIN list (shows), and neither trigger (hidden).
 -->
 
 <script>
@@ -1029,6 +1062,30 @@ render correctly.
         wrap.appendChild(row(TYPE_LABELS[t], exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet'));
       }
     });
+  })();
+
+  /* ---------------- Outstanding ----------------
+     Items the client still has to provide before this configuration can go live. Only two triggers
+     exist so far, both from Initial Locker Access Methods: Building access cards defaults to "we'll
+     supply a spreadsheet of usernames + swipe card CSNs for Smartalock to import" (the client still
+     owes us that spreadsheet unless they chose self-allocation instead), and PIN assignment has a
+     "we'll provide a list of PINs to assign" option (the client still owes us that list whenever
+     it's chosen). */
+  (function () {
+    const am2 = wizard.accessMethods || {};
+    const selectedAccess2 = Array.isArray(am2.selected) ? am2.selected : [];
+    const items = [];
+    if (selectedAccess2.includes('card') && am2.cardAssignMethod !== 'self') {
+      items.push('Spreadsheet of usernames and their swipe card Chip Serial Numbers (CSNs), for Smartalock to import.');
+    }
+    if (am2.pinAssignMethod === 'list') {
+      items.push('List of PINs to assign to users.');
+    }
+    if (items.length) {
+      document.getElementById('outstandingGroup').hidden = false;
+      const wrap = document.getElementById('group-outstanding');
+      items.forEach(item => wrap.appendChild(row('Initial Locker Access Methods', item)));
+    }
   })();
 
   document.getElementById('printBtn').addEventListener('click', () => window.print());

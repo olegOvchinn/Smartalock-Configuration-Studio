@@ -932,6 +932,20 @@
 
       </div>
 
+      <!-- Outstanding: derived list of items the client still has to provide, hidden entirely
+           unless there's actually something outstanding. No Floorsense-specific trigger exists yet
+           (see the MOST RECENT CHANGE note near the top of this file's script), so this stays empty
+           and hidden until a follow-up request adds one. -->
+      <div class="summary-group" id="outstandingGroup" hidden>
+        <div class="summary-group-head">
+          <div class="summary-group-heading">
+            <div class="summary-icon-badge badge-amber"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></div>
+            <h3>Outstanding</h3>
+          </div>
+        </div>
+        <div id="outstandingList"></div>
+      </div>
+
       <div class="page-nav">
         <a class="page-nav-btn" href="floorsense-optional-features-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
@@ -2454,6 +2468,22 @@ a jsdom test covering all three fields across their "no input" and "input provid
 off/on with default and custom scope; FME off, on-without-ack, and on-with-ack; NSNP "other" mode with
 an empty note, with a note, and a non-"other" mode carrying a stray note) confirming each renders or
 stays silent exactly as described above.
+
+MOST RECENT CHANGE: per a request to add an "Outstanding" section (listing items the client still
+has to provide) to both branches' Configuration Summary pages and to tech-summary.html, added the
+same structural `.summary-group` (`#outstandingGroup`, hidden unless populated) here too — placed
+after Additional Policies and before the page-nav, reusing this page's existing `badge-amber` colour
+and the exact warning-triangle glyph already used by the Additional Policies precedence notice above
+it, so it matches this page's own visual language rather than borrowing the Smartalock summary's
+`.status-pill.pending` amber instead. Unlike the Smartalock-side Configuration Summary and
+tech-summary.html — where two triggers were added this round (Building access cards' spreadsheet-
+import default, and PIN assignment's "client provides a list" option, both from
+smartalock-access-methods-09.html) — this page only reads `project.floorsense.wizard.*`, and neither
+trigger belongs to the Floorsense branch, so its `items` array is intentionally left empty for now.
+The section is fully wired up (hidden/shown driven by `items.length`, rows built the same
+`.summary-row` way) and ready for a Floorsense-specific trigger whenever one is requested. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
+test confirming `#outstandingGroup` exists, stays hidden, and `#outstandingList` stays empty on load.
 -->
 
 
@@ -2546,6 +2576,28 @@ stays silent exactly as described above.
     document.getElementById('itApiSummaryValue').textContent =
       (it.apiRequirements && it.apiRequirements.trim()) ? it.apiRequirements : 'None specified';
     document.getElementById('itGallagherSummaryValue').textContent = GALLAGHER_LABELS[it.gallagherIntegration] ?? (it.gallagherIntegration || 'Not required');
+  })();
+
+  /* ---------------- Outstanding ----------------
+     Items the client still has to provide before this configuration can go live. No
+     Floorsense-specific trigger exists yet — the two triggers added so far (Building access cards'
+     default spreadsheet-import method, and PIN assignment's "client provides a list" option) both
+     live on the Smartalock branch's Initial Locker Access Methods page, so they surface on
+     smartalock-configuration-summary-08.html and the combined tech-summary.html instead of here.
+     This block is left in place, structurally wired up and ready, for whenever a Floorsense-side
+     outstanding item is requested. */
+  (function () {
+    const items = [];
+    if (items.length) {
+      document.getElementById('outstandingGroup').hidden = false;
+      const wrap = document.getElementById('outstandingList');
+      items.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'summary-row';
+        div.innerHTML = '<div class="summary-row-top"><span class="label">' + entry.label + '</span><span class="value">' + entry.value + '</span></div>';
+        wrap.appendChild(div);
+      });
+    }
   })();
 
   /* ---------------- preset (relaxed / strict) query param ---------------- */
