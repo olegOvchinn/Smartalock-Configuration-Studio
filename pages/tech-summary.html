@@ -134,6 +134,35 @@
   confirming the new `.tsec-sub` order inside `#smartalockSection`, that both groups' values still
   render correctly after the move, and that the existing default-hiding behavior (from the prior
   change) still hides both sections on a fully-default project.
+
+  MOST RECENT CHANGE: per a request to add a 3rd, middle column to every row table in the Smartalock
+  and Floorsense sections — an internal "setting key" cross-reference for engineering, separate from
+  the client-facing label (left) and the client's actual configured value (right). Project Details
+  keeps its original 2-column layout; this is scoped to the two per-branch sections only, matching the
+  request. Added `table.trow td.key` (fixed 190px width, monospace, accent-deep colour) and inserted
+  an empty `<td class="key">` into every row of every table inside `#smartalockSection` and
+  `#floorsenseSection`, including the dynamically-generated Locker Types rows (and bumped the Locker
+  Types empty-state row's colspan from 2 to 3) — so the grid is structurally 3 columns everywhere in
+  both sections even before every row has a key assigned.
+  Only 3 Smartalock rows have a real key populated so far, per what was requested this round:
+  - Open Behaviour: shows "lock_pushopen = true" whenever Push to Open is the active behaviour
+    (including the mixed Pop+Push case, since Push to Open is genuinely active there too) — set via
+    JS (`saOpenBehaviourKey`) since it depends on the client's choice. When Pop Open (the default) is
+    in effect instead, the cell reads "default" rather than being left blank or asserting a "false" key.
+  - Self-Allocation Duration: a static "res_duration_default" in the markup itself, since the key name
+    doesn't change based on the duration's actual value.
+  - Lockers Per User: a static "res_user_limit" in the markup, for the same reason.
+  Every other row in both sections (including all of Floorsense, which is out of scope until
+  requested) has an empty key cell for now, ready for keys to be assigned in a follow-up pass.
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+  and a jsdom test confirming: every Smartalock/Floorsense row (including dynamically-generated Locker
+  Types rows) has exactly 3 `<td>` cells while Project Details rows are unchanged at 2; Open
+  Behaviour's key correctly reads "default" for Pop Open, "lock_pushopen = true" for pure Push to
+  Open, and "lock_pushopen = true" for the mixed Pop+Push case; and the two static keys
+  (res_duration_default, res_user_limit) render correctly on their rows. A Playwright screenshot could
+  not be captured in this environment (headless Chromium's system libraries are unavailable and
+  package installation is not permitted here), so this change relies on the jsdom structural/behavioral
+  coverage above plus the tag-balance and syntax checks.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -200,6 +229,10 @@
   table.trow tr:first-child td { border-top: none; }
   table.trow td.label { width: 46%; color: var(--ink-soft); font-weight: 600; }
   table.trow td.value { font-family: var(--font-mono); color: var(--ink); font-weight: 600; }
+  /* Middle "setting key" column — Smartalock/Floorsense rows only (Project Details keeps the
+     original 2-column layout). Narrower and visually distinct from the value column so it reads as
+     an internal engineering cross-reference rather than another piece of client data. */
+  table.trow td.key { width: 190px; font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-deep); font-weight: 700; }
 
   .policy-block { border: 1.5px dashed var(--line); border-radius: 10px; padding: 12px 14px 4px; margin: 10px 0 18px; }
   .policy-block-title { font-size: 12.5px; font-weight: 800; margin: 0 0 8px; color: var(--ink); }
@@ -252,57 +285,57 @@
 
     <p class="tsec-sub">Initial Locker Access Methods</p>
     <table class="trow">
-      <tr><td class="label">Access Methods Selected</td><td class="value" id="saAccessMethods"></td></tr>
+      <tr><td class="label">Access Methods Selected</td><td class="key"></td><td class="value" id="saAccessMethods"></td></tr>
     </table>
 
     <p class="tsec-sub">Locker Door Behaviour</p>
     <table class="trow">
-      <tr><td class="label">Open Behaviour</td><td class="value" id="saOpenBehaviour"></td></tr>
-      <tr id="saPushScopeRow" hidden><td class="label">Push to Open Scope</td><td class="value" id="saPushScope"></td></tr>
-      <tr id="saLockerBankRow" hidden><td class="label">Locker Bank</td><td class="value" id="saLockerBank"></td></tr>
-      <tr id="saLockerNumbersRow" hidden><td class="label">Locker Numbers</td><td class="value" id="saLockerNumbers"></td></tr>
+      <tr><td class="label">Open Behaviour</td><td class="key" id="saOpenBehaviourKey"></td><td class="value" id="saOpenBehaviour"></td></tr>
+      <tr id="saPushScopeRow" hidden><td class="label">Push to Open Scope</td><td class="key"></td><td class="value" id="saPushScope"></td></tr>
+      <tr id="saLockerBankRow" hidden><td class="label">Locker Bank</td><td class="key"></td><td class="value" id="saLockerBank"></td></tr>
+      <tr id="saLockerNumbersRow" hidden><td class="label">Locker Numbers</td><td class="key"></td><td class="value" id="saLockerNumbers"></td></tr>
     </table>
 
     <p class="tsec-sub">Reservation Type</p>
     <table class="trow">
-      <tr><td class="label">Reservation Types Selected</td><td class="value" id="saReservationTypes"></td></tr>
-      <tr id="saSelfAllocRow" hidden><td class="label">Self-Allocation Duration</td><td class="value" id="saSelfAllocDuration"></td></tr>
+      <tr><td class="label">Reservation Types Selected</td><td class="key"></td><td class="value" id="saReservationTypes"></td></tr>
+      <tr id="saSelfAllocRow" hidden><td class="label">Self-Allocation Duration</td><td class="key">res_duration_default</td><td class="value" id="saSelfAllocDuration"></td></tr>
     </table>
 
     <p class="tsec-sub">Locker Policy</p>
     <table class="trow">
-      <tr><td class="label">Open When Idle</td><td class="value" id="saIdle"></td></tr>
-      <tr><td class="label">Lockers Per User</td><td class="value" id="saLockerLimit"></td></tr>
-      <tr><td class="label">Release Behaviour</td><td class="value" id="saReleaseBehaviour"></td></tr>
+      <tr><td class="label">Open When Idle</td><td class="key"></td><td class="value" id="saIdle"></td></tr>
+      <tr><td class="label">Lockers Per User</td><td class="key">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
+      <tr><td class="label">Release Behaviour</td><td class="key"></td><td class="value" id="saReleaseBehaviour"></td></tr>
     </table>
 
     <p class="tsec-sub">User Policy</p>
     <table class="trow">
-      <tr><td class="label">Who Can Use Lockers</td><td class="value" id="saUserAccessPolicy"></td></tr>
-      <tr id="saLockerGroupRow" hidden><td class="label">Locker Group</td><td class="value" id="saLockerGroup"></td></tr>
-      <tr id="saUserGroupRow" hidden><td class="label">User Group</td><td class="value" id="saUserGroup"></td></tr>
-      <tr id="saAllocationDetailsRow" hidden><td class="label">Allocation Details</td><td class="value" id="saAllocationDetails"></td></tr>
+      <tr><td class="label">Who Can Use Lockers</td><td class="key"></td><td class="value" id="saUserAccessPolicy"></td></tr>
+      <tr id="saLockerGroupRow" hidden><td class="label">Locker Group</td><td class="key"></td><td class="value" id="saLockerGroup"></td></tr>
+      <tr id="saUserGroupRow" hidden><td class="label">User Group</td><td class="key"></td><td class="value" id="saUserGroup"></td></tr>
+      <tr id="saAllocationDetailsRow" hidden><td class="label">Allocation Details</td><td class="key"></td><td class="value" id="saAllocationDetails"></td></tr>
     </table>
 
     <p class="tsec-sub">Locker Types</p>
     <table class="trow" id="saLockerTypesTable">
-      <tr id="saLockerTypesEmptyRow"><td class="label" colspan="2">No locker types selected yet.</td></tr>
+      <tr id="saLockerTypesEmptyRow"><td class="label" colspan="3">No locker types selected yet.</td></tr>
     </table>
 
     <p class="tsec-sub">Kiosk Customisation</p>
     <table class="trow">
-      <tr><td class="label">Main Information Banner</td><td class="value" id="saLogoEnabled"></td></tr>
-      <tr id="saLogoCustomTextRow" hidden><td class="label">Main Information Banner — Custom Text</td><td class="value" id="saLogoCustomText"></td></tr>
-      <tr><td class="label">Open Existing</td><td class="value" id="saOpenExisting"></td></tr>
-      <tr><td class="label">Get A Locker</td><td class="value" id="saGetLocker"></td></tr>
-      <tr><td class="label">Scan QR Code</td><td class="value" id="saScanQr"></td></tr>
-      <tr><td class="label">Place Card Here</td><td class="value" id="saPlaceCard"></td></tr>
-      <tr><td class="label">Information Banner</td><td class="value" id="saBannerEnabled"></td></tr>
-      <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="value" id="saBannerText"></td></tr>
-      <tr><td class="label">Custom Logo</td><td class="value" id="saCustomLogo"></td></tr>
-      <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="value" id="saCustomLogoPlacement"></td></tr>
-      <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="value" id="saCustomLogoFile"></td></tr>
-      <tr><td class="label">Background Colour</td><td class="value" id="saBgColour"></td></tr>
+      <tr><td class="label">Main Information Banner</td><td class="key"></td><td class="value" id="saLogoEnabled"></td></tr>
+      <tr id="saLogoCustomTextRow" hidden><td class="label">Main Information Banner — Custom Text</td><td class="key"></td><td class="value" id="saLogoCustomText"></td></tr>
+      <tr><td class="label">Open Existing</td><td class="key"></td><td class="value" id="saOpenExisting"></td></tr>
+      <tr><td class="label">Get A Locker</td><td class="key"></td><td class="value" id="saGetLocker"></td></tr>
+      <tr><td class="label">Scan QR Code</td><td class="key"></td><td class="value" id="saScanQr"></td></tr>
+      <tr><td class="label">Place Card Here</td><td class="key"></td><td class="value" id="saPlaceCard"></td></tr>
+      <tr><td class="label">Information Banner</td><td class="key"></td><td class="value" id="saBannerEnabled"></td></tr>
+      <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="key"></td><td class="value" id="saBannerText"></td></tr>
+      <tr><td class="label">Custom Logo</td><td class="key"></td><td class="value" id="saCustomLogo"></td></tr>
+      <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="key"></td><td class="value" id="saCustomLogoPlacement"></td></tr>
+      <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="key"></td><td class="value" id="saCustomLogoFile"></td></tr>
+      <tr><td class="label">Background Colour</td><td class="key"></td><td class="value" id="saBgColour"></td></tr>
     </table>
   </div>
 
@@ -311,61 +344,61 @@
 
     <p class="tsec-sub">Desk Allocation Method</p>
     <table class="trow">
-      <tr><td class="label">Reservation Types Selected</td><td class="value" id="tsReservationTypes"></td></tr>
+      <tr><td class="label">Reservation Types Selected</td><td class="key"></td><td class="value" id="tsReservationTypes"></td></tr>
     </table>
 
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
-      <tr><td class="label">Allow Booking In Advance</td><td class="value" id="tsPrebookingAdvance"></td></tr>
-      <tr><td class="label">Default Reservation Mode</td><td class="value" id="tsReservationMode"></td></tr>
-      <tr><td class="label">Default Start Time</td><td class="value" id="tsDefaultStart"></td></tr>
-      <tr><td class="label">Default End Time</td><td class="value" id="tsDefaultEnd"></td></tr>
-      <tr><td class="label">Default Reservation Duration</td><td class="value" id="tsDefaultDuration"></td></tr>
+      <tr><td class="label">Allow Booking In Advance</td><td class="key"></td><td class="value" id="tsPrebookingAdvance"></td></tr>
+      <tr><td class="label">Default Reservation Mode</td><td class="key"></td><td class="value" id="tsReservationMode"></td></tr>
+      <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
+      <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
+      <tr><td class="label">Default Reservation Duration</td><td class="key"></td><td class="value" id="tsDefaultDuration"></td></tr>
     </table>
 
     <p class="tsec-sub">Check-in Window</p>
     <table class="trow">
-      <tr><td class="label">Check-in Early Threshold</td><td class="value" id="tsCheckinEarly"></td></tr>
-      <tr><td class="label">Check-in Late Threshold</td><td class="value" id="tsCheckinLate"></td></tr>
+      <tr><td class="label">Check-in Early Threshold</td><td class="key"></td><td class="value" id="tsCheckinEarly"></td></tr>
+      <tr><td class="label">Check-in Late Threshold</td><td class="key"></td><td class="value" id="tsCheckinLate"></td></tr>
     </table>
 
     <p class="tsec-sub">Check-in Behaviour</p>
     <table class="trow">
-      <tr><td class="label">Second Swipe Checks Out</td><td class="value" id="tsSwipeOut"></td></tr>
-      <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="value" id="tsAutoCancel"></td></tr>
+      <tr><td class="label">Second Swipe Checks Out</td><td class="key"></td><td class="value" id="tsSwipeOut"></td></tr>
+      <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="key"></td><td class="value" id="tsAutoCancel"></td></tr>
     </table>
 
     <p class="tsec-sub">Access Methods</p>
     <table class="trow">
-      <tr><td class="label">Enabled Methods</td><td class="value" id="tsCheckinMethods"></td></tr>
+      <tr><td class="label">Enabled Methods</td><td class="key"></td><td class="value" id="tsCheckinMethods"></td></tr>
     </table>
 
     <p class="tsec-sub">Additional Options</p>
     <table class="trow">
-      <tr><td class="label">Maximum Desks Per User</td><td class="value" id="tsMaxDesks"></td></tr>
-      <tr><td class="label">Auto-Release on Idle — Enabled</td><td class="value" id="tsIdleEnabled"></td></tr>
-      <tr><td class="label">Auto-Release on Idle — Threshold</td><td class="value" id="tsIdleHours"></td></tr>
-      <tr><td class="label">Auto Check-In on Occupancy — Enabled</td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
-      <tr><td class="label">Auto Check-In on Occupancy — Threshold</td><td class="value" id="tsAutoCheckinMinutes"></td></tr>
-      <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="value" id="tsNsnpMode"></td></tr>
-      <tr><td class="label">NSNP — Grace Period Enabled</td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
-      <tr><td class="label">NSNP — Grace Period</td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
-      <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="value" id="tsNsnpOtherNote"></td></tr>
-      <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="value" id="tsFmeMode"></td></tr>
-      <tr id="tsFmeMotorAckRow" hidden><td class="label">FME — Motor Details Acknowledged</td><td class="value" id="tsFmeMotorAck"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Mode</td><td class="value" id="tsAdhMode"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Window</td><td class="value" id="tsAdhWindow"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="value" id="tsAdhMaxBookings"></td></tr>
-      <tr><td class="label">Recurring Bookings</td><td class="value" id="tsRecurring"></td></tr>
-      <tr><td class="label">Remote Booking Confirmation</td><td class="value" id="tsRemoteConfirm"></td></tr>
-      <tr><td class="label">Privacy (Do Not Disturb)</td><td class="value" id="tsDnd"></td></tr>
+      <tr><td class="label">Maximum Desks Per User</td><td class="key"></td><td class="value" id="tsMaxDesks"></td></tr>
+      <tr><td class="label">Auto-Release on Idle — Enabled</td><td class="key"></td><td class="value" id="tsIdleEnabled"></td></tr>
+      <tr><td class="label">Auto-Release on Idle — Threshold</td><td class="key"></td><td class="value" id="tsIdleHours"></td></tr>
+      <tr><td class="label">Auto Check-In on Occupancy — Enabled</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
+      <tr><td class="label">Auto Check-In on Occupancy — Threshold</td><td class="key"></td><td class="value" id="tsAutoCheckinMinutes"></td></tr>
+      <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key"></td><td class="value" id="tsNsnpMode"></td></tr>
+      <tr><td class="label">NSNP — Grace Period Enabled</td><td class="key"></td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
+      <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
+      <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="key"></td><td class="value" id="tsNsnpOtherNote"></td></tr>
+      <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="key"></td><td class="value" id="tsFmeMode"></td></tr>
+      <tr id="tsFmeMotorAckRow" hidden><td class="label">FME — Motor Details Acknowledged</td><td class="key"></td><td class="value" id="tsFmeMotorAck"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Mode</td><td class="key"></td><td class="value" id="tsAdhMode"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Window</td><td class="key"></td><td class="value" id="tsAdhWindow"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key"></td><td class="value" id="tsAdhMaxBookings"></td></tr>
+      <tr><td class="label">Recurring Bookings</td><td class="key"></td><td class="value" id="tsRecurring"></td></tr>
+      <tr><td class="label">Remote Booking Confirmation</td><td class="key"></td><td class="value" id="tsRemoteConfirm"></td></tr>
+      <tr><td class="label">Privacy (Do Not Disturb)</td><td class="key"></td><td class="value" id="tsDnd"></td></tr>
     </table>
 
     <p class="tsec-sub">Training Requested</p>
     <table class="trow">
-      <tr><td class="label">Teams</td><td class="value" id="tsTrainingTeams"></td></tr>
-      <tr><td class="label">Book on Behalf</td><td class="value" id="tsTrainingBookOnBehalf"></td></tr>
-      <tr><td class="label">Notifications</td><td class="value" id="tsTrainingNotifications"></td></tr>
+      <tr><td class="label">Teams</td><td class="key"></td><td class="value" id="tsTrainingTeams"></td></tr>
+      <tr><td class="label">Book on Behalf</td><td class="key"></td><td class="value" id="tsTrainingBookOnBehalf"></td></tr>
+      <tr><td class="label">Notifications</td><td class="key"></td><td class="value" id="tsTrainingNotifications"></td></tr>
     </table>
   </div>
 
@@ -535,6 +568,10 @@
   else if (pushOpenEnabled) behaviourLabel = 'Push to Open';
   else behaviourLabel = 'Pop Open (default)';
   set('saOpenBehaviour', behaviourLabel);
+  // Middle "setting key" column: only Push to Open maps to a real backend flag right now: once
+  // it's selected, engineering needs to set lock_pushopen = true. Pop Open (and the mixed/legacy
+  // case where both are on) doesn't have a key of its own yet, so it just reads "default".
+  set('saOpenBehaviourKey', pushOpenEnabled ? 'lock_pushopen = true' : 'default');
   showRow('saPushScopeRow', pushOpenEnabled);
   if (pushOpenEnabled) set('saPushScope', BEHAVIOUR_SCOPE_LABELS[lockerBehaviour.pushOpenScope] ?? (lockerBehaviour.pushOpenScope || 'All lockers'));
   const behaviourIsSpecific = pushOpenEnabled && lockerBehaviour.pushOpenScope === 'specific';
@@ -638,7 +675,7 @@
       const value = t === 'custom'
         ? (exampleNumbers[t] ? 'Custom name: ' + exampleNumbers[t] : 'No custom name set yet')
         : (exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet');
-      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="value">' + value + '</td>';
+      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="key"></td><td class="value">' + value + '</td>';
       lockerTypesTable.appendChild(tr);
     });
   }
