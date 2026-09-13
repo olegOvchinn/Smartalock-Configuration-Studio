@@ -222,6 +222,23 @@
   rename on smartalock-configuration-summary-08.html). Verified via an inline HTMLParser tag-balance
   check, `node --check` on the extracted script block, and a jsdom test confirming the new label text
   renders and the old one no longer appears.
+
+  MOST RECENT CHANGE: per a request that the Release When Idle row's setting key be
+  "res_release_idle_time", added it as a static key (shown regardless of the idle value, same as
+  Self-Allocation Duration's/Lockers Per User's own static keys). Per a follow-up request that the
+  value column also show a minutes figure whenever the input isn't already expressed in minutes,
+  added a small best-effort `parseFreeTextMinutes()` helper that recognizes a "<number> <unit>"
+  pattern (minutes/mins, hours/hrs/h, days/d, case-insensitive) in the custom idle-duration free text
+  and appends ", N min" the same way every other duration field on this page already does — e.g. a
+  custom value of "72 hours" now renders "72 hours, 4320 min". Text already phrased in minutes (e.g.
+  "90 minutes") is left alone rather than doubling up, and text with no recognizable pattern (e.g.
+  "ask the site manager") is left as-is, since there's nothing reliable to convert — this doesn't
+  change the underlying stored value, only what's displayed. The 48h preset option and "Off" were
+  already unaffected (48h already goes through `formatDuration()`; Off isn't a duration at all).
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+  and a jsdom test covering: the static key rendering regardless of state, the 48h preset, a
+  hours-phrased custom value, a days-phrased custom value, an already-minutes-phrased custom value
+  (left alone), an unparseable custom value (left alone), and an empty custom value ("Not specified").
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -371,7 +388,7 @@
 
     <p class="tsec-sub">Locker Policy</p>
     <table class="trow">
-      <tr><td class="label">Release When Idle</td><td class="key"></td><td class="value" id="saIdle"></td></tr>
+      <tr><td class="label">Release When Idle</td><td class="key" id="saIdleKey">res_release_idle_time</td><td class="value" id="saIdle"></td></tr>
       <tr><td class="label">Lockers Per User</td><td class="key">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
       <tr><td class="label">Release Behaviour</td><td class="key"></td><td class="value" id="saReleaseBehaviour"></td></tr>
     </table>
@@ -555,6 +572,24 @@
     return formatClock(totalMinutesFromMidnight) + ', ' + totalMinutesFromMidnight + ' min since midnight';
   }
 
+  // Best-effort parse of a free-text duration (e.g. "72 hours", "3 days", "90 min") into a minutes
+  // total, for fields like Locker Policy's custom "Release When Idle" text that aren't a structured
+  // number+unit pair. Recognizes minutes/mins, hours/hrs/h, and days/d (case-insensitive); returns
+  // null when no recognizable "<number> <unit>" pattern is found, since some free text genuinely
+  // can't be converted (e.g. "ask the site manager").
+  function parseFreeTextMinutes(text) {
+    if (!text) return null;
+    const match = String(text).match(/(\d+(?:\.\d+)?)\s*(minutes?|mins?|hours?|hrs?|days?|h|d)\b/i);
+    if (!match) return null;
+    const value = parseFloat(match[1]);
+    if (!Number.isFinite(value)) return null;
+    const unit = match[2].toLowerCase();
+    const multiplier = unit.startsWith('day') || unit === 'd' ? 1440
+      : (unit.startsWith('hour') || unit.startsWith('hr') || unit === 'h') ? 60
+      : 1;
+    return Math.round(value * multiplier);
+  }
+
   /* ---------------- metadata ---------------- */
   set('metaProjectId', project.id || 'n/a');
   set('metaClient', reg.customer || 'Not specified');
@@ -731,8 +766,18 @@
   let idleValue;
   if (locker.idleDuration === 'custom') {
     // customIdleDuration is an unstructured free-text field (e.g. "72 hours"), not a number+unit
-    // pair, so it can't be safely converted to minutes — shown as-is.
-    idleValue = locker.customIdleDuration || 'Not specified';
+    // pair, so it's shown verbatim — but per a follow-up request, if that text isn't already
+    // expressed in minutes, the parsed minutes total is appended (matching the ", N min" suffix
+    // every other duration field on this page already uses). Text with no recognizable "<number>
+    // <unit>" pattern (e.g. "ask the site manager") is left as-is, since there's nothing to convert.
+    const customText = locker.customIdleDuration || '';
+    if (customText.trim()) {
+      const alreadyInMinutes = /\bmin(ute)?s?\b/i.test(customText);
+      const parsedMinutes = alreadyInMinutes ? null : parseFreeTextMinutes(customText);
+      idleValue = parsedMinutes !== null ? (customText + ', ' + parsedMinutes + ' min') : customText;
+    } else {
+      idleValue = 'Not specified';
+    }
   } else if (locker.idleDuration === '48h') {
     idleValue = formatDuration(48 * 60);
   } else {
