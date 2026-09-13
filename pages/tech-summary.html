@@ -203,6 +203,19 @@
   cell stays blank for those, same as when nothing is selected at all. Verified via an inline
   HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
   covering parcel alone, parcel combined with another type, admin-only, user-only, and none selected.
+
+  MOST RECENT CHANGE: per a request to also show "res_adhoc = false" in the Reservation Types
+  Selected row's setting-key cell whenever User Self-Allocated is NOT among the selected reservation
+  types (this includes the "nothing selected yet" case, since Self-Allocated is still "not selected"
+  then too) — no key is defined yet for the case where it IS selected. Since this and the existing
+  Parcel Delivery key (voucher_package = true) are independent flags that can both apply to the same
+  row at once, they're now collected into a small list and joined with ", " rather than one
+  overwriting the other — e.g. Parcel Delivery selected alone (User Self-Allocated therefore not
+  selected) reads "voucher_package = true, res_adhoc = false". Verified via an inline HTMLParser
+  tag-balance check, `node --check` on the extracted script block, and a jsdom test covering: admin
+  only (res_adhoc = false alone), user selected alone (blank — neither key applies), parcel alone
+  (both keys joined), parcel + user together (voucher_package only, since user is selected), and
+  nothing selected (res_adhoc = false alone).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -672,10 +685,16 @@
   set('saReservationTypes', reservationTypesSelected.length
     ? reservationTypesSelected.map(t => RESERVATION_MODEL_LABELS[t] || t).join(', ')
     : 'None selected');
-  // Middle "setting key" column: only Parcel Delivery maps to a real backend flag right now — the
-  // other reservation models (Allocated by Administrator, User Self-Allocated) have no key defined
-  // yet, so the cell stays blank for those, including when nothing at all is selected.
-  if (reservationTypesSelected.includes('parcel')) set('saReservationTypesKey', 'voucher_package = true');
+  // Middle "setting key" column: two independent flags can both apply to this one row, so they're
+  // collected into a list and joined rather than one overwriting the other.
+  // - Parcel Delivery selected -> voucher_package = true.
+  // - User Self-Allocated NOT selected -> res_adhoc = false (this includes the "nothing selected
+  //   yet" case, since Self-Allocated is still "not selected" then too). No key is defined yet for
+  //   the case where it IS selected.
+  const reservationKeys = [];
+  if (reservationTypesSelected.includes('parcel')) reservationKeys.push('voucher_package = true');
+  if (!reservationTypesSelected.includes('user')) reservationKeys.push('res_adhoc = false');
+  if (reservationKeys.length) set('saReservationTypesKey', reservationKeys.join(', '));
   const userSelfAllocation = reservationTypesSelected.includes('user');
   showRow('saSelfAllocRow', userSelfAllocation);
   if (userSelfAllocation) {

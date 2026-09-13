@@ -443,6 +443,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added "Card Assignment Method" and "PIN Assignment Method" detail rows to tech-summary.html's Initial Locker Access Methods group (internal-only detail beyond the client-facing summary's plain "Enabled"), and added a new "Outstanding" section — to tech-summary.html, smartalock-configuration-summary-08.html, and floorsense-out-of-box-policy.html — listing items the client still has to provide. Two triggers populate it so far, both Smartalock-only: Building access cards defaulting to spreadsheet-import (client still owes a spreadsheet of usernames + swipe card Chip Serial Numbers) and PIN assignment set to "client provides a list" (client still owes that PIN list). The Floorsense summary's Outstanding section is structurally in place but stays empty/hidden until a Floorsense-specific trigger is requested.
 - Populated the Tech Summary's PIN Assignment Method row's setting-key cell: `user_pin_method = 1` when "Same PIN for everyone at first" is chosen, `user_pin_method = 0` for the other two choices.
 - Populated the Tech Summary's Reservation Types Selected row's setting-key cell: `voucher_package = true` whenever Parcel Delivery is among the selected reservation types.
+- Extended that same cell to also show `res_adhoc = false` whenever User Self-Allocated is NOT among the selected reservation types (including when nothing is selected yet); both keys can appear together, joined with a comma, when applicable.
 
 ## Status
 
