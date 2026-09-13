@@ -216,6 +216,12 @@
   only (res_adhoc = false alone), user selected alone (blank — neither key applies), parcel alone
   (both keys joined), parcel + user together (voucher_package only, since user is selected), and
   nothing selected (res_adhoc = false alone).
+
+  MOST RECENT CHANGE: per a request to rename the Locker Policy field label, "Open When Idle" is now
+  "Release When Idle" (row id/value id unchanged — this is a label-only rename, same as the matching
+  rename on smartalock-configuration-summary-08.html). Verified via an inline HTMLParser tag-balance
+  check, `node --check` on the extracted script block, and a jsdom test confirming the new label text
+  renders and the old one no longer appears.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -365,7 +371,7 @@
 
     <p class="tsec-sub">Locker Policy</p>
     <table class="trow">
-      <tr><td class="label">Open When Idle</td><td class="key"></td><td class="value" id="saIdle"></td></tr>
+      <tr><td class="label">Release When Idle</td><td class="key"></td><td class="value" id="saIdle"></td></tr>
       <tr><td class="label">Lockers Per User</td><td class="key">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
       <tr><td class="label">Release Behaviour</td><td class="key"></td><td class="value" id="saReleaseBehaviour"></td></tr>
     </table>

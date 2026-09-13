@@ -726,6 +726,12 @@ was added to tech-summary.html instead, for an internal audience); Outstanding o
 action item derived from it. Verified via an inline HTMLParser tag-balance check, `node --check` on
 the extracted script block, and a jsdom test covering: default card import (Outstanding shows), card
 self-allocate (hidden), PIN list (shows), and neither trigger (hidden).
+
+MOST RECENT CHANGE: per a request to rename the Locker Policy field label (mirrored on
+tech-summary.html), "Open When Idle" is now "Release When Idle" — a label-only rename via the
+existing `row()` call, no change to the underlying idleValue logic or description text. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
+test confirming the new label text renders and the old one no longer appears.
 -->
 
 <script>
@@ -959,7 +965,7 @@ self-allocate (hidden), PIN list (shows), and neither trigger (hidden).
     } else {
       idleValue = idleLabels[l.idleDuration] ?? (l.idleDuration || 'Off');
     }
-    wrap.appendChild(row('Open When Idle', idleValue,
+    wrap.appendChild(row('Release When Idle', idleValue,
       "Automatically releases a locker that hasn't been opened for a set period of time."));
     // Per a follow-up, Lockers per User is now a plain "1" default plus a "Custom..." option
     // (customLockerLimit holds the actual number) rather than a fixed 1/2/3/unlimited choice.

@@ -444,6 +444,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Populated the Tech Summary's PIN Assignment Method row's setting-key cell: `user_pin_method = 1` when "Same PIN for everyone at first" is chosen, `user_pin_method = 0` for the other two choices.
 - Populated the Tech Summary's Reservation Types Selected row's setting-key cell: `voucher_package = true` whenever Parcel Delivery is among the selected reservation types.
 - Extended that same cell to also show `res_adhoc = false` whenever User Self-Allocated is NOT among the selected reservation types (including when nothing is selected yet); both keys can appear together, joined with a comma, when applicable.
+- Renamed the Locker Policy field "Open When Idle" to "Release When Idle" on both tech-summary.html and smartalock-configuration-summary-08.html (label-only rename).
 
 ## Status
 
