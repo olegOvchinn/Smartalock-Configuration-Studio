@@ -195,6 +195,14 @@
   (i.e. a real choice was made) — matching this row's existing "only if input provided" visibility.
   Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
   and a jsdom test covering all three choices plus the unset case (key cell stays empty, row hidden).
+
+  MOST RECENT CHANGE: per a request to populate the Reservation Types Selected row's middle "setting
+  key" column, it now reads "voucher_package = true" whenever `parcel` (Parcel Delivery) is among the
+  selected reservation types — regardless of what else is selected alongside it. The other two
+  reservation models (Allocated by Administrator, User Self-Allocated) have no key defined yet, so the
+  cell stays blank for those, same as when nothing is selected at all. Verified via an inline
+  HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+  covering parcel alone, parcel combined with another type, admin-only, user-only, and none selected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -338,7 +346,7 @@
 
     <p class="tsec-sub">Reservation Type</p>
     <table class="trow">
-      <tr><td class="label">Reservation Types Selected</td><td class="key"></td><td class="value" id="saReservationTypes"></td></tr>
+      <tr><td class="label">Reservation Types Selected</td><td class="key" id="saReservationTypesKey"></td><td class="value" id="saReservationTypes"></td></tr>
       <tr id="saSelfAllocRow" hidden><td class="label">Self-Allocation Duration</td><td class="key">res_duration_default</td><td class="value" id="saSelfAllocDuration"></td></tr>
     </table>
 
@@ -664,6 +672,10 @@
   set('saReservationTypes', reservationTypesSelected.length
     ? reservationTypesSelected.map(t => RESERVATION_MODEL_LABELS[t] || t).join(', ')
     : 'None selected');
+  // Middle "setting key" column: only Parcel Delivery maps to a real backend flag right now — the
+  // other reservation models (Allocated by Administrator, User Self-Allocated) have no key defined
+  // yet, so the cell stays blank for those, including when nothing at all is selected.
+  if (reservationTypesSelected.includes('parcel')) set('saReservationTypesKey', 'voucher_package = true');
   const userSelfAllocation = reservationTypesSelected.includes('user');
   showRow('saSelfAllocRow', userSelfAllocation);
   if (userSelfAllocation) {
