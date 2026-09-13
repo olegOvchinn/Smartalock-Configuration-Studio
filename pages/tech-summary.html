@@ -123,6 +123,17 @@
   push-to-open behaviour, Floorsense's idle-release toggled on with its threshold left at the
   default), and a Playwright screenshot confirming no visual gap when the Smartalock section is
   hidden and Project Details flows directly into Floorsense.
+
+  MOST RECENT CHANGE: per a request to reorder the Smartalock section's sub-groups, moved "Kiosk
+  Customisation" so it now renders after "Locker Types" instead of before it — the Smartalock
+  section's sub-group order is now Initial Locker Access Methods, Locker Door Behaviour, Reservation
+  Type, Locker Policy, User Policy, Locker Types, Kiosk Customisation. Both the HTML markup and the
+  matching JS computation block were moved together (Kiosk Customisation and Locker Types have no
+  data dependency on each other, so this was a pure reorder with no logic change). Verified via an
+  inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+  confirming the new `.tsec-sub` order inside `#smartalockSection`, that both groups' values still
+  render correctly after the move, and that the existing default-hiding behavior (from the prior
+  change) still hides both sections on a fully-default project.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -273,6 +284,11 @@
       <tr id="saAllocationDetailsRow" hidden><td class="label">Allocation Details</td><td class="value" id="saAllocationDetails"></td></tr>
     </table>
 
+    <p class="tsec-sub">Locker Types</p>
+    <table class="trow" id="saLockerTypesTable">
+      <tr id="saLockerTypesEmptyRow"><td class="label" colspan="2">No locker types selected yet.</td></tr>
+    </table>
+
     <p class="tsec-sub">Kiosk Customisation</p>
     <table class="trow">
       <tr><td class="label">Main Information Banner</td><td class="value" id="saLogoEnabled"></td></tr>
@@ -287,11 +303,6 @@
       <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="value" id="saCustomLogoPlacement"></td></tr>
       <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="value" id="saCustomLogoFile"></td></tr>
       <tr><td class="label">Background Colour</td><td class="value" id="saBgColour"></td></tr>
-    </table>
-
-    <p class="tsec-sub">Locker Types</p>
-    <table class="trow" id="saLockerTypesTable">
-      <tr id="saLockerTypesEmptyRow"><td class="label" colspan="2">No locker types selected yet.</td></tr>
     </table>
   </div>
 
@@ -612,6 +623,28 @@
   // switches this to group-scoped access (the same condition that reveals the sub-rows above).
   if (userGroupsMode) saChanged = true;
 
+  /* ---------------- Locker Types ---------------- */
+  const LOCKER_TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type' };
+  const LOCKER_TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
+  const lockerType = saWizard.lockerType || {};
+  const selectedLockerTypes = Array.isArray(lockerType.selected) ? lockerType.selected : [];
+  const lockerTypesTable = document.getElementById('saLockerTypesTable');
+  const lockerTypesEmptyRow = document.getElementById('saLockerTypesEmptyRow');
+  if (selectedLockerTypes.length) {
+    lockerTypesEmptyRow.remove();
+    const exampleNumbers = lockerType.exampleNumbers || {};
+    LOCKER_TYPE_ORDER.filter(t => selectedLockerTypes.includes(t)).forEach(t => {
+      const tr = document.createElement('tr');
+      const value = t === 'custom'
+        ? (exampleNumbers[t] ? 'Custom name: ' + exampleNumbers[t] : 'No custom name set yet')
+        : (exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet');
+      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="value">' + value + '</td>';
+      lockerTypesTable.appendChild(tr);
+    });
+  }
+  // Default is no locker types selected at all — any selection is a change.
+  if (selectedLockerTypes.length) saChanged = true;
+
   /* ---------------- Kiosk Customisation ---------------- */
   const kiosk = saWizard.kioskCustomisation || {};
   const kioskFlag = (key) => kiosk.hasOwnProperty(key) ? !!kiosk[key] : true;
@@ -656,28 +689,6 @@
     || (kiosk.bannerLine1 && kiosk.bannerLine1 !== 'Scan your access card or')
     || (kiosk.bannerLine2 && kiosk.bannerLine2 !== 'select an option to get started')
     || customLogoOn || (kiosk.bgColour && kiosk.bgColour !== '')) saChanged = true;
-
-  /* ---------------- Locker Types ---------------- */
-  const LOCKER_TYPE_LABELS = { large: 'Large', side: 'Side', top: 'Top', middle: 'Middle', bottom: 'Bottom', small: 'Small', custom: 'Custom Locker Type' };
-  const LOCKER_TYPE_ORDER = ['large', 'side', 'top', 'middle', 'bottom', 'small', 'custom'];
-  const lockerType = saWizard.lockerType || {};
-  const selectedLockerTypes = Array.isArray(lockerType.selected) ? lockerType.selected : [];
-  const lockerTypesTable = document.getElementById('saLockerTypesTable');
-  const lockerTypesEmptyRow = document.getElementById('saLockerTypesEmptyRow');
-  if (selectedLockerTypes.length) {
-    lockerTypesEmptyRow.remove();
-    const exampleNumbers = lockerType.exampleNumbers || {};
-    LOCKER_TYPE_ORDER.filter(t => selectedLockerTypes.includes(t)).forEach(t => {
-      const tr = document.createElement('tr');
-      const value = t === 'custom'
-        ? (exampleNumbers[t] ? 'Custom name: ' + exampleNumbers[t] : 'No custom name set yet')
-        : (exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet');
-      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="value">' + value + '</td>';
-      lockerTypesTable.appendChild(tr);
-    });
-  }
-  // Default is no locker types selected at all — any selection is a change.
-  if (selectedLockerTypes.length) saChanged = true;
 
   /* ==================== FLOORSENSE ==================== */
   // Same "did anything move from its shipped default" tracking as saChanged above, checked against

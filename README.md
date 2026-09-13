@@ -438,6 +438,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - That API guide-box now only appears once the client has actually typed something into the Integration Requirements field, matching the show/hide behavior of the SSO and SCIM guide-boxes above it, rather than always being visible.
 - Renamed `floorsense-tech-summary.html` to `tech-summary.html` and made it a single internal Tech Summary for both branches: it now has a full "Smartalock" section (Initial Locker Access Methods, Locker Door Behaviour, Reservation Type, Locker Policy, User Policy, Kiosk Customisation, Locker Types — mirroring `smartalock-configuration-summary-08.html`) positioned before the existing "Floorsense" section, in Project Details → Smartalock → Floorsense → Additional Policies order.
 - The Tech Summary's "Smartalock" and "Floorsense" sections are now each hidden entirely when that branch's own wizard flow is still at its shipped defaults (no changes made after the product picker) — tracked via `saChanged`/`fsChanged` flags computed by comparing every field in that branch to the exact same default value its own row already falls back to when rendering. "Project Details" (Registration + IT Configuration, which run before the product picker) always shows and is unaffected by this.
+- Reordered the Tech Summary's Smartalock sub-groups so "Kiosk Customisation" now renders after "Locker Types" instead of before it.
 
 ## Status
 
