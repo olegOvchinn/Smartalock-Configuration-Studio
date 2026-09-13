@@ -186,6 +186,15 @@
   item, row shows self-allocate label), PIN list (assignment row + Outstanding both show), PIN unset
   (row and Outstanding both stay hidden — optional field, no input provided), both triggers active at
   once (2 Outstanding rows), and neither access method selected (everything hidden).
+
+  MOST RECENT CHANGE: per a request to populate the PIN Assignment Method row's middle "setting key"
+  column, it now reads "user_pin_method = 1" whenever `pinAssignMethod === 'shared'` ("Same PIN for
+  everyone at first — each user sets their own the first time they use it"), and
+  "user_pin_method = 0" for the other two choices (random / client-provided list). Set alongside the
+  row's existing value via `set('saPinAssignKey', ...)`, and only runs when the row itself is shown
+  (i.e. a real choice was made) — matching this row's existing "only if input provided" visibility.
+  Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+  and a jsdom test covering all three choices plus the unset case (key cell stays empty, row hidden).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -316,7 +325,7 @@
     <table class="trow">
       <tr><td class="label">Access Methods Selected</td><td class="key"></td><td class="value" id="saAccessMethods"></td></tr>
       <tr id="saCardAssignRow" hidden><td class="label">Card Assignment Method</td><td class="key"></td><td class="value" id="saCardAssign"></td></tr>
-      <tr id="saPinAssignRow" hidden><td class="label">PIN Assignment Method</td><td class="key"></td><td class="value" id="saPinAssign"></td></tr>
+      <tr id="saPinAssignRow" hidden><td class="label">PIN Assignment Method</td><td class="key" id="saPinAssignKey"></td><td class="value" id="saPinAssign"></td></tr>
     </table>
 
     <p class="tsec-sub">Locker Door Behaviour</p>
@@ -612,7 +621,13 @@
   if (cardSelected) set('saCardAssign', CARD_ASSIGN_LABELS[accessMethods.cardAssignMethod] || CARD_ASSIGN_LABELS.import);
   const pinAssignGiven = selectedAccess.includes('pin') && !!accessMethods.pinAssignMethod;
   showRow('saPinAssignRow', pinAssignGiven);
-  if (pinAssignGiven) set('saPinAssign', PIN_ASSIGN_LABELS[accessMethods.pinAssignMethod] || accessMethods.pinAssignMethod);
+  if (pinAssignGiven) {
+    set('saPinAssign', PIN_ASSIGN_LABELS[accessMethods.pinAssignMethod] || accessMethods.pinAssignMethod);
+    // Middle "setting key" column: "shared" (same PIN for everyone at first, each user sets their
+    // own on first use) maps to user_pin_method = 1; both other choices (random, client-provided
+    // list) map to user_pin_method = 0.
+    set('saPinAssignKey', accessMethods.pinAssignMethod === 'shared' ? 'user_pin_method = 1' : 'user_pin_method = 0');
+  }
 
   /* ---------------- Locker Door Behaviour ---------------- */
   const lockerBehaviour = saWizard.lockerBehaviour || {};
