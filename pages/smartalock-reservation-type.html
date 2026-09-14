@@ -192,18 +192,22 @@
 
   .tcard-body { flex: 1; min-width: 0; }
   .tcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 8px; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
-  /* ---------- tcard-icon-glyph: per the same request, each raster `<img class="tcard-icon-img">`
-     illustration and its bordered white `.tcard-icon-badge` square canvas were replaced with a bare
-     inline SVG redrawn in reservation-types.html's own two-tone recipe: a `#0E1030` navy outline
-     shape plus one region/secondary shape solid-filled in an accent colour, sized at that page's own
-     87.36px (these cards carry a full title+description layout, not a compact chip row, so the larger
-     size is appropriate here). This page's own pre-existing per-card badge colours (`#0071E3` blue,
-     `#1FAA59` green, `#8B5CF6` purple) were kept as each icon's accent fill, now carrying that card's
-     entire colour identity since the card/heading/radio no longer theme by type. Allocated by
-     Administrator is a person silhouette with a padlock (filled blue) locking their assignment in
-     place; User Self-Allocated is a locker frame with a tap/select gesture (filled green) beside it;
-     Parcel Delivery is a parcel box with its ribbon and open top flap filled purple. ---------- */
-  .tcard-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
+  /* ---------- tcard-icon-badge: wraps each raster <img class="tcard-icon-img"> in a white square
+     badge with a colored border. Each badge's border color is sampled from its own icon's PNG
+     pixels rather than an arbitrary palette rotation (independent of this page's own per-card --tc
+     theme colour previously used for the heading text/radio check, now replaced by the shared
+     --header-grey/white-black card treatment) — see the MOST RECENT CHANGE note below. Only the
+     badge's border is coloured; the raster icon images are left untouched. ---------- */
+  .tcard h3 .tcard-icon-badge {
+    width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .tcard h3 .tcard-icon-badge.badge-blue { border-color: #0071E3; }
+  .tcard h3 .tcard-icon-badge.badge-green { border-color: #1FAA59; }
+  .tcard h3 .tcard-icon-badge.badge-purple { border-color: #8B5CF6; }
+  .tcard h3 .tcard-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
   .tcard h3 span.tag {
     font-family: var(--font-text); font-size: 9.92px; color: var(--ink-soft); font-weight: 500;
   }
@@ -354,7 +358,7 @@
         <div class="tcard" id="card-admin" data-type="admin">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><svg class="tcard-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="7" r="3.2" stroke="#0E1030" stroke-width="0.76"/><path d="M3.5 20c0-4 2.5-6.2 5.5-6.2s5.5 2.2 5.5 6.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 13 v-2 a2.5 2.5 0 0 1 5 0 v2" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><rect x="14" y="13" width="8" height="7" rx="1.2" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Allocated by Administrator</h3>
+            <h3><span class="tcard-icon-badge badge-blue"><img class="tcard-icon-img" src="../assets/images/icon-admin-allocated.png" alt=""></span>Allocated by Administrator</h3>
             <p class="desc">Permanently assign lockers to individual users. Lockers remain allocated until released by an administrator. Ideal for staff with dedicated lockers.</p>
           </div>
         </div>
@@ -362,7 +366,7 @@
         <div class="tcard" id="card-user" data-type="user">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><svg class="tcard-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="10" height="16" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="11" x2="13" y2="11" stroke="#0E1030" stroke-width="0.6" stroke-linecap="round"/><circle cx="18" cy="8" r="2.2" fill="#1FAA59" stroke="#0E1030" stroke-width="0.5"/><path d="M21 8a3 3 0 0 1-1 2.2" stroke="#0E1030" stroke-width="0.5" stroke-linecap="round"/><path d="M22.3 8a4.3 4.3 0 0 1-1.5 3.3" stroke="#0E1030" stroke-width="0.5" stroke-linecap="round"/></svg>User Self-Allocated</h3>
+            <h3><span class="tcard-icon-badge badge-green"><img class="tcard-icon-img" src="../assets/images/icon-user-self-allocated.png" alt=""></span>User Self-Allocated</h3>
             <p class="desc">Users choose their own locker at the kiosk or app. The reservation never expires automatically and stays allocated until the user or an administrator releases it.</p>
 
             <div class="duration-panel" id="durationPanel">
@@ -403,7 +407,7 @@
         <div class="tcard" id="card-parcel" data-type="parcel">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><svg class="tcard-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="8" width="16" height="12" rx="1" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8 L12 4 L20 8 Z" fill="#8B5CF6" stroke="#0E1030" stroke-width="0.58" stroke-linejoin="round"/><rect x="10.5" y="8" width="3" height="12" fill="#8B5CF6" stroke="#0E1030" stroke-width="0.58"/></svg>Parcel Delivery</h3>
+            <h3><span class="tcard-icon-badge badge-purple"><img class="tcard-icon-img" src="../assets/images/icon-parcel-delivery.png" alt=""></span>Parcel Delivery</h3>
             <p class="desc">Lockers act as a drop-off and pickup point for courier deliveries and internal mail. Temporary access is granted to a courier or recipient rather than a standing personal reservation.</p>
           </div>
         </div>
@@ -545,6 +549,20 @@ comments and the bottom NOTE block's literal mentions of removed class/custom-pr
 cause false positives) confirming the live CSS/markup match this recipe and that the multi-select
 toggle logic (up to 3 types), the hover-preview VISUAL_SRC wiring, and the duration-panel are all
 completely unaffected.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by the reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, this page's 3 `<h3>` icons went back to their pre-redesign `.tcard-icon-badge badge-COLOR`
+(72px, white-fill, colour-bordered square) wrapping an `<img class="tcard-icon-img">` (56px) raster
+icon, exactly as they were before the redesign — `icon-admin-allocated.png` (badge-blue #0071E3),
+`icon-user-self-allocated.png` (badge-green #1FAA59), `icon-parcel-delivery.png` (badge-purple
+#8B5CF6). The single `.tcard-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }` rule
+the redesign introduced was removed in favour of the restored badge/img CSS. `.tcard h3`'s
+`color: var(--header-grey)` (a separate, later de-personalisation change, not part of the icon
+redesign) was deliberately left as-is rather than reverted to the old per-type `var(--tc)`, and the
+current flat `#F1F1F1`/hover-lift/white-black `.checked` card CSS was left completely untouched —
+only the icon glyphs and their badge wrappers were reverted. Verified via an inline HTMLParser
+tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS only).
 -->
 
 <script>

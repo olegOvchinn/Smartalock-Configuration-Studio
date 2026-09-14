@@ -161,20 +161,23 @@
   }
   .type-check-card.checked .type-tick::after { opacity: 1; }
   .type-check-card .type-label { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); display: flex; align-items: center; gap: 10px; }
-  /* ---------- type-icon-glyph: per the same request, each raster `<img class="type-icon-img">`
-     illustration and its bordered white `.type-icon-badge` square canvas were replaced with a bare
-     inline SVG redrawn in reservation-types.html's own two-tone recipe: a `#0E1030` navy outline
-     shape plus one region/secondary shape solid-filled in an accent colour. Unlike the other pages
-     this recipe was ported to, this page's cards are compact single-line "chip" rows (icon + one-word
-     label, no separate title/description block) rather than a title+description row, so the icon was
-     kept at this page's own existing 56px size instead of reservation-types.html's 87.36px — that
-     larger size would overwhelm a card this compact. This page's own pre-existing per-card badge
-     colours (`#0071E3` blue for the 6 shape-based types, `#8B5CF6` purple for Custom Type) were kept
-     as each icon's accent fill. Each of the 6 shape icons (Top/Middle/Bottom/Large/Side/Small) is now
-     a simple locker-cabinet outline with one region filled blue to depict that type's shape/position;
-     Custom Type reuses floorsense-nsnp.html's pencil-with-filled-tip design, recoloured purple. The 7
-     replaced PNGs are no longer referenced by this page but were left in place rather than deleted. ---------- */
-  .type-icon-glyph { width: 56px; height: 56px; flex-shrink: 0; }
+  .type-check-card .type-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
+  /* ---------- type-icon-badge: wraps each raster <img class="type-icon-img"> in a white square
+     badge with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge
+     pattern. The 7 locker-type cards form a repeating option group, so badges cycle through the
+     5-color palette (repeating from the top past the 5th) rather than sharing one blue — see the
+     MOST RECENT CHANGE note below. Only the badge's border is colored; the raster icon images are
+     left untouched. ---------- */
+  .type-icon-badge {
+    width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .type-icon-badge.badge-blue { border-color: #0071E3; }
+  .type-icon-badge.badge-purple { border-color: #8B5CF6; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -316,13 +319,13 @@
           </div>
 
           <div class="type-check-grid" id="typeCheckGrid">
-            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="9" x2="19" y2="9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><line x1="5" y1="16" x2="19" y2="16" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><rect x="6" y="3" width="12" height="5.3" rx="0.8" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Top</span></label>
-            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="9" x2="19" y2="9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><line x1="5" y1="16" x2="19" y2="16" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><rect x="6" y="9.3" width="12" height="6.4" rx="0.8" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Middle</span></label>
-            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="9" x2="19" y2="9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><line x1="5" y1="16" x2="19" y2="16" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><rect x="6" y="16.3" width="12" height="5.4" rx="0.8" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Bottom</span></label>
-            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="6.3" y="3.3" width="11.4" height="17.4" rx="1" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Large</span></label>
-            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="2" x2="12" y2="22" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><rect x="12.7" y="3" width="5.3" height="18" rx="0.8" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Side</span></label>
-            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="2" width="14" height="20" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.67" y1="2" x2="9.67" y2="22" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><line x1="14.33" y1="2" x2="14.33" y2="22" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><rect x="5.7" y="2.7" width="3.3" height="8.6" rx="0.6" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></svg>Small</span></label>
-            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><svg class="type-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(45 12 12)"><rect x="9" y="4" width="6" height="14" rx="1.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 4 L15 4 L12 0 Z" fill="#8B5CF6" stroke="#0E1030" stroke-width="0.58" stroke-linejoin="round"/></g></svg>Custom Type</span></label>
+            <label class="type-check-card" data-type="top"><input type="checkbox" value="top"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-top.png" alt=""></span>Top</span></label>
+            <label class="type-check-card" data-type="middle"><input type="checkbox" value="middle"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-middle.png" alt=""></span>Middle</span></label>
+            <label class="type-check-card" data-type="bottom"><input type="checkbox" value="bottom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-bottom.png" alt=""></span>Bottom</span></label>
+            <label class="type-check-card" data-type="large"><input type="checkbox" value="large"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-large.png" alt=""></span>Large</span></label>
+            <label class="type-check-card" data-type="side"><input type="checkbox" value="side"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-side.png" alt=""></span>Side</span></label>
+            <label class="type-check-card" data-type="small"><input type="checkbox" value="small"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-blue"><img class="type-icon-img" src="../assets/images/icon-locker-type-small.png" alt=""></span>Small</span></label>
+            <label class="type-check-card" data-type="custom"><input type="checkbox" value="custom"><span class="type-tick" aria-hidden="true"></span><span class="type-label"><span class="type-icon-badge badge-purple"><img class="type-icon-img" src="../assets/images/icon-locker-type-custom.png" alt=""></span>Custom Type</span></label>
           </div>
 
           <div class="selected-types" id="selectedTypes"></div>
@@ -448,6 +451,18 @@ stripped before "rule absent" checks so the bottom NOTE block's and inline CSS c
 mentions of removed class names can't cause false positives/negatives) confirming the live CSS/markup
 match this recipe and that the checkbox-wiring/selected-types-list/progress-bar JS logic is
 completely unaffected.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by the reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, all 7 `.type-check-card` icons went back to their pre-redesign `.type-icon-badge badge-COLOR`
+(72px, white-fill, colour-bordered square) wrapping an `<img class="type-icon-img">` (56px) raster
+icon — `icon-locker-type-{top,middle,bottom,large,side,small,custom}.png`, split between badge-blue
+(#0071E3) and badge-purple (#8B5CF6) per card as before. The single `.type-icon-glyph { width: 56px;
+height: 56px; flex-shrink: 0; }` rule the redesign introduced was removed in favour of the restored
+badge/img CSS. The current flat `#F1F1F1`/hover-lift/white-black `.checked` card CSS was left
+completely untouched — only the icon glyphs and their badge wrappers were reverted. Verified via an
+inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched —
+markup/CSS only).
 -->
 
 <script>

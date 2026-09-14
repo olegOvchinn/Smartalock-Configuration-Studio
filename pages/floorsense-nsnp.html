@@ -148,20 +148,26 @@
   }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  /* ---------- path-icon-glyph: per the same request, the bordered white `.path-icon-badge` square
-     canvas each icon sat inside was removed entirely — icons now sit directly on the card's own
-     background. `.path-icon-glyph` (87.36px, flex-shrink:0) is now the icon's only wrapper, at
-     reservation-types.html's own final icon size. Each icon's SVG markup was redrawn to match that
-     page's two-tone recipe: a thick, uniform dark-navy outline (`#0E1030`) with rounded stroke
-     caps/joins for the "base" shape, plus one secondary accent shape rendered solid-filled (with the
-     same navy outline around it). This page's own pre-existing per-option badge colours (`#4A8DF0`
-     blue / `#EC6BA5` pink / `#9B6BEC` purple / `#2FBF9F` teal) were kept as each icon's accent fill,
-     matching the precedent set on floorsense-checkin-methods.html/floorsense-fme.html of keeping a
-     page's own established per-card colours rather than switching to reservation-types.html's
-     reference-derived palette. The "We will provide a list" icon reuses the same clipboard design
-     just redrawn for floorsense-fme.html's identical-concept card, for visual consistency between
-     the two pages' matching options. ---------- */
-  .path-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
+  /* ---------- path-icon-badge: matches floorsense-reservation-types.html's .desk-icon-badge —
+     a flat white square canvas with a light colored border per option, replacing the old bare
+     56x56px accent-blue line icon. See the MOST RECENT CHANGE note below. ---------- */
+  .path-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .path-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .path-icon-badge.badge-blue .path-icon-glyph { color: #4A8DF0; }
+  .path-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .path-icon-badge.badge-pink .path-icon-glyph { color: #EC6BA5; }
+  .path-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .path-icon-badge.badge-purple .path-icon-glyph { color: #9B6BEC; }
+  .path-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .path-icon-badge.badge-teal .path-icon-glyph { color: #2FBF9F; }
+  .path-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
   .path-card-body { min-width: 0; flex: 1; }
   .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
@@ -349,7 +355,7 @@
         <div class="path-check-card" data-mode="all">
           <label class="path-row">
             <input type="radio" name="nsnpMode" value="all">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.2" y="2.2" width="8.6" height="8.6" rx="1.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="13.2" y="2.2" width="8.6" height="8.6" rx="1.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="2.2" y="13.2" width="8.6" height="8.6" rx="1.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="13.2" y="13.2" width="8.6" height="8.6" rx="1.4" fill="#4A8DF0" stroke="#0E1030" stroke-width="0.67"/></svg>
+            <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">All desks</h3>
               <p class="path-desc">Desks stay powered off until someone checks in — except permanently assigned desks, which stay powered on.</p>
@@ -360,7 +366,7 @@
         <div class="path-check-card" data-mode="list">
           <label class="path-row">
             <input type="radio" name="nsnpMode" value="list">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="18.5" rx="2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="8.5" y="2" width="7" height="3" rx="1" fill="#EC6BA5" stroke="#0E1030" stroke-width="0.62"/><line x1="7.2" y1="9.5" x2="16.8" y2="9.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="13" x2="16.8" y2="13" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="16.5" x2="14" y2="16.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
+            <div class="path-icon-badge badge-pink"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will provide a list of NSNP enabled desks</h3>
               <p class="path-desc">We'll send Smartalock a list of which desks have NSNP relay units installed and should stay powered off until checked in.</p>
@@ -371,7 +377,7 @@
         <div class="path-check-card" data-mode="none">
           <label class="path-row">
             <input type="radio" name="nsnpMode" value="none">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="10.9" y="3.6" width="2.2" height="16.8" rx="1.1" transform="rotate(45 12 12)" fill="#9B6BEC" stroke="#0E1030" stroke-width="0.58"/></svg>
+            <div class="path-icon-badge badge-purple"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will not be using NSNP</h3>
               <p class="path-desc">Skip this feature — desks stay powered on all the time, whether or not anyone has checked in.</p>
@@ -382,7 +388,7 @@
         <div class="path-check-card" data-mode="other">
           <label class="path-row">
             <input type="radio" name="nsnpMode" value="other">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M4 20h9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.6 4.3a2.1 2.1 0 0 1 3 3L7 17.9l-4.2 1 1-4.2Z" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.8 14.7l3 3l-4.2 1z" fill="#2FBF9F" stroke="#0E1030" stroke-width="0.58" stroke-linejoin="round"/></svg>
+            <div class="path-icon-badge badge-teal"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">Other</h3>
               <p class="path-desc">Some other arrangement — describe it below.</p>
@@ -685,6 +691,20 @@ size, and a new jsdom test (test_nsnp_card_icon_restyle.js, 25 assertions) confi
 CSS/markup match this recipe, that the unrelated `.nsnp-relay-confirm` panel kept its own glass
 styling untouched, and that the relay-gate/radio-wiring/other-subfields JS logic is completely
 unaffected.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by the reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, all 4 icons went back to their pre-redesign `.path-icon-badge badge-COLOR` (60px, white-fill,
+colour-bordered square) wrapping a plain `stroke="currentColor"` SVG glyph (`.path-icon-glyph`,
+34.5px, `color: var(--accent)` recoloured per badge modifier) — badge-blue (#4A8DF0) on "All desks",
+badge-pink (#EC6BA5) on the "provide a list" option, badge-purple (#9B6BEC) on "not using NSNP",
+badge-teal (#2FBF9F) on "Other" — instead of the redesign's bare navy-outline `#0E1030` + accent-fill
+SVGs. The single `.path-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }` rule the
+redesign introduced was removed in favour of the restored badge CSS block and its 4 colour modifiers.
+The current flat `#F1F1F1`/hover-lift/white-black `.checked` card CSS, and the unrelated
+`.nsnp-relay-confirm`/`.nsnp-grace-block` panels, were left completely untouched — only the icon
+glyphs and their badge wrappers were reverted. Verified via an inline HTMLParser tag-balance check
+and `node --check` on the extracted script block (untouched — markup/CSS only).
 -->
 
 <script>

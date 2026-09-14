@@ -147,18 +147,24 @@
   }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  /* ---------- path-icon-glyph: per the same request, the bordered white `.path-icon-badge` square
-     canvas each icon sat inside was removed entirely, matching reservation-types.html's own
-     icon-refinement choice — icons now sit directly on the card's own background. `.path-icon-glyph`
-     (87.36px, flex-shrink:0) is now the icon's only wrapper, at reservation-types.html's own final
-     icon size. Each icon's SVG markup was redrawn to match that page's two-tone recipe: a thick,
-     uniform dark-navy outline (`#0E1030`) with rounded stroke caps/joins for the "base" shape, plus
-     one secondary accent shape rendered solid-filled (with the same navy outline around it). This
-     page's own pre-existing per-option badge colours (`#4A8DF0` blue / `#EC6BA5` pink / `#9B6BEC`
-     purple) were kept as each icon's accent fill, matching the precedent set on
-     floorsense-checkin-methods.html of keeping a page's own established per-card colours rather than
-     switching to reservation-types.html's reference-derived palette. ---------- */
-  .path-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
+  /* ---------- path-icon-badge: matches floorsense-reservation-types.html's .desk-icon-badge —
+     a flat white square canvas with a light colored border per option, replacing the old bare
+     56x56px accent-blue line icon. See the MOST RECENT CHANGE note below. ---------- */
+  .path-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .path-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .path-icon-badge.badge-blue .path-icon-glyph { color: #4A8DF0; }
+  .path-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .path-icon-badge.badge-pink .path-icon-glyph { color: #EC6BA5; }
+  .path-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .path-icon-badge.badge-purple .path-icon-glyph { color: #9B6BEC; }
+  .path-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
   .path-card-body { min-width: 0; flex: 1; }
   .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
@@ -288,7 +294,7 @@
         <div class="path-check-card" data-mode="all">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="all">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 2.2v13.6M8.7 5.6L12 2.2l3.3 3.4M8.7 12.4L12 15.8l3.3-3.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="17.3" width="16" height="3.4" rx="1.2" fill="#4A8DF0" stroke="#0E1030" stroke-width="0.62"/></svg>
+            <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">All sit-stand desks</h3>
               <p class="path-desc">Every desk is a sit-stand desk, so FME can be used anywhere.</p>
@@ -299,7 +305,7 @@
         <div class="path-check-card" data-mode="list">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="list">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="18.5" rx="2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="8.5" y="2" width="7" height="3" rx="1" fill="#EC6BA5" stroke="#0E1030" stroke-width="0.62"/><line x1="7.2" y1="9.5" x2="16.8" y2="9.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="13" x2="16.8" y2="13" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="16.5" x2="14" y2="16.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
+            <div class="path-icon-badge badge-pink"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will provide a list of desk types</h3>
               <p class="path-desc">Not all desks are sit-stand — we'll send Smartalock a list of which desk types support FME.</p>
@@ -310,7 +316,7 @@
         <div class="path-check-card" data-mode="none">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="none">
-            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="6.2" y="2.2" width="10.6" height="18.6" rx="2.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.6" y1="18.3" x2="13.4" y2="18.3" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><circle cx="17.5" cy="17.5" r="4.3" fill="#9B6BEC" stroke="#0E1030" stroke-width="0.67"/><line x1="15.4" y1="19.6" x2="19.6" y2="15.4" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
+            <div class="path-icon-badge badge-purple"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg></div>
             <div class="path-card-body">
               <h3 class="path-title">We will not enable mobile app FME</h3>
               <p class="path-desc">Skip this feature — end users won't be able to save or apply a custom sit-stand height via the mobile app.</p>
@@ -509,6 +515,19 @@ confirming the flat grey resting cards, the selected card's white/black 2px-outl
 redrawn icons rendering cleanly at the larger size, and a new jsdom test
 (test_fme_card_icon_restyle.js, 21 assertions) confirming the live CSS/markup match this recipe and
 that the radio-wiring JS logic (mode switching between all/list/none) is completely unaffected.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by the reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, all 3 icons went back to their pre-redesign `.path-icon-badge badge-COLOR` (60px, white-fill,
+colour-bordered square) wrapping a plain `stroke="currentColor"` SVG glyph (`.path-icon-glyph`,
+34.5px, `color: var(--accent)` recoloured per badge modifier) — badge-blue (#4A8DF0) on "All
+sit-stand desks", badge-pink (#EC6BA5) on the "provide a list" option, badge-purple (#9B6BEC) on "not
+enable mobile app FME" — instead of the redesign's bare navy-outline `#0E1030` + accent-fill SVGs.
+The single `.path-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }` rule the redesign
+introduced was removed in favour of the restored badge CSS block and its 3 colour modifiers. The
+current flat `#F1F1F1`/hover-lift/white-black `.checked` card CSS was left completely untouched —
+only the icon glyphs and their badge wrappers were reverted. Verified via an inline HTMLParser
+tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS only).
 -->
 
 <script>

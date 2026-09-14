@@ -112,28 +112,32 @@
   h2.section-title { font-family: var(--font-display); font-weight: 500; font-size: 27.88px; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--header-grey); }
   .section-head p { color: var(--ink-soft); font-size: 14.76px; line-height: 1.6; margin: 0; }
 
-  /* ---------- desk-icon-glyph: per a request to refine these 5 icons to match the style used on
-     floorsen.se/handset's own icon set, the bordered white `.desk-icon-badge` square canvas each
-     icon used to sit inside was removed entirely (per an explicit choice when asked) — icons now
-     sit directly on the card's own background, exactly like the reference site's icons, rather
-     than being boxed in their own container. `.desk-icon-glyph` (56x56px, flex-shrink:0) is now the
-     icon's only wrapper. Each icon's own SVG markup was redrawn to match that reference's two-tone
-     recipe: a thick, uniform dark-navy outline (`#0E1030`, the reference's own outline colour,
-     sampled directly from its icon PNGs) with rounded stroke caps/joins for the "base" shape, plus
-     one secondary accent shape rendered solid-filled (with the same navy outline around it) in a
-     bright colour unique to that icon — mirroring the reference's own badge-style compositions
-     (a coloured clock badge on its calendar, a coloured checkmark badge on its person, etc). Per an
-     explicit choice when asked, the 5 accent colours are the reference site's own palette (sampled
-     the same way, not this page's pre-existing per-card blue/pink/purple/teal/amber set), assigned
-     in the reference's own listed order: #E44C42 (coral, was "Dedicated Workstations"' badge-blue),
-     #14B2E3 (blue, was "Reserved by User as Needed"'s badge-pink), #00C18D (green, was "Team Leader
-     Allocated"'s badge-purple), #77D2EE (sky, was "Booked on Behalf"'s badge-teal), #F18600 (orange,
-     unchanged in spirit from "AI Agent Auto-Prebooked"'s badge-amber). See each `<svg>`'s own markup
-     for how its accent shape was chosen. This reverses an earlier request's `stroke-linecap="butt"
-     stroke-linejoin="miter"` (thin/sharp) treatment back to `round`/`round` at a heavier
-     `stroke-width`, since the reference's own icons are visibly chunky and rounded, not thin and
-     sharp — a deliberate style match, not a regression. ---------- */
-  .desk-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
+  /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
+     a simple colored border, per a request to drop the glass/glow treatment (backdrop blur, inset
+     highlight/shadow/glow layers, sheen overlay) while keeping the icon shapes themselves unchanged
+     — see the MOST RECENT CHANGE note below. Each of the 5 cards now gets its own light accent
+     colour (blue, pink, purple, teal, amber) via a modifier class, rather than one shared
+     `var(--accent)` blue, per a later "light colour touch" request, and a short, light drop shadow
+     per a follow-up request — see the MOST RECENT CHANGE notes further down. ---------- */
+  .desk-icon-badge {
+    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .desk-icon-badge.badge-blue { border-color: #4A8DF0; }
+  .desk-icon-badge.badge-blue .desk-icon-glyph { color: #4A8DF0; }
+  .desk-icon-badge.badge-pink { border-color: #EC6BA5; }
+  .desk-icon-badge.badge-pink .desk-icon-glyph { color: #EC6BA5; }
+  .desk-icon-badge.badge-purple { border-color: #9B6BEC; }
+  .desk-icon-badge.badge-purple .desk-icon-glyph { color: #9B6BEC; }
+  .desk-icon-badge.badge-teal { border-color: #2FBF9F; }
+  .desk-icon-badge.badge-teal .desk-icon-glyph { color: #2FBF9F; }
+  .desk-icon-badge.badge-amber { border-color: #F2A154; }
+  .desk-icon-badge.badge-amber .desk-icon-glyph { color: #F2A154; }
+  .desk-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
@@ -328,7 +332,7 @@
           <label class="desk-row">
             <input type="checkbox" value="fixed">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9" r="3" fill="#E44C42" stroke="#0E1030" stroke-width="0.67"/></svg>
+            <div class="desk-icon-badge badge-blue"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" fill="currentColor" fill-opacity="0.12"/><circle cx="12" cy="9" r="2.6"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
               <p class="desk-desc">Give someone their own permanent desk. Common for senior staff who need the same seat every day.</p>
@@ -343,7 +347,7 @@
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.3h13a1 1 0 0 1 1 1v0a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v0a1 1 0 0 1 1-1Z" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8.3v6.2M14.5 8.3v5.2a1 1 0 0 0 1 1H17" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17" r="4.2" fill="#14B2E3" stroke="#0E1030" stroke-width="0.67"/><path d="M15.2 17.1l1.2 1.2l2.3-2.5" stroke="#0E1030" stroke-width="0.62" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="desk-icon-badge badge-pink"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fill-opacity="0.12"/><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.4l2.6 2.6l5.2-5.6" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -355,7 +359,7 @@
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.5" fill="#00C18D" stroke="#0E1030" stroke-width="0.72"/><path d="M12 7.5v2.9M12 10.4H5.5M12 10.4h6.5M5.5 10.4v3M18.5 10.4v3M12 10.4v3" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/><circle cx="12" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/><circle cx="18.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/></svg>
+            <div class="desk-icon-badge badge-purple"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><circle cx="12" cy="5" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M12 7.3v3.2M12 10.5H5.5M12 10.5h6.5M5.5 10.5v2.7M18.5 10.5v2.7M12 10.5v2.7"/><circle cx="5.5" cy="16.3" r="2.1"/><circle cx="12" cy="16.3" r="2.1"/><circle cx="18.5" cy="16.3" r="2.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
               <p class="desk-desc">Lets a team leader book several desks in one go without naming who each is for — desks simply show as reserved for the team. A team leader can optionally also book on behalf of their team members, but that's time-consuming to do desk by desk, so isn't meant for frequent use. Either way, desks must be checked in or claimed by the user, or the booking expires.</p>
@@ -367,7 +371,7 @@
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="13" height="15" rx="2.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10.6" r="2.3" stroke="#0E1030" stroke-width="0.67"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2" stroke="#0E1030" stroke-width="0.67" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="8.2" r="3.6" fill="#77D2EE" stroke="#0E1030" stroke-width="0.67"/><path d="M18 6.3v3.8M16.1 8.2h3.8" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
+            <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="2.5" y="5" width="13" height="15" rx="2"/><circle cx="9" cy="10.6" r="2.3" fill="currentColor" fill-opacity="0.15"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2"/><path d="M16.5 9.5h5M19 7v5" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
               <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has allocated them to book for. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
@@ -379,7 +383,7 @@
           <label class="desk-row">
             <input type="checkbox" value="ai-agent" disabled>
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 3v2.1" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><circle cx="12" cy="2.3" r="1" fill="#0E1030" stroke="none"/><rect x="4.3" y="5.4" width="15.4" height="12.4" rx="3.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.45"/><circle cx="15" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.45"/><path d="M9 15.3c0.9 0.8 4.1 0.8 5 0" stroke="#0E1030" stroke-width="0.72" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="desk-icon-badge badge-amber"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><path d="M12 3v2.2"/><circle cx="12" cy="2.4" r="0.9" fill="currentColor" stroke="none"/><rect x="4.5" y="5.5" width="15" height="12" rx="3" fill="currentColor" fill-opacity="0.08"/><circle cx="9" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="11.5" r="1.3" fill="currentColor" stroke="none"/><path d="M9 15.2c0.9 0.8 4.1 0.8 5 0" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked <span class="group-tag">Coming Soon</span></h3>
               <p class="desk-desc">An AI agent automatically prebooks a desk for the user ahead of time, based on your organisation's policy rules — no manual booking needed.</p>
@@ -1035,6 +1039,22 @@ confirming a white card with a solid black 2px border, a white/black-bordered ti
 checkmark, and all other cards left in their normal light-grey resting state, and an updated
 test_reservation_types_card_restyle.js (now 22 assertions) confirming the checked card, its tick,
 and its checkmark all read plain white/black with no `var(--accent`/`--tc` reference anywhere.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by this reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, all 5 icons went back to their pre-redesign `.desk-icon-badge badge-COLOR` (60px, white-fill,
+colour-bordered square) wrapping a plain `stroke="currentColor"` SVG glyph (`.desk-icon-glyph`,
+34.5px, `color: var(--accent)` recoloured per badge modifier) — badge-blue (#4A8DF0) on "Dedicated
+Workstations", badge-pink (#EC6BA5) on "Reserved by User as Needed", badge-purple (#9B6BEC) on "Team
+Leader Allocated", badge-teal (#2FBF9F) on "Booked on Behalf", badge-amber (#F2A154) on "AI Agent
+Auto-Prebooked" — instead of the redesign's bare navy-outline `#0E1030` + reference-site-palette
+(coral/blue/green/sky/orange) accent-fill SVGs. The single `.desk-icon-glyph { width: 87.36px;
+height: 87.36px; flex-shrink: 0; }` rule the redesign introduced was removed in favour of the
+restored badge CSS block and its 5 colour modifiers. The current flat `#F1F1F1`/hover-lift/
+white-black `.checked` card CSS and the existing white/black `.desk-tick` state (from the immediately
+preceding change) were left completely untouched — only the icon glyphs and their badge wrappers were
+reverted. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
+script block (untouched — markup/CSS only).
 -->
 
 <script>

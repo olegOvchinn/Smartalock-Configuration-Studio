@@ -189,18 +189,22 @@
   }
 
   .dcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
-  /* ---------- dcard-icon-glyph: per the same request, each raster `<img class="dcard-icon-img">`
-     illustration and its bordered white `.dcard-icon-badge` square canvas were replaced with a bare
-     inline SVG redrawn in reservation-types.html's own two-tone recipe: a `#0E1030` navy outline
-     shape plus one region/secondary shape solid-filled in an accent colour, sized at that page's own
-     87.36px — these cards carry a full title+description layout (like reservation-types.html's own
-     cards), not a compact chip row, so the larger size is appropriate here. This page's own
-     pre-existing per-card badge colours (`#0071E3` blue for Pop Open, `#D98E00` amber for Push to
-     Open) were kept as each icon's accent fill. Pop Open is a locker frame with its door swung fully
-     open (filled blue) plus small motion-burst lines depicting the instantaneous release; Push to
-     Open is the same locker frame with its door only slightly ajar plus a small clock face
-     (filled amber) depicting the 15-second grace period before it can be pushed open. ---------- */
-  .dcard-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
+  .dcard h3 .dcard-icon-img { width: 40px; height: 40px; flex-shrink: 0; }
+  /* ---------- dcard-icon-badge: wraps each raster <img class="dcard-icon-img"> in a white square
+     badge with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge
+     pattern. Pop Open / Push to Open form a repeating 2-option group, so each gets its own palette
+     color rather than sharing one blue — see the MOST RECENT CHANGE note below. Only the badge's
+     border is colored; the raster icon images are left untouched. ---------- */
+  .dcard-icon-badge {
+    width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
+  }
+  .dcard-icon-badge.badge-blue { border-color: #0071E3; }
+  .dcard-icon-badge.badge-amber { border-color: #D98E00; }
   .dcard p.desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0 0 18px 0; flex: 1; }
 
   /* ---------- scope panel ---------- */
@@ -350,7 +354,7 @@
             <div class="mini-lottie" id="lottiePop"></div>
             <div class="mini-unit" id="fallbackPop"><div class="mf"></div><div class="md"></div></div>
           </div>
-          <h3><svg class="dcard-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="11" height="18" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><g transform="rotate(-32 14 4)"><rect x="14" y="4" width="8" height="16" rx="1" fill="#0071E3" stroke="#0E1030" stroke-width="0.58"/></g><path d="M15 2.4 L16.5 1" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><path d="M17 3 L19 2" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><path d="M18.4 5 L20.5 4.6" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>Pop Open</h3>
+          <h3><div class="dcard-icon-badge badge-blue"><img class="dcard-icon-img" src="../assets/images/icon-pop-open.png" alt=""></div>Pop Open</h3>
           <p class="desc">Instantaneous soft-pop release on authentication. Best for fast, personal-storage turnaround where users grab and go.</p>
         </div>
 
@@ -363,7 +367,7 @@
             <div class="mini-lottie" id="lottiePush"></div>
             <div class="mini-unit" id="fallbackPush"><div class="mf"></div><div class="md"></div></div>
           </div>
-          <h3><svg class="dcard-icon-glyph" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="11" height="18" rx="1.5" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><g transform="rotate(-8 14 4)"><rect x="14" y="4" width="8" height="16" rx="1" fill="none" stroke="#0E1030" stroke-width="0.6"/></g><circle cx="18" cy="12" r="4.2" fill="#D98E00" stroke="#0E1030" stroke-width="0.58"/><path d="M18 9.5 L18 12 L20 13.2" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round" stroke-linejoin="round"/></svg>Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
+          <h3><div class="dcard-icon-badge badge-amber"><img class="dcard-icon-img" src="../assets/images/icon-push-to-open.png" alt=""></div>Push to Open <span style="font-family:var(--font-text);font-size:11px;color:var(--ink-soft);font-weight:500;">— 15s grace</span></h3>
           <p class="desc">The lock disengages but the door stays shut until deliberately pushed, within a 15 second window. Ideal for high-traffic banks.</p>
         </div>
       </div>
@@ -527,6 +531,17 @@ stripped before "rule absent" checks so this page's own explanatory comments and
 block's literal mentions of removed class names can't cause false positives) confirming the live
 CSS/markup match this recipe and that the independent popOpenEnabled/pushOpenEnabled toggle logic,
 the mini-stage Lottie mounts, and the scope-panel wiring are all completely unaffected.
+
+MOST RECENT CHANGE: per a request to revert all 9 pages touched by the reservation-types-derived
+icon redesign back to their pre-redesign icons while keeping the current flat text-block-lot card
+styling, both `<h3>` icons went back to their pre-redesign `.dcard-icon-badge badge-COLOR` (56px,
+white-fill, colour-bordered square) wrapping an `<img class="dcard-icon-img">` (40px) raster icon —
+`icon-pop-open.png` (badge-blue #0071E3), `icon-push-to-open.png` (badge-amber #D98E00). The single
+`.dcard-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }` rule the redesign introduced
+was removed in favour of the restored badge/img CSS. The current flat `#F1F1F1`/hover-lift/white-black
+`.chosen` card CSS was left completely untouched — only the icon glyphs and their badge wrappers were
+reverted. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
+script block (untouched — markup/CSS only).
 -->
 
 <script>
