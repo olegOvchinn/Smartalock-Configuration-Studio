@@ -368,7 +368,7 @@
             <div class="desk-icon-badge badge-teal"><svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="butt" stroke-linejoin="miter"><rect x="6" y="3.2" width="14" height="9" rx="1.8"/><rect x="4" y="7.5" width="14" height="9" rx="1.8" fill="#fff" stroke="currentColor"/><line x1="6.5" y1="11" x2="14.5" y2="11" stroke-width="1.1"/></svg></div>
             <div class="desk-card-body">
               <h3 class="desk-title">Wallet Pass at Desk</h3>
-              <p class="desk-desc">Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it.</p>
+              <p class="desk-desc">Floorsense issues each user a pass for their Apple Wallet or Google Wallet, which they tap at the desk to reserve it.</p>
               <p class="desk-note">This is a paid add-on, so it's worth checking with us before selecting it.</p>
             </div>
           </label>
@@ -770,6 +770,16 @@ file's own matching NOTE. Verified via an inline HTMLParser tag-balance check, `
 extracted script block (untouched — CSS-only change), and a new jsdom test
 (test_tick_box_thinner.js, 35 assertions across all 7 files) confirming each tick/radio-box element's
 border is now `2.1px solid var(--line)` with its size/radius/checked-state colours unchanged.
+
+MOST RECENT CHANGE: per a follow-up request, reworded the Wallet Pass at Desk card's `.desk-desc`
+copy — "Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at
+the desk to reserve it." became "Floorsense issues each user a pass for their Apple Wallet or
+Google Wallet, which they tap at the desk to reserve it." — since Floorsense (not the user) creates
+and issues the wallet pass; the old "Users add..." phrasing implied the user does the adding. Pure
+copy change, no markup/CSS/JS touched; the card's separate paid-add-on `.desk-note` is unaffected.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a jsdom test (test_wallet_pass_desc_reword.js) confirming the new description text and that the
+paid-add-on note is unchanged.
 -->
 
 
