@@ -176,35 +176,33 @@
      Group checkbox groups, since both need independently-tickable options rather than a
      single-select radio. ---------- */
   .group-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
-  /* ---------- glass card: propagates floorsense-reservation-types.html's later "transparent
-     glass" card treatment here too — see the MOST RECENT CHANGE note at the end of this file's NOTE
-     block. Hover/checked, previously shown via border-color, now read through the shadow's
-     spread/tint and the background tint instead. ---------- */
+  /* ---------- text-block-lot card: per a request to bring this page's choice cards in line with
+     the flat text-block-lot recipe used sitewide (floorsense-reservation-types.html and every
+     other option-card page), .group-check-card dropped the glass-blur treatment (backdrop-filter,
+     translucent background, fuzzy box-shadow, per-mode --tc tint) in favour of a flat `#F1F1F1`
+     resting background with a hover/checked "lift" (translate + white background + black outline),
+     matching `.desk-check-card` exactly. Per the same request, colour was removed from the selected
+     state entirely — `.checked` is plain white-and-black, not per-mode grey/blue/purple — so the
+     tick, heading, and card background all read the same regardless of which option (none/provide/
+     policy) is selected. The `.groups-card` column wrappers above these cards were deliberately
+     left on their existing glass treatment, per an explicit choice when asked to scope this change
+     to the choice cards only. ---------- */
   .group-check-card {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
     padding: 18px 20px;
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+    transition: transform .3s, background-color .3s, outline .3s;
   }
-  .group-check-card:hover {
-    box-shadow: 0 16px 40px -8px var(--tc-glow, rgba(0,113,227,0.22)), 0 3px 12px rgba(16,42,67,0.08);
+  .group-check-card:hover:not(.checked) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
   }
   .group-check-card.checked {
-    background: var(--tc-wash, rgba(232,241,252,0.7));
-    box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 2px solid #000;
   }
-  /* ---------- per-choice colour theming, ported from floorsense-reservation-types.html /
-     floorsense-checkin-methods.html's --tc mechanism — applied only to these individual choice
-     cards, NOT to the .groups-card column canvases above them (those stay a plain static wrapper
-     per the request to leave the main card canvases alone). Same three modes (none/provide/policy)
-     repeat in both the Desk Group and User Group grids, so one rule per data-mode colours matching
-     choices in both grids consistently rather than needing per-grid variants. ---------- */
-  .group-check-card[data-mode="none"] { --tc: #8E8E93; --tc-wash: rgba(244,244,244,0.7); --tc-glow: rgba(142,142,147,0.22); --tc-glow-strong: rgba(142,142,147,0.3); }
-  .group-check-card[data-mode="provide"] { --tc: #4A8DF0; --tc-wash: rgba(237,244,254,0.7); --tc-glow: rgba(74,141,240,0.22); --tc-glow-strong: rgba(74,141,240,0.3); }
-  .group-check-card[data-mode="policy"] { --tc: #9B6BEC; --tc-wash: rgba(245,240,253,0.7); --tc-glow: rgba(155,107,236,0.22); --tc-glow-strong: rgba(155,107,236,0.3); }
   .group-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .group-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .group-tick {
@@ -212,10 +210,10 @@
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
-  .group-check-card.checked .group-tick { border-color: var(--tc, var(--accent)); background: var(--tc, var(--accent)); }
+  .group-check-card.checked .group-tick { border-color: #000; background: #fff; }
   .group-tick::after {
     content: ''; width: 6px; height: 10px; margin-top: -1px;
-    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    border: solid #000; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
     opacity: 0; transition: opacity .15s;
   }
   .group-check-card.checked .group-tick::after { opacity: 1; }
@@ -224,7 +222,7 @@
      no content icons at all, just the tick + title text used by every other card grid on the
      site. ---------- */
   .group-card-body { min-width: 0; flex: 1; }
-  .group-title { font-weight: 600; font-size: 14.76px; color: var(--tc, var(--ink)); display: block; margin: 0 0 4px; }
+  .group-title { font-weight: 600; font-size: 14.76px; color: var(--ink); display: block; margin: 0 0 4px; }
   .group-tag {
     font-family: var(--font-text); font-size: 8.2px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px; margin-left: 6px;
@@ -856,6 +854,30 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request to update this page's card styling, `.group-check-card` (the 3
+choice cards inside each of the Desk Group / User Group columns) moved from the translucent-glass
+treatment (`rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, soft
+box-shadow, per-mode `--tc` tint) to the flat "text-block-lot" recipe used sitewide: a flat `#F1F1F1`
+resting background, `border-radius: 18px` (was `var(--radius-lg)`, 20px), and a hover lift
+(`transform: translate(-3px, -3px)`, white background, `1px solid #000` outline) via
+`.group-check-card:hover:not(.checked)`; `.checked` gets the same lift and white background with a
+heavier `2px solid #000` outline. Per an explicit choice when asked, colour was removed from the
+selected state entirely rather than kept per-mode: the 3 `[data-mode="none"/"provide"/"policy"]`
+`--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong` declarations were deleted outright, `.group-tick`'s
+checked fill/border and its `::after` checkmark now use plain black/white instead of `var(--tc,
+var(--accent))`, and `.group-title`'s colour reverted from `var(--tc, var(--ink))` to a flat
+`var(--ink)` — so a selected choice, its tick, and its heading all read the same plain white/black
+regardless of which of the three options (none/provide/policy) is picked, in both grids. Per an
+explicit choice when asked, the two `.groups-card` column wrappers (Desk Group Setup / User Group
+Setup) were left completely untouched on their existing glass treatment — this change is scoped to
+the individual choice cards only. Verified via an inline HTMLParser tag-balance check, `node --check`
+on the extracted script block (untouched — markup/CSS only), and a new jsdom test
+(test_desk_user_groups_card_restyle.js, 15 assertions, run against the file with HTML comments
+stripped first) confirming the flat background/border-radius/hover-lift/checked-outline CSS is in
+place with no leftover per-mode `--tc` values, `.groups-card`'s glass CSS is untouched, and the
+existing mutually-exclusive "none" checkbox logic, policy-subfields show/hide, and Reset button all
+still work correctly.
 -->
 
 
