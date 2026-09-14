@@ -461,6 +461,8 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Default Reservation Mode row's value cell now reads just "fixed-end" instead of "fixed-end (fixed start & end clock times)".
 - The Tech Summary's Default Reservation Mode row's key cell now also shows `book_day_end_mode = 1` alongside `res_duration_type = 1` whenever fixed-end mode is selected.
 - Added setting keys and hide-at-default behaviour to the Tech Summary's remaining Prebooking & Duration rows: Default Start Time (`book_day_start`, hidden at the 9:00 AM platform default), Default End Time (`book_day_end`, hidden at the 6:00 PM platform default in fixed-end mode only), and Default Reservation Duration (`book_duration_default`, hidden at the 9-hour default in either mode).
+- The Tech Summary's Check-in Early Threshold row now has setting key `book_early_activate` and is hidden whenever its value is at the shipped 30-min default.
+- The Tech Summary's Check-in Late Threshold row now has a static setting key, `booking_confirm_mins` (always shown, no hiding).
 
 ## Status
 

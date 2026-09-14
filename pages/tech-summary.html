@@ -383,6 +383,19 @@
   text in duration mode regardless of the 1080 rule; Duration Row hidden at the 9-hour default in both
   duration mode and fixed-end mode (09:00-18:00 span), and shown with the correct key/text at
   non-default values in both modes.
+
+  MOST RECENT CHANGE: the Check-in Window's Check-in Early Threshold row now gets setting key
+  book_early_activate and is hidden whenever checkInEarlyMinutes equals its shipped default of 30 min
+  (Check-in Late Threshold is unaffected and still always shows). Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test (6 assertions)
+  covering: default 30 min (hidden), the field missing entirely and falling back to 30 (hidden), a
+  custom 15 min value (shown, correct key and text), and 0/disabled (shown).
+
+  MOST RECENT CHANGE: added a static setting key, booking_confirm_mins, to the Check-in Late Threshold
+  row (no hiding requested for this one, so the row always shows as before). Verified via an inline
+  HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (4
+  assertions) confirming the key renders at both the 60-min default and a custom 90-min value, with the
+  value text unaffected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -587,8 +600,8 @@
 
     <p class="tsec-sub">Check-in Window</p>
     <table class="trow">
-      <tr><td class="label">Check-in Early Threshold</td><td class="key"></td><td class="value" id="tsCheckinEarly"></td></tr>
-      <tr><td class="label">Check-in Late Threshold</td><td class="key"></td><td class="value" id="tsCheckinLate"></td></tr>
+      <tr id="tsCheckinEarlyRow" hidden><td class="label">Check-in Early Threshold</td><td class="key">book_early_activate</td><td class="value" id="tsCheckinEarly"></td></tr>
+      <tr><td class="label">Check-in Late Threshold</td><td class="key">booking_confirm_mins</td><td class="value" id="tsCheckinLate"></td></tr>
     </table>
 
     <p class="tsec-sub">Check-in Behaviour</p>
@@ -1147,7 +1160,9 @@
   const checkinWindow = wizard.checkinWindow || {};
   const earlyMin = Number.isFinite(checkinWindow.checkInEarlyMinutes) ? checkinWindow.checkInEarlyMinutes : 30;
   const lateMin = Number.isFinite(checkinWindow.checkInLateMinutes) ? checkinWindow.checkInLateMinutes : 60;
-  set('tsCheckinEarly', formatDuration(earlyMin));
+  const checkinEarlyChanged = earlyMin !== 30;
+  showRow('tsCheckinEarlyRow', checkinEarlyChanged);
+  if (checkinEarlyChanged) set('tsCheckinEarly', formatDuration(earlyMin));
   set('tsCheckinLate', formatDuration(lateMin));
   // Ships defaulting to 30 min early / 60 min late.
   if (earlyMin !== 30 || lateMin !== 60) fsChanged = true;
