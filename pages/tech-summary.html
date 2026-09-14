@@ -473,6 +473,32 @@
   inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (6
   assertions) confirming the key renders when grace is off (n/a value), at its 15-min default, and at a
   custom 30-min value.
+
+  MOST RECENT CHANGE: the NSNP — Custom Arrangement Note row (nsnpOtherNoteGiven, already shown when
+  NSNP's mode is "other" and a note was entered) now also adds a matching entry to the Outstanding
+  section whenever that note is present, quoting the note text back so it's visible without opening the
+  Floorsense wizard. This is the first Floorsense-branch Outstanding trigger (all prior triggers were
+  Smartalock-side). Verified via an inline HTMLParser tag-balance check, node --check on the extracted
+  script block, and a jsdom test confirming no Outstanding row appears when the note is empty and a
+  Floorsense-branch row with the note text appears when it is set.
+
+  MOST RECENT CHANGE: added a static setting key, desk_user_control, to the Sit-Stand Desks (FME) —
+  Mode row's key cell (same "always shows" convention as NSNP — Mode's desk_power_policy, since this
+  row is present regardless of on/off state). Verified via an inline HTMLParser tag-balance check,
+  node --check on the extracted script block, and a jsdom test confirming the key renders at both an
+  off and an on FME mode.
+
+  MOST RECENT CHANGE: added static setting keys to the two always-shown Anti Desk Hogging rows: the
+  Window row now shows "book_window_adhoc, book_window_advance" and the Max Bookings row now shows
+  "book_window_advance_mins, book_window_adhoc_mins" (both rows keep their existing "n/a" value
+  behaviour when the feature is off; only the key cell was added). Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test confirming both keys
+  render at both an off and an on Anti Desk Hogging mode.
+
+  MOST RECENT CHANGE: added a static setting key, book_repeat_user, to the Recurring Bookings row's
+  key cell (always shown, same convention as the other always-visible Additional Options rows).
+  Verified via an inline HTMLParser tag-balance check, node --check on the extracted script block, and
+  a jsdom test confirming the key renders at both an off and an on Recurring Bookings state.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -701,12 +727,12 @@
       <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key">desk_power_policy</td><td class="value" id="tsNsnpMode"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key">desk_power_grace</td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
       <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="key"></td><td class="value" id="tsNsnpOtherNote"></td></tr>
-      <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="key"></td><td class="value" id="tsFmeMode"></td></tr>
+      <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="key">desk_user_control</td><td class="value" id="tsFmeMode"></td></tr>
       <tr id="tsFmeMotorAckRow" hidden><td class="label">FME — Motor Details Acknowledged</td><td class="key"></td><td class="value" id="tsFmeMotorAck"></td></tr>
       <tr><td class="label">Anti Desk Hogging — Mode</td><td class="key"></td><td class="value" id="tsAdhMode"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Window</td><td class="key"></td><td class="value" id="tsAdhWindow"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key"></td><td class="value" id="tsAdhMaxBookings"></td></tr>
-      <tr><td class="label">Recurring Bookings</td><td class="key"></td><td class="value" id="tsRecurring"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Window</td><td class="key">book_window_adhoc, book_window_advance</td><td class="value" id="tsAdhWindow"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key">book_window_advance_mins, book_window_adhoc_mins</td><td class="value" id="tsAdhMaxBookings"></td></tr>
+      <tr><td class="label">Recurring Bookings</td><td class="key">book_repeat_user</td><td class="value" id="tsRecurring"></td></tr>
       <tr><td class="label">Remote Booking Confirmation</td><td class="key"></td><td class="value" id="tsRemoteConfirm"></td></tr>
       <tr><td class="label">Privacy (Do Not Disturb)</td><td class="key"></td><td class="value" id="tsDnd"></td></tr>
     </table>
@@ -1386,6 +1412,9 @@
   // - Kiosk Customisation's Background Colour toggle (customBgEnabled) can be turned on without a
   //   hex value ever being entered/committed — whenever that's the case, the client still owes us
   //   the colour.
+  // - NSNP's "other" mode lets the client describe a custom power arrangement in free text
+  //   (nsnpOtherNoteGiven, computed above) — whenever that note is present, it's surfaced here too
+  //   since it typically requires follow-up setup work on our end. First Floorsense-branch entry.
   const outstandingItems = [];
   if (cardSelected && accessMethods.cardAssignMethod !== 'self') {
     outstandingItems.push({ branch: 'Smartalock', item: 'Spreadsheet of usernames and their swipe card Chip Serial Numbers (CSNs), for Smartalock to import.' });
@@ -1398,6 +1427,9 @@
   }
   if (kiosk.customBgEnabled && !(kiosk.bgColour && kiosk.bgColour.trim())) {
     outstandingItems.push({ branch: 'Smartalock', item: 'Custom background colour (hex code) for the kiosk screen.' });
+  }
+  if (nsnpOtherNoteGiven) {
+    outstandingItems.push({ branch: 'Floorsense', item: 'Custom NSNP power arrangement to set up: "' + nsnp.otherNote.trim() + '".' });
   }
   const outstandingSection = document.getElementById('outstandingSection');
   const outstandingTable = document.getElementById('outstandingTable');

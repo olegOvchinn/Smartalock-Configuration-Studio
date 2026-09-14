@@ -472,6 +472,10 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's No Swipe No Power (NSNP) — Mode row now has a static setting key, `desk_power_policy`.
 - Removed the redundant top "NSNP — Grace Period" row (the plain Yes/No one) from the Tech Summary — the remaining row already shows the actual grace duration or "n/a".
 - The Tech Summary's remaining NSNP — Grace Period row now has a static setting key, `desk_power_grace`.
+- The Tech Summary's NSNP — Custom Arrangement Note row now also adds a Floorsense-branch item to the Outstanding section (quoting the note text) whenever that note is present — the first Floorsense-branch Outstanding trigger.
+- The Tech Summary's Sit-Stand Desks (FME) — Mode row now has a static setting key, `desk_user_control`.
+- The Tech Summary's Anti Desk Hogging — Window row now shows setting keys `book_window_adhoc, book_window_advance`, and the Max Bookings row now shows `book_window_advance_mins, book_window_adhoc_mins`.
+- The Tech Summary's Recurring Bookings row now has a static setting key, `book_repeat_user`.
 
 ## Status
 
