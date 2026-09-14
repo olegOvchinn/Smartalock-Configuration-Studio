@@ -151,7 +151,7 @@
   .access-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .access-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .access-tick {
-    width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
+    width: 22px; height: 22px; border-radius: 6px; border: 2.1px solid var(--line); flex-shrink: 0;
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
@@ -510,6 +510,18 @@ favour of the restored badge/img CSS. The current flat `#F1F1F1`/hover-lift/whit
 card CSS was left completely untouched — only the icon glyphs and their badge wrappers were reverted.
 Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
 (untouched — markup/CSS only).
+
+MOST RECENT CHANGE: per a site-wide request to make "thick box lines" 30% thinner, `.access-tick`'s
+`border: 3px solid var(--line)` became `border: 2.1px solid var(--line)` (30% thinner) — its 22x22px
+size, 6px border-radius, and checked-state colours are unchanged. Applied identically to the
+equivalent tick/radio-box element on 6 other pages site-wide (`.desk-tick` on
+floorsense-reservation-types.html/floorsense-checkin-methods.html, `.group-tick` on
+floorsense-desk-user-groups.html, `.type-tick` on smartalock-locker-types.html, `.tcard-radio` on
+smartalock-reservation-type.html, `.toggle-tick` on floorsense-reservation-length.html) — see each
+file's own matching NOTE. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block (untouched — CSS-only change), and a new jsdom test
+(test_tick_box_thinner.js, 35 assertions across all 7 files) confirming each tick/radio-box element's
+border is now `2.1px solid var(--line)` with its size/radius/checked-state colours unchanged.
 -->
 
 <script>
