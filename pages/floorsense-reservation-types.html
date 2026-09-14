@@ -141,31 +141,41 @@
 
   /* ---------- desk template cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
-  /* ---------- glass card: per a request to remove the grey card border and instead read as a
-     panel of translucent glass floating above the page, .desk-check-card dropped its solid
-     `border: 1.5px solid var(--line)` entirely. In its place: a translucent white background
-     (rgba, not opaque `var(--paper)`) with `backdrop-filter: blur()` so anything behind the card
-     shows through softly, and a soft/fuzzy `box-shadow` (large blur radius, low opacity, no hard
-     edge) standing in for the border to give the card its own depth/separation from the page —
-     as if the icon and text inside are casting a gentle shadow down onto the background rather
-     than being boxed in by a hard outline. Hover/selected states, previously shown via
-     `border-color`, now read through the shadow's spread/tint and the background tint instead —
-     see the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- text-block-lot card: per a request to style/behave this page's cards the same as
+     the "text-blocks"/"text-block-lot" cards on floorsen.se/handset, .desk-check-card dropped the
+     glass-blur treatment (backdrop-filter, translucent background, fuzzy box-shadow) in favour of
+     that reference site's own recipe: a flat light-grey resting background (`#F1F1F1`, no border),
+     `border-radius: 18px` (that page's own value, close to this site's existing --radius-lg), and
+     on hover a small "lift" — `transform: translate(-3px, -3px)` plus the background flipping to
+     solid white and a crisp `1px solid #000` outline appearing — transitioning `transform`,
+     `background-color` and `outline` exactly as the reference page does. Since this page's cards
+     are still a selectable form (unlike the reference site's plain hover-only info cards — kept
+     per an explicit choice when asked), the `.checked` state keeps its own distinct look rather
+     than reusing the hover site's plain black: it gets the same lift transform (so a selected card
+     reads as "raised" like a hovered one), a light per-card tint background (`--tc-wash`, already
+     used before this change), and a 2px outline in that same per-card `--tc` colour instead of
+     black — so hovering an unselected card and having a card selected are always visually
+     distinguishable from one another. `:hover` only applies its plain black-outline lift to cards
+     that aren't already `.checked`, so a selected card's coloured outline is never replaced by the
+     hover state's black one. `--tc-glow`/`--tc-glow-strong` (set per `data-template` alongside
+     `--tc`/`--tc-wash`, just below) are no longer read by any rule now that hover/checked no longer
+     use a glow-tinted box-shadow — left in place, unused, rather than trimming each of the 5
+     `data-template` blocks for a change out of scope here. ---------- */
   .desk-check-card {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
     padding: 22px 26px;
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+    transition: transform .3s, background-color .3s, outline .3s;
   }
-  .desk-check-card:hover {
-    box-shadow: 0 16px 40px -8px var(--tc-glow, rgba(0,113,227,0.22)), 0 3px 12px rgba(16,42,67,0.08);
+  .desk-check-card:hover:not(.checked) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
   }
   .desk-check-card.checked {
+    transform: translate(-3px, -3px);
     background: var(--tc-wash, rgba(232,241,252,0.7));
-    box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
+    outline: 2px solid var(--tc, var(--accent));
   }
   /* ---------- per-card theme colour, matching smartalock-reservation-type.html's own `--tc`
      custom-property pattern more fully: that page tints its whole card (heading text colour, chosen
@@ -210,7 +220,7 @@
   /* ---------- coming-soon: greys out a card that can't be selected yet (AI Agent Auto-Prebooked) —
      mutes the usual hover/selected treatment and swaps the cursor, since its checkbox is disabled. ---------- */
   .desk-check-card.coming-soon { opacity: 0.55; }
-  .desk-check-card.coming-soon:hover { box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06); }
+  .desk-check-card.coming-soon:hover { transform: none; background: #F1F1F1; outline: none; }
   .desk-check-card.coming-soon .desk-row { cursor: not-allowed; }
 
   /* ---------- dedicated workstations bulk-upload sub-panel (matches access-subfields pattern) ----------
@@ -884,6 +894,39 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request to style and behave this page's 5 reservation-type cards the
+same as the "text-blocks"/"text-block-lot" cards on floorsen.se/handset (the client's own product
+site, referenced for its icon set too, to be reused separately), restyled `.desk-check-card`
+following that reference component's own recipe: a flat, borderless, light-grey resting background
+(`#F1F1F1`, replacing the earlier glass/blur/fuzzy-shadow treatment), `border-radius: 18px`, and on
+hover a small "lift" -- `transform: translate(-3px, -3px)` plus the background flipping to solid
+white and a crisp `1px solid #000` outline appearing, transitioning `transform`/`background-color`/
+`outline` exactly as the reference page does. Since (per an explicit choice when asked) this page's
+cards remain a multi-select form rather than becoming the reference site's plain hover-only info
+cards, `.checked` keeps its own distinct look instead of reusing that plain black hover style: the
+same lift transform, a light per-card tint background (the existing `--tc-wash`), and a 2px outline
+in that card's own `--tc` colour -- so a hovered-but-unselected card and an actually-selected card
+always read differently from one another. `.desk-check-card:hover:not(.checked)` scopes the plain
+black-outline hover treatment to unselected cards only, so a selected card's coloured outline is
+never masked by the hover state. The "AI Agent Auto-Prebooked" `coming-soon` card's hover-suppression
+rule was updated to neutralise the new transform/background/outline (previously reverted a
+now-removed box-shadow) so it still shows zero hover feedback while its checkbox stays disabled. Per
+a separate explicit choice when asked, card body copy stayed as single-paragraph descriptions rather
+than being rewritten into the reference site's short bullet-list format, and the existing
+`.desk-icon-badge` icon treatment was left untouched (the user will be supplying/reusing some of the
+reference site's own icons separately). `--tc-glow`/`--tc-glow-strong` (declared per `data-template`
+alongside `--tc`/`--tc-wash`) are no longer read by any rule now that hover/checked no longer use a
+glow-tinted box-shadow -- left in place, unused, rather than trimming all 5 `data-template` blocks
+for a change out of scope here. No JS or markup changed: the existing checkbox-wiring loop already
+toggles `.checked` on click, which the new CSS now reads for its own distinct selected look. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched),
+a weasyprint render of both the resting state (all 5 cards flat light-grey, icon-left layout intact)
+and a `.checked`-forced state (coloured wash + coloured outline clearly visible), and a new jsdom test
+(test_reservation_types_card_restyle.js, 18 assertions) confirming: the old backdrop-filter/box-shadow
+rules are gone from the live stylesheet; the new resting/hover/checked/coming-soon rules all contain
+the expected declarations; and the page's actual script still toggles `.checked` correctly on
+select/deselect while the coming-soon card's disabled checkbox is unaffected.
 -->
 
 <script>
