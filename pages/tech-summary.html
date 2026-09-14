@@ -458,6 +458,14 @@
   markup rather than conditional). Verified via an inline HTMLParser tag-balance check, node --check on
   the extracted script block, and a jsdom test (3 assertions) confirming the key renders at NSNP modes
   none, all, and list.
+
+  MOST RECENT CHANGE: removed the first (top) of the two identically-labeled "NSNP — Grace Period"
+  rows - the one that showed a plain Yes/No for graceEnabled (#tsNsnpGraceEnabled). The remaining row
+  (#tsNsnpGraceMinutes) already conveys the same information more usefully (the actual grace duration,
+  or "n/a" when off), so the enabled/disabled row was redundant. Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test (5 assertions)
+  confirming the removed element no longer exists, exactly one "NSNP — Grace Period" row remains, and
+  that row's own off/default/custom-minutes behaviour is unaffected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -684,7 +692,6 @@
       <tr id="tsIdleRow" hidden><td class="label">Auto-Release on Idle</td><td class="key">book_idle_autorelease</td><td class="value" id="tsIdleEnabled"></td></tr>
       <tr id="tsAutoCheckinRow" hidden><td class="label">Auto Check-In on Occupancy</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
       <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key">desk_power_policy</td><td class="value" id="tsNsnpMode"></td></tr>
-      <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
       <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="key"></td><td class="value" id="tsNsnpOtherNote"></td></tr>
       <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="key"></td><td class="value" id="tsFmeMode"></td></tr>
@@ -1273,7 +1280,6 @@
   const NSNP_MODE_LABELS = { all: 'On — all desks', list: 'On — selected desks', other: 'On — custom setup', none: 'Off' };
   const nsnp = wizard.nsnp || {};
   set('tsNsnpMode', NSNP_MODE_LABELS[nsnp.mode] || 'Off');
-  set('tsNsnpGraceEnabled', YES_NO(!!nsnp.graceEnabled));
   set('tsNsnpGraceMinutes', nsnp.graceEnabled ? formatDuration(Number.isFinite(nsnp.graceMinutes) ? nsnp.graceMinutes : 15) : 'n/a');
   // Custom-arrangement note only exists (and only matters) when mode is 'other' and the client
   // actually typed something — matches floorsense-out-of-box-policy.html's own NSNP row logic.
