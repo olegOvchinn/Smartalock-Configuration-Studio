@@ -309,6 +309,16 @@
   an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
   (9 assertions) confirming #saCustomLogoPlacementRow no longer exists in the DOM while the Custom Logo
   row's own placement text (left/right) still renders correctly.
+
+  MOST RECENT CHANGE: per a request mirroring the Smartalock side's res_adhoc key, the Floorsense
+  Reservation Types Selected row's setting-key cell now shows book_adhoc = false whenever
+  floorsense-reservation-types-01.html's Reserved by User as Needed card (data-template/value adhoc)
+  is deselected - including when nothing is selected at all. Added #tsReservationTypesKey to the row's
+  key cell (previously always empty) alongside the existing tsReservationTypes value cell. Verified via
+  an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
+  (5 assertions) covering: adhoc selected alone (no key), adhoc deselected in favour of another single
+  type (key shown), nothing selected (key shown), adhoc selected alongside other types (no key), and
+  multiple non-adhoc types selected together (key shown).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -499,7 +509,7 @@
 
     <p class="tsec-sub">Desk Allocation Method</p>
     <table class="trow">
-      <tr><td class="label">Reservation Types Selected</td><td class="key"></td><td class="value" id="tsReservationTypes"></td></tr>
+      <tr><td class="label">Reservation Types Selected</td><td class="key" id="tsReservationTypesKey"></td><td class="value" id="tsReservationTypes"></td></tr>
     </table>
 
     <p class="tsec-sub">Prebooking &amp; Duration</p>
@@ -1007,6 +1017,9 @@
   set('tsReservationTypes', selectedReservationTypes.length
     ? selectedReservationTypes.map(t => RESERVATION_TYPE_LABELS[t] || t).join(', ')
     : 'None selected');
+  // "Reserved by User as Needed" (adhoc) deselected -> book_adhoc = false, mirroring the Smartalock
+  // Reservation Types Selected row's res_adhoc key for the same "User Self-Allocated" concept.
+  if (!selectedReservationTypes.includes('adhoc')) set('tsReservationTypesKey', 'book_adhoc = false');
   // Ships defaulting to ["adhoc"] only (the fallback above) — changed if the saved selection is
   // anything other than exactly that single default type.
   if (!(selectedReservationTypes.length === 1 && selectedReservationTypes[0] === 'adhoc')) fsChanged = true;
