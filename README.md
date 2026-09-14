@@ -469,6 +469,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Renamed three Tech Summary row labels: "Auto-Release on Idle — Enabled" to "Auto-Release on Idle", "Auto Check-In on Occupancy — Enabled" to "Auto Check-In on Occupancy", and "NSNP — Grace Period Enabled" to "NSNP — Grace Period".
 - Merged the Tech Summary's separate "— Threshold" rows into their parent Auto-Release on Idle / Auto Check-In on Occupancy rows and removed the "— Threshold" rows entirely; each parent row is now hidden unless its feature is enabled, and shows the threshold duration instead of a plain "Yes" when it is.
 - The Tech Summary's Maximum Desks Per User row now also shows `book_user_limit_force` alongside `book_user_limit` whenever the value is 2 or more. The Auto-Release on Idle row's key cell now shows a static `book_idle_autorelease` key.
+- The Tech Summary's No Swipe No Power (NSNP) — Mode row now has a static setting key, `desk_power_policy`.
 
 ## Status
 

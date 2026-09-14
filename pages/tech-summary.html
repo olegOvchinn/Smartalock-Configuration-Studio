@@ -452,6 +452,12 @@
   check, node --check on the extracted script block, and a jsdom test (7 assertions) covering: Maximum
   Desks Per User at its default (hidden), at 2 (force key included), and at 20 (force key included);
   Auto-Release on Idle disabled (hidden) and enabled (key present).
+
+  MOST RECENT CHANGE: added a static setting key, desk_power_policy, to the No Swipe No Power (NSNP)
+  — Mode row's key cell (this row always shows regardless of mode, so the key is static in the
+  markup rather than conditional). Verified via an inline HTMLParser tag-balance check, node --check on
+  the extracted script block, and a jsdom test (3 assertions) confirming the key renders at NSNP modes
+  none, all, and list.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -677,7 +683,7 @@
       <tr id="tsMaxDesksRow" hidden><td class="label">Maximum Desks Per User</td><td class="key" id="tsMaxDesksKey"></td><td class="value" id="tsMaxDesks"></td></tr>
       <tr id="tsIdleRow" hidden><td class="label">Auto-Release on Idle</td><td class="key">book_idle_autorelease</td><td class="value" id="tsIdleEnabled"></td></tr>
       <tr id="tsAutoCheckinRow" hidden><td class="label">Auto Check-In on Occupancy</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
-      <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key"></td><td class="value" id="tsNsnpMode"></td></tr>
+      <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key">desk_power_policy</td><td class="value" id="tsNsnpMode"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
       <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="key"></td><td class="value" id="tsNsnpOtherNote"></td></tr>
