@@ -302,6 +302,13 @@
   assertions) covering: Custom Logo off (row hidden), on with default left placement, on with right
   placement, and on with a file name typed in (confirming the main row still shows placement, not the
   file name).
+
+  MOST RECENT CHANGE: removed the now-redundant Custom Logo - Placement row (#saCustomLogoPlacementRow
+  and its #saCustomLogoPlacement value cell), since the Custom Logo row itself already shows the exact
+  same placement text in its value column. The Custom Logo - File Name row is unaffected. Verified via
+  an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
+  (9 assertions) confirming #saCustomLogoPlacementRow no longer exists in the DOM while the Custom Logo
+  row's own placement text (left/right) still renders correctly.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -481,7 +488,6 @@
         <tr id="saBannerEnabledRow" hidden><td class="label">Information Banner</td><td class="key"></td><td class="value" id="saBannerEnabled"></td></tr>
         <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="key"></td><td class="value" id="saBannerText"></td></tr>
         <tr id="saCustomLogoRow" hidden><td class="label">Custom Logo</td><td class="key"></td><td class="value" id="saCustomLogo"></td></tr>
-        <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="key"></td><td class="value" id="saCustomLogoPlacement"></td></tr>
         <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="key"></td><td class="value" id="saCustomLogoFile"></td></tr>
         <tr id="saBgColourRow" hidden><td class="label">Background Colour</td><td class="key"></td><td class="value" id="saBgColour"></td></tr>
       </table>
@@ -960,17 +966,15 @@
 
   const customLogoOn = !!kiosk.customLogoEnabled;
   showRow('saCustomLogoRow', customLogoOn);
-  showRow('saCustomLogoPlacementRow', customLogoOn);
   const customLogoFileGiven = customLogoOn && !!(kiosk.customLogoFileName && kiosk.customLogoFileName.trim());
   showRow('saCustomLogoFileRow', customLogoFileGiven);
   if (customLogoOn) {
     const PLACEMENT_LABELS = { left: 'left panel, above the Home button', right: 'right panel, in place of the banners' };
     const customLogoPlacementText = PLACEMENT_LABELS[kiosk.customLogoPlacement] || PLACEMENT_LABELS.left;
     // Right column shows the placement choice itself (rather than a plain "On") since that's the
-    // one Custom Logo detail worth surfacing at a glance; the dedicated Placement row below still
-    // repeats it for the internal setting-key cross-reference layout's own consistency.
+    // one Custom Logo detail worth surfacing at a glance. The separate "Custom Logo — Placement" row
+    // that used to repeat this same text was removed as redundant.
     set('saCustomLogo', customLogoPlacementText);
-    set('saCustomLogoPlacement', customLogoPlacementText);
     if (customLogoFileGiven) set('saCustomLogoFile', kiosk.customLogoFileName.trim());
   }
 
