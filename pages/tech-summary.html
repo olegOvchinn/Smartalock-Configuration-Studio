@@ -407,6 +407,16 @@
   (group hidden, no key), Auto-Cancel off alone (group visible, key shown, Swipe Out unaffected),
   Swipe Out off alone (group visible, no Auto-Cancel key), and both off together (group visible, key
   shown).
+
+  MOST RECENT CHANGE: removed the Second Swipe Checks Out row (#tsSwipeOut) from the Check-in
+  Behaviour group entirely, per a follow-up request that also removed that field's ON/OFF switch from
+  the client-facing floorsense-out-of-box-policy.html page (see that page's own NOTE). Since the field
+  can no longer be surfaced or changed from either page, the group's hidden state and fsChanged now
+  track only Auto-Cancel When Checking In Elsewhere; swipeOutRequired no longer factors into either.
+  Verified via an inline HTMLParser tag-balance check, node --check on the extracted script block, and
+  a jsdom test (3 of 8 total assertions, shared with the out-of-box-policy verification) confirming the
+  row/element no longer exist, that swipeOutRequired alone no longer affects the group's visibility,
+  and that Auto-Cancel's own hide/key behaviour is unaffected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -618,7 +628,6 @@
     <div id="tsCheckinBehaviourGroup" hidden>
       <p class="tsec-sub">Check-in Behaviour</p>
       <table class="trow">
-        <tr><td class="label">Second Swipe Checks Out</td><td class="key"></td><td class="value" id="tsSwipeOut"></td></tr>
         <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="key" id="tsAutoCancelKey"></td><td class="value" id="tsAutoCancel"></td></tr>
       </table>
     </div>
@@ -1181,18 +1190,18 @@
   if (earlyMin !== 30 || lateMin !== 60) fsChanged = true;
 
   /* ---------------- Check-in Behaviour ---------------- */
+  // Second Swipe Checks Out was removed from this section per a follow-up request (its ON/OFF switch
+  // was also removed from the client-facing floorsense-out-of-box-policy.html page), so only
+  // Auto-Cancel is tracked here now.
   const outOfBoxPolicy = wizard.outOfBoxPolicy || {};
-  const swipeOutOff = outOfBoxPolicy.swipeOutRequired === false;
   const autoCancelOff = outOfBoxPolicy.autoCancelOnElsewhere === false;
-  // Whole group hidden unless at least one field was explicitly turned off from its enabled-by-default
+  // Whole group hidden unless Auto-Cancel was explicitly turned off from its enabled-by-default
   // (!== false fallback) shipped state — same convention as Kiosk Customisation's sub-section hiding.
-  showRow('tsCheckinBehaviourGroup', swipeOutOff || autoCancelOff);
-  set('tsSwipeOut', YES_NO(!swipeOutOff));
+  showRow('tsCheckinBehaviourGroup', autoCancelOff);
   set('tsAutoCancel', YES_NO(!autoCancelOff));
   if (autoCancelOff) set('tsAutoCancelKey', 'book_adhoc_autorelease = false');
-  // Both ship enabled by default (the !== false fallback) — changed only if either was explicitly
-  // turned off.
-  if (swipeOutOff || autoCancelOff) fsChanged = true;
+  // Ships enabled by default (the !== false fallback) — changed only if explicitly turned off.
+  if (autoCancelOff) fsChanged = true;
 
   /* ---------------- Access Methods ---------------- */
   const CHECKIN_METHOD_LABELS = { card: 'Cards', prebooking: 'App/Desktop', qr: 'QR Code', wallet: 'Wallet Pass' };

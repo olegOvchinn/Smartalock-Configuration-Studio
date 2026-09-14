@@ -762,7 +762,6 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Second swipe checks out</span>
-            <button type="button" class="policy-switch on" id="coreSwipeOutToggle" role="switch" aria-checked="true"></button>
           </div>
           <p class="summary-desc">When on, the first card swipe at a desk checks the user in and a second swipe checks them out. When off, a single swipe checks the user in and the desk is released some other way.</p>
         </div>
@@ -2484,6 +2483,17 @@ The section is fully wired up (hidden/shown driven by `items.length`, rows built
 `.summary-row` way) and ready for a Floorsense-specific trigger whenever one is requested. Verified
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
 test confirming `#outstandingGroup` exists, stays hidden, and `#outstandingList` stays empty on load.
+
+MOST RECENT CHANGE: removed the `#coreSwipeOutToggle` ON/OFF switch from the "Second swipe checks out"
+row in the Check-in Behaviour card - the row now shows only its label and descriptive text, with no
+interactive control and no value indicator. `coreBehaviourToggles` now wires up only
+`autoCancelOnElsewhere` (`#coreAutoCancelToggle`); the "Second swipe checks out" row can no longer be
+turned off from this page. This mirrors a companion change removing the same field's row entirely from
+the internal tech-summary.html page. The unrelated "additional policy" per-desk-group cards further
+down this page keep their own independent `swipeOutRequired` switch (`switchHtml('swipeOutRequired',
+...)`), which was not touched. Verified via an inline HTMLParser tag-balance check, `node --check` on
+the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no longer exists while
+`#coreAutoCancelToggle` still does, and that the row's label text is unaffected.
 -->
 
 
@@ -2657,11 +2667,13 @@ test confirming `#outstandingGroup` exists, stays hidden, and `#outstandingList`
 
   /* ---------------- core policy: Check-in Behaviour toggles ----------------
      Replaces the group's old Edit link (which just pointed at floorsense-checkin-methods-02.html
-     without any dedicated controls there) with two actual on/off switches, on by default, matching
-     CORE_POLICY_DEFAULTS' swipeOutRequired/autoCancelOnElsewhere fields used on the additional
-     policy cards below. Autosaves on toggle, independent of "Confirm & finish". */
+     without any dedicated controls there) with an actual on/off switch, on by default, matching
+     CORE_POLICY_DEFAULTS' autoCancelOnElsewhere field also used on the additional policy cards below.
+     Autosaves on toggle, independent of "Confirm & finish". Second swipe checks out no longer has a
+     switch here — its ON/OFF control was removed per a follow-up request, so that row is now purely
+     descriptive text with no user-facing toggle on this page (the additional-policy cards' own
+     swipeOutRequired switch is unrelated and untouched). */
   const coreBehaviourToggles = [
-    { field: 'swipeOutRequired', el: document.getElementById('coreSwipeOutToggle') },
     { field: 'autoCancelOnElsewhere', el: document.getElementById('coreAutoCancelToggle') }
   ];
   coreBehaviourToggles.forEach(({ field, el }) => {
