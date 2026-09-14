@@ -476,6 +476,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Sit-Stand Desks (FME) — Mode row now has a static setting key, `desk_user_control`.
 - The Tech Summary's Anti Desk Hogging — Window row now shows setting keys `book_window_adhoc, book_window_advance`, and the Max Bookings row now shows `book_window_advance_mins, book_window_adhoc_mins`.
 - The Tech Summary's Recurring Bookings row now has a static setting key, `book_repeat_user`.
+- The Tech Summary's Remote Booking Confirmation row now has a static setting key, `book_confirm_occupied`.
 
 ## Status
 
