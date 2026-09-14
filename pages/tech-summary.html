@@ -335,6 +335,13 @@
   check, node --check on the extracted script block, and a jsdom test (7 assertions) covering: default
   8 days (hidden), the field missing entirely and falling back to 8 (hidden), 0/off (shown), a custom
   30-day value (shown, correct duration text), and 7 days (shown).
+
+  MOST RECENT CHANGE: the Default Reservation Mode row's setting-key cell now shows
+  res_duration_type = 1 whenever endMode is fixed-end (fixed start & end clock times); the default
+  duration mode (start + fixed length) leaves the key cell blank. Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test (4 assertions)
+  covering: default duration mode (no key), the field missing entirely and falling back to duration
+  (no key), and fixed-end mode (key shown, value text unaffected).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -531,7 +538,7 @@
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
       <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
-      <tr><td class="label">Default Reservation Mode</td><td class="key"></td><td class="value" id="tsReservationMode"></td></tr>
+      <tr><td class="label">Default Reservation Mode</td><td class="key" id="tsReservationModeKey"></td><td class="value" id="tsReservationMode"></td></tr>
       <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
       <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
       <tr><td class="label">Default Reservation Duration</td><td class="key"></td><td class="value" id="tsDefaultDuration"></td></tr>
@@ -1054,6 +1061,7 @@
   const endMode = defaultReservationTimes.endMode || 'duration';
   const startMinutes = clockStringToMinutes(businessHours.arrivalTime || defaultReservationTimes.defaultStartTime, 8 * 60 + 30);
   set('tsReservationMode', endMode === 'fixed-end' ? 'fixed-end (fixed start & end clock times)' : 'duration (start + fixed length)');
+  if (endMode === 'fixed-end') set('tsReservationModeKey', 'res_duration_type = 1');
   set('tsDefaultStart', formatClockWithMinutes(startMinutes));
 
   if (endMode === 'fixed-end') {
