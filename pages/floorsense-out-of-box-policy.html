@@ -2503,6 +2503,22 @@ tag-balance check, node --check on the extracted script block, a sitewide broken
 href/src across every live HTML file checked against disk), and a jsdom test
 (test_remove_project_home_links.js) confirming no project-home.html href or submit-guides-continue
 element remains and the panel's other content is unaffected.
+
+MOST RECENT CHANGE: per a follow-up request, removed the `swipeOutRequired` `.policy-switch` on/off
+toggle from each additional-policy per-desk-group/user-group card's own Check-in Behaviour field
+group as well — that "Second swipe checks out" row (inside `policyCardHtml()`) now shows only its
+label with no interactive control, mirroring how the same field's row already reads on the main
+Check-in Behaviour summary card higher up this page (see the earlier MOST RECENT CHANGE note above
+removing `#coreSwipeOutToggle`). Only the `switchHtml('swipeOutRequired', p.swipeOutRequired)` call
+was removed from that row; the sibling `autoCancelOnElsewhere` switch in the same field group, the
+unrelated `sitStandEnabled`/`recurringEnabled`/`dndEnabled` switches further down each card, and the
+`swipeOutRequired` field itself in `CORE_POLICY_DEFAULTS`/`additionalPolicies` state (still read on
+load/duplicate, just no longer rendered as a control) were all left untouched — this is a narrow
+per-row markup change only, with no field removed from the data model. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and an extended jsdom
+test (test_remove_swipeout.js) confirming an additional-policy card still renders the "Second swipe
+checks out" label with no `.policy-switch[data-field="swipeOutRequired"]` inside its row, while the
+sibling `autoCancelOnElsewhere` and unrelated `sitStandEnabled` switches remain present and wired.
 -->
 
 
@@ -3235,7 +3251,6 @@ element remains and the panel's other content is unaffected.
           <p class="policy-field-group-title">Check-in Behaviour</p>
           <div class="policy-field-row">
             <span class="policy-field-label">Second swipe checks out</span>
-            ${switchHtml('swipeOutRequired', p.swipeOutRequired)}
           </div>
           <div class="policy-field-row">
             <span class="policy-field-label">Auto-cancel booking when checking in elsewhere</span>
