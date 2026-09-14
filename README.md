@@ -488,6 +488,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Refined that same page's 5 icons to match floorsen.se/handset's own icon style: removed the bordered `.desk-icon-badge` square each sat in, and redrew each icon with that reference site's own recipe — a thick navy (`#0E1030`) outline plus one accent shape solid-filled in the reference's own palette (coral/blue/green/sky/orange), sat directly on the card background.
 - Made those same 5 icons 30% larger (56px → 72.8px) with all stroke widths thinned 30% (×0.7), so they read more delicate/fine-lined at the bigger size.
 - Made those same 5 icons a further 20% larger (72.8px → 87.36px) with all stroke widths thinned a further 20% (×0.8).
+- Thinned those same 5 icons' stroke widths a further 20% (×0.8, same 87.36px size), and removed this page's per-card colour theming from the cards, headings, and tick boxes — `.checked` cards, tick fills, and card headings all now use the site's single shared blue/grey tokens instead of a distinct colour per card. The icons' own reference-site accent colours were left unchanged.
 
 ## Status
 

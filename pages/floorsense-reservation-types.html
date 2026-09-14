@@ -148,15 +148,14 @@
      are still a selectable form (unlike the reference site's plain hover-only info cards — kept
      per an explicit choice when asked), the `.checked` state keeps its own distinct look rather
      than reusing the hover site's plain black: it gets the same lift transform (so a selected card
-     reads as "raised" like a hovered one), a light per-card tint background (`--tc-wash`, already
-     used before this change), and a 2px outline in that same per-card `--tc` colour instead of
+     reads as "raised" like a hovered one), a light tint background, and a 2px outline instead of
      black — so hovering an unselected card and having a card selected are always visually
      distinguishable from one another. `:hover` only applies its plain black-outline lift to cards
-     that aren't already `.checked`, so a selected card's coloured outline is never replaced by the
-     hover state's black one. `--tc-glow`/`--tc-glow-strong` (set per `data-template` alongside
-     `--tc`/`--tc-wash`, just below) are no longer read by any rule now that hover/checked no longer
-     use a glow-tinted box-shadow — left in place, unused, rather than trimming each of the 5
-     `data-template` blocks for a change out of scope here. ---------- */
+     that aren't already `.checked`, so a selected card's outline is never replaced by the hover
+     state's black one. Per a later request to remove this page's own per-card colour theming (see
+     that change's own note further down), the checked wash/outline now read the single shared
+     `var(--accent-wash)`/`var(--accent)` tokens instead of a per-`data-template` `--tc`/`--tc-wash`
+     pair. ---------- */
   .desk-check-card {
     background: #F1F1F1;
     border: none; border-radius: 18px;
@@ -170,32 +169,26 @@
   }
   .desk-check-card.checked {
     transform: translate(-3px, -3px);
-    background: var(--tc-wash, rgba(232,241,252,0.7));
-    outline: 2px solid var(--tc, var(--accent));
+    background: var(--accent-wash);
+    outline: 2px solid var(--accent);
   }
-  /* ---------- per-card theme colour, matching smartalock-reservation-type.html's own `--tc`
-     custom-property pattern more fully: that page tints its whole card (heading text colour, chosen
-     background wash, hover/chosen shadow glow) per `data-type`, not just a small tick mark — a
-     follow-up screenshot confirmed the mismatch (this page's cards all still glowed/washed the same
-     flat blue on hover/select, while its heading text stayed a fixed grey, unlike the smartalock
-     page's coloured headings + coloured chosen-card wash). `--tc-wash`/`--tc-glow`/`--tc-glow-strong`
-     were added per `data-template` alongside `--tc` — each a light tint/rgba of that same card
-     colour (used by `.desk-tick`'s fill, `.desk-title`'s text, and the card's own checked/hover
-     outline; the icons themselves switched to the reference site's own accent palette instead in a
-     later change — see that change's own note further down) — and
-     `.desk-check-card:hover`/`.desk-check-card.checked` below now read those instead of the
-     previous fixed blue values, with the original blue kept only as each property's fallback. ---------- */
-  .desk-check-card[data-template="fixed"] { --tc: #4A8DF0; --tc-wash: rgba(237,244,254,0.7); --tc-glow: rgba(74,141,240,0.22); --tc-glow-strong: rgba(74,141,240,0.3); }
-  .desk-check-card[data-template="adhoc"] { --tc: #EC6BA5; --tc-wash: rgba(253,240,246,0.7); --tc-glow: rgba(236,107,165,0.22); --tc-glow-strong: rgba(236,107,165,0.3); }
-  .desk-check-card[data-template="team-leader"] { --tc: #9B6BEC; --tc-wash: rgba(245,240,253,0.7); --tc-glow: rgba(155,107,236,0.22); --tc-glow-strong: rgba(155,107,236,0.3); }
-  .desk-check-card[data-template="booked-on-behalf"] { --tc: #2FBF9F; --tc-wash: rgba(234,249,245,0.7); --tc-glow: rgba(47,191,159,0.22); --tc-glow-strong: rgba(47,191,159,0.3); }
-  .desk-check-card[data-template="ai-agent"] { --tc: #F2A154; --tc-wash: rgba(254,246,238,0.7); --tc-glow: rgba(242,161,84,0.22); --tc-glow-strong: rgba(242,161,84,0.3); }
+  /* ---------- per-card theme colour REMOVED: this page previously tinted each card's heading text,
+     tick fill, and checked/hover wash+outline with its own colour per `data-template` (via a `--tc`/
+     `--tc-wash`/`--tc-glow`/`--tc-glow-strong` custom-property set, matching
+     smartalock-reservation-type.html's own per-type theming). Per a later request to remove that
+     per-card colouring from the cards, headings, and tick boxes, all 5 `data-template` `--tc*`
+     declarations were deleted outright, and `.desk-check-card.checked`, `.desk-tick`'s checked fill,
+     and `.desk-title` below were all switched to this page's single shared `var(--accent)`/
+     `var(--accent-wash)`/`var(--header-grey)` tokens (the same ones used elsewhere across this
+     site), so every card now reads identically regardless of type. The icons' own accent colours
+     (coral/blue/green/sky/orange, sampled from floorsen.se/handset — see that change's own note)
+     were left untouched, since this request was scoped to cards/headers/tickboxes only. ---------- */
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
-  .desk-check-card.checked .desk-tick { border-color: var(--tc, var(--accent)); background: var(--tc, var(--accent)); }
+  .desk-check-card.checked .desk-tick { border-color: var(--accent); background: var(--accent); }
   .desk-tick::after {
     content: ''; width: 6px; height: 10px; margin-top: -1px;
     border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
@@ -205,7 +198,7 @@
   .desk-row { display: flex; align-items: flex-start; gap: 20px; cursor: pointer; }
   .desk-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
   .desk-card-body { min-width: 0; flex: 1; }
-  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--tc, var(--header-grey)); margin: 0 0 8px; }
+  .desk-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .desk-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
   /* ---------- group-tag: small pill for a card-level status callout (e.g. "Coming Soon"), same
      treatment already used sitewide (floorsense-desk-user-groups.html's "Recommended",
@@ -332,7 +325,7 @@
           <label class="desk-row">
             <input type="checkbox" value="fixed">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9" r="3" fill="#E44C42" stroke="#0E1030" stroke-width="0.84"/></svg>
+            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9" r="3" fill="#E44C42" stroke="#0E1030" stroke-width="0.67"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Dedicated Workstations</h3>
               <p class="desk-desc">Give someone their own permanent desk. Common for senior staff who need the same seat every day.</p>
@@ -347,7 +340,7 @@
           <label class="desk-row">
             <input type="checkbox" value="adhoc">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.3h13a1 1 0 0 1 1 1v0a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v0a1 1 0 0 1 1-1Z" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8.3v6.2M14.5 8.3v5.2a1 1 0 0 0 1 1H17" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17" r="4.2" fill="#14B2E3" stroke="#0E1030" stroke-width="0.84"/><path d="M15.2 17.1l1.2 1.2l2.3-2.5" stroke="#0E1030" stroke-width="0.78" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M3.5 6.3h13a1 1 0 0 1 1 1v0a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v0a1 1 0 0 1 1-1Z" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8.3v6.2M14.5 8.3v5.2a1 1 0 0 0 1 1H17" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="17" r="4.2" fill="#14B2E3" stroke="#0E1030" stroke-width="0.67"/><path d="M15.2 17.1l1.2 1.2l2.3-2.5" stroke="#0E1030" stroke-width="0.62" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Reserved by User as Needed</h3>
               <p class="desk-desc">Users reserve any available desk themselves, whenever they need one. Ideal for hybrid and flexible workplaces.</p>
@@ -359,7 +352,7 @@
           <label class="desk-row">
             <input type="checkbox" value="team-leader">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.5" fill="#00C18D" stroke="#0E1030" stroke-width="0.9"/><path d="M12 7.5v2.9M12 10.4H5.5M12 10.4h6.5M5.5 10.4v3M18.5 10.4v3M12 10.4v3" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.9"/><circle cx="12" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.9"/><circle cx="18.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.9"/></svg>
+            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.5" fill="#00C18D" stroke="#0E1030" stroke-width="0.72"/><path d="M12 7.5v2.9M12 10.4H5.5M12 10.4h6.5M5.5 10.4v3M18.5 10.4v3M12 10.4v3" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/><circle cx="12" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/><circle cx="18.5" cy="16.2" r="2.2" stroke="#0E1030" stroke-width="0.72"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Team Leader Allocated</h3>
               <p class="desk-desc">Lets a team leader book several desks in one go without naming who each is for — desks simply show as reserved for the team. A team leader can optionally also book on behalf of their team members, but that's time-consuming to do desk by desk, so isn't meant for frequent use. Either way, desks must be checked in or claimed by the user, or the booking expires.</p>
@@ -371,7 +364,7 @@
           <label class="desk-row">
             <input type="checkbox" value="booked-on-behalf">
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="13" height="15" rx="2.2" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10.6" r="2.3" stroke="#0E1030" stroke-width="0.84"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2" stroke="#0E1030" stroke-width="0.84" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="8.2" r="3.6" fill="#77D2EE" stroke="#0E1030" stroke-width="0.84"/><path d="M18 6.3v3.8M16.1 8.2h3.8" stroke="#0E1030" stroke-width="0.73" stroke-linecap="round"/></svg>
+            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="13" height="15" rx="2.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10.6" r="2.3" stroke="#0E1030" stroke-width="0.67"/><path d="M5.3 17c0.6-2.1 2.2-3.2 3.7-3.2s3.1 1.1 3.7 3.2" stroke="#0E1030" stroke-width="0.67" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="8.2" r="3.6" fill="#77D2EE" stroke="#0E1030" stroke-width="0.67"/><path d="M18 6.3v3.8M16.1 8.2h3.8" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">Booked on Behalf</h3>
               <p class="desk-desc">Lets an authorised person — an EA or office admin — book a desk on behalf of someone else, limited to the names an admin has allocated them to book for. The desk still has to be checked in or claimed by that person, or the booking expires.</p>
@@ -383,7 +376,7 @@
           <label class="desk-row">
             <input type="checkbox" value="ai-agent" disabled>
             <span class="desk-tick" aria-hidden="true"></span>
-            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 3v2.1" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round"/><circle cx="12" cy="2.3" r="1" fill="#0E1030" stroke="none"/><rect x="4.3" y="5.4" width="15.4" height="12.4" rx="3.2" stroke="#0E1030" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.56"/><circle cx="15" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.56"/><path d="M9 15.3c0.9 0.8 4.1 0.8 5 0" stroke="#0E1030" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="desk-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 3v2.1" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round"/><circle cx="12" cy="2.3" r="1" fill="#0E1030" stroke="none"/><rect x="4.3" y="5.4" width="15.4" height="12.4" rx="3.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.45"/><circle cx="15" cy="11.6" r="1.6" fill="#F18600" stroke="#0E1030" stroke-width="0.45"/><path d="M9 15.3c0.9 0.8 4.1 0.8 5 0" stroke="#0E1030" stroke-width="0.72" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="desk-card-body">
               <h3 class="desk-title">AI Agent Auto-Prebooked <span class="group-tag">Coming Soon</span></h3>
               <p class="desk-desc">An AI agent automatically prebooks a desk for the user ahead of time, based on your organisation's policy rules — no manual booking needed.</p>
@@ -992,6 +985,31 @@ no clipping/overlap with the card's heading or description text, and an extended
 test_reservation_types_icon_refinement.js (now 27 assertions) confirming `.desk-icon-glyph`'s CSS
 width is 87.36px and that none of the old stroke-width values from either round (1.3-1.7 or
 0.7-1.19) remain in any of the 5 live icon `<svg>`s.
+
+MOST RECENT CHANGE: per a request for "20% tiner, and remove own colouring from cards, headers and
+tickboxes" -- two changes landed together. First, every stroke-width across all 5 inline icon SVGs
+was thinned a further 20% (x0.8) at the same 87.36px size (no further size change this round): main
+shapes from 0.95 to 0.76, accent-badge outlines from 0.84/0.9 to 0.67/0.72, and the smallest
+secondary strokes (0.78/0.73, and the AI agent's 0.56px eye outlines) down to 0.62/0.58/0.45.
+Second, this page's per-card `--tc` colour theming (introduced to match
+smartalock-reservation-type.html's own per-type styling) was removed entirely from the cards,
+headings, and tick boxes: all 5 `.desk-check-card[data-template="..."] { --tc: ...; }` declarations
+were deleted, `.desk-check-card.checked` now reads the single shared `var(--accent-wash)`/
+`var(--accent)` tokens instead of a per-card `--tc-wash`/`--tc` pair, `.desk-check-card.checked
+.desk-tick` now fills with plain `var(--accent)`, and `.desk-title`'s heading colour reverted from
+`var(--tc, var(--header-grey))` to a flat `var(--header-grey)` -- so every card, heading, and tick
+now looks identical regardless of type, while the icons' own reference-site accent colours
+(coral/blue/green/sky/orange, from the earlier icon-refinement change) were left untouched, since
+this request was scoped to cards/headers/tickboxes only, not the icons. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block (untouched -- markup/CSS
+only), a weasyprint render (both the resting state and a forced `.checked` state) confirming every
+heading now renders the same neutral grey, the selected card shows the single shared blue wash/
+outline regardless of which card is checked, and all 5 icons read visibly thinner again with no
+clipping, and updated/extended jsdom tests: test_reservation_types_card_restyle.js (now 21
+assertions) confirming no `--tc` custom property remains anywhere in the live stylesheet and that
+the checked card/tick/heading rules all read the shared tokens instead; and
+test_reservation_types_icon_refinement.js (now 33 assertions) confirming none of the stroke-width
+values from any of the three earlier rounds remain in any of the 5 live icon `<svg>`s.
 -->
 
 <script>
