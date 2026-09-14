@@ -349,6 +349,13 @@
   inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (5
   assertions) covering: default duration mode (row hidden), the field missing entirely and falling
   back to duration (row hidden), and fixed-end mode (row visible, key and value both correct).
+
+  MOST RECENT CHANGE: the Default Reservation Mode row's value cell now reads just "fixed-end" instead
+  of "fixed-end (fixed start & end clock times)" - the row's own key cell (res_duration_type = 1) and
+  the Default Start/End Time rows below it already convey the detail, so the parenthetical was
+  redundant. Verified via an inline HTMLParser tag-balance check, node --check on the extracted script
+  block, and a jsdom test (5 assertions) confirming the value cell reads exactly "fixed-end" while the
+  row's visibility and key cell are unaffected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -1072,7 +1079,7 @@
   const fixedEndMode = endMode === 'fixed-end';
   showRow('tsReservationModeRow', fixedEndMode);
   if (fixedEndMode) {
-    set('tsReservationMode', 'fixed-end (fixed start & end clock times)');
+    set('tsReservationMode', 'fixed-end');
     set('tsReservationModeKey', 'res_duration_type = 1');
   }
   set('tsDefaultStart', formatClockWithMinutes(startMinutes));
