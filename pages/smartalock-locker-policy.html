@@ -141,25 +141,31 @@
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; width: 80.5%; height: 80.5%; object-fit: contain; }
 
-  /* ---------- glass card: per the site-wide propagation of the treatment finished on
-     floorsense-reservation-types.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
-     for a translucent white background + backdrop blur + soft fuzzy box-shadow standing in for the
-     border. Its existing `.visual-active` state (previously `border-color: var(--accent);
-     box-shadow: 0 0 0 3px var(--accent-wash);`, toggled on focus/click to sync the side visual) was
-     converted to read through the shadow/background tint instead, same as `.checked`/`.chosen` on
-     other pages — see the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- text-block-lot card: per a request to bring this page's cards in line with the
+     flat text-block-lot recipe used sitewide, .qcard dropped the glass-blur treatment
+     (backdrop-filter, translucent background, fuzzy box-shadow, accent-tinted `.visual-active`) in
+     favour of a flat `#F1F1F1` resting background with a hover/active "lift" (translate + white
+     background + black outline), matching `.desk-check-card`/`.tcard` elsewhere. Unlike those
+     pages' `.checked`/`.chosen`, `.visual-active` here isn't a persisted "selection" — it just marks
+     whichever of these 3 always-visible form cards is currently driving the side preview image (via
+     `showPolicyVisual()`, toggled on focus/click) — but per an explicit choice when asked, it gets
+     the exact same visual treatment as a `.checked` card elsewhere: the same lift and white
+     background, with a heavier `2px solid #000` outline vs. hover's `1px`. ---------- */
   .qcard {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
     padding: 22px 24px; margin-bottom: 18px; max-width: 560px;
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+    transition: transform .3s, background-color .3s, outline .3s;
+  }
+  .qcard:hover:not(.visual-active) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
   }
   .qcard.visual-active {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 2px solid #000;
   }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
@@ -464,6 +470,27 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request to update this page's card styling, `.qcard` moved from the
+translucent-glass treatment (`rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px)
+saturate(160%)`, soft box-shadow, accent-tinted `.visual-active`) to the flat "text-block-lot"
+recipe used sitewide: a flat `#F1F1F1` resting background, `border-radius: 18px` (was
+`var(--radius-lg)`, 20px), and a hover lift (`transform: translate(-3px, -3px)`, white background,
+`1px solid #000` outline) via `.qcard:hover:not(.visual-active)`; `.visual-active` gets the same
+lift and white background with a heavier `2px solid #000` outline (was `rgba(232,241,252,0.7)` +
+a blue-tinted box-shadow). Per an explicit choice when asked — since, unlike `.checked`/`.chosen`
+elsewhere, `.visual-active` here isn't a persisted "selection" but just marks whichever of these 3
+always-visible form cards is currently driving the side preview image — it was given the exact same
+visual treatment as a `.checked` card anyway, for sitewide consistency. The 3 `.qcard-icon-badge`
+icon badges (blue/green/purple, sampled from each icon's own PNG pixels) were left completely
+untouched, since this change is scoped to the card container only. No JS changes needed — the
+existing `showPolicyVisual()`/`previewPolicyVisual()` hover-preview logic already toggles
+`.visual-active`, which the new CSS now reads. Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block (untouched — CSS-only change), and a new jsdom test
+(test_locker_policy_card_restyle.js, 17 assertions, run against the file with HTML comments stripped
+first) confirming the flat background/border-radius/hover-lift/active-outline CSS is in place, the
+icon badges are untouched, and the existing hover-preview / click-to-activate / restore-on-leave
+behaviour for all 3 cards still works correctly.
 -->
 
 <script>
