@@ -505,6 +505,12 @@
   Options rows). Verified via an inline HTMLParser tag-balance check, node --check on the extracted
   script block, and a jsdom test confirming the key renders at both an off and an on Remote Booking
   Confirmation state.
+
+  MOST RECENT CHANGE: added a static setting key, desk_button_privacy, to the Privacy (Do Not
+  Disturb) row's key cell (always shown, same convention as the other always-visible Additional
+  Options rows). Verified via an inline HTMLParser tag-balance check, node --check on the extracted
+  script block, and a jsdom test confirming the key renders at both its enabled-by-default state and
+  when turned off.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -740,7 +746,7 @@
       <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key">book_window_advance_mins, book_window_adhoc_mins</td><td class="value" id="tsAdhMaxBookings"></td></tr>
       <tr><td class="label">Recurring Bookings</td><td class="key">book_repeat_user</td><td class="value" id="tsRecurring"></td></tr>
       <tr><td class="label">Remote Booking Confirmation</td><td class="key">book_confirm_occupied</td><td class="value" id="tsRemoteConfirm"></td></tr>
-      <tr><td class="label">Privacy (Do Not Disturb)</td><td class="key"></td><td class="value" id="tsDnd"></td></tr>
+      <tr><td class="label">Privacy (Do Not Disturb)</td><td class="key">desk_button_privacy</td><td class="value" id="tsDnd"></td></tr>
     </table>
 
     <p class="tsec-sub">Training Requested</p>
