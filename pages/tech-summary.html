@@ -279,6 +279,19 @@
   others still hidden), banner text customized while the banner stays on, custom logo enabled with
   placement text, a custom background colour, and confirming the parent Smartalock section's
   hidden/visible state is correctly driven by whether a Kiosk field changed.
+
+  MOST RECENT CHANGE: added two new Outstanding triggers, both from Kiosk Customisation. Custom Logo
+  (customLogoEnabled) has no way to actually capture an image file - the file input was removed in an
+  earlier change - so whenever that toggle is on, an Outstanding item asks for the logo image
+  regardless of whether a file name was typed into the now-inert text field. Background Colour
+  (customBgEnabled) can be switched on without ever committing a hex value via its Set button, leaving
+  kiosk.bgColour empty - whenever that is the case, a second Outstanding item asks for the colour; once
+  a value is entered the item disappears. Both reuse the same kiosk/customLogoOn variables already
+  computed by the Kiosk Customisation block above rather than re-deriving them. Verified via an inline
+  HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (19
+  assertions across this page and smartalock-configuration-summary-08.html) covering: neither trigger
+  active, logo trigger alone (with and without a typed file name), background-colour trigger alone
+  (empty vs filled-in vs toggle-off), and both triggers active together.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -1139,18 +1152,30 @@
 
   /* ---------------- Outstanding (items the client still has to provide) ---------------- */
   // Each entry names the branch the item belongs to plus a plain description of what's needed.
-  // Only two triggers exist so far, both from Initial Locker Access Methods:
+  // Triggers, all Smartalock so far:
   // - Building access cards defaults to "we'll supply a spreadsheet of usernames + swipe card CSNs
   //   for Smartalock to import" — whenever that default (or an explicit 'import') is in effect,
   //   the client still owes us that spreadsheet.
   // - PIN assignment has a "we'll provide a list of PINs to assign" option — whenever that's the
   //   choice, the client still owes us that list.
+  // - Kiosk Customisation's Custom Logo toggle has no way to actually capture an image file (the
+  //   file input was removed — see the Kiosk Customisation NOTE above), so whenever it's enabled the
+  //   client still owes us the logo image, regardless of whether a file name was typed in.
+  // - Kiosk Customisation's Background Colour toggle (customBgEnabled) can be turned on without a
+  //   hex value ever being entered/committed — whenever that's the case, the client still owes us
+  //   the colour.
   const outstandingItems = [];
   if (cardSelected && accessMethods.cardAssignMethod !== 'self') {
     outstandingItems.push({ branch: 'Smartalock', item: 'Spreadsheet of usernames and their swipe card Chip Serial Numbers (CSNs), for Smartalock to import.' });
   }
   if (accessMethods.pinAssignMethod === 'list') {
     outstandingItems.push({ branch: 'Smartalock', item: 'List of PINs to assign to users.' });
+  }
+  if (customLogoOn) {
+    outstandingItems.push({ branch: 'Smartalock', item: 'Logo image file for the kiosk Custom Logo option.' });
+  }
+  if (kiosk.customBgEnabled && !(kiosk.bgColour && kiosk.bgColour.trim())) {
+    outstandingItems.push({ branch: 'Smartalock', item: 'Custom background colour (hex code) for the kiosk screen.' });
   }
   const outstandingSection = document.getElementById('outstandingSection');
   const outstandingTable = document.getElementById('outstandingTable');

@@ -450,6 +450,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Release Behaviour row now shows `res_release_on_expire = true` whenever "Release when reservation expires" is selected (no key yet for the default "Allow one final locker access after expiry").
 - The Tech Summary's Locker Types rows now get positional setting keys — `lock_type_a` for the first selected type, `lock_type_b` for the second, and so on up to 10 types (`lock_type_j`) — assigned by row position rather than by which type it is.
 - The Tech Summary's Kiosk Customisation sub-section no longer shows default option text: every row (Main Information Banner, Open Existing, Get A Locker, Scan QR Code, Place Card Here, Information Banner, Custom Logo, Background Colour) is hidden unless its value differs from its shipped default, and the whole sub-section is hidden entirely when nothing in it has changed.
+- Added two new Outstanding triggers (on both tech-summary.html and smartalock-configuration-summary-08.html): a reminder to supply a logo image file whenever Kiosk Customisation's Custom Logo toggle is on (the app has no way to actually capture the file), and a reminder to supply a custom background colour hex code whenever the Background Colour toggle is on but no value was ever entered.
 
 ## Status
 

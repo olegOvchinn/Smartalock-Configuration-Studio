@@ -732,6 +732,18 @@ tech-summary.html), "Open When Idle" is now "Release When Idle" — a label-only
 existing `row()` call, no change to the underlying idleValue logic or description text. Verified via
 an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
 test confirming the new label text renders and the old one no longer appears.
+
+MOST RECENT CHANGE: added two new Outstanding triggers, both from Kiosk Customisation, mirroring the
+same change made to tech-summary.html. Custom Logo (customLogoEnabled) has no way to actually capture
+an image file - the file input was removed in an earlier change - so whenever that toggle is on, an
+Outstanding item asks for the logo image regardless of whether a file name was typed into the now-inert
+text field. Background Colour (customBgEnabled) can be switched on without ever committing a hex value
+via its Set button, leaving k.bgColour empty - whenever that is the case, a second Outstanding item asks
+for the colour; once a value is entered the item disappears. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a jsdom test (shared with
+tech-summary.html, 19 assertions total) covering neither trigger active, logo trigger alone (with and
+without a typed file name), background-colour trigger alone (empty vs filled-in vs toggle-off), and
+both triggers active together.
 -->
 
 <script>
@@ -1071,21 +1083,31 @@ test confirming the new label text renders and the old one no longer appears.
   })();
 
   /* ---------------- Outstanding ----------------
-     Items the client still has to provide before this configuration can go live. Only two triggers
-     exist so far, both from Initial Locker Access Methods: Building access cards defaults to "we'll
-     supply a spreadsheet of usernames + swipe card CSNs for Smartalock to import" (the client still
-     owes us that spreadsheet unless they chose self-allocation instead), and PIN assignment has a
-     "we'll provide a list of PINs to assign" option (the client still owes us that list whenever
-     it's chosen). */
+     Items the client still has to provide before this configuration can go live. Triggers so far:
+     Building access cards defaults to "we'll supply a spreadsheet of usernames + swipe card CSNs for
+     Smartalock to import" (the client still owes us that spreadsheet unless they chose
+     self-allocation instead); PIN assignment has a "we'll provide a list of PINs to assign" option
+     (the client still owes us that list whenever it's chosen); Kiosk Customisation's Custom Logo
+     toggle can never actually capture an image file (the file input was removed), so whenever it's
+     enabled the client still owes us the logo image; and Kiosk Customisation's Background Colour
+     toggle (customBgEnabled) can be on with no hex value ever entered, in which case the client
+     still owes us the colour. */
   (function () {
     const am2 = wizard.accessMethods || {};
     const selectedAccess2 = Array.isArray(am2.selected) ? am2.selected : [];
+    const k2 = wizard.kioskCustomisation || {};
     const items = [];
     if (selectedAccess2.includes('card') && am2.cardAssignMethod !== 'self') {
       items.push('Spreadsheet of usernames and their swipe card Chip Serial Numbers (CSNs), for Smartalock to import.');
     }
     if (am2.pinAssignMethod === 'list') {
       items.push('List of PINs to assign to users.');
+    }
+    if (k2.customLogoEnabled) {
+      items.push('Logo image file for the kiosk Custom Logo option.');
+    }
+    if (k2.customBgEnabled && !(k2.bgColour && k2.bgColour.trim())) {
+      items.push('Custom background colour (hex code) for the kiosk screen.');
     }
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
