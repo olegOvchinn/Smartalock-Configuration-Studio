@@ -463,6 +463,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added setting keys and hide-at-default behaviour to the Tech Summary's remaining Prebooking & Duration rows: Default Start Time (`book_day_start`, hidden at the 9:00 AM platform default), Default End Time (`book_day_end`, hidden at the 6:00 PM platform default in fixed-end mode only), and Default Reservation Duration (`book_duration_default`, hidden at the 9-hour default in either mode).
 - The Tech Summary's Check-in Early Threshold row now has setting key `book_early_activate` and is hidden whenever its value is at the shipped 30-min default.
 - The Tech Summary's Check-in Late Threshold row now has a static setting key, `booking_confirm_mins` (always shown, no hiding).
+- The Tech Summary's Auto-Cancel When Checking In Elsewhere row now shows `book_adhoc_autorelease = false` whenever it's turned off, and the whole Check-in Behaviour sub-section is hidden unless at least one of its two fields differs from its enabled-by-default shipped state.
 
 ## Status
 

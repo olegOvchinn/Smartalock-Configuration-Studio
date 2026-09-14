@@ -396,6 +396,17 @@
   HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (4
   assertions) confirming the key renders at both the 60-min default and a custom 90-min value, with the
   value text unaffected.
+
+  MOST RECENT CHANGE: the Auto-Cancel When Checking In Elsewhere row now shows setting key
+  book_adhoc_autorelease = false whenever it's turned off (the default is enabled, showing no key).
+  The whole Check-in Behaviour sub-section (Second Swipe Checks Out + Auto-Cancel When Checking In
+  Elsewhere) is now wrapped in #tsCheckinBehaviourGroup and hidden entirely unless at least one of the
+  two fields differs from its enabled-by-default shipped state - same pattern already used for Kiosk
+  Customisation's sub-section hiding. Verified via an inline HTMLParser tag-balance check, node --check
+  on the extracted script block, and a jsdom test (11 assertions) covering: both fields at default
+  (group hidden, no key), Auto-Cancel off alone (group visible, key shown, Swipe Out unaffected),
+  Swipe Out off alone (group visible, no Auto-Cancel key), and both off together (group visible, key
+  shown).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -604,11 +615,13 @@
       <tr><td class="label">Check-in Late Threshold</td><td class="key">booking_confirm_mins</td><td class="value" id="tsCheckinLate"></td></tr>
     </table>
 
-    <p class="tsec-sub">Check-in Behaviour</p>
-    <table class="trow">
-      <tr><td class="label">Second Swipe Checks Out</td><td class="key"></td><td class="value" id="tsSwipeOut"></td></tr>
-      <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="key"></td><td class="value" id="tsAutoCancel"></td></tr>
-    </table>
+    <div id="tsCheckinBehaviourGroup" hidden>
+      <p class="tsec-sub">Check-in Behaviour</p>
+      <table class="trow">
+        <tr><td class="label">Second Swipe Checks Out</td><td class="key"></td><td class="value" id="tsSwipeOut"></td></tr>
+        <tr><td class="label">Auto-Cancel When Checking In Elsewhere</td><td class="key" id="tsAutoCancelKey"></td><td class="value" id="tsAutoCancel"></td></tr>
+      </table>
+    </div>
 
     <p class="tsec-sub">Access Methods</p>
     <table class="trow">
@@ -1169,11 +1182,17 @@
 
   /* ---------------- Check-in Behaviour ---------------- */
   const outOfBoxPolicy = wizard.outOfBoxPolicy || {};
-  set('tsSwipeOut', YES_NO(outOfBoxPolicy.swipeOutRequired !== false));
-  set('tsAutoCancel', YES_NO(outOfBoxPolicy.autoCancelOnElsewhere !== false));
+  const swipeOutOff = outOfBoxPolicy.swipeOutRequired === false;
+  const autoCancelOff = outOfBoxPolicy.autoCancelOnElsewhere === false;
+  // Whole group hidden unless at least one field was explicitly turned off from its enabled-by-default
+  // (!== false fallback) shipped state — same convention as Kiosk Customisation's sub-section hiding.
+  showRow('tsCheckinBehaviourGroup', swipeOutOff || autoCancelOff);
+  set('tsSwipeOut', YES_NO(!swipeOutOff));
+  set('tsAutoCancel', YES_NO(!autoCancelOff));
+  if (autoCancelOff) set('tsAutoCancelKey', 'book_adhoc_autorelease = false');
   // Both ship enabled by default (the !== false fallback) — changed only if either was explicitly
   // turned off.
-  if (outOfBoxPolicy.swipeOutRequired === false || outOfBoxPolicy.autoCancelOnElsewhere === false) fsChanged = true;
+  if (swipeOutOff || autoCancelOff) fsChanged = true;
 
   /* ---------------- Access Methods ---------------- */
   const CHECKIN_METHOD_LABELS = { card: 'Cards', prebooking: 'App/Desktop', qr: 'QR Code', wallet: 'Wallet Pass' };
