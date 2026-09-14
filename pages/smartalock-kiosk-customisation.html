@@ -255,11 +255,21 @@
   /* ---------- kiosk options list ---------- */
   .kiosk-toggle-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
   @media (max-width: 640px) { .kiosk-toggle-list { grid-template-columns: 1fr; } }
+  /* ---------- .kiosk-toggle-row: converted to the sitewide flat text-block-lot card recipe (flat
+     #F1F1F1 resting fill, no border, 18px radius, translate(-3px,-3px) lift on hover/"on" with a
+     black outline) in place of the old accent-blue bordered/washed "on" state — see the MOST RECENT
+     CHANGE note below. ---------- */
   .kiosk-toggle-row {
     display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
-    border: 1.5px solid var(--line); border-radius: var(--radius-md); padding: 14px 16px; transition: border-color .15s, background .15s;
+    background: #F1F1F1; border: none; border-radius: 18px; padding: 14px 16px;
+    transition: transform .3s, background-color .3s, outline .3s;
   }
-  .kiosk-toggle-row.on { border-color: var(--accent); background: var(--accent-wash); }
+  .kiosk-toggle-row:hover:not(.on) {
+    transform: translate(-3px, -3px); background: #fff; outline: 1px solid #000;
+  }
+  .kiosk-toggle-row.on {
+    transform: translate(-3px, -3px); background: #fff; outline: 2px solid #000;
+  }
   .kiosk-toggle-row .ttl { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 3px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   /* ---------- kiosk-icon-badge: wraps each toggle row's raster icon in the site-wide white-canvas,
      accent-bordered badge box. Previously cycled an arbitrary blue/pink/purple/teal/amber palette
@@ -705,6 +715,21 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a follow-up request to apply card styling to this page, converted
+`.kiosk-toggle-row` (the 9 toggle option rows) to the sitewide flat text-block-lot recipe: flat
+`#F1F1F1` resting background, `border: none; border-radius: 18px;`, hover (not `.on`) lifts
+`translate(-3px,-3px)` to white with a 1px black outline, and the `.on` state lifts the same way
+with a 2px black outline — replacing the old `border: 1.5px solid var(--line)` resting state and the
+`.on` state's accent-blue border/`--accent-wash` background. This is the only repeating option
+element on the page and was previously judged out of scope (a smaller var(--radius-md) sub-panel,
+not a "card"); this follow-up request confirmed it should receive the treatment after all.
+`.kiosk-toggle-subfields` (the revealed field sub-panels) and `.kiosk-icon-badge` (the icon badges
+inside each row) were left untouched, as was `.tablet`/`.preview-screen` (device mockup / Lottie
+stage, not option cards). Verified via an inline HTMLParser tag-balance check, node --check on the
+extracted script block, and a jsdom test (test_kiosk_customisation_card_restyle.js, 14 assertions)
+confirming the new CSS, the untouched sub-panel/icon-badge/mockup rules, and that toggling a row's
+switch still flips `.on` and the live kiosk mockup correctly.
 -->
 
 <script>
