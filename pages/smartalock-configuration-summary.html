@@ -355,6 +355,16 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: project-home.html was removed from the site (along with dashboard.html,
+register.html, and reports.html), so the "Saved & emailed" confirmation panel's "Continue to Project
+Home ->" link (`.submit-guides-continue`, href="project-home.html") was removed too - the panel now
+ends with the email-note paragraph. The `.submit-guides-continue` CSS rule was left in place (unused,
+harmless) rather than hunted down alongside an unrelated change. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, a sitewide broken-link scan (every
+href/src across every live HTML file checked against disk), and a jsdom test
+(test_remove_project_home_links.js) confirming no project-home.html href or submit-guides-continue
+element remains and the panel's other content is unaffected.
 -->
       <div class="summary-group">
         <div class="summary-group-head">
@@ -486,7 +496,6 @@ back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filen
         <div class="submit-guides-body">
           <h3>Saved &amp; emailed</h3>
           <p id="submitGuidesEmailNote">Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to you.</p>
-          <a class="submit-guides-continue" href="project-home.html">Continue to Project Home &rarr;</a>
         </div>
       </div>
 
