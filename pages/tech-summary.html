@@ -326,6 +326,15 @@
   whether the field is off (same-day only), at its 8-day default, or a custom value. Verified via an
   inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (4
   assertions) confirming the key renders for the default, an off/zero, and a custom advance-days value.
+
+  MOST RECENT CHANGE: the Allow Booking In Advance row is now hidden unless prebookingAdvanceDays
+  differs from its shipped 8-day default (0/off and any other custom value both show it) - same
+  "only report deviations" convention used throughout this page. This reuses the exact comparison
+  already folded into fsChanged a few lines below, so the row's own visibility and the parent
+  Floorsense section's hidden state can never disagree. Verified via an inline HTMLParser tag-balance
+  check, node --check on the extracted script block, and a jsdom test (7 assertions) covering: default
+  8 days (hidden), the field missing entirely and falling back to 8 (hidden), 0/off (shown), a custom
+  30-day value (shown, correct duration text), and 7 days (shown).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -521,7 +530,7 @@
 
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
-      <tr><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
+      <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
       <tr><td class="label">Default Reservation Mode</td><td class="key"></td><td class="value" id="tsReservationMode"></td></tr>
       <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
       <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
@@ -1034,7 +1043,11 @@
   /* ---------------- Prebooking & Duration ---------------- */
   const prebookingAdvance = wizard.prebookingAdvance || {};
   const advanceDays = Number.isFinite(prebookingAdvance.prebookingAdvanceDays) ? prebookingAdvance.prebookingAdvanceDays : 8;
-  set('tsPrebookingAdvance', advanceDays <= 0 ? 'Off (same-day only), 0 min' : formatDuration(advanceDays * 1440));
+  // Row only shown when it differs from the shipped 8-day default — same "only report deviations"
+  // convention used elsewhere on this page.
+  const advanceDaysChanged = advanceDays !== 8;
+  showRow('tsPrebookingAdvanceRow', advanceDaysChanged);
+  if (advanceDaysChanged) set('tsPrebookingAdvance', advanceDays <= 0 ? 'Off (same-day only), 0 min' : formatDuration(advanceDays * 1440));
 
   const defaultReservationTimes = wizard.defaultReservationTimes || {};
   const businessHours = wizard.businessHours || {};
