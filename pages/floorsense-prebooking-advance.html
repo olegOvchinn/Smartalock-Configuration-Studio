@@ -403,11 +403,7 @@
             <div class="policy-card-body">
               <h3 class="policy-title">Advance booking limit</h3>
               <p class="policy-desc">How many days ahead of time can a user book a desk? The default is 8 days, up to a maximum of 30. Set this to 0 to turn advance booking off — desks can then only be booked for immediate, same-day use.</p>
-              <div class="minute-field">
-                <input type="number" min="0" max="30" step="1" value="8" class="minute-input" id="prebookingAdvanceDays" aria-label="Advance booking limit, days in advance, 0 to turn off">
-                <span class="minute-suffix">days in advance (0 = off, max 30)</span>
-              </div>
-              <p class="policy-hint" id="prebookingStatusHint">Advance booking is on — users can book up to 8 days ahead.</p>
+              <input type="hidden" id="prebookingAdvanceDays" value="8">
             </div>
           </div>
 
@@ -1008,6 +1004,28 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request (with a screenshot of the numeric "N | days in advance (0 = off,
+max 30)" fill-in box and its grey "Advance booking is on..." hint line) to remove that fill-in field
+and its related hint text, deleted the `.minute-field` block (`#prebookingAdvanceDays` number input +
+its `.minute-suffix` label) and the `#prebookingStatusHint` `.policy-hint` paragraph from the "Allow
+Booking in Advance" card, since the segmented timeline/pin diagram below already lets a value be set
+by dragging the pin, tapping the arrows, or tapping the pill to type a number directly, making the
+fill-in box redundant. Rather than deleting `#prebookingAdvanceDays` outright, it was kept as
+`<input type="hidden" id="prebookingAdvanceDays" value="8">`, since it's the actual backing
+data-store read/written throughout the script -- clampPrebookingDays(), renderAdvanceDiagram(), the
+drag handlers, the tap-to-type commit flow, and save()/applyState() -- so every existing code path
+keeps working unchanged. Removed the now-orphaned `renderStatusHint()` helper, its
+`prebookingStatusHint` element lookup, and its two call sites in save()/applyState() (a leftover call
+would have thrown `TypeError: Cannot set properties of null` once the element was gone). Left the
+`.minute-field`/`.minute-input`/`.minute-suffix`/`.policy-hint` CSS rules in place (unused now, but
+harmless) rather than scope-creep into an unrelated cleanup. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_remove_prebooking_fillin.js, 23 assertions) confirming: no live `.minute-field`,
+`.minute-input`, `.policy-hint`, or `#prebookingStatusHint` element remains; `#prebookingAdvanceDays`
+is now `type="hidden"` and still carries the default value; and the timeline slider still fully works
+end-to-end with the fill-in box gone -- tap-to-type pill commit, arrow-key nudging, and the Reset
+button all correctly update the pin/label and persist to `localStorage` without throwing.
 -->
 
 
@@ -1072,7 +1090,6 @@ back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filen
   const saveDot = document.getElementById('saveDot');
 
   const PREBOOKING_MAX_DAYS = 30;
-  const prebookingStatusHint = document.getElementById('prebookingStatusHint');
 
   function clampPrebookingDays() {
     let value = parseInt(prebookingAdvanceDays.value, 10);
@@ -1080,12 +1097,6 @@ back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filen
     if (value > PREBOOKING_MAX_DAYS) value = PREBOOKING_MAX_DAYS;
     prebookingAdvanceDays.value = value;
     return value;
-  }
-
-  function renderStatusHint(days) {
-    prebookingStatusHint.textContent = days === 0
-      ? 'Advance booking is off — desks can only be booked for immediate, same-day use.'
-      : 'Advance booking is on — users can book up to ' + days + (days === 1 ? ' day' : ' days') + ' ahead.';
   }
 
   /* ---------------- advance-booking timeline: same segmented-rail/draggable-pin diagram as
@@ -1255,7 +1266,6 @@ back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filen
     state.prebookingAdvanceDays = clampPrebookingDays();
     project.floorsense.wizard.prebookingAdvance = state;
     saveProject(project);
-    renderStatusHint(state.prebookingAdvanceDays);
     renderAdvanceDiagram(state.prebookingAdvanceDays);
   }
 
@@ -1267,7 +1277,6 @@ back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filen
 
   function applyState() {
     prebookingAdvanceDays.value = state.prebookingAdvanceDays;
-    renderStatusHint(state.prebookingAdvanceDays);
     renderAdvanceDiagram(state.prebookingAdvanceDays);
   }
   applyState();
