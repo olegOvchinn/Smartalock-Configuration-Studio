@@ -117,7 +117,7 @@
   .section-head p a:hover { border-bottom-color: var(--accent-deep); }
 
   /* ---------- desk-icon-badge: a plain square canvas behind each symbolic glyph — white fill with
-     a simple blue border, matching floorsense-reservation-types-01.html's icon styling (no
+     a simple blue border, matching floorsense-reservation-types.html's icon styling (no
      glass/glow treatment, just shape + blue border). Replaces the earlier per-option illustration
      photo (.desk-thumb) — see the MOST RECENT CHANGE note below. Per a site-wide propagation of
      page 01's later "light colour touch" + drop-shadow icon treatment, each badge also gets its own
@@ -145,7 +145,7 @@
 
   /* ---------- desk reservation-method cards (multi-select, same tick-box language as pages 04/09) ---------- */
   .desk-check-grid { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
-  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+  /* ---------- glass card: propagates floorsense-reservation-types.html's later "transparent
      glass" card treatment sitewide — .desk-check-card drops its solid `border: 1.5px solid
      var(--line)` in favour of a translucent white background with `backdrop-filter: blur()` and a
      soft, fuzzy `box-shadow` standing in for the border. Hover/checked states, previously shown via
@@ -167,8 +167,8 @@
     background: var(--tc-wash, rgba(232,241,252,0.7));
     box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
   }
-  /* ---------- per-card theme colour + tick box, ported from floorsense-reservation-types-01.html
-     (itself matching smartalock-reservation-type-01.html's `--tc`-per-card treatment): each card's
+  /* ---------- per-card theme colour + tick box, ported from floorsense-reservation-types.html
+     (itself matching smartalock-reservation-type.html's `--tc`-per-card treatment): each card's
      `--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong` reuse the exact hex already used by its own
      `.desk-icon-badge` modifier below, so heading colour, hover/checked glow, checked-state
      background wash, and the tick's fill colour all agree — see that file's own NOTE for the wash/
@@ -270,27 +270,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg current" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg current" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -368,10 +368,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-reservation-types-01.html">
+        <a class="page-nav-btn" href="floorsense-reservation-types.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-desk-user-groups-03.html">
+        <a class="page-nav-btn next" href="floorsense-desk-user-groups.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -396,8 +396,8 @@
 <!--
   NOTE for Oleg: module 02 of the Floorsense wizard family — continues to floorsense-checkin-
   policy-03.html. Per a later request, this page's place in the click-through order moved: it now
-  follows floorsense-setup-path-00.html (order is 01 -> 00 -> 02 -> 03 -> 04 -> 05), so this page's
-  back-arrow points to floorsense-setup-path-00.html instead of floorsense-reservation-types-
+  follows floorsense-setup-path.html (order is 01 -> 00 -> 02 -> 03 -> 04 -> 05), so this page's
+  back-arrow points to floorsense-setup-path.html instead of floorsense-reservation-types-
   01.html (which is now the wizard's entry point, reached before setup-path-00). The "Overview"
   section-head above the card grid ("How can end users self-reserve a desk?" plus its three
   explanatory paragraphs) was removed per a later request, leaving only the "Configure" section-
@@ -409,33 +409,33 @@
   { selected: [...] } in the same "configurationProject" localStorage key as module 01.
 
   Per a later request, the Floorsense wizard's click-through order changed again: this page now
-  comes right after floorsense-reservation-types-01.html and BEFORE floorsense-setup-path-00.html
+  comes right after floorsense-reservation-types.html and BEFORE floorsense-setup-path.html
   (order is now 01 -> 02 -> 00 -> 03 -> 04 -> 05 -> 06, was 01 -> 00 -> 02 -> ...). This page's
-  back-arrow changed from floorsense-setup-path-00.html to floorsense-reservation-types-01.html,
-  and its next-arrow/Continue destination changed from floorsense-checkin-window-08.html to
-  floorsense-setup-path-00.html accordingly (setup-path-00's own "Build Your Own" branch now
-  continues straight to floorsense-checkin-window-08.html instead of back here, since this page is
+  back-arrow changed from floorsense-setup-path.html to floorsense-reservation-types.html,
+  and its next-arrow/Continue destination changed from floorsense-checkin-window.html to
+  floorsense-setup-path.html accordingly (setup-path-00's own "Build Your Own" branch now
+  continues straight to floorsense-checkin-window.html instead of back here, since this page is
   already done by the time someone reaches setup-path-00). See floorsense-reservation-types-
-  01.html's and floorsense-setup-path-00.html's own NOTEs for the rest of that reorder. The
+  01.html's and floorsense-setup-path.html's own NOTEs for the rest of that reorder. The
   progress bar above also gained a 7th "idle-release" segment (a new page inserted between
-  Check-in Policy and Prebooking Window — see floorsense-idle-release-09.html) — unrelated to this
+  Check-in Policy and Prebooking Window — see floorsense-idle-release.html) — unrelated to this
   reorder, but landed in the same round of edits.
 
   MOST RECENT CHANGE: per a request for a new "Desk Groups (Neighbourhoods) and User Groups" page
   inserted "between current 02 and 03" — clarified via a follow-up question to mean immediately
-  after this page and before floorsense-setup-path-00.html in the actual click-through order (not
+  after this page and before floorsense-setup-path.html in the actual click-through order (not
   after Setup Path) — this page's next-arrow/Continue destination changed from
-  floorsense-setup-path-00.html to the new floorsense-desk-user-groups-03.html. Click-through order
-  is now 01 -> 02 -> 03(new) -> 00 -> 04 -> 05 -> .... See floorsense-desk-user-groups-03.html's own
-  NOTE for the full insertion, and floorsense-setup-path-00.html's NOTE for its matching back-arrow
+  floorsense-setup-path.html to the new floorsense-desk-user-groups.html. Click-through order
+  is now 01 -> 02 -> 03(new) -> 00 -> 04 -> 05 -> .... See floorsense-desk-user-groups.html's own
+  NOTE for the full insertion, and floorsense-setup-path.html's NOTE for its matching back-arrow
   change. Every module number from the old 03 (Prebooking) onward shifted up by one to make room
   (old 03-11 are now 04-12) — see README.md and each renamed file's own NOTE.
   MOST RECENT CHANGE: per a request to remove every progress-bar segment that follows Optional
   Features, the progress bar above shrank from 14 segments (fixed 00-13 numeric order) to 7, now in
   actual click-through order: Desk Allocation Method, Check-in Methods, Desk & User Groups,
   Prebooking Window, Business Hours, Optional Features, and Core Complete
-  (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
-  reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
+  (floorsense-setup-path.html). See floorsense-setup-path.html's own NOTE for the full
+  reasoning, including why floorsense-default-reservation-times.html onward (07-13) no longer
   appear in the bar at all.
 
   MOST RECENT CHANGE: per a request to remove the "Floorsense App at Desk" card and put "Floorsense
@@ -450,7 +450,7 @@
   jsdom: 4 cards render in the new order with no duplicate ids, default selection is still just
   "card", checking/unchecking the relocated Prebooking card still shows/hides its subfields note,
   and other checkboxes still save correctly to project.floorsense.wizard.checkinMethods.selected.
-  floorsense-checkin-window-08.html reads this same state dynamically via a label map and was left
+  floorsense-checkin-window.html reads this same state dynamically via a label map and was left
   unmodified since dropping the "app" entry from the saved-state array doesn't require removing its
   (now simply unused) label-map entry.
 
@@ -475,7 +475,7 @@
   heading is now "Mobile App or Desktop Browser Booking" (was "Mobile App or Desktop Browser
   Prebooking"). Only the heading changed — the card's own description, its data-method="prebooking"
   value, and #prebookingSubfields note are untouched, so nothing about the underlying wizard state
-  or the prebooking-gated pages downstream (e.g. floorsense-prebooking-advance-04.html) is affected.
+  or the prebooking-gated pages downstream (e.g. floorsense-prebooking-advance.html) is affected.
 
   MOST RECENT CHANGE: per a follow-up applying the same "book" wording to this card's own
   description, "Known users can pre-book a desk ahead of time..." / "A pre-booked desk must still
@@ -502,7 +502,7 @@
   ...` lookup and the `if (method === 'prebooking') prebookingSubfields.classList.toggle(...)` calls
   in the initial render, the checkbox's change handler, and the reset handler) — leaving a dangling
   reference to a removed element would have thrown on every checkbox toggle. The card's
-  data-method="prebooking" value and its role gating floorsense-prebooking-advance-04.html are
+  data-method="prebooking" value and its role gating floorsense-prebooking-advance.html are
   unaffected; only this sub-block and its wiring were removed. Verified via jsdom that the element
   no longer exists and that checking/unchecking the Booking card no longer throws.
 
@@ -558,18 +558,18 @@
   Configuration Summary (floorsense-out-of-box-policy.html) should return here to a "Save &
   continue" that goes back to the summary rather than forward into the main wizard sequence.
   Since this page is also reached normally as step 02 of the linear wizard (where Save & continue
-  must still advance to floorsense-desk-user-groups-03.html), a plain unconditional redirect
+  must still advance to floorsense-desk-user-groups.html), a plain unconditional redirect
   (the pattern used on the optional-feature hub pages) wasn't right here. Instead: the summary's
   edit-link href gained a `?return=summary` query param, and continueBtn's click handler now reads
   `new URLSearchParams(window.location.search).get('return') === 'summary'` into
   `returnToSummary`, picking `floorsense-out-of-box-policy.html` as the redirect target instead of
-  `floorsense-desk-user-groups-03.html` when true. Verified via jsdom across both URLs (no query
+  `floorsense-desk-user-groups.html` when true. Verified via jsdom across both URLs (no query
   param vs. `?return=summary`) that the page loads and the button click fires with zero runtime
   errors, and that URLSearchParams parses the flag as expected.
-MOST RECENT CHANGE: Centered the single-column option list to match the page-00 pattern. .section-head and .desk-check-grid (both max-width: 640px) gained margin: 0 auto so the section heading and the check-in method option cards are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+MOST RECENT CHANGE: Centered the single-column option list to match the page-00 pattern. .section-head and .desk-check-grid (both max-width: 640px) gained margin: 0 auto so the section heading and the check-in method option cards are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
 MOST RECENT CHANGE: per a request to illustrate this page the same way as
-floorsense-reservation-types-01.html, a user-supplied reference image (one continuous scene showing
+floorsense-reservation-types.html, a user-supplied reference image (one continuous scene showing
 a person for each of the 4 check-in methods, connected by workflow arrows through a shared "server"
 element) was cropped into 4 separate per-option images and each `.desk-check-card`'s
 `<svg class="desk-icon-img">` was replaced with an `<img class="desk-thumb">`:
@@ -599,7 +599,7 @@ photographic <img class="desk-thumb"> crops (checkin-method-card.png / -prebooki
 -wallet.png) were replaced with bare symbolic SVG glyphs in the same flat .desk-icon-badge (60px
 white square, 1.5px solid var(--accent) blue border, no glass/glow) + .desk-icon-glyph (34.5px,
 color: var(--accent), stroke-width: 1.3, stroke-linecap: butt, stroke-linejoin: miter) treatment
-currently used on floorsense-reservation-types-01.html:
+currently used on floorsense-reservation-types.html:
 - Building Access Cards at Desk: a card outline with a filled horizontal stripe, reading as a
   magnetic-stripe swipe card.
 - Mobile App or Desktop Browser Booking: a small browser/device window overlapped by a phone
@@ -618,7 +618,7 @@ render (with currentColor swapped for its resolved hex for preview purposes) con
 badges render as clean flat white-canvas/blue-border squares with sharp, thin, symbolic blue line
 icons.
 
-MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types.html's latest card
 and icon treatment sitewide, `.desk-check-card` dropped its solid `border: 1.5px solid var(--line)`
 in favour of page 01's translucent-glass treatment: a translucent white background
 (`rgba(255,255,255,0.6)`) with `backdrop-filter: blur(10px) saturate(160%)`, and a soft fuzzy
@@ -646,7 +646,7 @@ were deleted, not the containers. Also removed all three related CSS rulesets fr
 
 MOST RECENT CHANGE: per a report of "thick boxes" on this page, found this was the last page still
 shipping the old `.desk-tick` checkbox square (22x22px, 3px border) next to each `.desk-icon-badge` —
-floorsense-reservation-types-01.html already dropped this exact element in an earlier pass (see that
+floorsense-reservation-types.html already dropped this exact element in an earlier pass (see that
 file's own NOTE), since a card's `.checked` state is already shown clearly enough through its own
 background tint and stronger box-shadow, making the separate tick square redundant. Removed the 4
 `<span class="desk-tick" aria-hidden="true"></span>` markers (one per `.desk-check-card`) and the
@@ -659,21 +659,21 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 a weasyprint render confirming the icon badges now sit flush at each card's left edge with no leftover
 checkbox square.
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
 
 MOST RECENT CHANGE: per a request to apply the same tick-box + per-card colour treatment already
-done on floorsense-reservation-types-01.html to this page, ported that fix verbatim onto this
+done on floorsense-reservation-types.html to this page, ported that fix verbatim onto this
 page's 4 `.desk-check-card`s (`card`/`prebooking`/`qr`/`wallet`, via `data-method` rather than that
 page's `data-template`). Re-added `<span class="desk-tick" aria-hidden="true"></span>` (removed
 from this page in an earlier change — see that removal's own MOST RECENT CHANGE note above) as the
@@ -684,13 +684,24 @@ modifier already uses (`badge-blue` #4A8DF0 on "card", `badge-pink` #EC6BA5 on "
 `.desk-check-card.checked` now read `var(--tc-glow)`/`var(--tc-wash)`/`var(--tc-glow-strong)`
 instead of the previous fixed blue (kept only as fallback), and `.desk-title`'s `color` changed
 from the fixed `var(--header-grey)` to `var(--tc, var(--header-grey))` so each heading is always
-tinted its own card colour, matching floorsense-reservation-types-01.html/
-smartalock-reservation-type-01.html. No JS changes needed — the existing checkbox-wiring loop
+tinted its own card colour, matching floorsense-reservation-types.html/
+smartalock-reservation-type.html. No JS changes needed — the existing checkbox-wiring loop
 already toggles `.checked`, which the new CSS now also reads. Verified via an HTMLParser
 tag-balance check, `node --check` on the untouched script block, a Playwright test confirming
 exactly 4 `.desk-tick` elements exist, selecting "QR Code at Desk" fills its tick and washes its
 card in purple, "Wallet Pass at Desk"'s heading reads teal even while unselected, and a screenshot
 of all 4 cards.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-checkin-methods-02.html` to `floorsense-checkin-methods.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 
@@ -814,7 +825,7 @@ of all 4 cards.
     markModuleSaved('checkin-methods');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    const nextUrl = returnToSummary ? 'floorsense-out-of-box-policy.html' : 'floorsense-desk-user-groups-03.html';
+    const nextUrl = returnToSummary ? 'floorsense-out-of-box-policy.html' : 'floorsense-desk-user-groups.html';
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 })();

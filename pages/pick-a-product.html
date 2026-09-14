@@ -186,7 +186,7 @@
   <div class="action-bar">
     <div class="panel-inner">
       <div style="display:flex; align-items:center; gap:14px;">
-        <a class="ghost" href="smartalock-it-configuration-02.html">← Back</a>
+        <a class="ghost" href="smartalock-it-configuration.html">← Back</a>
         <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Pick a product line to continue</span></div>
       </div>
       <div style="display:flex; gap:10px;">
@@ -205,12 +205,12 @@
   start.html, then promoted to the project root as index.html so it loaded automatically at the
   site root. Per a later request it was renamed to pick-a-product.html and moved into pages/,
   since it's no longer the very first thing anyone sees: Project Registration
-  (../smartalock-templates-00.html, now living at the project root) and IT Configuration
-  (smartalock-it-configuration-02.html) happen BEFORE this picker as universal pre-steps — the
+  (../smartalock-registration.html, now living at the project root) and IT Configuration
+  (smartalock-it-configuration.html) happen BEFORE this picker as universal pre-steps — the
   opening sequence is 00 -> 02 -> here. Choosing "Smartalock" resumes the wizard at Access Methods
-  (smartalock-access-methods-09.html) rather than restarting at 00, since 00/02 are already done by
+  (smartalock-access-methods.html) rather than restarting at 00, since 00/02 are already done by
   the time someone reaches this page from 02's continue button. Choosing "Floorsense" now routes
-  to floorsense-reservation-types-01.html — per a later request, the Floorsense wizard's internal
+  to floorsense-reservation-types.html — per a later request, the Floorsense wizard's internal
   click-through order was changed to 01 -> 00 -> 02 -> 03 -> 04 -> 05 (reservation-types-01 is now
   that wizard's own entry page instead of setup-path-00; see the NOTE comments on those two files
   for the full rewiring). All three destination paths dropped their pages/ prefix since this file
@@ -218,7 +218,7 @@
   that used to link to ../index.html (it-configuration-02's next-arrow/Continue, access-methods-
   09's back-arrow, floorsense-setup-path-00's back-arrow, plus the legacy dashboard/reports/wizard/
   ai-policy-workshop/templates pages' "Home" links and js/dashboard.js) was repointed to
-  pick-a-product.html. A back-arrow (to smartalock-it-configuration-02.html) was added to this
+  pick-a-product.html. A back-arrow (to smartalock-it-configuration.html) was added to this
   page's action-bar area since it's now genuinely reached mid-flow, not just as an unlinked root
   page. No project state is written here — this page is a router only, not a wizard module.
 
@@ -248,9 +248,9 @@ MOST RECENT CHANGE: Changed .tcard-visual-frame's aspect-ratio from 909/587 (the
 
 MOST RECENT CHANGE: Fixed the Smartalock crop cutting into the standalone cabinet/person group at the image's left edge while leaving extra bare floor visible on the right — since the source image's content already runs edge-to-edge with no dead margins, the default center object-position (50%) was cropping real content on the left and empty floor on the right in equal amounts, which reads as unbalanced because the two sides aren't equally "busy." Set object-position: 10% center on .tcard-visual-zoom (worked out by replicating the exact object-fit: cover + object-position + scale(1.2) crop math in a Python/PIL script and comparing candidate crops side by side) so the visible window shifts left, keeping the cabinet/person group intact with a small clean margin instead of clipping it.
 
-MOST RECENT CHANGE: Per a request that Floorsense branch cards use Smartalock's blue instead of green (confirmed via follow-up to apply "everywhere," including this page), `.tcard[data-type="floorsense"]` changed from `{ --tc: #1FAA59; --tc-wash: #E6F7ED; }` to `{ --tc: #0071E3; --tc-wash: #E8F1FC; }` — the same blue already used by `.tcard[data-type="smartalock"]`, so both product cards on this picker now share one accent color. `.tcard[data-type="user"]` on smartalock-reservation-type-01.html (an unrelated internal card variant that happened to reuse the same green hex) was deliberately left untouched, as it has nothing to do with Floorsense/Smartalock product branding. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block, and visually confirmed via a weasyprint render.
+MOST RECENT CHANGE: Per a request that Floorsense branch cards use Smartalock's blue instead of green (confirmed via follow-up to apply "everywhere," including this page), `.tcard[data-type="floorsense"]` changed from `{ --tc: #1FAA59; --tc-wash: #E6F7ED; }` to `{ --tc: #0071E3; --tc-wash: #E8F1FC; }` — the same blue already used by `.tcard[data-type="smartalock"]`, so both product cards on this picker now share one accent color. `.tcard[data-type="user"]` on smartalock-reservation-type.html (an unrelated internal card variant that happened to reuse the same green hex) was deliberately left untouched, as it has nothing to do with Floorsense/Smartalock product branding. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished on floorsense-reservation-types-01.html to every other page, `.tcard`'s solid `background: var(--paper); border: 1.5px solid var(--line);` was replaced with the same translucent-glass pattern: a `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, `border: none`, and a soft `box-shadow` standing in for the old border. Since these two cards are the primary clickable choice for the whole site (Smartalock vs. Floorsense), the existing `:hover`/`.chosen` border-color swap (via each card's own `--tc`/`--tc-wash` custom properties) was converted to a shadow-lift + background-tint pair, matching the reference page's `.desk-check-card:hover`/`.desk-check-card.checked` treatment — hover now brightens the shadow and tints the background toward `--tc-wash`, and `.chosen` does the same more strongly, so the cards still read clearly as clickable/selectable with no border anywhere. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — CSS-only change).
+MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished on floorsense-reservation-types.html to every other page, `.tcard`'s solid `background: var(--paper); border: 1.5px solid var(--line);` was replaced with the same translucent-glass pattern: a `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, `border: none`, and a soft `box-shadow` standing in for the old border. Since these two cards are the primary clickable choice for the whole site (Smartalock vs. Floorsense), the existing `:hover`/`.chosen` border-color swap (via each card's own `--tc`/`--tc-wash` custom properties) was converted to a shadow-lift + background-tint pair, matching the reference page's `.desk-check-card:hover`/`.desk-check-card.checked` treatment — hover now brightens the shadow and tints the background toward `--tc-wash`, and `.chosen` does the same more strongly, so the cards still read clearly as clickable/selectable with no border anywhere. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — CSS-only change).
 -->
 
 <script>
@@ -258,11 +258,11 @@ MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling 
   const PRODUCTS = {
     smartalock: {
       label: 'Smartalock',
-      dest: 'smartalock-access-methods-09.html'
+      dest: 'smartalock-access-methods.html'
     },
     floorsense: {
       label: 'Floorsense',
-      dest: 'floorsense-reservation-types-01.html'
+      dest: 'floorsense-reservation-types.html'
     }
   };
 

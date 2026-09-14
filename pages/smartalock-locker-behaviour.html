@@ -125,7 +125,7 @@
   @media (max-width: 560px) { .decision-grid { grid-template-columns: 1fr; } }
 
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
-     floorsense-reservation-types-01.html, .dcard dropped its solid `border: 1.5px solid var(--line)`
+     floorsense-reservation-types.html, .dcard dropped its solid `border: 1.5px solid var(--line)`
      for a translucent white background + backdrop blur + soft fuzzy box-shadow standing in for the
      border. Its `:hover` and `.chosen` states, previously shown via `border-color`, now read through
      the shadow/background tint instead — see the MOST RECENT CHANGE note below. ---------- */
@@ -186,7 +186,7 @@
   .dcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .dcard h3 .dcard-icon-img { width: 40px; height: 40px; flex-shrink: 0; }
   /* ---------- dcard-icon-badge: wraps each raster <img class="dcard-icon-img"> in a white square
-     badge with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge
+     badge with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge
      pattern. Pop Open / Push to Open form a repeating 2-option group, so each gets its own palette
      color rather than sharing one blue — see the MOST RECENT CHANGE note below. Only the badge's
      border is colored; the raster icon images are left untouched. ---------- */
@@ -291,31 +291,31 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="access" href="smartalock-access-methods-09.html">
+        <a class="progress-seg" data-module="access" href="smartalock-access-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Initial Locker Access Methods</span>
         </a>
-        <a class="progress-seg current" data-module="behaviour" href="smartalock-locker-behaviour-03.html">
+        <a class="progress-seg current" data-module="behaviour" href="smartalock-locker-behaviour.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Door Behaviour</span>
         </a>
-        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
+        <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Type</span>
         </a>
-        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy-05.html">
+        <a class="progress-seg" data-module="locker" href="smartalock-locker-policy.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Policy</span>
         </a>
-        <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
+        <a class="progress-seg" data-module="user" href="smartalock-user-policy.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">User Policy</span>
         </a>
-        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types-04.html">
+        <a class="progress-seg" data-module="locker-type" href="smartalock-locker-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Types</span>
         </a>
-        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
+        <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Kiosk Customisation</span>
         </a>
@@ -397,10 +397,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-access-methods-09.html">
+        <a class="page-nav-btn" href="smartalock-access-methods.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-reservation-type-01.html">
+        <a class="page-nav-btn next" href="smartalock-reservation-type.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -427,13 +427,13 @@
   gradient art), so nothing needed to move — content is otherwise unchanged.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
-MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page's `.dcard` (Pop Open / Push to Open) cards only — `.scope-panel` (the smaller nested Push-to-Open sub-panel) was deliberately left untouched, since it's a distinct smaller sub-panel using `var(--radius-md)`, not a large card in scope for this treatment. `.dcard` dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; its existing `:hover` (previously `border-color: var(--accent)`) and `.chosen` (previously `background: var(--accent-wash); border-color: var(--accent); box-shadow: none;`) states were converted to read through the shadow tint/spread and background tint instead. Each of the 2 raster `.dcard-icon-img` icons (Pop Open, Push to Open) was wrapped in a new `.dcard-icon-badge` div (56px, white background, colored border, sized to comfortably fit the existing 40px icons) — since the two cards form a repeating option group, they use the same blue/pink palette order as page 01's first two cards. Only the badge border color was set; the icon image files (icon-pop-open.png, icon-push-to-open.png) were not modified. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types.html to this page's `.dcard` (Pop Open / Push to Open) cards only — `.scope-panel` (the smaller nested Push-to-Open sub-panel) was deliberately left untouched, since it's a distinct smaller sub-panel using `var(--radius-md)`, not a large card in scope for this treatment. `.dcard` dropped its solid `border: 1.5px solid var(--line)` for a translucent white background, backdrop blur/saturate, and a soft fuzzy box-shadow; its existing `:hover` (previously `border-color: var(--accent)`) and `.chosen` (previously `background: var(--accent-wash); border-color: var(--accent); box-shadow: none;`) states were converted to read through the shadow tint/spread and background tint instead. Each of the 2 raster `.dcard-icon-img` icons (Pop Open, Push to Open) was wrapped in a new `.dcard-icon-badge` div (56px, white background, colored border, sized to comfortably fit the existing 40px icons) — since the two cards form a repeating option group, they use the same blue/pink palette order as page 01's first two cards. Only the badge border color was set; the icon image files (icon-pop-open.png, icon-push-to-open.png) were not modified. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: Replaced the arbitrary blue/pink palette rotation on the `.dcard-icon-badge` borders with colors sampled directly from each icon's own PNG pixels (median RGB via PIL, isolating saturated non-wash pixels). Pop Open's `icon-pop-open.png` stayed blue but its hex tightened from `#4A8DF0` to the sampled `#0071E3` (class name `badge-blue` unchanged). Push to Open's `icon-push-to-open.png` changed from the rotation's `#EC6BA5` pink to its sampled true color, `#D98E00` amber (class renamed `badge-pink` -> `badge-amber`). Only the badge border-color CSS and the markup's modifier class were touched; icon PNGs, sizing, and JS logic are untouched. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 MOST RECENT CHANGE: per the site-wide return-to-summary fix, this page's Continue handler now
 consumes the `?return=summary` query param carried by its Edit link on
-smartalock-configuration-summary-08.html — Continue goes there when the param is present, and to
-smartalock-locker-types-04.html as before when it is absent. Verified via Playwright end-to-end
+smartalock-configuration-summary.html — Continue goes there when the param is present, and to
+smartalock-locker-types.html as before when it is absent. Verified via Playwright end-to-end
 navigation tests covering both cases.
 
 MOST RECENT CHANGE: per a request to allow selecting both cards, Pop Open and Push to Open are now
@@ -447,7 +447,7 @@ state and the scope panel from the two booleans) plus `toggleBehaviour(key)` (fl
 boolean and re-renders) — deselecting a card is blocked when it is the only one still enabled, so a
 site can never end up with zero door-open behaviour configured. A legacy single-select save
 (`lockerBehaviour: '' | 'push-open'`) is migrated to the two booleans on load for projects saved
-before this change. `smartalock-configuration-summary-08.html`'s Open Behaviour row and
+before this change. `smartalock-configuration-summary.html`'s Open Behaviour row and
 `smartalock-locker-guide-live.html`'s Opening Your Locker section were both updated to read the two
 booleans (with the same legacy-migration fallback) and describe a "Pop Open and Push to Open (mixed
 by locker)" state when both are enabled, rather than assuming exactly one is always chosen — see
@@ -475,11 +475,22 @@ Reservation Type -> Locker Policy -> User Policy -> Locker Types -> Kiosk Custom
 Configuration Summary. Updated this page's progress-bar segment order (the "locker-type" segment now
 renders between "user" and "kiosk" instead of between "behaviour" and "reservation") and, on the pages
 whose back/next chain changed, the page-nav-btn href and JS nextUrl fallback destination. The
-smartalock-configuration-summary-08.html Edit-link targets, its own review-section order, and each
+smartalock-configuration-summary.html Edit-link targets, its own review-section order, and each
 page's ?return=summary override behaviour are unaffected by this reorder. Verified via an inline
 HTMLParser tag-balance check, node --check on the extracted script block, and a new jsdom test
 (test_reorder_locker_types.js, 37 assertions) confirming the progress-bar order, the current-segment
 marker, and every back/next href and nextUrl fallback across all 7 pages match the new chain.
+
+MOST RECENT CHANGE: renamed this file from `smartalock-locker-behaviour-03.html` to `smartalock-locker-behaviour.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>
@@ -642,7 +653,7 @@ marker, and every back/next href and nextUrl fallback across all 7 pages match t
     markModuleSaved('behaviour');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-reservation-type-01.html';
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary.html' : 'smartalock-reservation-type.html';
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 

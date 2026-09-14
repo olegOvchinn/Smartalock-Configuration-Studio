@@ -113,7 +113,7 @@
      card-free confirmation/transition step rather than a decision point — single explainer card,
      same shell (.checkin-card-header-style icon+description) used elsewhere in the wizard. Per a
      site-wide propagation of the glass-card treatment introduced on
-     floorsense-reservation-types-01.html's .desk-check-card, the old opaque `var(--paper)`
+     floorsense-reservation-types.html's .desk-check-card, the old opaque `var(--paper)`
      background + solid `border: 1.5px solid var(--line)` were replaced with a translucent
      backdrop-blurred background and a soft fuzzy shadow standing in for the border — see the
      MOST RECENT CHANGE note below. This card has no selected/hover state (plain static content),
@@ -140,11 +140,11 @@
   .complete-card-banner img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
   .complete-card-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
   /* ---------- content icon badge: this used to be a bare 56px svg (no wrapper), matching
-     floorsense-reservation-types-01.html's pre-badge .desk-icon-img treatment. Per the site-wide
+     floorsense-reservation-types.html's pre-badge .desk-icon-img treatment. Per the site-wide
      propagation of page01's icon-badge pattern, the bare glyph was wrapped in a square white
      badge with a thin accent border (this icon's SVG has a canvas-like `<rect rx="2">` but no
      accompanying `fill-opacity="0.15"` highlight shape, so it doesn't match the separate "Style 1"
-     glass-canvas treatment used on floorsense-business-hours-05.html and was in scope for this
+     glass-canvas treatment used on floorsense-business-hours.html and was in scope for this
      change). It's a single lone icon on this page, not part of a repeating multi-option group, so
      it kept plain `var(--accent)` blue rather than a palette colour. Sized 64px/56px (vs page01's
      60px/34.5px) to keep the glyph itself at its original 56px rather than shrinking it, per the
@@ -230,27 +230,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -286,7 +286,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-optional-features-06.html">
+        <a class="page-nav-btn" href="floorsense-optional-features.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <a class="page-nav-btn next" href="floorsense-out-of-box-policy.html" id="pageNavNext">
@@ -312,7 +312,7 @@
 
 <!--
   NOTE for Oleg: module 00 of the Floorsense wizard family — the new first step, inserted before
-  floorsense-reservation-types-01.html per a later request. Presents four mutually-exclusive setup
+  floorsense-reservation-types.html per a later request. Presents four mutually-exclusive setup
   paths as radio cards (name="setupPath"), in order: "relaxed" (a lighter-touch preset, fewer
   restrictions), "preconfigured" (badged Recommended, all settings follow Floorsense best practice,
   easiest to maintain/explain), "strict" (a tighter preset enforcing the rules more firmly, for
@@ -325,7 +325,7 @@
   the matching flag in floorsense-out-of-box-policy.html's NOTE. Continue branches by PATH_DEST:
   "preconfigured" routes to floorsense-out-of-box-policy.html; "relaxed"/"strict" route to the same
   page with a ?preset=relaxed / ?preset=strict query string so it can reflect the choice in its
-  heading; "customise" routes to floorsense-checkin-methods-02.html, continuing into the rest of
+  heading; "customise" routes to floorsense-checkin-methods.html, continuing into the rest of
   the full walkthrough. The bottom-right page-nav arrow's href updates live to match the current
   selection (falls back to the customise destination if nothing's picked yet). State lives at
   project.floorsense.wizard.setupPath = { selected: 'relaxed' | 'preconfigured' | 'strict' |
@@ -335,8 +335,8 @@
   — this page's back-arrow briefly pointed at pick-a-product.html directly. Then, per a later
   request, this page's position in the click-through order moved: floorsense-reservation-types-
   01.html is now the Floorsense wizard's entry point (pick-a-product.html's Floorsense card lands
-  there, not here), so this page's back-arrow now points to floorsense-reservation-types-01.html
-  instead, and its "customise" branch/next-arrow now goes to floorsense-checkin-methods-02.html
+  there, not here), so this page's back-arrow now points to floorsense-reservation-types.html
+  instead, and its "customise" branch/next-arrow now goes to floorsense-checkin-methods.html
   instead of back to reservation-types-01 (since reservation types are already collected by the
   time someone reaches this page). New order (at the time): 01 -> 00 -> 02 -> 03 -> 04 -> 05. The
   "relaxed" / "preconfigured" / "strict" shortcuts to floorsense-out-of-box-policy.html are
@@ -347,15 +347,15 @@
   Per a further request, the order changed AGAIN: this page now comes AFTER floorsense-checkin-
   methods-02.html instead of before it (order is now 01 -> 02 -> 00 -> 03 -> 04(idle-release) ->
   05(prebooking) -> 06(reservation-length)). This page's back-arrow changed from
-  floorsense-reservation-types-01.html to floorsense-checkin-methods-02.html, and its "customise"
-  branch/next-arrow changed from floorsense-checkin-methods-02.html to
-  floorsense-checkin-window-08.html (checkin-methods-02 is now already done by the time someone
+  floorsense-reservation-types.html to floorsense-checkin-methods.html, and its "customise"
+  branch/next-arrow changed from floorsense-checkin-methods.html to
+  floorsense-checkin-window.html (checkin-methods-02 is now already done by the time someone
   reaches this page, so "Build Your Own" continues straight to Check-in Policy instead). The
   "relaxed" / "preconfigured" / "strict" shortcuts to floorsense-out-of-box-policy.html are, again,
   unaffected — that branch logic only cares about which page it's ON, not what precedes it. See
-  floorsense-reservation-types-01.html's and floorsense-checkin-methods-02.html's own NOTEs for the
+  floorsense-reservation-types.html's and floorsense-checkin-methods.html's own NOTEs for the
   rest of that reorder. Separately, a new "Auto-Release on Idle" page
-  (floorsense-idle-release-09.html) was inserted later in the wizard (between Check-in Policy and
+  (floorsense-idle-release.html) was inserted later in the wizard (between Check-in Policy and
   Prebooking Window), which is why the progress bar above now has 7 segments instead of 6 and the
   old modules 04/05 are now 05/06 — unrelated to this page's own reorder, but landed in the same
   round of edits.
@@ -363,14 +363,14 @@
   MOST RECENT CHANGE: per a follow-up request ("create a separate page for Default Reservation
   Times and put it before check in window page"), the old floorsense-checkin-policy-03.html was
   split: its "Default Reservation Times" card moved to a brand-new
-  floorsense-default-reservation-times-07.html, and the remaining Check-in Window content was
-  renamed to floorsense-checkin-window-08.html. This page's "customise" branch/next-arrow
+  floorsense-default-reservation-times.html, and the remaining Check-in Window content was
+  renamed to floorsense-checkin-window.html. This page's "customise" branch/next-arrow
   (PATH_DEST.customise) and the static #pageNavNext fallback both changed from
-  floorsense-checkin-window-08.html to floorsense-default-reservation-times-07.html accordingly,
+  floorsense-checkin-window.html to floorsense-default-reservation-times.html accordingly,
   since that new page now immediately follows this one in the click-through order. The
   "relaxed"/"preconfigured"/"strict" shortcuts are unaffected. The progress bar above gained an
   eighth segment ("Default Reservation Times", inserted before "Check-in Window") — see
-  floorsense-default-reservation-times-07.html's and floorsense-checkin-window-08.html's own NOTEs
+  floorsense-default-reservation-times.html's and floorsense-checkin-window.html's own NOTEs
   for the rest of that split.
 
   MOST RECENT CHANGE: two further follow-up requests moved this page's "customise" destination
@@ -378,23 +378,23 @@
   PATH_DEST.customise/#pageNavNext's target instead of Default Reservation Times. Then, per "put
   page 04 after 02," Business Hours and Prebooking swapped numbers, so Prebooking is now the page
   immediately after this one — PATH_DEST.customise and #pageNavNext now both point to
-  floorsense-prebooking-advance-04.html (Business Hours, now module 04, follows Prebooking instead).
-  See floorsense-prebooking-advance-04.html's and floorsense-business-hours-05.html's own NOTEs for
+  floorsense-prebooking-advance.html (Business Hours, now module 04, follows Prebooking instead).
+  See floorsense-prebooking-advance.html's and floorsense-business-hours.html's own NOTEs for
   the full history of both moves.
 
   MOST RECENT CHANGE: per a request for a new "Desk Groups (Neighbourhoods) and User Groups" page
   inserted "between current 02 and 03" — clarified via a follow-up question to mean immediately
-  after floorsense-checkin-methods-02.html and before this page (not after this page) — this page's
-  back-arrow changed from floorsense-checkin-methods-02.html to the new
-  floorsense-desk-user-groups-03.html. This page's own forward branches (PATH_DEST.customise /
-  #pageNavNext -> floorsense-prebooking-advance-04.html, and the relaxed/preconfigured/strict ->
+  after floorsense-checkin-methods.html and before this page (not after this page) — this page's
+  back-arrow changed from floorsense-checkin-methods.html to the new
+  floorsense-desk-user-groups.html. This page's own forward branches (PATH_DEST.customise /
+  #pageNavNext -> floorsense-prebooking-advance.html, and the relaxed/preconfigured/strict ->
   floorsense-out-of-box-policy.html shortcuts) are unaffected, since Desk/User Groups sits before
   this page, not after it. Click-through order is now 01 -> 02 -> 03(new) -> 00 -> 04 -> 05 -> ....
-  See floorsense-desk-user-groups-03.html's own NOTE for the full insertion. Every module number
+  See floorsense-desk-user-groups.html's own NOTE for the full insertion. Every module number
   from the old 03 (Prebooking) onward shifted up by one to make room (old 03-11 are now 04-12).
 
   MOST RECENT CHANGE: per a request to move this page later in the click-through order — to follow
-  floorsense-optional-features-06.html once every "applies to everyone" core setting has been
+  floorsense-optional-features.html once every "applies to everyone" core setting has been
   collected (desk allocation, check-in methods, desk &amp; user groups, prebooking window, business
   hours, and optional features) — combined with a follow-up request to drop the whole
   Relaxed/Pre-Configured/Strict/Build-Your-Own decision entirely, this page's role changed
@@ -407,11 +407,11 @@
   next stop is the summary) plus a green `.info-notice` mentioning that the summary lets you save
   this configuration as a General Policy and layer on neighbourhood-specific policies for individual
   Desk Groups (a forward-looking pointer to the Desk Group Policy override concept from
-  floorsense-desk-user-groups-03.html — no new interactive control was added here for that, since
+  floorsense-desk-user-groups.html — no new interactive control was added here for that, since
   the request was explicitly to remove cards, not add new ones).
 
-  Back-arrow now points to floorsense-optional-features-06.html (was
-  floorsense-desk-user-groups-03.html). The next-arrow and Continue button are both now static,
+  Back-arrow now points to floorsense-optional-features.html (was
+  floorsense-desk-user-groups.html). The next-arrow and Continue button are both now static,
   pointing straight to floorsense-out-of-box-policy.html — with no more mode to branch on, that page
   (previously a shortcut for the three preset paths only) is now this page's ONE destination for
   everyone, reached with no `?preset=` query string (it already defaults to its "recommended" copy
@@ -421,7 +421,7 @@
   { selected } shape) and redirects.
 
   Click-through order is now 01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 00(this page) ->
-  floorsense-out-of-box-policy.html. floorsense-default-reservation-times-07.html onward (07-13) are
+  floorsense-out-of-box-policy.html. floorsense-default-reservation-times.html onward (07-13) are
   no longer part of the enforced click-through path. The progress-bar tooltip for this module
   changed from "Setup Path" to "Core Complete" across all 15 Floorsense pages to match the new
   purpose; the underlying data-module="setup-path" key (used for moduleStatus tracking) is
@@ -434,7 +434,7 @@
   bar. The bar now has exactly 7 segments, in actual click-through order: Desk Allocation Method
   (01), Check-in Methods (02), Desk & User Groups (03), Prebooking Window (04), Business Hours (05),
   Optional Features (06), and this page (00, "Core Complete") — a straight reflection of the real
-  flow rather than the old fixed numeric list. floorsense-default-reservation-times-07.html onward
+  flow rather than the old fixed numeric list. floorsense-default-reservation-times.html onward
   (07-13) no longer appear in the bar at all on ANY page, including their own: those 7 pages carry
   the exact same 7-segment bar as everyone else, but since none of their own modules are in the
   list, none of their segments show as "current." Per the client's direction, those 7 pages are no
@@ -442,8 +442,8 @@
   intended to be reachable only from the summary (floorsense-out-of-box-policy.html) when a client
   chooses to edit a specific setting after the fact; wiring up those edit entry points from the
   summary is a separate follow-up task, not yet done. See
-  floorsense-default-reservation-times-07.html's own NOTE for how an orphaned page's bar now reads.
-MOST RECENT CHANGE: per a site-wide request to make every Floorsense icon the same big size as floorsense-reservation-types-01.html's .desk-icon-img (56x56px, bare/unbadged, accent-coloured stroke) and to better match each icon to its purpose, .complete-card-icon was converted from a 48px accent-green circle badge (with a 24px white checkmark inside) to a bare 56px icon directly on the svg element (no wrapper div, matching page01's markup pattern exactly). The generic checkmark-in-circle was also redesigned as a clipboard with a checkmark, depicting a completed policy document rather than a generic 'success' glyph. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+  floorsense-default-reservation-times.html's own NOTE for how an orphaned page's bar now reads.
+MOST RECENT CHANGE: per a site-wide request to make every Floorsense icon the same big size as floorsense-reservation-types.html's .desk-icon-img (56x56px, bare/unbadged, accent-coloured stroke) and to better match each icon to its purpose, .complete-card-icon was converted from a 48px accent-green circle badge (with a 24px white checkmark inside) to a bare 56px icon directly on the svg element (no wrapper div, matching page01's markup pattern exactly). The generic checkmark-in-circle was also redesigned as a clipboard with a checkmark, depicting a completed policy document rather than a generic 'success' glyph. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 MOST RECENT CHANGE: per a request to illustrate this page the same way as the other Floorsense
 pages, a user-supplied reference image (a single wide scene summarizing everything this page's copy
@@ -451,7 +451,7 @@ describes as done: a desk config with green checkmarks, a "core groups configure
 a business-hours clock, three optional features shown "ON", and a calendar badged "prebooking
 ready") was autocropped to its content bounds (1024x489 down to 812x428) and saved to
 assets/images/core-complete-illustration.png. Unlike the other single-card pages
-(floorsense-prebooking-advance-04.html, floorsense-business-hours-05.html), this card's header has
+(floorsense-prebooking-advance.html, floorsense-business-hours.html), this card's header has
 no description paragraph beside the icon — just a small icon + title, with the paragraphs below —
 so rather than replacing `.complete-card-icon` (kept as-is), the image was added as a new full-width
 `.complete-card-banner` sitting above the existing header, acting as a hero visual for the whole
@@ -466,22 +466,33 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card/icon styling sitewide, `.complete-card` swapped its opaque paper background and solid grey `border: 1.5px solid var(--line)` for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy `box-shadow` used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/`.checked` variant was needed, just the base glass treatment. Separately, `.complete-card-icon`'s bare 56px svg (no wrapper) was wrapped in a new `.complete-card-icon-badge` (64px, white background, `1.5px solid var(--accent)` border, short drop shadow) matching page 01's `.desk-icon-badge`, sized slightly larger than page 01's 60px/34.5px pairing so the glyph itself could stay at its original 56px rather than shrinking it. The icon's own `<rect rx="2">` shape was checked against business-hours-05's "Style 1" canvas-icon convention (a `rect rx="2"` canvas plus a `fill-opacity="0.15"` highlight shape) but has no accompanying opacity-15 highlight, so it didn't qualify for that exemption and was in scope for the badge treatment. As a single lone icon (not part of a repeating multi-option card group), it kept plain `var(--accent)` blue rather than being assigned one of the palette colours used for page 01's 5-card option group. Verified via an inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-only change).
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types.html's latest card/icon styling sitewide, `.complete-card` swapped its opaque paper background and solid grey `border: 1.5px solid var(--line)` for the same translucent glass background (`rgba(255,255,255,0.6)`, `backdrop-filter: blur(10px) saturate(160%)`) and soft fuzzy `box-shadow` used on page 01's `.desk-check-card` — this card has no hover/selected state, so no `:hover`/`.checked` variant was needed, just the base glass treatment. Separately, `.complete-card-icon`'s bare 56px svg (no wrapper) was wrapped in a new `.complete-card-icon-badge` (64px, white background, `1.5px solid var(--accent)` border, short drop shadow) matching page 01's `.desk-icon-badge`, sized slightly larger than page 01's 60px/34.5px pairing so the glyph itself could stay at its original 56px rather than shrinking it. The icon's own `<rect rx="2">` shape was checked against business-hours-05's "Style 1" canvas-icon convention (a `rect rx="2"` canvas plus a `fill-opacity="0.15"` highlight shape) but has no accompanying opacity-15 highlight, so it didn't qualify for that exemption and was in scope for the badge treatment. As a single lone icon (not part of a repeating multi-option card group), it kept plain `var(--accent)` blue rather than being assigned one of the palette colours used for page 01's 5-card option group. Verified via an inline HTMLParser tag-balance check (python3 /tmp/validate.py) and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed the single `<span class="eyebrow">All Set</span>` above the hero title. Its parent `.panel-intro` still had the `<h1>` hero title and `<p class="sub">`, so only the span was removed, not the parent. Also removed the now-unused base `.eyebrow` and `.panel-intro .eyebrow` CSS rulesets from the inline stylesheet (this page never had a `.section-head .eyebrow` rule). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-setup-path-00.html` to `floorsense-setup-path.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>

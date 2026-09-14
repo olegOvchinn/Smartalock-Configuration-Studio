@@ -87,7 +87,7 @@
   .qcard-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 900px; margin: 0 auto; }
   .qcard-grid .qcard { max-width: none; margin-bottom: 0; }
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
-     floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
+     floorsense-reservation-types.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
      in favour of a translucent white background + backdrop blur + soft fuzzy box-shadow standing in
      for the border — see the MOST RECENT CHANGE note below. This card has no hover/selected state of
      its own, so only the base treatment applies. ---------- */
@@ -103,8 +103,8 @@
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 53.2px; height: 53.2px; flex-shrink: 0; }
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
-     with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern
-     (and the same treatment already applied to smartalock-it-configuration-02.html's own qcards).
+     with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge pattern
+     (and the same treatment already applied to smartalock-it-configuration.html's own qcards).
      Unlike most other pages' icon-badges (which cycle an arbitrary palette since their icons are
      single-tone line art with no inherent color of their own), these 3 PNGs are pre-colored
      circular icon badges in their own right — each already bakes in a colored glyph plus a matching
@@ -332,7 +332,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn next" href="pages/smartalock-it-configuration-02.html">
+        <a class="page-nav-btn next" href="pages/smartalock-it-configuration.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -371,15 +371,15 @@
   visible 10-segment wizard sequence — markModuleSaved() still writes moduleStatus.registration so
   the bar on other pages (which still show a "registration" segment) reflects completion correctly.
   Per a further request, this file was physically moved from pages/ to the project root (it's now
-  literally the first file you open — /smartalock-templates-00.html, not pages/smartalock-templates-
+  literally the first file you open — /smartalock-registration.html, not pages/smartalock-templates-
   00.html), and its now-disabled back-arrow was removed outright rather than left as a disabled span
   (page-nav's justify-content changed from space-between to flex-end so the remaining next-arrow
   still sits correctly on the right). All of its own asset paths lost their `../` prefix (e.g.
   assets/images/smartalock-logo.png, not ../assets/images/...) since it's now one level higher than
   before, and its next-arrow / Continue-button destination gained a `pages/` prefix (pages/smartalock-
   it-configuration-02.html) for the same reason. Every other Smartalock wizard page's progress-seg
-  link back to this page was updated from href="smartalock-templates-00.html" to
-  href="../smartalock-templates-00.html" to match its new location. The site's old root index.html
+  link back to this page was updated from href="smartalock-registration.html" to
+  href="../smartalock-registration.html" to match its new location. The site's old root index.html
   was renamed to pages/pick-a-product.html (still the Smartalock/Floorsense picker, just relocated
   and no longer the first page opened) — see its own NOTE for details.
 
@@ -401,7 +401,7 @@
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
 MOST RECENT CHANGE: This root-level file was missed by the earlier sitewide propagation of
-floorsense-reservation-types-01.html's glass-card/icon-badge styling — the survey that drove that
+floorsense-reservation-types.html's glass-card/icon-badge styling — the survey that drove that
 pass only looked inside pages/, and this page (the site's actual first-opened entry point, despite
 its pages/register.html-shaped name) lives one directory up. Per a follow-up request to refine its
 icon styling, and since its `.qcard` card was equally untouched, both were brought in line: `.qcard`
@@ -410,7 +410,7 @@ swapped its solid `border: 1.5px solid var(--line)` for the same translucent gla
 used everywhere else (no hover/selected state exists on this static form card, so only the base
 treatment applies). Each of the 3 raster `.qcard-icon` `<img>` icons (Company Details, Contacts,
 Project Dates, all 76px) was wrapped in a new 92px `.qcard-icon-badge` div — the exact same pattern
-already used on smartalock-it-configuration-02.html's own qcards — cycling the blue/pink/purple
+already used on smartalock-it-configuration.html's own qcards — cycling the blue/pink/purple
 palette in DOM order, since the 3 cards form a repeating group. The badge only colors its own
 border; the icon `<img>` elements and their underlying PNG files were left byte-for-byte untouched.
 Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block
@@ -453,7 +453,7 @@ illustration is gone, the page reads as a single column, and all three cards ren
 MOST RECENT CHANGE: per a request to remove the "Configure" eyebrow, deleted the
 `<div class="section-head"><span class="eyebrow">Configure</span></div>` block — this page's
 `.section-head` contained nothing but that one eyebrow span (no heading or paragraph), so per the same
-precedent used elsewhere in this codebase (e.g. floorsense-reservation-types-01.html's own eyebrow
+precedent used elsewhere in this codebase (e.g. floorsense-reservation-types.html's own eyebrow
 removal), the entire now-empty div was deleted rather than left as a shell. Removed the now-dead
 `.section-head`/`.section-head .eyebrow`/`.section-head p` CSS rules too, since nothing on this page
 uses that class anymore (the shared base `.eyebrow` rule and `.panel-intro .eyebrow` were left alone —
@@ -484,7 +484,7 @@ tag-balance check, `node --check` on the extracted script block (untouched), and
 Playwright screenshot confirming the three cards now sit centered under the hero text instead of
 hugging the left edge.
 
-MOST RECENT CHANGE: per a request (also applied to smartalock-it-configuration-02.html's own qcards)
+MOST RECENT CHANGE: per a request (also applied to smartalock-it-configuration.html's own qcards)
 to make the option cards' icons 30% smaller, scaled both `.qcard h3 .qcard-icon` (76px -> 53.2px) and
 `.qcard-icon-badge` (92px -> 64.4px, border-radius 26px -> 18.2px) by 0.7. Nothing else in the card —
 padding, title/description font sizes, badge border width — was touched, since the request was scoped
@@ -494,8 +494,8 @@ smaller within its badge while the rest of the card is unchanged.
 MOST RECENT CHANGE: this page (Project Registration) is shared by both product branches' Edit
 links, so its Continue handler now reads both `return` and `branch` query params — with
 `?return=summary&branch=floorsense` it goes to pages/floorsense-out-of-box-policy.html, with
-`?return=summary&branch=smartalock` it goes to pages/smartalock-configuration-summary-08.html, and
-with neither param it still proceeds to pages/smartalock-it-configuration-02.html as before.
+`?return=summary&branch=smartalock` it goes to pages/smartalock-configuration-summary.html, and
+with neither param it still proceeds to pages/smartalock-it-configuration.html as before.
 Verified via Playwright end-to-end navigation tests covering all three cases.
 
 MOST RECENT CHANGE: per a request, each of the 5 contact fields in the Contacts card (Policy, IT,
@@ -540,6 +540,17 @@ screen readers even though nothing shows on screen until the group heading above
 state changes. Verified via an HTMLParser tag-balance check, `node --check` on the script block, a
 Playwright test re-confirming autosave/persist/reset still work, and a screenshot showing each
 field now just reading "Name"/"Email" as placeholder text under its group heading.
+
+MOST RECENT CHANGE: renamed this file from `smartalock-templates-00.html` to `smartalock-registration.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>
@@ -645,8 +656,8 @@ field now just reading "Name"/"Email" as placeholder text under its group headin
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
     const nextUrl = returnToSummary
-      ? (returnBranch === 'floorsense' ? 'pages/floorsense-out-of-box-policy.html' : 'pages/smartalock-configuration-summary-08.html')
-      : 'pages/smartalock-it-configuration-02.html';
+      ? (returnBranch === 'floorsense' ? 'pages/floorsense-out-of-box-policy.html' : 'pages/smartalock-configuration-summary.html')
+      : 'pages/smartalock-it-configuration.html';
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 

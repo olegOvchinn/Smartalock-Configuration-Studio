@@ -113,7 +113,7 @@
 
   /* ---------- question cards ---------- */
   /* ---------- glass card: per the site-wide propagation of the treatment finished on
-     floorsense-reservation-types-01.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
+     floorsense-reservation-types.html, .qcard dropped its solid `border: 1.5px solid var(--line)`
      in favour of a translucent white background + backdrop blur + soft fuzzy box-shadow standing in
      for the border — see the MOST RECENT CHANGE note below. This card has no hover/selected state of
      its own, so only the base treatment applies. ---------- */
@@ -129,7 +129,7 @@
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 53.2px; height: 53.2px; flex-shrink: 0; }
   /* ---------- qcard-icon-badge: wraps each raster <img class="qcard-icon"> in a white square badge
-     with a colored border, matching floorsense-reservation-types-01.html's .desk-icon-badge pattern.
+     with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge pattern.
      Per a follow-up request that each badge's border match the icon symbol inside it, the initial
      arbitrary blue/pink/purple/teal palette assignment was replaced with colors sampled directly
      from each PNG's own glyph pixels (median RGB via PIL, isolating saturated non-wash pixels) —
@@ -153,7 +153,7 @@
     color: var(--accent-deep); background: var(--accent-wash); padding: 3px 8px; border-radius: 100px;
   }
   /* ---------- group-tag: same pill treatment as qcard-tag, ported from
-     floorsense-desk-user-groups-03.html's "Recommended" pill, for cards that recommend (rather than
+     floorsense-desk-user-groups.html's "Recommended" pill, for cards that recommend (rather than
      merely allow) a choice — .qcard-tag alone is only ever used for "Optional" elsewhere on this page,
      so this is a separate class rather than overloading its meaning. ---------- */
   .group-tag {
@@ -344,7 +344,7 @@
 
   <div class="panel-inner">
     <div class="page-nav">
-      <a class="page-nav-btn" href="../smartalock-templates-00.html">
+      <a class="page-nav-btn" href="../smartalock-registration.html">
         <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
       </a>
       <a class="page-nav-btn next" href="pick-a-product.html">
@@ -371,7 +371,7 @@
   NOTE for Oleg: template variant of it-configuration-v4.html. The right-hand nav pane (and the
   architecture diagram that lived behind it as a background image) is gone. The diagram now sits in a
   small sticky card to the left of the question cards. This page's next-arrow and Continue button
-  were repointed from smartalock-access-methods-09.html to the product picker per a later request:
+  were repointed from smartalock-access-methods.html to the product picker per a later request:
   Project Registration (00) and IT Configuration (02) are now treated as universal pre-steps that
   happen before the product picker, so 00 -> 02 -> picker is the new opening sequence. The picker's
   Smartalock card now resumes the wizard at Access Methods (09) instead of restarting at 00, since
@@ -381,13 +381,13 @@
   from this page too, for the same reason as page 00 — it now stands outside the visible wizard
   sequence. markModuleSaved() still writes moduleStatus.it so the bar on the other 9 pages (which
   still show an "it" segment) reflects completion correctly. Per a further request, root-level
-  index.html was renamed to pages/pick-a-product.html and smartalock-templates-00.html moved from
-  pages/ to the project root — this page's back-arrow now points to ../smartalock-templates-00.html
+  index.html was renamed to pages/pick-a-product.html and smartalock-registration.html moved from
+  pages/ to the project root — this page's back-arrow now points to ../smartalock-registration.html
   (was a same-folder link) and its next-arrow/Continue destination is now pick-a-product.html (was
   ../index.html), both same-folder links since this page never moved.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 
-MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types-01.html to this page. .qcard dropped its solid `border: 1.5px solid var(--line)` in favor of a translucent white background (rgba(255,255,255,0.6)), backdrop-filter blur/saturate, and a soft fuzzy box-shadow standing in for the border, with a box-shadow/background transition added; this card has no hover or checked/selected state, so only the base treatment was needed (no :hover or .checked rules to convert). Each of the 4 raster `.qcard-icon` `<img>` icons (SSO, SCIM, API, Gallagher) was wrapped in a new `.qcard-icon-badge` div (92px, white background, colored border, matching page 01's `.desk-icon-badge` proportions but sized up to comfortably fit this page's larger 76px icons) — since the 4 question cards read as a repeating group, the badges cycle through the same blue/pink/purple/teal palette used on page 01, one color per card in DOM order. Only the badge's border color was set per icon; the icon images themselves (icon-sso.png, icon-scim.png, icon-api.png, icon-gallagher.png) were not modified in any way. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling finished on floorsense-reservation-types.html to this page. .qcard dropped its solid `border: 1.5px solid var(--line)` in favor of a translucent white background (rgba(255,255,255,0.6)), backdrop-filter blur/saturate, and a soft fuzzy box-shadow standing in for the border, with a box-shadow/background transition added; this card has no hover or checked/selected state, so only the base treatment was needed (no :hover or .checked rules to convert). Each of the 4 raster `.qcard-icon` `<img>` icons (SSO, SCIM, API, Gallagher) was wrapped in a new `.qcard-icon-badge` div (92px, white background, colored border, matching page 01's `.desk-icon-badge` proportions but sized up to comfortably fit this page's larger 76px icons) — since the 4 question cards read as a repeating group, the badges cycle through the same blue/pink/purple/teal palette used on page 01, one color per card in DOM order. Only the badge's border color was set per icon; the icon images themselves (icon-sso.png, icon-scim.png, icon-api.png, icon-gallagher.png) were not modified in any way. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change).
 
 MOST RECENT CHANGE: per a follow-up request that each icon badge's border color match the icon
 symbol inside it, replaced the arbitrary blue/pink/purple/teal palette assignment with colors
@@ -428,7 +428,7 @@ some visual definition without an outline. Verified via an inline HTMLParser tag
 `node --check` on the extracted script block (untouched), a computed-style check confirming `border:
 0px none`, and a Playwright screenshot zoomed on the frame's corner confirming no border line remains.
 
-MOST RECENT CHANGE: per a request (also applied to smartalock-templates-00.html's own qcards) to make
+MOST RECENT CHANGE: per a request (also applied to smartalock-registration.html's own qcards) to make
 the option cards' icons 30% smaller, scaled both `.qcard h3 .qcard-icon` (76px -> 53.2px) and
 `.qcard-icon-badge` (92px -> 64.4px, border-radius 26px -> 18.2px) by 0.7. The per-icon border colors
 (`.icon-sso`/`.icon-scim`/`.icon-api`/`.icon-gallagher`) and everything else in the card were left
@@ -438,7 +438,7 @@ screenshot confirming the icon renders visibly smaller within its badge.
 MOST RECENT CHANGE: this page (IT Configuration & Integrations) is also shared by both product
 branches' Edit links, so its Continue handler now reads both `return` and `branch` query params —
 with `?return=summary&branch=floorsense` it goes to floorsense-out-of-box-policy.html, with
-`?return=summary&branch=smartalock` it goes to smartalock-configuration-summary-08.html, and with
+`?return=summary&branch=smartalock` it goes to smartalock-configuration-summary.html, and with
 neither param it still proceeds to pick-a-product.html as before. Verified via Playwright
 end-to-end navigation tests covering all three cases.
 
@@ -455,7 +455,7 @@ just not in the headline copy. No ids, state keys, CSS class names (`icon-sso`/`
 `ssoMethod`/`scimProvisioning`), image filenames, or guide-link URLs were touched — this was a
 visible-copy-only change. Per a further request, both of these first two cards' headings also
 gained a `<span class="group-tag">Recommended</span>` pill (a new `.group-tag` CSS rule, ported
-verbatim from `floorsense-desk-user-groups-03.html`'s own "Recommended" pill, since this page only
+verbatim from `floorsense-desk-user-groups.html`'s own "Recommended" pill, since this page only
 had the differently-purposed `.qcard-tag` "Optional" pill before). Verified via an HTMLParser
 tag-balance check, `node --check` on the script block (untouched), a Playwright test confirming
 selecting an SSO method and enabling SCIM provisioning still autosaves to
@@ -510,7 +510,7 @@ width (no 560px cap) since it's a page-level message, not scoped to one card.
 
 Clicking "Send Email" (or, silently with no alert, clicking the existing "Save & continue" button)
 calls a new `sendItContactEmail()`: it reads `project.registration.itEmail` (the "IT Contact Email"
-field on `smartalock-templates-00.html`'s Contacts card — the previous page in this flow), and if
+field on `smartalock-registration.html`'s Contacts card — the previous page in this flow), and if
 present, builds a `mailto:` URL (subject + a short plain-text body asking the IT contact to
 complete this step, ending with `window.location.href` as the link back to this page) and assigns
 it to `window.location.href`, following the exact same `mailto:`-compose pattern already used by
@@ -570,6 +570,17 @@ since visibility is now entirely JS-driven, matching the other two guide-boxes. 
 HTMLParser tag-balance check, `node --check` on the extracted script block, and a Playwright test
 confirming: hidden on load with an empty field, shown immediately after typing, hidden again after
 clearing the field, shown again after retyping, and hidden after Reset.
+
+MOST RECENT CHANGE: renamed this file from `smartalock-it-configuration-02.html` to `smartalock-it-configuration.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>
@@ -704,7 +715,7 @@ clearing the field, shown again after retyping, and hidden after Reset.
 
   /* ---------------- send this page to the IT contact ----------------
      Reads project.registration.itEmail (the "IT Contact Email" field entered on the Contacts card
-     of smartalock-templates-00.html) and opens a mailto: compose containing a link back to this
+     of smartalock-registration.html) and opens a mailto: compose containing a link back to this
      page, so a client who isn't confident configuring SSO/provisioning/integrations themselves can
      hand it off to their own IT contact instead. Wired to fire both from the dedicated "Send Email"
      button in the top notice, and automatically (silently, no alert if no IT email is on file) every
@@ -747,7 +758,7 @@ clearing the field, shown again after retyping, and hidden after Reset.
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
     const nextUrl = returnToSummary
-      ? (returnBranch === 'floorsense' ? 'floorsense-out-of-box-policy.html' : 'smartalock-configuration-summary-08.html')
+      ? (returnBranch === 'floorsense' ? 'floorsense-out-of-box-policy.html' : 'smartalock-configuration-summary.html')
       : 'pick-a-product.html';
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });

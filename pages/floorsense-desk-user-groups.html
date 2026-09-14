@@ -124,7 +124,7 @@
   .groups-column .group-subfields { max-width: none; }
 
   /* ---------- each column wrapped in its own glass card — propagates
-     floorsense-reservation-types-01.html's later "transparent glass" card treatment here: a
+     floorsense-reservation-types.html's later "transparent glass" card treatment here: a
      translucent white background with backdrop-filter blur instead of a solid grey border, and a
      soft fuzzy box-shadow standing in for the border. Plain static container (no hover/selected
      state), so no extra states were introduced. ---------- */
@@ -156,7 +156,7 @@
   /* ---------- one representative icon per card, placed in front of the section title itself
      (Desk Group Setup / User Group Setup) rather than on each individual checkbox option below —
      matching the sitewide colored-border white-square icon-badge convention (as seen on
-     floorsense-nsnp-11.html/floorsense-fme-12.html's .path-icon-badge), scaled down to sit
+     floorsense-nsnp.html/floorsense-fme.html's .path-icon-badge), scaled down to sit
      comfortably beside a heading instead of a full option card. ---------- */
   .section-title-row { display: flex; align-items: center; gap: 14px; margin: 0 0 10px; }
   .section-title-row h2.section-title { margin: 0; }
@@ -171,12 +171,12 @@
   .section-icon-badge.badge-purple .section-icon-glyph { color: #9B6BEC; }
   .section-icon-glyph { width: 36.8px; height: 36.8px; }
 
-  /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods-02.html's
+  /* ---------- multi-select checkbox cards, ported from floorsense-checkin-methods.html's
      .desk-check-card — reused here (renamed .group-check-card) for both the Desk Group and User
      Group checkbox groups, since both need independently-tickable options rather than a
      single-select radio. ---------- */
   .group-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
-  /* ---------- glass card: propagates floorsense-reservation-types-01.html's later "transparent
+  /* ---------- glass card: propagates floorsense-reservation-types.html's later "transparent
      glass" card treatment here too — see the MOST RECENT CHANGE note at the end of this file's NOTE
      block. Hover/checked, previously shown via border-color, now read through the shadow's
      spread/tint and the background tint instead. ---------- */
@@ -196,8 +196,8 @@
     background: var(--tc-wash, rgba(232,241,252,0.7));
     box-shadow: 0 16px 40px -8px var(--tc-glow-strong, rgba(0,113,227,0.3)), 0 3px 12px rgba(16,42,67,0.08);
   }
-  /* ---------- per-choice colour theming, ported from floorsense-reservation-types-01.html /
-     floorsense-checkin-methods-02.html's --tc mechanism — applied only to these individual choice
+  /* ---------- per-choice colour theming, ported from floorsense-reservation-types.html /
+     floorsense-checkin-methods.html's --tc mechanism — applied only to these individual choice
      cards, NOT to the .groups-card column canvases above them (those stay a plain static wrapper
      per the request to leave the main card canvases alone). Same three modes (none/provide/policy)
      repeat in both the Desk Group and User Group grids, so one rule per data-mode colours matching
@@ -219,7 +219,7 @@
     opacity: 0; transition: opacity .15s;
   }
   .group-check-card.checked .group-tick::after { opacity: 1; }
-  /* ---------- big bare content icon per option, matching floorsense-reservation-types-01.html's
+  /* ---------- big bare content icon per option, matching floorsense-reservation-types.html's
      .desk-icon-img (56x56px, no circular badge, accent-coloured stroke) — this page previously had
      no content icons at all, just the tick + title text used by every other card grid on the
      site. ---------- */
@@ -232,7 +232,7 @@
   }
   .group-desc { font-size: 13.12px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
 
-  /* ---------- conditional policy textarea panel, ported from floorsense-nsnp-11.html's
+  /* ---------- conditional policy textarea panel, ported from floorsense-nsnp.html's
      .path-subfields ---------- */
   .group-subfields { display: none; flex-direction: column; gap: 8px; margin-top: 20px; max-width: 640px; }
   .group-subfields.show { display: flex; }
@@ -302,27 +302,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg current" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg current" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -448,10 +448,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-checkin-methods-02.html">
+        <a class="page-nav-btn" href="floorsense-checkin-methods.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-prebooking-advance-04.html">
+        <a class="page-nav-btn next" href="floorsense-prebooking-advance.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -476,7 +476,7 @@
 <!--
   NOTE for Oleg: module 03 of the Floorsense wizard family, new — inserted "between current 02 and
   03" per the brief, clarified via a follow-up question to mean immediately after
-  floorsense-checkin-methods-02.html and before floorsense-setup-path-00.html in the actual
+  floorsense-checkin-methods.html and before floorsense-setup-path.html in the actual
   click-through order (the numeric progress-bar slot 03 was unambiguous either way, but the actual
   next/back-arrow wiring wasn't, since Setup Path already sits between Check-in Methods and
   Prebooking in click-through order). Click-through order is now
@@ -486,12 +486,12 @@
 
   This page covers two related but independent topics, each following the same structure: a
   section-head with the brief's own explanatory copy (kept close to verbatim), a multi-select
-  checkbox grid (.group-check-card, ported from floorsense-checkin-methods-02.html's
+  checkbox grid (.group-check-card, ported from floorsense-checkin-methods.html's
   .desk-check-card pattern — reused/renamed since this page needed the identical multi-tick
   behaviour for two separate groups), a conditional "describe the override policy" textarea
-  (.group-subfields, ported from floorsense-nsnp-11.html's .path-subfields) that only appears when
+  (.group-subfields, ported from floorsense-nsnp.html's .path-subfields) that only appears when
   the relevant "apply different policy" checkbox is ticked, and an amber caution notice
-  (.setup-notice, ported verbatim from floorsense-setup-path-00.html) warning that extra
+  (.setup-notice, ported verbatim from floorsense-setup-path.html) warning that extra
   restrictions complicate setup/maintenance for administrators — this directly reflects the brief's
   own explicit caution and is shown under both policy checkboxes, not just one.
 
@@ -520,10 +520,10 @@
   policyNotes }, userGroups: { none, provide, policy, policyNotes } } — a new top-level key.
   markModuleSaved key is 'desk-user-groups'.
 
-  Back-arrow goes to floorsense-checkin-methods-02.html (whose own next-arrow/Continue redirect now
+  Back-arrow goes to floorsense-checkin-methods.html (whose own next-arrow/Continue redirect now
   point here — see that file's NOTE); next-arrow/Continue redirect goes to
-  floorsense-setup-path-00.html (whose own back-arrow now points here instead of
-  floorsense-checkin-methods-02.html — see that file's NOTE). The progress bar above gained a 13th
+  floorsense-setup-path.html (whose own back-arrow now points here instead of
+  floorsense-checkin-methods.html — see that file's NOTE). The progress bar above gained a 13th
   "desk-user-groups" segment, inserted right after "Check-in Methods" and before "Prebooking
   Window", on all 13 Floorsense pages.
 
@@ -549,23 +549,23 @@
   text blocks, for visual consistency with the rest of the wizard. Nothing inside changed other than
   the wrapping card padding/border; ids, state, and JS wiring are untouched.
 
-  MOST RECENT CHANGE: per a request to move floorsense-setup-path-00.html later in the click-through
-  order (to follow floorsense-optional-features-06.html, once all the core "applies to everyone"
+  MOST RECENT CHANGE: per a request to move floorsense-setup-path.html later in the click-through
+  order (to follow floorsense-optional-features.html, once all the core "applies to everyone"
   settings are collected — see that file's own NOTE for the full reasoning and its new purpose as a
   card-free transition/confirmation page), this page's next-arrow/Continue redirect changed from
-  floorsense-setup-path-00.html to floorsense-prebooking-advance-04.html, since Prebooking is now the
+  floorsense-setup-path.html to floorsense-prebooking-advance.html, since Prebooking is now the
   page immediately after this one. Back-arrow is unaffected. Click-through order is now
   01 -> 02 -> 03(this page) -> 04 -> 05 -> 06 -> 00 -> [out-of-box-policy summary]; modules 07-13 are
   no longer part of the enforced click-through path from Setup Path onward (still reachable directly
   via the progress bar, per the wizard's usual convention). See
-  floorsense-prebooking-advance-04.html's and floorsense-setup-path-00.html's own NOTEs for the rest
+  floorsense-prebooking-advance.html's and floorsense-setup-path.html's own NOTEs for the rest
   of this reorder.
   MOST RECENT CHANGE: per a request to remove every progress-bar segment that follows Optional
   Features, the progress bar above shrank from 14 segments (fixed 00-13 numeric order) to 7, now in
   actual click-through order: Desk Allocation Method, Check-in Methods, Desk & User Groups,
   Prebooking Window, Business Hours, Optional Features, and Core Complete
-  (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
-  reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
+  (floorsense-setup-path.html). See floorsense-setup-path.html's own NOTE for the full
+  reasoning, including why floorsense-default-reservation-times.html onward (07-13) no longer
   appear in the bar at all.
 
   MOST RECENT CHANGE: per a request to stop repeating the amber overrides-caution notice at the
@@ -591,14 +591,14 @@
 
   MOST RECENT CHANGE: per a request to mark the first choice on both cards (Desk Group Setup and
   User Group Setup) as recommended, a small "Recommended" pill (.group-tag, styled identically to
-  the existing .desk-tag "Default" pill on floorsense-checkin-methods-02.html) was added next to
+  the existing .desk-tag "Default" pill on floorsense-checkin-methods.html) was added next to
   the "We will not use Desk Groups (can be setup later)" and "We will not use User Groups feature
   initially (will rely on Desk Group and General policy)" option titles - both are already each
   grid's first/default-checked choice, so no default-state or JS changes were needed, only the
   label markup and a new .group-tag CSS rule.
 MOST RECENT CHANGE: per a request to illustrate this page's cards, added a big bare
 56x56px content icon to each of the 6 .group-check-card options (matching
-floorsense-reservation-types-01.html's .desk-icon-img size/style exactly) — this page previously
+floorsense-reservation-types.html's .desk-icon-img size/style exactly) — this page previously
 had no content icons at all, just the tick + title text pattern. New .group-icon-img class, icon
 placed between the tick and the card body, same position used on every other option-card page.
 
@@ -607,7 +607,7 @@ redesign pass where a good match already existed, rather than inventing new meta
 already illustrated elsewhere:
 - Both "We will not use ... Groups" options (Desk and User, each tagged Recommended) use the same
   circle-with-diagonal-slash "off" glyph already used for "we will not be using X" on
-  floorsense-nsnp-11.html/floorsense-fme-12.html — these two cards are functionally identical
+  floorsense-nsnp.html/floorsense-fme.html — these two cards are functionally identical
   concepts (declining the feature), so sharing one icon keeps the two columns visually parallel.
 - "We will provide a list of desk numbers ... on floorplan" gets a new floorplan icon (a rectangle
   divided into rooms with a marked desk dot in one), distinct from the plain bulleted-list icon
@@ -615,11 +615,11 @@ already illustrated elsewhere:
   floorplan rather than just supplying a list of names.
 - "We will provide a list of User Group names ... via spreadsheet" reuses the exact bulleted-list
   icon (three lines + three dots) already used for "we'll provide a list" options on
-  floorsense-nsnp-11.html/floorsense-fme-12.html, since this option really is just a plain list/
+  floorsense-nsnp.html/floorsense-fme.html, since this option really is just a plain list/
   spreadsheet with no floorplan involved.
 - Both "apply different policy" options (Desk Group and User Group) use a new policy-document icon
   (a page with a folded corner and two text lines) — a distinct shape from the clipboard-checkmark
-  icon used for "the core policy is ready" on floorsense-setup-path-00.html, so the two don't read
+  icon used for "the core policy is ready" on floorsense-setup-path.html, so the two don't read
   as the same concept, while still being instantly recognisable as "a policy document."
 
 Verified via a jsdom script (loading the page with runScripts: "outside-only", then eval-ing the
@@ -678,7 +678,7 @@ the extracted script block (untouched -- markup-only change), and a WeasyPrint r
 in its actual `.groups-illustration` card treatment confirming the simplified, blue-toned
 illustration reads cleanly at its 640px display width.
 
-MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest card
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types.html's latest card
 treatment sitewide, both `.groups-card` (the two column wrappers) and `.group-check-card` (the
 per-option checkbox cards inside each column) dropped their solid `border: 1.5px solid var(--line)`
 in favour of page 01's translucent-glass treatment: a translucent white background
@@ -775,14 +775,14 @@ verified against the CSS spec and real-browser behaviour rather than a WeasyPrin
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block (all
 markup/CSS-only changes, no JS affected).
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
@@ -797,7 +797,7 @@ added, and that banner has since also been removed, so no per-option icon markup
 restore; a header-level icon better fits the page's current no-banner, two-card layout. New
 `.section-title-row`/`.section-icon-badge`/`.section-icon-glyph` CSS was added, following the
 sitewide colored-border white-square icon-badge convention (as used on
-floorsense-nsnp-11.html/floorsense-fme-12.html's `.path-icon-badge`), initially sized down to
+floorsense-nsnp.html/floorsense-fme.html's `.path-icon-badge`), initially sized down to
 44px/14px radius/24px glyph to sit beside a heading, then per a follow-up request enlarged to a full
 84px badge/22px radius/46px glyph — matching the page 05/06 "Style 1" 84px icon convention used
 elsewhere on the Floorsense branch — then per one more follow-up request reduced 20% from that 84px
@@ -824,7 +824,7 @@ unaffected. Verified via an inline HTMLParser tag-balance check and `node --chec
 script block (untouched — markup-only change, no JS logic affected).
 
 MOST RECENT CHANGE: per a request to port the per-card tick+colour theming already applied to
-floorsense-reservation-types-01.html and floorsense-checkin-methods-02.html onto this page, but to
+floorsense-reservation-types.html and floorsense-checkin-methods.html onto this page, but to
 the individual choice cards only — explicitly NOT to the `.groups-card` column canvases that wrap
 each of the two grids. Added `--tc`/`--tc-wash`/`--tc-glow`/`--tc-glow-strong` custom properties keyed
 off each `.group-check-card`'s existing `data-mode` attribute (`none`/`provide`/`policy`), which
@@ -845,6 +845,17 @@ Verified via a Playwright test confirming: both `.groups-card` elements resolve 
 grids; clicking "provide" in the Desk Group grid turns its tick, heading, and card background blue;
 clicking "policy" in the User Group grid turns its heading purple; and a full-page screenshot
 confirming the visual result.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-desk-user-groups-03.html` to `floorsense-desk-user-groups.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 
@@ -997,7 +1008,7 @@ confirming the visual result.
     markModuleSaved('desk-user-groups');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    setTimeout(() => { window.location.href = 'floorsense-prebooking-advance-04.html'; }, 500);
+    setTimeout(() => { window.location.href = 'floorsense-prebooking-advance.html'; }, 500);
   });
 })();
 </script>

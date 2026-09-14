@@ -23,7 +23,7 @@
     default 8. Also appends a sentence naming the client's actual configured default start time (and
     either its fixed duration or its shared end time) for bookings made without picking a time,
     read from project.floorsense.wizard.defaultReservationTimes { defaultStartTime, endMode,
-    defaultDurationHours, defaultEndTime } — the same key floorsense-default-reservation-times-07.html
+    defaultDurationHours, defaultEndTime } — the same key floorsense-default-reservation-times.html
     writes.
   - Booking duration <- project.floorsense.wizard.reservationLength { reservationLengthMode,
     reservationLengthFixedDescription }, default mode 'release'.
@@ -42,7 +42,7 @@
     it's included here conditionally rather than left out altogether.
   - Remote Booking Confirmation (new row) <- project.floorsense.wizard.remoteConfirm.enabled,
     default false; same pattern as NSNP/Sit-stand (row when on, not-on-box entry when off). Added
-    the same day this feature itself was added to floorsense-optional-features-06.html's hub, since
+    the same day this feature itself was added to floorsense-optional-features.html's hub, since
     it directly changes how an end user confirms a booking — clearly end-user-relevant, unlike
     Auto-Release on Idle below.
   - Sit-stand / FME (new row) <- project.floorsense.wizard.fme { mode }; only shown when mode isn't
@@ -57,7 +57,7 @@
   end-user's point of view, and it reads as an admin-facing safety-net setting rather than a
   distinct thing an end user needs to be told about; flag if it should get its own row.
 
-MOST RECENT CHANGE: per a request to sync this guide with today's floorsense-optional-features-06.html
+MOST RECENT CHANGE: per a request to sync this guide with today's floorsense-optional-features.html
 changes (icon-color differentiation, and the add-then-remove of "Auto-Release on No Show" within the
 same session), reviewed both. Icon-color changes are a hub-page-only visual affordance (distinguishing
 feature rows in a settings list) and don't correspond to any end-user-facing behaviour, so nothing to
@@ -82,7 +82,7 @@ thresholds (confirming correct minute/minutes singular-plural wording in each ca
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's hardcoded green values (which, unlike the wizard pages, aren't driven by CSS variables) were swapped one-for-one using this page's own Smartalock parallel (smartalock-locker-guide-live.html) as the reference: #1FAA59 -> #0071E3, #146B3A -> #0058B0, #E6F7ED -> #E8F1FC, #178A48 -> #0058B0. Covers the toolbar's primary button, the hero gradient, section-eyebrow headings, and the row-icon badges. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block.
 
 MOST RECENT CHANGE: per a site-wide request to propagate the glass-card/icon-badge styling already
-finished on floorsense-reservation-types-01.html, reviewed this page for large `var(--radius-lg)`-
+finished on floorsense-reservation-types.html, reviewed this page for large `var(--radius-lg)`-
 style bordered CARD elements to convert — found none: `.not-on-box` uses an intentionally *dashed*
 1.5px border specifically to signal "these features aren't switched on yet" (the same
 placeholder/off-state visual language used elsewhere on this site for empty/unconfigured states),
@@ -112,7 +112,7 @@ in a document meant to print cleanly as a PDF, so `.row-icon` only gained the sa
 `node --check` on the extracted script block (untouched — CSS/markup-only change).
 
 MOST RECENT CHANGE: per a request to check this guide reflects today's changes on
-floorsense-optional-features-06.html, added a new conditional row for the brand-new "Remote Booking
+floorsense-optional-features.html, added a new conditional row for the brand-new "Remote Booking
 Confirmation" feature added there today — `#row-remote-confirm`, under the "Tapping In & Out"
 section (right after the NSNP row, since it's another way the tap-in step itself changes), reading
 `project.floorsense.wizard.remoteConfirm.enabled` the same way NSNP/Sit-stand/Recurring already do:
@@ -134,7 +134,7 @@ already-shown Configuration Summary duration) and keep it dynamically in sync he
 row's paragraph now appends a second sentence naming the client's actual configured default start
 time for bookings made without picking a time, plus either its fixed duration or its shared end time
 — read from `project.floorsense.wizard.defaultReservationTimes` (the same key
-floorsense-default-reservation-times-07.html writes and floorsense-out-of-box-policy.html's own
+floorsense-default-reservation-times.html writes and floorsense-out-of-box-policy.html's own
 "Default reservation duration" row already reads). Reused this page's own existing `formatClock()`
 helper for the start/end times; added inline duration-label logic (hours-only when the configured
 duration lands on a whole hour, "Xh Ym" otherwise) rather than reusing `formatMinutes()`, since that
@@ -144,7 +144,7 @@ a jsdom test confirming the sentence renders the correct start/duration text in 
 the correct start/end text in "fixed-end" mode, using a custom saved `defaultReservationTimes` value
 in both cases.
 
-MOST RECENT CHANGE: per a request to add floorsense-business-hours-05.html as a source of values for
+MOST RECENT CHANGE: per a request to add floorsense-business-hours.html as a source of values for
 the default-reservation text (applied to floorsense-out-of-box-policy.html's summary row first — see
 that file's own NOTE), this page's "Plan ahead" sentence above now reads
 `project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` before falling back to
@@ -160,7 +160,7 @@ the bottom of this page, added a new `.app-guide-box` (same visual language as `
 it but accent-blue instead of grey, matching this page's `.row-icon` badge treatment) as the very
 last element in `.body-content`, after the existing disclaimer. It links to one of two
 Floorsense-hosted Notion guides depending on whether the client chose SSO on
-`smartalock-it-configuration-02.html`: `project.smartalock.wizard.it.ssoMethod` is `""` for "No SSO"
+`smartalock-it-configuration.html`: `project.smartalock.wizard.it.ssoMethod` is `""` for "No SSO"
 (the page's `<select id="ssoMethod">` default option) and a non-empty string once any SSO option is
 selected there. `""` links to the Non-SSO guide
 (https://floorsense.notion.site/Non-SSO-mobile-app-registration-and-installation-guide-cf55346b44d2418eaaef2d876bdf6e58);
@@ -533,10 +533,10 @@ directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on th
   // If you book ahead without picking your own time, the reservation falls back to the client's
   // configured default start time (and either a fixed duration or a shared end time) — read from
   // the same project.floorsense.wizard.defaultReservationTimes key
-  // floorsense-default-reservation-times-07.html writes, so this sentence always reflects whatever
+  // floorsense-default-reservation-times.html writes, so this sentence always reflects whatever
   // the client actually configured there, not a hardcoded example.
   const defaultReservationTimes = wizard.defaultReservationTimes || {};
-  // Reservation start/end share their values with floorsense-business-hours-05.html's Arrival/
+  // Reservation start/end share their values with floorsense-business-hours.html's Arrival/
   // Departure pins (project.floorsense.wizard.businessHours), so businessHours is read first here
   // too, matching floorsense-out-of-box-policy.html's summary row.
   const defaultBusinessHours = wizard.businessHours || {};
@@ -675,7 +675,7 @@ directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on th
 
   /* ---------------- mobile app installation guide ----------------
      Links to one of two Floorsense-hosted guides depending on whether the client chose SSO on
-     smartalock-it-configuration-02.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
+     smartalock-it-configuration.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
      and a non-empty string ("okta"/"azure"/"other"/etc.) once any SSO option is selected there. */
   const smartalockIt = (project.smartalock && project.smartalock.wizard && project.smartalock.wizard.it) || {};
   const usesSSO = !!smartalockIt.ssoMethod;

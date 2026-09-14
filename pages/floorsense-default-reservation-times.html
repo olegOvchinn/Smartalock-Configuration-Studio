@@ -161,7 +161,7 @@
   .time-input:focus { outline: none; border-color: var(--accent); background: #fff; }
 
   /* ---------- end-mode choice: two selectable cards, same radio-card pattern used for the
-     Relaxed/Strict presets on floorsense-setup-path-00.html ---------- */
+     Relaxed/Strict presets on floorsense-setup-path.html ---------- */
   /* Per a request to make this canvas white with the same drop shadow as card 1 ("Start time if
      booked in advance", .info-card below) instead of the accent-tinted wash it had before, this now
      shares .info-card's exact background/blur/shadow declarations (translucent white over the
@@ -192,14 +192,14 @@
   }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  /* ---------- path-icon-badge: matches floorsense-reservation-types-01.html's .desk-icon-badge —
+  /* ---------- path-icon-badge: matches floorsense-reservation-types.html's .desk-icon-badge —
      a flat white square canvas with a light colored border per option, replacing the old bare
      56x56px accent-blue line icon (this page's .path-icon-img previously stayed bare/unbadged while
      every other page sharing that same class name — nsnp-11, fme-12, anti-desk-hogging-13 — had
      already been propagated to the badge treatment). Card 1 (a single lone icon, not part of a
      repeating option group) was later switched from plain var(--accent) blue to orange per a
      follow-up request — using badge-amber's established #F2A154 (the site's warm orange-toned
-     palette entry, e.g. floorsense-reservation-types-01.html's .desk-icon-badge.badge-amber) rather
+     palette entry, e.g. floorsense-reservation-types.html's .desk-icon-badge.badge-amber) rather
      than inventing a new hex. The two end-mode cards (duration, fixed-end) are a repeating option
      group and get their own distinct palette colors — pink for fixed-end, and green (#4CAF6D, the
      same badge-green already used elsewhere on the Floorsense branch, e.g.
@@ -269,7 +269,7 @@
     border: 1.5px solid var(--line);
     box-shadow: inset 0 1px 2px rgba(16,42,67,0.06);
   }
-  /* ---------- segmented zone: ported from floorsense-business-hours-05.html's finalized style —
+  /* ---------- segmented zone: ported from floorsense-business-hours.html's finalized style —
      the shaded start-end span renders as a row of individually rounded 30-minute blocks (flex
      children, small gap between each), each colored via a per-segment lerpColor() interpolation
      from a deep to a lighter blue, so the run of separate blocks reads as one continuous gradient
@@ -297,7 +297,7 @@
 
   /* ---------- 30-minute tick marks below each rail, generated in JS from that card's own scale
      (card 1: full-day linear; cards 2/3: the shared ROW_EDGE_PERCENT/DURATION_MAX_MINUTES/
-     endPercentForOffset() scale) — ported from floorsense-business-hours-05.html's finalized style,
+     endPercentForOffset() scale) — ported from floorsense-business-hours.html's finalized style,
      where ticks sit as a row of dots under the rail instead of crossing through it. ---------- */
   .timeline-ticks { position: absolute; top: 100%; left: 0; right: 0; height: 8px; margin-top: 6px; pointer-events: none; }
   .timeline-tick {
@@ -313,7 +313,7 @@
     width: 19px; height: 19px; border-radius: 50%; background: #102A43; border: 3px solid #fff;
     box-shadow: 0 1px 3px rgba(16,42,67,0.25), 0 3px 8px rgba(16,42,67,0.16);
     transition: box-shadow .15s, transform .15s, background-color .15s;
-    opacity: 0; /* invisible drag handle — ported from floorsense-business-hours-05.html; the large
+    opacity: 0; /* invisible drag handle — ported from floorsense-business-hours.html; the large
       invisible padding/margin hit-target on draggable nodes and the floating label-time chip below
       still make each pin fully usable and readable without a visible knob. */
   }
@@ -332,7 +332,7 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .timeline-node .label-time.primary { background: var(--accent-deep); }
-  /* ---------- tap-to-type: matches floorsense-prebooking-advance-04.html's pattern — each draggable
+  /* ---------- tap-to-type: matches floorsense-prebooking-advance.html's pattern — each draggable
      pill is its own tap target (separate from dragging), swapping its time text for a small inline
      <input type="time"> so a value can be typed/picked directly instead of only ever set by
      dragging. Not applied to the fixed #durationStartNode/#fixedEndStartNode "Starts" pins, which
@@ -366,7 +366,7 @@
   /* ---------- reveal animation: plays once when the example scrolls into view. Only opacity/
      scaleX are animated on elements that don't rely on `transform` for their own centering, since
      .timeline-node/.label-time/.label-desc use translate()/translateX() to position themselves
-     (same constraint as floorsense-checkin-window-08.html's diagram). Row B is staggered slightly
+     (same constraint as floorsense-checkin-window.html's diagram). Row B is staggered slightly
      behind Row A so the two comparisons read as a sequence rather than firing all at once. ---------- */
   @keyframes ci-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ci-grow {
@@ -460,27 +460,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -502,9 +502,21 @@
       <div class="cards-wrap">
 
         <!-- Card 1: start time — not part of the end-mode choice below, just a plain setting.
-             A solo timeline whose one pin (enlarged to match floorsense-checkin-window-08.html's
+             A solo timeline whose one pin (enlarged to match floorsense-checkin-window.html's
              "Booking start" pin, .center-node, 66px) is directly draggable along the full-day rail,
-             snapping to 30-minute segments. -->
+             snapping to 30-minute segments.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-default-reservation-times-07.html` to `floorsense-default-reservation-times.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+-->
         <div class="info-card">
           <div class="info-row">
             <div class="path-icon-badge badge-amber"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/></svg></div>
@@ -638,10 +650,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-optional-features-06.html">
+        <a class="page-nav-btn" href="floorsense-optional-features.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-checkin-window-08.html">
+        <a class="page-nav-btn next" href="floorsense-checkin-window.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -670,17 +682,17 @@
   rebuilt earlier this session into two numbered sections on one page ("1. Check-in Window" and
   "2. Default Reservation Times", each an explainer card) — see that page's own history for the
   full backstory. This request pulled the "2. Default Reservation Times" card out onto its own
-  page, positioned immediately BEFORE the renamed floorsense-checkin-window-08.html in the
+  page, positioned immediately BEFORE the renamed floorsense-checkin-window.html in the
   click-through order (same "insert a page into the fixed sequence" pattern used earlier for
   splitting Auto-Release on Idle into its own page). Since this page is now single-topic, the
   numeric "2." prefix and section-head eyebrow were dropped — matching the convention already
-  established for floorsense-idle-release-09.html — and the .checkin-card sits directly under the
+  established for floorsense-idle-release.html — and the .checkin-card sits directly under the
   hero.
 
   Content, styling and the 3-lane timeline SVG (Check-in window / Reservation window / Default
   duration, same static illustrative example values: 8:30 start, 17:00 end, 9h duration, ±60min
   check-in window) are carried over verbatim from the old combined page's "2." section — see
-  floorsense-checkin-window-08.html's own NOTE for the full history of that diagram's design
+  floorsense-checkin-window.html's own NOTE for the full history of that diagram's design
   (originally a single cramped combined SVG, redesigned into separate timeline + idle-release
   diagrams, then this timeline was nested inside the explainer card as its "EXAMPLE" panel).
   Despite the "checkin-" class prefix, .checkin-card/.checkin-card-header/.checkin-inline-field/
@@ -690,7 +702,7 @@
 
   State lives at project.floorsense.wizard.defaultReservationTimes = { defaultStartTime,
   defaultEndTime, defaultDurationHours } — split out of the old combined checkinPolicy key. The
-  neighboring floorsense-checkin-window-08.html page's own Check-in Window "earliest/latest you
+  neighboring floorsense-checkin-window.html page's own Check-in Window "earliest/latest you
   can check in" example still needs a booking start time to compute against; since that field no
   longer lives on that page, its updateCheckinExample() now reads
   project.floorsense.wizard.defaultReservationTimes.defaultStartTime directly from localStorage at
@@ -698,9 +710,9 @@
   same-page <input>. This works cleanly with the new page order, since a user reaches this page
   BEFORE Check-in Window.
 
-  Back-arrow points to floorsense-setup-path-00.html (this page now sits directly after Setup
+  Back-arrow points to floorsense-setup-path.html (this page now sits directly after Setup
   Path in the click-through order, taking over that slot from Check-in Window); next-arrow points
-  to floorsense-checkin-window-08.html. floorsense-setup-path-00.html's own "customise" branch
+  to floorsense-checkin-window.html. floorsense-setup-path.html's own "customise" branch
   destination and static next-arrow fallback were updated to land here instead of Check-in Window
   — see that page's own NOTE. The progress bar above lists all eight modules in their fixed 00-07
   numeric order (this page's own "Default Reservation Times" segment inserted between "Check-in
@@ -709,20 +721,20 @@
   segment saved on Continue.
 
   FIX: the Continue button saved state and marked the progress segment but never actually
-  navigated anywhere — unlike floorsense-setup-path-00.html/floorsense-reservation-types-01.html/
-  floorsense-checkin-methods-02.html's continueBtn handlers, which all redirect via
+  navigated anywhere — unlike floorsense-setup-path.html/floorsense-reservation-types.html/
+  floorsense-checkin-methods.html's continueBtn handlers, which all redirect via
   `setTimeout(() => window.location.href = ..., 500)` after saving. Added the same redirect here,
-  to floorsense-checkin-window-08.html (matching this page's own page-nav next-arrow). The same
-  missing-redirect bug was found and fixed on floorsense-checkin-window-08.html,
-  floorsense-idle-release-09.html and floorsense-prebooking-advance-04.html at the same time (all
+  to floorsense-checkin-window.html (matching this page's own page-nav next-arrow). The same
+  missing-redirect bug was found and fixed on floorsense-checkin-window.html,
+  floorsense-idle-release.html and floorsense-prebooking-advance.html at the same time (all
   four are pages built/rebuilt during this session's Check-in Policy split/redesign work);
-  floorsense-reservation-length-10.html correctly has no redirect since its next-arrow is disabled
+  floorsense-reservation-length.html correctly has no redirect since its next-arrow is disabled
   (it's the last module currently built).
 
   MOST RECENT CHANGE: per a follow-up request ("recreate diagram and card similar style to 04"),
   the old static 3-lane SVG (Check-in window / Reservation window / Default duration) was replaced
   with the same .timeline-card/.timeline-rail/.timeline-node structure just built on
-  floorsense-checkin-window-08.html, and .checkin-card was widened from 640px to 760px to match.
+  floorsense-checkin-window.html, and .checkin-card was widened from 640px to 760px to match.
   Unlike page 04's before/after-from-a-fixed-center model, this page's data is a start/end/duration
   triple, so the diagram was adapted rather than copied verbatim: one rail spans a fixed 6:00 AM –
   10:00 PM day-range (RAIL_START_MIN/RAIL_END_MIN, clamped), with two always-shown navy .anchor-pin
@@ -753,7 +765,7 @@
   decision — the request reframed it as two mutually-exclusive strategies for computing a
   reservation's end time, matching a `name="endMode"` two-card radio choice (same
   .path-check-card/.path-tick/.path-row pattern as the Relaxed/Strict presets on
-  floorsense-setup-path-00.html, copied verbatim into this page's own <style>):
+  floorsense-setup-path.html, copied verbatim into this page's own <style>):
   1. "Fixed duration" (endMode: 'duration', the default) — every booking lasts
      defaultDurationHours, regardless of start time; end time floats. The hours field
      (#defaultDurationHours) now lives inside this card instead of the old header sentence.
@@ -834,14 +846,14 @@
   are gone. The now-dead .checkin-inline-field/-input/-input-time/-suffix and .timeline-badge CSS
   was deleted along with them (contradicting this NOTE's own paragraph above, which is now stale —
   those classes are no longer kept). Each card instead gets one Apple Clock-style time drum (ported
-  from floorsense-checkin-window-08.html's .time-drum, including its white/3D styling) placed to
+  from floorsense-checkin-window.html's .time-drum, including its white/3D styling) placed to
   the left of a single simplified timeline: card 1's drum picks an absolute clock time and drives
   its lone pin; card 2's drum picks an elapsed duration (30-min steps, formatted "Xh Ym") and drives
   an "Ends" pin a duration's distance from a "Starts" pin; card 3's drum picks an absolute clock
   time and drives its own "Ends" pin the same way. The "Starts" pin on cards 2/3 is read-only,
   always reflecting card 1's own default start time — turning either card's drum only ever moves
   that card's own "Ends" pin. Per "make pin larger, same as start time on page 04," card 1's solo
-  pin reuses .center-node (left:50%, 66px pin, exactly floorsense-checkin-window-08.html's
+  pin reuses .center-node (left:50%, 66px pin, exactly floorsense-checkin-window.html's
   "Booking start" sizing); cards 2/3's "Starts" pins reuse the same 66px/label sizing via a new
   .big-anchor class that omits the left:50% rule, since that pin sits at a fixed left-edge position
   (ROW_EDGE_PERCENT = 10%) rather than centered, leaving room on the rail for the smaller "Ends" pin
@@ -861,7 +873,7 @@
 
   MOST RECENT CHANGE: per a follow-up request ("on the reservation end cards make start pin smaler
   but end as large as start"), cards 2 and 3's pin sizing was swapped — the .big-anchor class (66px
-  pin, matching floorsense-checkin-window-08.html's "Booking start" sizing) now sits on
+  pin, matching floorsense-checkin-window.html's "Booking start" sizing) now sits on
   durationEndNode/fixedEndEndNode instead of durationStartNode/fixedEndStartNode, and the enlarged
   navy "primary" label-time styling moved with it (durationEndTime/fixedEndEndTime now carry
   label-time.primary; durationStartTime/fixedEndStartTime dropped back to the plain small green
@@ -874,10 +886,10 @@
   was relocated to immediately follow Business Hours, taking over this page's old module number
   (04) and click-slot; this page (and Check-in Window/Auto-Release on Idle after it) shifted up one
   number in turn — this file was renamed from floorsense-default-reservation-times-04.html to
-  floorsense-default-reservation-times-07.html. Its back-arrow now points to
-  floorsense-prebooking-advance-04.html (was floorsense-business-hours-05.html); its next-arrow is
-  unchanged (floorsense-checkin-window-08.html, itself renamed from -05). See
-  floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
+  floorsense-default-reservation-times.html. Its back-arrow now points to
+  floorsense-prebooking-advance.html (was floorsense-business-hours.html); its next-arrow is
+  unchanged (floorsense-checkin-window.html, itself renamed from -05). See
+  floorsense-prebooking-advance.html's own NOTE for the full reorder.
 
   MOST RECENT CHANGE: per a follow-up request ("let's use word 'custom' instead of 'default'"),
   every user-facing occurrence of "default" on this page's own copy was reworded to "custom": the
@@ -894,18 +906,18 @@
   not current copy.
 
   MOST RECENT CHANGE: per a request for a new "Optional Features" hub page inserted right before
-  this one, this page's back-arrow changed from floorsense-business-hours-05.html to the new
-  floorsense-optional-features-06.html. This page's own next-arrow/Continue destination
-  (floorsense-checkin-window-08.html) is unaffected — this page is never conditionally skipped, so
+  this one, this page's back-arrow changed from floorsense-business-hours.html to the new
+  floorsense-optional-features.html. This page's own next-arrow/Continue destination
+  (floorsense-checkin-window.html) is unaffected — this page is never conditionally skipped, so
   it needs no dynamic navigation logic, unlike the four optional pages further down the wizard. Every
   module number from the old 06 (this page) onward shifted up by one to make room (old 06-12 are now
-  07-13). See floorsense-optional-features-06.html's own NOTE for the hub page and its skip-logic
+  07-13). See floorsense-optional-features.html's own NOTE for the hub page and its skip-logic
   design.
 
   MOST RECENT CHANGE: per a request to remove every progress-bar segment that follows Optional
-  Features, this page — along with floorsense-checkin-window-08.html, floorsense-idle-release-09.html,
-  floorsense-reservation-length-10.html, floorsense-nsnp-11.html, floorsense-fme-12.html, and
-  floorsense-anti-desk-hogging-13.html — is no longer part of the enforced click-through path (per
+  Features, this page — along with floorsense-checkin-window.html, floorsense-idle-release.html,
+  floorsense-reservation-length.html, floorsense-nsnp.html, floorsense-fme.html, and
+  floorsense-anti-desk-hogging.html — is no longer part of the enforced click-through path (per
   the earlier setup-path-00 reorder) AND no longer appears in the progress bar at all. The bar above
   still has the same 7 segments every other Floorsense page now shows (Desk Allocation Method,
   Check-in Methods, Desk & User Groups, Prebooking Window, Business Hours, Optional Features, Core
@@ -915,19 +927,19 @@
   longer reachable from the main wizard nav. Per the client's direction, this page (and the other 6
   listed above) are meant to be reached only from the summary (floorsense-out-of-box-policy.html)
   once a client wants to edit a specific setting after the fact — wiring up those edit entry points
-  is a separate follow-up task, not yet done. See floorsense-setup-path-00.html's own NOTE for the
+  is a separate follow-up task, not yet done. See floorsense-setup-path.html's own NOTE for the
   full reasoning.
 
   MOST RECENT CHANGE: per a request to fix "Save & continue" on this and the other 6 orphaned pages
   (07-13) so they return to the Configuration Summary rather than continuing through the old
   numeric sequence, `#continueBtn`'s redirect changed from the hardcoded
-  `'floorsense-checkin-window-08.html'` to `'floorsense-out-of-box-policy.html'`. The static
-  forward page-nav arrow (which still points at floorsense-checkin-window-08.html) was deliberately
+  `'floorsense-checkin-window.html'` to `'floorsense-out-of-box-policy.html'`. The static
+  forward page-nav arrow (which still points at floorsense-checkin-window.html) was deliberately
   left unchanged — it's a separate manual "browse the next orphaned page" affordance, distinct from
   the primary Save & continue action. Verified via jsdom (with a `scrollTo` shim, since this page's
   own time-drum otherwise throws in jsdom) that clicking Continue still saves `moduleStatus` and
   triggers navigation to the new target with no runtime errors.
-MOST RECENT CHANGE: per the site-wide icon-size unification, found this page had locally redefined the shared .path-icon-img class down to 38px — out of step with every other page using that same class name (nsnp-11, fme-12, anti-desk-hogging-13, all at 56px, matching floorsense-reservation-types-01.html's .desk-icon-img). Bumped it back to 56px. Also redesigned the third card's icon ('reservation ends at close of business hours'), which reused the exact same clock-with-tick-marks glyph as the second card ('ends after a fixed number of hours') with only cosmetic tick marks added — the two options weren't visually distinguishable at a glance. Replaced it with a sunset glyph (a horizon line with a dome/sun shape and rays), a more literal and distinct depiction of 'end of the business day' versus a plain duration clock. Also normalized the first card's icon to stroke-width 1.6 (was 1.8) to match the site's established icon stroke convention. Left .footer-hint-icon (a small aside/notice icon, not a card-level content icon) at its existing size. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+MOST RECENT CHANGE: per the site-wide icon-size unification, found this page had locally redefined the shared .path-icon-img class down to 38px — out of step with every other page using that same class name (nsnp-11, fme-12, anti-desk-hogging-13, all at 56px, matching floorsense-reservation-types.html's .desk-icon-img). Bumped it back to 56px. Also redesigned the third card's icon ('reservation ends at close of business hours'), which reused the exact same clock-with-tick-marks glyph as the second card ('ends after a fixed number of hours') with only cosmetic tick marks added — the two options weren't visually distinguishable at a glance. Replaced it with a sunset glyph (a horizon line with a dome/sun shape and rays), a more literal and distinct depiction of 'end of the business day' versus a plain duration clock. Also normalized the first card's icon to stroke-width 1.6 (was 1.8) to match the site's established icon stroke convention. Left .footer-hint-icon (a small aside/notice icon, not a card-level content icon) at its existing size. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
@@ -935,7 +947,7 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: Per a request to apply floorsense-business-hours-05.html's "remove the time
+MOST RECENT CHANGE: Per a request to apply floorsense-business-hours.html's "remove the time
 drums, make the pins directly draggable, split the timeline into 30-minute segments" treatment
 analogically to every other drum+timeline page, all three of this page's time drums
 (`#card1StartDrum`/`#durationDrum`/`#fixedEndDrum`, plus the `.time-drum`/`.time-drum-window`/
@@ -966,7 +978,7 @@ card's own scale/clamp/snap. Arrow-key stepping (30min/press) was added to each 
 handler. `role="slider"`/`tabindex="0"`/`aria-label` moved from the removed drums onto the three now-
 draggable pins; `aria-valuemin`/`aria-valuemax` for cards 2/3 changed from the drums' `30`/`1440` and
 `0`/`1410` to `30`/`960` and `0`/`960` respectively, matching the actual drag-reachable range on their
-own rail (the same "honest rail-value" adjustment made on floorsense-idle-release-09.html, where a
+own rail (the same "honest rail-value" adjustment made on floorsense-idle-release.html, where a
 drum's fuller range got visually capped by the rail's own scale anyway). A `renderTicksInto(container,
 maxMinutes, percentFn)` helper draws 30-minute ticks into all three cards' new `.timeline-ticks`
 layers using each card's own scale (card 1: 49 ticks/25 hour-ticks over the full day; cards 2/3: 33
@@ -987,7 +999,7 @@ block, and a weasyprint render confirming no markup/layout breakage (though, as 
 converted pages, WeasyPrint can't execute the JS that actually positions these pins, so the jsdom
 test is the real functional verification).
 
-MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types-01.html's latest
+MOST RECENT CHANGE: Per a request to propagate floorsense-reservation-types.html's latest
 card/icon styling sitewide, all four var(--radius-lg) card rules on this page — `.info-card` (card
 1, static), `.path-check-card` (cards 2/3, radio-selectable), `.policy-card`, and
 `.policy-diagram-frame` (the latter two are dead CSS with no matching markup on this page, a
@@ -1017,21 +1029,21 @@ rule, `.panel-intro .eyebrow`, and a now-dead `.section-head .eyebrow` modifier 
 markup) — all three were removed. Verified via an HTML tag-balance check and `node --check` on the
 extracted `<script>` body (no syntax errors, JS untouched).
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
 
 MOST RECENT CHANGE: per a request to make this page's three timeline diagrams "the same as page 05"
-(floorsense-business-hours-05.html), all three (`#card1StartNode`'s solo full-day pin, and cards 2/3's
+(floorsense-business-hours.html), all three (`#card1StartNode`'s solo full-day pin, and cards 2/3's
 start+end pairs) were re-skinned with that page's finalized visual treatment, ported as directly as
 each card's own scale allows. `.timeline-track-wrapper` grew from a thin 3px line to a 36px pill-
 shaped rail (white fill, thin border, inset shadow, border-radius:999px). Cards 2/3's `.timeline-zone`
@@ -1078,7 +1090,7 @@ length, no matter what time it starts — for example, a booking at ' + formatMi
 + ' would run until ' + formatMinutesAs12Hour(startMinutes + durationMinutes) + '.'`), so it always
 reflects the client's actual configured start time and duration rather than two arbitrary illustrative
 times. Card 3 (fixed-end) was left untouched — its own prose never contained a hardcoded time example.
-Also checked floorsense-checkin-window-08.html's own start-time example per the same request ("use
+Also checked floorsense-checkin-window.html's own start-time example per the same request ("use
 actual start value chosen by the client") and confirmed via a jsdom test that it already reads
 `project.floorsense.wizard.defaultReservationTimes.defaultStartTime` live on load (documented in that
 file's own earlier NOTE history) — no change was needed there. Verified via an inline HTMLParser
@@ -1093,7 +1105,7 @@ now read `project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` f
 back to this page's own previously-saved `defaultReservationTimes` fields, then the 8:30/17:00
 defaults, for projects saved before this change). `save()` now also writes `state.defaultStartTime`/
 `defaultEndTime` back into `project.floorsense.wizard.businessHours` alongside its existing
-`defaultReservationTimes` write, so floorsense-business-hours-05.html picks up this page's edits too —
+`defaultReservationTimes` write, so floorsense-business-hours.html picks up this page's edits too —
 this fires from every path that calls `save()`/`queueSave()`: dragging or keyboard-stepping Card 1's
 start pin or the fixed-end pin, and the Reset button. `defaultDurationHours` and `endMode` remain
 exclusive to this page, since business-hours-05.html has no equivalent concept for either. Verified via
@@ -1218,15 +1230,15 @@ visibly darker than `#durationHint`.
 MOST RECENT CHANGE: per a request to refine this page's icons per the rules already applied
 elsewhere, propagated the site-wide icon-badge treatment to this page's three content icons, which
 had been left as bare `.path-icon-img` svgs (56x56px, plain `var(--accent)` blue, no wrapper) even
-though every other page sharing that same class name — floorsense-nsnp-11.html, floorsense-fme-12.html,
-floorsense-anti-desk-hogging-13.html — had already been converted to `.path-icon-badge`/
+though every other page sharing that same class name — floorsense-nsnp.html, floorsense-fme.html,
+floorsense-anti-desk-hogging.html — had already been converted to `.path-icon-badge`/
 `.path-icon-glyph` (60x60px white canvas, colored border, 34.5px glyph, matching floorsense-
 reservation-types-01.html's `.desk-icon-badge`). None of the three SVGs (a calendar, a clock, a
 sunset glyph) contain a canvas `<rect>` + `fill-opacity` highlight shape, so none qualified for the
 site's separate "Style 1" glass-icon exemption and all three were in scope. Card 1's icon ("Start
 time if booked in advance") is a single lone icon, not part of a repeating option group, so it kept
 plain `var(--accent)` blue with no `badge-COLOR` modifier — same precedent as floorsense-checkin-
-window-08.html's card icon and floorsense-setup-path-00.html's `.complete-card-icon-badge`. The two
+window-08.html's card icon and floorsense-setup-path.html's `.complete-card-icon-badge`. The two
 end-mode cards (duration, fixed-end) ARE a repeating option group, so they got palette colors cycled
 in DOM order — blue then pink — matching anti-desk-hogging-13.html's 2-mode grid exactly (same two
 colors, same order). Verified via an inline HTMLParser tag-balance check, `node --check` on the
@@ -1269,7 +1281,7 @@ extracted script block (untouched), and a Playwright screenshot confirming card 
 renders with an orange border (`rgb(242, 161, 84)`).
 
 MOST RECENT CHANGE: per a request to apply the same pin treatment used on
-floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html to this page's three
+floorsense-prebooking-advance.html/floorsense-business-hours.html to this page's three
 draggable pins, `#card1StartNode`, `#durationEndNode`, and `#fixedEndEndNode` each gained a small
 decorative left/right chevron (stroked `#fff`) flanking their `#card1StartTime`/`#durationEndTime`/
 `#fixedEndEndTime` label text — each id moved onto a new inner `<span>` so the existing
@@ -1287,7 +1299,7 @@ and a Playwright test confirming all three draggable pins render 2 arrows each w
 reference pins render 0, with `#card1StartTime` reading correctly on load.
 
 MOST RECENT CHANGE: per a request to apply the same tap-to-type pin editing added to
-floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html/floorsense-checkin-window-08.html
+floorsense-prebooking-advance.html/floorsense-business-hours.html/floorsense-checkin-window.html
 to this page's three draggable pins. Each pin's floating pill (`#card1StartLabelPill`/
 `#durationEndLabelPill`/`#fixedEndEndLabelPill`) gained a `title="Tap to type a value"`, its existing
 label text wrapped in `class="label-static-text"`, and a sibling `<input type="time">`
@@ -1344,7 +1356,7 @@ before; and tap-to-edit still works again immediately after a drag.
   const saved = project.floorsense.wizard.defaultReservationTimes || {};
   const savedBusinessHours = project.floorsense.wizard.businessHours || {};
   const state = {
-    // Reservation start/end share their values with floorsense-business-hours-05.html's
+    // Reservation start/end share their values with floorsense-business-hours.html's
     // Arrival/Departure pins (project.floorsense.wizard.businessHours), so businessHours is read
     // first here and only falls back to this page's own previously-saved fields (or the 8:30/17:00
     // defaults) for older projects saved before the two pages shared state.
@@ -1383,7 +1395,7 @@ before; and tap-to-edit still works again immediately after a drag.
 
   function save() {
     project.floorsense.wizard.defaultReservationTimes = state;
-    // Push the shared start/end values back into businessHours too, so floorsense-business-hours-05.html
+    // Push the shared start/end values back into businessHours too, so floorsense-business-hours.html
     // (and anything else reading businessHours directly) sees whichever page was edited most recently.
     project.floorsense.wizard.businessHours = project.floorsense.wizard.businessHours || {};
     project.floorsense.wizard.businessHours.arrivalTime = state.defaultStartTime;
@@ -1459,7 +1471,7 @@ before; and tap-to-edit still works again immediately after a drag.
     return ROW_EDGE_PERCENT + t * (100 - 2 * ROW_EDGE_PERCENT);
   }
 
-  // Segmented zone colors — ported verbatim from floorsense-business-hours-05.html so cards 2/3's
+  // Segmented zone colors — ported verbatim from floorsense-business-hours.html so cards 2/3's
   // shaded start-end span renders with the exact same deep-to-light blue gradient treatment: each
   // 30-minute block is a separate flex child colored via lerpColor() rather than one solid fill.
   const ZONE_SEG_COLOR_START = '#0058B0';

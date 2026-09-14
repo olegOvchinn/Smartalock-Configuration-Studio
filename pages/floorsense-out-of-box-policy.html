@@ -128,7 +128,7 @@
   .download-btn:hover { background: var(--accent-deep); }
   .download-btn svg { width: 15px; height: 15px; }
 
-  /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary-08.html).
+  /* ---------- read-only policy summary groups (mirrors smartalock-configuration-summary.html).
      NOTE: every actual .summary-group element on this page lives inside .core-policy-body, whose
      higher-specificity ".core-policy-body .summary-group" rule below zeroes out background/border/
      radius/padding/max-width/box-shadow, so this base glass treatment currently has no visible
@@ -146,13 +146,13 @@
   }
   .summary-group-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
   /* ---------- icon moved out of the h3 into its own heading wrapper so it can be a big bare
-     56x56px icon (matching floorsense-reservation-types-01.html's .desk-icon-img) rather than a
+     56x56px icon (matching floorsense-reservation-types.html's .desk-icon-img) rather than a
      small 32px glyph squeezed inline before the title text — was previously also shrunk further
      to 23px in .compact mode, which this drops entirely (icons keep full size in both states, same
      principle already applied to this page's heading/paragraph text). ---------- */
   .summary-group-heading { display: flex; align-items: center; gap: 14px; min-width: 0; }
   /* ---------- summary-icon-badge: per the site-wide icon-badge propagation from
-     floorsense-reservation-types-01.html, each bare 56x56px .summary-icon glyph was wrapped in a
+     floorsense-reservation-types.html, each bare 56x56px .summary-icon glyph was wrapped in a
      flat white square badge with a light colored border, cycling the blue/pink/purple/teal/amber
      palette across the 6 summary-group headings in DOM order (wrapping back to blue for the 6th).
      See the MOST RECENT CHANGE note below. ---------- */
@@ -195,7 +195,7 @@
   .summary-row-top .value-group { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
   .summary-row-top .value { font-family: var(--font-text); font-size: 12.1px; font-weight: 600; color: var(--accent-deep); text-align: right; white-space: nowrap; }
   /* ---------- multi-value rows (e.g. several reservation types selected at once on
-     floorsense-reservation-types-01.html) can produce a value string too long to sit on one
+     floorsense-reservation-types.html) can produce a value string too long to sit on one
      nowrap line beside its label without overflowing the card — this modifier stacks the value
      below the label instead of beside it, and lets the value wrap onto multiple lines rather than
      force a single line past the edge of the page. ---------- */
@@ -265,7 +265,7 @@
      policies a client is now actively managing, so it's rendered narrower/denser rather than at
      full size. Still centred via the base rule above. This used to also shrink every heading and
      paragraph's font-size quite aggressively (card titles down to 15/16.5px, descriptions down to
-     11px) — well below floorsense-setup-path-00.html's own card typography (19.5px title, 14.76px
+     11px) — well below floorsense-setup-path.html's own card typography (19.5px title, 14.76px
      paragraph) that the rest of the wizard is styled to match, making every card on this page read
      as noticeably smaller than every other page the moment a client had a group policy override
      and at least one additional policy. Compact mode now only tightens max-width/padding/icon
@@ -321,7 +321,7 @@
 
   /* ---------- additional (neighbourhood-specific) policies: shown once Desk Groups and/or User
      Groups are in use (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups} aren't
-     "none" — set on floorsense-desk-user-groups-03.html). Lets a client duplicate the core policy
+     "none" — set on floorsense-desk-user-groups.html). Lets a client duplicate the core policy
      above under a custom name (e.g. "Finance", "CEO"), mark it as a Desk Group or User Group
      setting, and tweak exactly the settings that already carry an Edit button on this page, up to
      3 additional policies. ---------- */
@@ -443,7 +443,7 @@
   }
   .policy-select:focus { outline: none; border-color: var(--accent); background: #fff; }
 
-  /* on/off switch, ported verbatim from floorsense-optional-features-06.html */
+  /* on/off switch, ported verbatim from floorsense-optional-features.html */
   .policy-switch {
     position: relative; width: 36px; height: 21px; border-radius: 100px; background: var(--line);
     border: none; cursor: pointer; flex-shrink: 0; transition: background .18s;
@@ -552,7 +552,7 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
@@ -588,7 +588,7 @@
             <div class="summary-icon-badge badge-pink"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><line x1="9" y1="9" x2="9" y2="9.01"/><line x1="9" y1="13" x2="9" y2="13.01"/><line x1="9" y1="17" x2="9" y2="17.01"/><line x1="15" y1="9" x2="15" y2="9.01"/><line x1="15" y1="13" x2="15" y2="13.01"/><line x1="15" y1="17" x2="15" y2="17.01"/></svg></div>
             <h3>Project Registration</h3>
           </div>
-          <a class="edit-link" href="../smartalock-templates-00.html?return=summary&amp;branch=floorsense">Edit</a>
+          <a class="edit-link" href="../smartalock-registration.html?return=summary&amp;branch=floorsense">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -634,7 +634,7 @@
             <div class="summary-icon-badge badge-slate"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></div>
             <h3>IT Configuration &amp; Integrations</h3>
           </div>
-          <a class="edit-link" href="smartalock-it-configuration-02.html?return=summary&amp;branch=floorsense">Edit</a>
+          <a class="edit-link" href="smartalock-it-configuration.html?return=summary&amp;branch=floorsense">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
@@ -704,7 +704,7 @@
             <div class="summary-icon-badge badge-blue"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" fill-opacity="0.12"/><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.4l2.6 2.6l5.2-5.6"/></svg></div>
             <h3>Desk Allocation Method</h3>
           </div>
-          <a class="edit-link" href="floorsense-reservation-types-01.html?return=summary">Edit</a>
+          <a class="edit-link" href="floorsense-reservation-types.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top wrap">
@@ -725,14 +725,14 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Allow booking in advance</span>
-            <span class="value-group"><span class="value" id="prebookingWindowSummaryValue">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance-04.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="prebookingWindowSummaryValue">8 days in advance</span><a class="row-edit-link" href="floorsense-prebooking-advance.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="prebookingWindowSummaryDesc">Users can book a desk up to 8 days ahead of time.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Default reservation duration</span>
-            <span class="value-group"><span class="value" id="defaultDurationSummaryValue">8:30 AM – 5:30 PM (9 hours)</span><a class="row-edit-link" href="floorsense-default-reservation-times-07.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="defaultDurationSummaryValue">8:30 AM – 5:30 PM (9 hours)</span><a class="row-edit-link" href="floorsense-default-reservation-times.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="defaultDurationSummaryDesc">If someone books without choosing a time, their reservation defaults to starting at 8:30 AM and lasting 9 hours (until 5:30 PM).</p>
         </div>
@@ -744,7 +744,7 @@
             <div class="summary-icon-badge badge-purple"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
             <h3>Check-in Window</h3>
           </div>
-          <a class="edit-link" href="floorsense-checkin-window-08.html?return=summary">Edit</a>
+          <a class="edit-link" href="floorsense-checkin-window.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">Check-in window</span><span class="value" id="checkinWindowSummaryValue">60 min before – 60 min after</span></div>
@@ -780,7 +780,7 @@
             <div class="summary-icon-badge badge-teal"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2"/></svg></div>
             <h3>Access Methods</h3>
           </div>
-          <a class="edit-link" href="floorsense-checkin-methods-02.html?return=summary">Edit</a>
+          <a class="edit-link" href="floorsense-checkin-methods.html?return=summary">Edit</a>
         </div>
         <div class="summary-row">
           <div class="summary-row-top"><span class="label">Enabled methods</span><span class="value" id="accessMethodsSummaryValue">Cards · App · Desktop</span></div>
@@ -805,35 +805,35 @@
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Auto-Release on Idle</span>
-            <span class="value-group"><span class="value" id="idleReleaseSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-idle-release-09.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="idleReleaseSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-idle-release.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="idleReleaseSummaryDesc">Not part of the fixed defaults — this optional feature automatically frees up a reservation if the desk hasn't been occupied for a set time, at any point during the booking. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Auto Check-In on Occupancy</span>
-            <span class="value-group"><span class="value" id="autoOccupancyCheckinSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-optional-features-06.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="autoOccupancyCheckinSummaryValue">Off by default</span><a class="row-edit-link" href="floorsense-optional-features.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="autoOccupancyCheckinSummaryDesc">Not part of the fixed defaults — this optional feature automatically checks a desk in if it's detected as occupied without a proper check-in; the system can't identify who's occupying it, so the booking stays anonymous. Enable and configure it from Optional Features if required.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">No Swipe No Power (NSNP)</span>
-            <span class="value-group"><span class="value" id="nsnpSummaryValue">Off</span><a class="row-edit-link" href="floorsense-nsnp-11.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="nsnpSummaryValue">Off</span><a class="row-edit-link" href="floorsense-nsnp.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="nsnpSummaryDesc">Requires an NSNP relay unit to function. Powers a desk off until someone checks in.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Sit-stand desks</span>
-            <span class="value-group"><span class="value" id="fmeSummaryValue">Off</span><a class="row-edit-link" href="floorsense-fme-12.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="fmeSummaryValue">Off</span><a class="row-edit-link" href="floorsense-fme.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="fmeSummaryDesc">Sit-stand desk integration is disabled by default.</p>
         </div>
         <div class="summary-row">
           <div class="summary-row-top">
             <span class="label">Anti Desk Hogging</span>
-            <span class="value-group"><span class="value" id="adhSummaryValue">Off</span><a class="row-edit-link" href="floorsense-anti-desk-hogging-13.html?return=summary">Edit</a></span>
+            <span class="value-group"><span class="value" id="adhSummaryValue">Off</span><a class="row-edit-link" href="floorsense-anti-desk-hogging.html?return=summary">Edit</a></span>
           </div>
           <p class="summary-desc" id="adhSummaryDesc">Restricts how many times a user can book the same desk within a rolling time window. Disabled by default.</p>
         </div>
@@ -946,7 +946,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-optional-features-06.html">
+        <a class="page-nav-btn" href="floorsense-optional-features.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <span class="page-nav-btn next disabled">
@@ -970,7 +970,7 @@
     <div class="panel-inner">
       <div class="save-note"><span class="save-dot" id="saveDot"></span><span id="saveText">Ready to go — no changes needed</span></div>
       <div style="display:flex; gap:10px;">
-        <a class="product-picker-btn" href="smartalock-access-methods-09.html">
+        <a class="product-picker-btn" href="smartalock-access-methods.html">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Configure Lockers
         </a>
@@ -985,10 +985,10 @@
 
 <!--
   NOTE for Oleg: this page is only reached when "Pre-Configured" is selected on
-  floorsense-setup-path-00.html — it's a shortcut that bypasses the 01–05 customise wizard
+  floorsense-setup-path.html — it's a shortcut that bypasses the 01–05 customise wizard
   entirely, so it deliberately has no 0X number (it isn't a step in that sequence). Everything
   here is read-only, reusing the .summary-group/.summary-row pattern from
-  smartalock-configuration-summary-08.html (recoloured to the Floorsense green palette) since
+  smartalock-configuration-summary.html (recoloured to the Floorsense green palette) since
   there's nothing to configure — the client is just reviewing Floorsense's fixed best-practice
   defaults from the brief. The check-in window was originally given as "30 minutes before" but its
   own worked example (8 AM booking, check-in opens 7 AM) implied 60 minutes before, matching the
@@ -1003,7 +1003,7 @@
   yours for 8 hours" card now reads 9 hours. "NSNP" is presented verbatim as given in the
   brief since its expansion wasn't specified — flag if it needs a fuller explanation before this
   is shown to a client. Every summary-group except Configured Separately has an Edit pill
-  (top-right of the group heading, reusing smartalock-configuration-summary-08.html's .edit-link
+  (top-right of the group heading, reusing smartalock-configuration-summary.html's .edit-link
   styling) added per a later request so the client can jump straight into the customise wizard and
   change a default without going through the whole walkthrough. Mapping is best-effort where a
   group's values live on a single page: Check-in Window -> checkin-policy-03, Check-in Behaviour
@@ -1029,8 +1029,8 @@
   pages, so it skips the group-level Edit link in favour of a smaller .row-edit-link on each row
   (originally prebooking-advance-04 for the window, checkin-policy-03 for the duration — both
   since renamed by later cascades; the duration row now links to
-  floorsense-default-reservation-times-07.html after that field moved off the Check-in Policy page
-  entirely, and the window row links to the current floorsense-prebooking-advance-04.html). None
+  floorsense-default-reservation-times.html after that field moved off the Check-in Policy page
+  entirely, and the window row links to the current floorsense-prebooking-advance.html). None
   of these Edit links carry any state — they're plain navigation, consistent with this page having
   nothing to save itself. A .download-card sits above the discrepancy notice offering
   assets/documents/floorsense-desk-booking-guide.pdf — a separately hand-authored, illustrated
@@ -1043,12 +1043,12 @@
   relevant. The link uses the native download attribute, no JS wiring. Progress bar only shows 2 segments (setup-path, out-of-box-policy) rather
   than the full 6-segment bar used on 00 and 01–05, since this page sits on a separate branch and
   showing the 01–05 segments as available would misrepresent this as part of that sequence. Next
-  arrow is disabled (terminal page for this branch, mirrors smartalock-configuration-summary-08.html's
+  arrow is disabled (terminal page for this branch, mirrors smartalock-configuration-summary.html's
   pattern). "Confirm & finish" marks moduleStatus['out-of-box-policy'] and floorsense.configured,
   then routes to project-home.html. State lives at project.floorsense.wizard.outOfBoxPolicy =
   { acknowledged: true, preset, trainingRequested } in the same "configurationProject"
   localStorage key as the rest of the Floorsense wizard. This page is also the shared landing spot
-  for the "Relaxed" and "Strict" preset cards added to floorsense-setup-path-00.html — they link
+  for the "Relaxed" and "Strict" preset cards added to floorsense-setup-path.html — they link
   here with ?preset=relaxed / ?preset=strict, read via a plain URLSearchParams lookup on load. If
   recognised, it swaps #pageHeroTitle/#pageHeroSub to "Relaxed Preset" / "Strict Preset" wording;
   otherwise (no param, or "preconfigured") it falls back to the original "Out of the Box Policy"
@@ -1061,7 +1061,7 @@
   MOST RECENT CHANGE: per a request to replace "Out of the Box Policy" with "Configuration Summary"
   on this page, updated the visible <title>, the progress-bar tooltip, and the default #pageHeroTitle
   text (shown whenever no recognised ?preset= is present, which is now effectively always, since
-  floorsense-setup-path-00.html no longer sends one — see that file's own NOTE). The filename
+  floorsense-setup-path.html no longer sends one — see that file's own NOTE). The filename
   (floorsense-out-of-box-policy.html), the data-module="out-of-box-policy" key, and the
   project.floorsense.wizard.outOfBoxPolicy state key are all unchanged — only the visible copy
   changed, to avoid a filename-rename cascade for what is purely a display-text update. The
@@ -1078,7 +1078,7 @@
   and before the page-nav. It's hidden (`display:none`, no `.show` class) unless
   project.floorsense.wizard.deskUserGroups.deskGroups.none is explicitly false — i.e. unless the
   client actually ticked "provide" or "policy" for Desk Groups on
-  floorsense-desk-user-groups-03.html. If Desk Groups were never touched, or were left on their
+  floorsense-desk-user-groups.html. If Desk Groups were never touched, or were left on their
   "not use" default, this whole section stays hidden, since there's nothing to layer
   neighbourhood-specific policies on top of.
 
@@ -1108,7 +1108,7 @@
   controls instead of static text — number inputs (Check-in Window/Prebooking/Duration, reusing the
   `.minute-input`-style numeric-field look used elsewhere in the wizard but under a page-scoped
   `.policy-number-input` class), `.policy-switch` on/off toggles (ported verbatim from
-  floorsense-optional-features-06.html's `.switch`) for the behavioural/optional-feature booleans, a
+  floorsense-optional-features.html's `.switch`) for the behavioural/optional-feature booleans, a
   plain `<select>` for NSNP mode, and four `.policy-check-row` checkboxes for Access Methods (same
   visual language as this page's own `.training-check`, given a distinct class name since these are
   dynamically rendered per-card rather than fixed singleton ids). All fields autosave on
@@ -1127,7 +1127,7 @@
 
   This feature is deliberately NOT wired into "Confirm & finish," the PDF guide, or any other
   page's Edit links yet — it only reads/writes its own additionalPolicies array. Surfacing these
-  named policies elsewhere (e.g. letting floorsense-desk-user-groups-03.html's Desk Group Policy
+  named policies elsewhere (e.g. letting floorsense-desk-user-groups.html's Desk Group Policy
   textarea reference them by name, or showing them in the end-user PDF) is a natural follow-up but
   out of scope for this change.
 
@@ -1285,7 +1285,7 @@
   Policies, Maximum Desks Per User, submit guides panel) — zero runtime errors, no regressions.
 
   MOST RECENT CHANGE: per a request to replace the Check-in Behaviour group's Edit link with actual
-  controls, removed that `.edit-link` (it only ever pointed at floorsense-checkin-methods-02.html,
+  controls, removed that `.edit-link` (it only ever pointed at floorsense-checkin-methods.html,
   which has no dedicated fields for these two settings anyway — flagged in an earlier NOTE above)
   and turned its two rows into real `.policy-switch` on/off toggles, on by default:
   `#coreSwipeOutToggle` ("Second swipe checks out") and `#coreAutoCancelToggle` ("Auto-cancel when
@@ -1333,8 +1333,8 @@
   positioned directly above the existing NSNP row, describing it the same way NSNP is described
   (an optional feature not part of the fixed defaults, configured separately). The same request also
   fixed the Additional Options group's Edit link, which had been pointing at
-  floorsense-reservation-length-10.html (a leftover from before the Optional Features hub existed) —
-  it now points at floorsense-optional-features-06.html, since Idle/NSNP/Sit-stand/Recurring/DND are
+  floorsense-reservation-length.html (a leftover from before the Optional Features hub existed) —
+  it now points at floorsense-optional-features.html, since Idle/NSNP/Sit-stand/Recurring/DND are
   all switched on from that hub page. Verified via jsdom: the Additional Options group's Edit link
   href and its row order (Maximum desks per user, Auto-Release on Idle, NSNP, Sit-stand desks,
   Recurring bookings, Privacy) are both correct.
@@ -1343,7 +1343,7 @@
   Edit link (pointing at the Optional Features hub) was removed entirely and replaced with three
   precise, row-level `.row-edit-link` pills — the same pattern Prebooking & Duration already uses
   for its two rows — since Idle, NSNP, and Sit-stand each live on a different dedicated page: Idle →
-  floorsense-idle-release-09.html, NSNP → floorsense-nsnp-11.html, Sit-stand → floorsense-fme-12.html
+  floorsense-idle-release.html, NSNP → floorsense-nsnp.html, Sit-stand → floorsense-fme.html
   (Follow Me Ergonomics being the only feature that configures sit/stand desk height). Separately,
   Recurring bookings and Privacy — previously static text ("Disabled" / "Do Not Disturb available")
   — became real `.policy-switch` on/off toggles (`#coreRecurringToggle`, `#coreDndToggle`), matching
@@ -1359,18 +1359,18 @@
 
   MOST RECENT CHANGE: per a request to make the NSNP row's title more descriptive and drop its
   "policy" framing, the label changed from the bare acronym "NSNP" to "No Swipe No Power (NSNP)"
-  (matching the hero/section titles on floorsense-nsnp-11.html itself), the value changed from
+  (matching the hero/section titles on floorsense-nsnp.html itself), the value changed from
   "Depends on policy" to "Off by default" (matching the other optional-feature rows' style, and no
   longer implying this is something an organisation's own policy governs), and the description was
   shortened and rewritten from "Not part of the fixed defaults — whether this applies depends on
   your organisation's own policy. Confirm before go-live." to "Requires an NSNP relay unit to
   function. Powers a desk off until someone checks in." — dropping every "policy" mention and
-  instead naming the actual hardware requirement, matching floorsense-nsnp-11.html's own relay-
+  instead naming the actual hardware requirement, matching floorsense-nsnp.html's own relay-
   confirmation gate and hero copy. Verified via jsdom that the row renders the new label/value/desc
   and that `buildSummaryText()` still picks up "Off by default" for this row with no code changes.
 
   MOST RECENT CHANGE: per a request that the summary should indicate what was actually configured
-  on floorsense-nsnp-11.html rather than always showing a fixed "Off by default" placeholder, the
+  on floorsense-nsnp.html rather than always showing a fixed "Off by default" placeholder, the
   NSNP row's value and description now render dynamically from
   `project.floorsense.wizard.nsnp` on load (`renderNsnpSummary()`, called once alongside the other
   Additional Options wiring — read-only here, since NSNP is only ever configured on its own page via
@@ -1410,7 +1410,7 @@
   edited," it was fixed the same way the NSNP row was earlier — the `.value` span
   (`#checkinWindowSummaryValue`) and `.summary-desc` paragraph (`#checkinWindowSummaryDesc`) were
   hardcoded to "60 min before – 60 min after" and its worked example regardless of what was
-  actually saved on floorsense-checkin-window-08.html. A new `renderCheckinWindowSummary()` IIFE
+  actually saved on floorsense-checkin-window.html. A new `renderCheckinWindowSummary()` IIFE
   (with small `formatCheckinMinutes()`/`formatCheckinClock()` helpers) now reads
   `project.floorsense.wizard.checkinWindow.{checkInEarlyMinutes,checkInLateMinutes}` on load and
   renders both the compact value ("N min/hr before – N min/hr after") and the full sentence with a
@@ -1425,13 +1425,13 @@
   `buildSummaryText()` picks up the dynamic value via the DOM with zero code changes there).
 
   MOST RECENT CHANGE: per a request that tapping "Edit" on the Access Methods row should return
-  back here after Save & continue on floorsense-checkin-methods-02.html, that row's edit-link href
-  gained a `?return=summary` query param (`floorsense-checkin-methods-02.html?return=summary`).
+  back here after Save & continue on floorsense-checkin-methods.html, that row's edit-link href
+  gained a `?return=summary` query param (`floorsense-checkin-methods.html?return=summary`).
   The redirect logic itself lives on the destination page — see its own NOTE for details.
 
   MOST RECENT CHANGE: same pattern applied to the "Allow booking in advance" row per an identical
-  request for floorsense-prebooking-advance-04.html — its row-edit-link href gained
-  `?return=summary` (`floorsense-prebooking-advance-04.html?return=summary`). Redirect logic again
+  request for floorsense-prebooking-advance.html — its row-edit-link href gained
+  `?return=summary` (`floorsense-prebooking-advance.html?return=summary`). Redirect logic again
   lives on the destination page.
 
   MOST RECENT CHANGE: per a request to "check the rest of the sections with edit buttons work,"
@@ -1444,7 +1444,7 @@
       "day" handled for the edge case of 1.
     - Default reservation duration (`#defaultDurationSummaryValue`/`Desc`) reads
       `project.floorsense.wizard.defaultReservationTimes.{defaultDurationHours,defaultEndTime,
-      endMode}` (defaults 9 hours / 'duration' mode) — floorsense-default-reservation-times-07.html
+      endMode}` (defaults 9 hours / 'duration' mode) — floorsense-default-reservation-times.html
       actually offers two distinct modes (fixed duration vs. a shared end time for every booking),
       so the row now branches: 'duration' shows "N hours" / "A reservation lasts N hours by
       default," 'fixed-end' shows "Ends at H:MM AM/PM" / "Every reservation ends at H:MM AM/PM,
@@ -1860,7 +1860,7 @@ node --check on the extracted script block; no runtime behavior changed, only th
 the policy-card list.
 
 MOST RECENT CHANGE: per a report that selecting a Desk Group or User Group override on
-floorsense-desk-user-groups-03.html made this page's content jump to the left edge instead of
+floorsense-desk-user-groups.html made this page's content jump to the left edge instead of
 staying centered, traced this to #coreSettingsColumn's centering having been tied to the
 .centered modifier class, which was only applied when anyGroupsEnabled was false. As soon as a
 group's "apply different policy" checkbox was ticked (anyGroupsEnabled true) but before any
@@ -1892,7 +1892,7 @@ confused /tmp/extract_js.py's regex-based script extraction into misreading part
 if it were JS; reworded to "script block" without the angle brackets.
 
 MOST RECENT CHANGE: per a report that all card paragraphs and headers on this page looked
-too small, compared this page's card typography against floorsense-setup-path-00.html's
+too small, compared this page's card typography against floorsense-setup-path.html's
 .complete-card (title 19.5px, paragraph 14.76px — the wizard's reference card scale). Two issues
 found: (1) .summary-desc (the read-only description text under each summary-group row's
 label/value line) was set to 12.9px, below the 14.76px paragraph baseline used everywhere else on
@@ -1956,7 +1956,7 @@ matches the new copy exactly. Also re-ran python3 /tmp/validate.py and node --ch
 extracted script block.
 
 MOST RECENT CHANGE: per the site-wide icon-size unification request, converted this page's
-content icons to the same bare 56x56px style as floorsense-reservation-types-01.html's
+content icons to the same bare 56x56px style as floorsense-reservation-types.html's
 .desk-icon-img: .download-card-icon (was a 40px pale-green circle badge, 20px inner icon) and
 .summary-icon (was 32px, further shrunk to 23px in .compact mode, sitting inline inside each
 summary-group's <h3> before the title text). Since a 56px icon inline before a line of heading
@@ -1976,7 +1976,7 @@ confirmation panel) was deliberately left alone, along with every warning/info/s
 this page (.info-notice, .policies-intro, .policies-precedence-notice, chevrons, switches,
 checkboxes) — these are UI chrome/status indicators, not card- or section-identifying content
 icons, so forcing them to 56px would look absurd inside their small aside boxes. The Smartalock
-branch's identical download-card component (smartalock-configuration-summary-08.html) was left
+branch's identical download-card component (smartalock-configuration-summary.html) was left
 untouched, since this icon pass is scoped to the Floorsense branch only.
 
 Verified via a jsdom script (loading the page with runScripts: "outside-only", then eval-ing the
@@ -1990,11 +1990,11 @@ MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with t
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
 MOST RECENT CHANGE: Per a request that each product's logo only appear on its own branch, removed the Smartalock logo image and the "×" divider from this page's header brand lockup, so the Floorsense wizard pages now show only the Floorsense wordmark (matching how Smartalock pages already showed only their own logo). The now-fully-unused .brand-logo and .brand-divider CSS rules were removed too. pages/pick-a-product.html keeps both logos side by side, since that page is the neutral picker for choosing between the two products rather than being inside either branch.
 
-MOST RECENT CHANGE: Per a request to tie the Configured Separately group's Teams/Book on Behalf training tick boxes to floorsense-reservation-types-01.html's own selections, trainingTeams and trainingBookOnBehalf are now ticked automatically whenever "team-leader"/"booked-on-behalf" is present in project.floorsense.wizard.reservationTypes.selected — since a client actively using either reservation type clearly needs training on it. This is a live OR with the checkbox's own saved trainingRequested value, not a one-time default: as long as the type stays selected on page 01, the box here stays ticked even if unchecked (it snaps back), and only reverts to the last manually-saved value once the type is deselected there. Notifications has no page-01 equivalent and keeps its original manual-only behavior. Verified with a jsdom smoke test covering: only team-leader selected, only booked-on-behalf selected, both selected, neither selected, a manually-saved true with nothing selected on page 01 (stays true), and a manually-saved false with the type selected on page 01 (page 01 wins, stays ticked) — all six cases behaved as intended.
+MOST RECENT CHANGE: Per a request to tie the Configured Separately group's Teams/Book on Behalf training tick boxes to floorsense-reservation-types.html's own selections, trainingTeams and trainingBookOnBehalf are now ticked automatically whenever "team-leader"/"booked-on-behalf" is present in project.floorsense.wizard.reservationTypes.selected — since a client actively using either reservation type clearly needs training on it. This is a live OR with the checkbox's own saved trainingRequested value, not a one-time default: as long as the type stays selected on page 01, the box here stays ticked even if unchecked (it snaps back), and only reverts to the last manually-saved value once the type is deselected there. Notifications has no page-01 equivalent and keeps its original manual-only behavior. Verified with a jsdom smoke test covering: only team-leader selected, only booked-on-behalf selected, both selected, neither selected, a manually-saved true with nothing selected on page 01 (stays true), and a manually-saved false with the type selected on page 01 (page 01 wins, stays ticked) — all six cases behaved as intended.
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types-01.html to this page's three assigned card classes and two of its three assigned icon classes. `.summary-group`, `.core-policy-card`, and `.policy-card` all dropped their solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment; none of the three had a pre-existing hover/selected border-color state (each only toggles a `.expanded`/collapse state via its chevron, unrelated to the border), so only the base glass background+shadow was added, with no hover/checked variant. Note that `.summary-group`'s own box-model properties are currently fully overridden by the higher-specificity `.core-policy-body .summary-group` rule (which zeroes background/border/radius/padding/max-width so the six summary rows read as flush sections inside the single `.core-policy-card` "canvas") — every actual `.summary-group` element on this page lives inside `.core-policy-body`, so this glass update has no visible effect today, but was applied anyway for consistency with the rest of the site's propagation and in case `.summary-group` is ever rendered standalone, matching how `.info-card`/`.policy-card`/`.policy-diagram-frame` were converted on floorsense-default-reservation-times-07.html despite being dead CSS there too.
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types.html to this page's three assigned card classes and two of its three assigned icon classes. `.summary-group`, `.core-policy-card`, and `.policy-card` all dropped their solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment; none of the three had a pre-existing hover/selected border-color state (each only toggles a `.expanded`/collapse state via its chevron, unrelated to the border), so only the base glass background+shadow was added, with no hover/checked variant. Note that `.summary-group`'s own box-model properties are currently fully overridden by the higher-specificity `.core-policy-body .summary-group` rule (which zeroes background/border/radius/padding/max-width so the six summary rows read as flush sections inside the single `.core-policy-card` "canvas") — every actual `.summary-group` element on this page lives inside `.core-policy-body`, so this glass update has no visible effect today, but was applied anyway for consistency with the rest of the site's propagation and in case `.summary-group` is ever rendered standalone, matching how `.info-card`/`.policy-card`/`.policy-diagram-frame` were converted on floorsense-default-reservation-times.html despite being dead CSS there too.
 
 The lone `.download-card-icon` (View/Print Guide card) and all 6 `.summary-icon`s (Prebooking & Duration, Check-in Window, Check-in Behaviour, Access Methods, Additional Options, Configured Separately) were bare 56x56px glyphs with no existing badge — each was wrapped in a new white/colored-border icon badge (`.download-card-icon-badge`/`.download-card-icon-glyph` and `.summary-icon-badge`/`.summary-icon-glyph` respectively, 60x60px canvas, 34.5px glyph), since neither class's SVGs contain the canvas-`<rect>`-plus-fill-opacity-highlight pattern that marks the site's separate Style 1 icon treatment. `.download-card-icon` is a single lone icon (only one download card on the page) so it kept plain accent blue rather than a palette colour. The 6 `.summary-icon`s read as a repeating group of same-role section icons, so they cycle the site's blue/pink/purple/teal/amber palette in DOM order, wrapping back to blue for the 6th (Configured Separately).
 
@@ -2004,11 +2004,11 @@ Verified via an inline HTMLParser tag-balance check and `node --check` on the ex
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed all 3 `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, "Review" above the summary columns, and "Neighbourhood Policies" above the "Additional Policies" section heading. The hero's `.panel-intro` parent kept its `<h1>`/`<p>` content, so only its span was removed. The "Neighbourhood Policies" span's parent (`.section-head.policies-section-head`) also kept its `<h2 class="section-title">`/`<p>`, so only its span was removed too. The "Review" span's parent `.section-head`, however, contained nothing else — it was a bare `<div class="section-head"><span class="eyebrow">Review</span></div>` — so per instruction that entire now-empty `.section-head` div was deleted rather than left as an empty shell. Also removed the `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet (`.policies-section-head`'s own margin rule targets the section-head element itself, not `.eyebrow`, so it was left as-is). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 
-MOST RECENT CHANGE: Per a request that "Reserved by User as Needed" (floorsense-reservation-types-01.html's
+MOST RECENT CHANGE: Per a request that "Reserved by User as Needed" (floorsense-reservation-types.html's
 default reservation type) show up on this summary page, added a new "Desk Allocation Method"
 `.summary-group` as the first group on the page — reusing the pink `.summary-icon-badge` and a
 three-desk-tiles-plus-checkmark glyph echoing page 01's own "Reserved by User as Needed" icon, with a
-group-level Edit pill linking to `floorsense-reservation-types-01.html?return=summary` (that page
+group-level Edit pill linking to `floorsense-reservation-types.html?return=summary` (that page
 already supports the `?return=summary` redirect pattern from an earlier change). A single
 `.summary-row` ("Reservation types") shows every currently-selected type's label
 (`RESERVATION_TYPE_LABELS`, e.g. "Reserved by User as Needed", joined with " · " when more than one
@@ -2060,31 +2060,31 @@ Updated the older NOTE above (which claimed the override already zeroed every bo
 mention box-shadow explicitly. Verified via an inline HTMLParser tag-balance check and `node --check`
 on the extracted script block (markup/CSS-only change, no JS touched).
 
-MOST RECENT CHANGE: per a request to exclude floorsense-setup-path-00.html from the wizard's linear
-flow (see floorsense-optional-features-06.html's own NOTE for the full reasoning), this page's back-
-arrow changed from floorsense-setup-path-00.html to floorsense-optional-features-06.html, since
+MOST RECENT CHANGE: per a request to exclude floorsense-setup-path.html from the wizard's linear
+flow (see floorsense-optional-features.html's own NOTE for the full reasoning), this page's back-
+arrow changed from floorsense-setup-path.html to floorsense-optional-features.html, since
 Optional Features is now the actual last core-selection step feeding into this summary. The progress
-bar's own "Core Complete" segment (still linking to floorsense-setup-path-00.html) was left untouched,
+bar's own "Core Complete" segment (still linking to floorsense-setup-path.html) was left untouched,
 per an explicit scope decision — that page stays directly reachable from the progress bar on every
 Floorsense page, it's just no longer part of the enforced Continue/back-arrow path. Markup/CSS-only
 change; verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script
 block.
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
 
 MOST RECENT CHANGE: per a request to review this summary against today's changes on
-floorsense-optional-features-06.html, added a new "Remote Booking Confirmation" row to the
+floorsense-optional-features.html, added a new "Remote Booking Confirmation" row to the
 Additional Options group — that hub gained this brand-new feature today
 (`project.floorsense.wizard.remoteConfirm.enabled`) with no dedicated standalone page of its own,
 so it follows the same pattern already used for Recurring bookings/Privacy (a live `.policy-switch`
@@ -2107,20 +2107,20 @@ doesn't interfere with the adjacent Recurring bookings/Privacy toggles.
 
 MOST RECENT CHANGE: per a report that this page's progress bar used to have a first segment linking
 back to the wizard, restored the "Core Complete" segment (`data-module="setup-path"`, linking to
-floorsense-setup-path-00.html) immediately before this page's own "Configuration Summary" segment —
+floorsense-setup-path.html) immediately before this page's own "Configuration Summary" segment —
 the exact markup removed sitewide in commit 7db5293 ("Remove page 00's progress-bar segment
 sitewide"). That sitewide removal is left in place on the other 14 Floorsense wizard pages; per this
 explicit request, only this summary page's copy of the bar gets its back-link restored, since this is
 the one place a reader landing on the summary (via the "Pre-Configured" shortcut or after finishing
-the wizard) would otherwise have no progress-bar way back to floorsense-setup-path-00.html. No JS
+the wizard) would otherwise have no progress-bar way back to floorsense-setup-path.html. No JS
 changes needed — `renderProgressBar()` already reads segments dynamically via
 `document.querySelectorAll('.progress-seg[data-module]')`. Verified via an inline HTMLParser
 tag-balance check and `node --check` on the extracted script block.
 
 MOST RECENT CHANGE: per a follow-up that the restored first segment "should not link to
-floorsense-setup-path-00.html anymore", repointed it to floorsense-reservation-types-01.html instead —
-the actual first step of the wizard now that floorsense-setup-path-00.html is excluded from its linear
-flow (see floorsense-optional-features-06.html's own NOTE history for that exclusion). `data-module`
+floorsense-setup-path.html anymore", repointed it to floorsense-reservation-types.html instead —
+the actual first step of the wizard now that floorsense-setup-path.html is excluded from its linear
+flow (see floorsense-optional-features.html's own NOTE history for that exclusion). `data-module`
 changed from `"setup-path"` to `"reservation-types"` and the tip text from "Core Complete" to "Desk
 Allocation Method", matching that module's own segment verbatim (same data-module/href/tip) as it
 appears on every other Floorsense wizard page's progress bar — this also means the segment now
@@ -2153,13 +2153,13 @@ anywhere in this file referenced either class, so this was a pure markup/CSS rem
 itself (`display:flex; align-items:center; gap:18px;`) needed no changes; with the icon gone it now
 just lays out `.download-card-body` (title + description) and the "View / Print Guide" button side by
 side. The Smartalock branch's identical download-card component
-(smartalock-configuration-summary-08.html) was left untouched, since this request was scoped to this
+(smartalock-configuration-summary.html) was left untouched, since this request was scoped to this
 page only. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
 block (untouched), and a rendered screenshot confirming the card reads cleanly with just text and the
 button, no icon.
 
 MOST RECENT CHANGE: per a request to use "this icon" (the ticked-grid glyph just applied to
-floorsense-reservation-types-01.html's "Reserved by User as Needed" card) for this page's own "Desk
+floorsense-reservation-types.html's "Reserved by User as Needed" card) for this page's own "Desk
 Allocation Method" summary group, replaced the group's icon glyph — previously the older three-desk-
 tiles-plus-checkmark design — with the same rounded-square/crosshair-split/two-ticked-quadrants glyph,
 keeping this group's existing pink `.summary-icon-badge` colour and this file's own SVG attribute
@@ -2198,7 +2198,7 @@ via an inline HTMLParser tag-balance check, `node --check` on the extracted scri
 and a full-page Playwright screenshot confirming all 7 groups now show visually distinct colours with
 no repeats anywhere on the page.
 
-MOST RECENT CHANGE: per a request to add floorsense-business-hours-05.html as a source of values for
+MOST RECENT CHANGE: per a request to add floorsense-business-hours.html as a source of values for
 the "Default reservation duration" row, `renderDefaultDurationSummary()` now reads
 `project.floorsense.wizard.businessHours.arrivalTime`/`departureTime` before falling back to
 `defaultReservationTimes.defaultStartTime`/`defaultEndTime` (then the 8:30/17:00 defaults) — since
@@ -2218,17 +2218,17 @@ no state, JS, or markup structure changed, only the copy inside the existing `.s
 paragraph. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted
 script block (untouched — text-only change).
 
-MOST RECENT CHANGE: per a request to ensure `smartalock-templates-00.html` (Project Registration) and
-`smartalock-it-configuration-02.html` (IT Configuration & Integrations) both feed this Floorsense
+MOST RECENT CHANGE: per a request to ensure `smartalock-registration.html` (Project Registration) and
+`smartalock-it-configuration.html` (IT Configuration & Integrations) both feed this Floorsense
 summary dynamically too — previously this page showed neither at all, only
-`smartalock-configuration-summary-08.html` (the Smartalock branch's own summary) showed IT
+`smartalock-configuration-summary.html` (the Smartalock branch's own summary) showed IT
 Configuration & Integrations, and nothing on either summary showed Project Registration until the
 matching change there (see that file's own NOTE). Added a new "Project Details" section — a
 `.section-head` plus two `.summary-group` cards, "Project Registration" and "IT Configuration &
 Integrations" — inserted right after the hero and before `#summaryColumns`/the Core Policy card,
 since these are shared setup details collected before the product-picker branch, not part of this
 page's own Floorsense-specific booking policy. Reads the exact same `project.registration` and
-`project.smartalock.wizard.it` keys `smartalock-configuration-summary-08.html`'s own equivalent groups
+`project.smartalock.wizard.it` keys `smartalock-configuration-summary.html`'s own equivalent groups
 read (IT Configuration always saves under `project.smartalock.wizard.it` regardless of which branch
 was eventually chosen, since that page runs before the branch split) — the row-building logic
 (Additional Contacts joining, Portal Access newline-splitting, Target Dates month formatting, SSO/
@@ -2237,10 +2237,10 @@ the same saved values. Added a new `badge-slate` colour (`#5C7A99`) to the `.sum
 palette for IT Configuration's icon (a simple 4-square "integrations" glyph); Project Registration
 reuses `badge-pink`, the one core palette colour not already used by this page's own 6 Core Policy
 groups (a new building/company glyph). Both new groups' Edit links point back to
-`../smartalock-templates-00.html` and `smartalock-it-configuration-02.html` respectively. Verified via
+`../smartalock-registration.html` and `smartalock-it-configuration.html` respectively. Verified via
 an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a jsdom test
 confirming every row renders correctly from a populated project (matching
-`smartalock-configuration-summary-08.html`'s own rendering of the identical data) and falls back
+`smartalock-configuration-summary.html`'s own rendering of the identical data) and falls back
 cleanly with no saved project at all, and a full-page Playwright screenshot confirming the new
 section's placement and styling.
 
@@ -2338,7 +2338,7 @@ bookings, with a `#adhSummaryValue`/`row-edit-link` pair matching the NSNP/FME p
 a `renderAdhSummary()` IIFE (added right after the existing `renderFmeSummary()`) that reads
 `project.floorsense.wizard.antiDeskHogging` (`mode`/`windowDays`/`maxBookings`) and reuses the exact
 same `formatTimes()`/`formatDays()` phrasing ("once"/"twice"/"N times" and "1 day"/"N days") that
-floorsense-anti-desk-hogging-13.html's own `updateSummary()` already uses, so the wording here always
+floorsense-anti-desk-hogging.html's own `updateSummary()` already uses, so the wording here always
 matches what that page itself would show — e.g. "twice per 3 days" when enabled, or "Off" when not.
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
 5-scenario jsdom test (default/unset, explicit mode:'none', and three enabled combinations of
@@ -2347,7 +2347,7 @@ row-edit-link href), and a Playwright screenshot confirming the new row renders 
 between Sit-stand desks and Recurring bookings.
 
 MOST RECENT CHANGE: per a follow-up request that "Same-Desk Booking Days" become a plain, independent
-1-5 stepper on floorsense-anti-desk-hogging-13.html (no longer capped at or derived from the Time
+1-5 stepper on floorsense-anti-desk-hogging.html (no longer capped at or derived from the Time
 Window slider — see that file's own NOTE), `renderAdhSummary()` was reworded to stop implying
 `maxBookings` is a subset of `windowDays`. The value pill now reads "N days per M days window" (was
 "N of M days") and the description reads "...on up to N days within each M rolling window..." (was
@@ -2360,7 +2360,7 @@ with no clamping.
 MOST RECENT CHANGE: per a request that the Same-Desk Booking Times field count booking occurrences
 rather than calendar days — specifically, a same-day rebooking of the same desk only avoids counting as
 an extra time if it starts within 1 hour of the previous release (see
-floorsense-anti-desk-hogging-13.html's own NOTE and its new on-page hint explaining this rule) —
+floorsense-anti-desk-hogging.html's own NOTE and its new on-page hint explaining this rule) —
 `renderAdhSummary()` gained a `formatTimes()` helper (`'1 time'` / `'N times'`, mirroring the existing
 `formatDays()`) and now formats `maxBookings` with it instead of `formatDays()`, while `windowDays`
 keeps its own `formatDays()` unchanged. The value pill now reads "N time(s) per M days window" (was "N
@@ -2375,8 +2375,8 @@ extracted script block, and a 3-scenario jsdom test confirming the off state, a 
 enabled state, and a plural "N times" enabled state all render correctly with `windowDays` still shown
 in days throughout, with zero runtime errors.
 
-MOST RECENT CHANGE: per a request to shorten the field's label on floorsense-anti-desk-hogging-13.html/
-floorsense-optional-features-06.html from "Same-Desk Booking Times" to "Max Same-Desk Bookings" (see
+MOST RECENT CHANGE: per a request to shorten the field's label on floorsense-anti-desk-hogging.html/
+floorsense-optional-features.html from "Same-Desk Booking Times" to "Max Same-Desk Bookings" (see
 that file's own NOTE), `renderAdhSummary()`'s `formatTimes()` helper was renamed `formatBookings()`
 ("1 booking"/"N bookings", was "1 time"/"N times") so this Configuration Summary row's phrasing matches
 the field's new name — the value pill now reads "N booking(s) per M days window" (was "N time(s) per M
@@ -2395,14 +2395,14 @@ Deliberately styled with a fixed green (#1FAA59, hover #178A48) rather than `var
 page's own blue, since the site-wide Floorsense-to-blue rebrand described earlier in this file) —
 the button means "leave this branch entirely", so it intentionally doesn't look like the branch's
 own in-flow actions; that exact green is in fact this page's own former accent colour, from before
-that rebrand. Mirrors the identical addition on smartalock-configuration-summary-08.html. Verified
+that rebrand. Mirrors the identical addition on smartalock-configuration-summary.html. Verified
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a
 Playwright screenshot of the action bar.
 
 MOST RECENT CHANGE: per a follow-up request, the button now cross-navigates to the Smartalock
 branch rather than the generic product picker — relabeled "Configure Lockers" (this page's own
 product is desks, so the other branch is the locker one) and repointed from pick-a-product.html
-straight to smartalock-access-methods-09.html, the Smartalock wizard's own entry point (confirmed
+straight to smartalock-access-methods.html, the Smartalock wizard's own entry point (confirmed
 via pick-a-product.html's own PRODUCTS.smartalock.dest). Added a left-facing chevron svg (the same
 `M15 18l-6-6 6-6` path already used for every other "back" arrow on this site) before the label —
 `a.product-picker-btn` gained `gap: 6px` and a `svg { width/height: 14px; stroke: #fff }` rule for
@@ -2419,7 +2419,7 @@ param purely for href consistency, since those target pages needed no JS change)
 JS is unchanged; only the href strings were edited. Verified via Playwright end-to-end navigation
 tests confirming each target page's Continue button now lands back on this summary.
 
-MOST RECENT CHANGE: per a request to sync this summary with floorsense-optional-features-06.html's
+MOST RECENT CHANGE: per a request to sync this summary with floorsense-optional-features.html's
 same-session changes (icon-color differentiation, Auto-Release on Idle's reworded description, the new
 Auto Check-In on Occupancy row, and a same-turn follow-up removing "Auto-Release on No Show" entirely),
 reviewed and updated the "Additional Options" group. Icon-color changes are hub-page-only and don't
@@ -2429,7 +2429,7 @@ during the booking, rather than the old isn't-checked-into wording) in both its 
 enabled- and disabled-state text. A new row, "Auto Check-In on Occupancy," was added right after it
 (<- `project.floorsense.wizard.autoOccupancyCheckin { enabled, minutes }`, default off), with its own
 `renderAutoOccupancyCheckinSummary()` IIFE mirroring the Idle row's on/off value+description pattern,
-and an Edit link pointing at `floorsense-optional-features-06.html?return=summary` (the hub itself,
+and an Edit link pointing at `floorsense-optional-features.html?return=summary` (the hub itself,
 since — like Idle — it has no dedicated wizard page of its own). "Auto-Release on No Show" was briefly
 added as a summary row earlier in this same session (duplicating the Idle row) but was removed again,
 per explicit follow-up instruction, before ever being committed — this page therefore has no
@@ -2445,7 +2445,7 @@ a real input to show, never as an empty/placeholder row. All three follow the sa
 omitted entirely unless the underlying condition is actually met.
 - SSO Scope: a new row, `#ssoScopeSummaryRow` (`#itSsoScopeSummaryValue`), added right after "Single
   Sign-On (SSO)". Reads `project.smartalock.wizard.it.ssoScope` (default `"both"`). Since this field
-  only exists as a real, visible control on smartalock-it-configuration-02.html once SSO itself is
+  only exists as a real, visible control on smartalock-it-configuration.html once SSO itself is
   enabled, "an input provided" here just means `ssoMethod` isn't `""` — the row stays `hidden` when
   SSO is off, and shows the scope label (Mobile app & admin portal / Mobile app only / Admin portal
   only) whenever it's on, including the unmodified "both" default (that default is itself a real,
@@ -2477,7 +2477,7 @@ it, so it matches this page's own visual language rather than borrowing the Smar
 `.status-pill.pending` amber instead. Unlike the Smartalock-side Configuration Summary and
 tech-summary.html — where two triggers were added this round (Building access cards' spreadsheet-
 import default, and PIN assignment's "client provides a list" option, both from
-smartalock-access-methods-09.html) — this page only reads `project.floorsense.wizard.*`, and neither
+smartalock-access-methods.html) — this page only reads `project.floorsense.wizard.*`, and neither
 trigger belongs to the Floorsense branch, so its `items` array is intentionally left empty for now.
 The section is fully wired up (hidden/shown driven by `items.length`, rows built the same
 `.summary-row` way) and ready for a Floorsense-specific trigger whenever one is requested. Verified
@@ -2526,11 +2526,11 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   project.floorsense.wizard.moduleStatus = project.floorsense.wizard.moduleStatus || {};
 
   /* ---------------- Project Details: Project Registration + IT Configuration & Integrations ----------------
-     Both smartalock-templates-00.html (Project Registration) and smartalock-it-configuration-02.html
+     Both smartalock-registration.html (Project Registration) and smartalock-it-configuration.html
      (IT Configuration & Integrations) run before the product picker and are shared by both branches —
      IT Configuration in particular always saves to project.smartalock.wizard.it regardless of which
      branch the client eventually chose, since that page predates the Smartalock/Floorsense split.
-     Read the same way smartalock-configuration-summary-08.html's own "Project Registration"/"IT
+     Read the same way smartalock-configuration-summary.html's own "Project Registration"/"IT
      Configuration & Integrations" groups already do, so both branches' summaries stay in sync. */
   (function () {
     const reg = project.registration || {};
@@ -2572,7 +2572,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
     const GALLAGHER_LABELS = { "": "Not required", required: "Required" };
     document.getElementById('itSsoSummaryValue').textContent = SSO_LABELS[it.ssoMethod] ?? (it.ssoMethod || 'No SSO');
     // SSO Scope only exists as a real, user-facing field once SSO itself is enabled (it's hidden on
-    // smartalock-it-configuration-02.html otherwise) — so "an input provided" here just means SSO is
+    // smartalock-it-configuration.html otherwise) — so "an input provided" here just means SSO is
     // on; the row is left out of the summary entirely when it's "No SSO", rather than showing an
     // irrelevant scope value.
     const ssoScopeRow = document.getElementById('ssoScopeSummaryRow');
@@ -2593,7 +2593,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
      Floorsense-specific trigger exists yet — the two triggers added so far (Building access cards'
      default spreadsheet-import method, and PIN assignment's "client provides a list" option) both
      live on the Smartalock branch's Initial Locker Access Methods page, so they surface on
-     smartalock-configuration-summary-08.html and the combined tech-summary.html instead of here.
+     smartalock-configuration-summary.html and the combined tech-summary.html instead of here.
      This block is left in place, structurally wired up and ready, for whenever a Floorsense-side
      outstanding item is requested. */
   (function () {
@@ -2628,7 +2628,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
     notifications: document.getElementById('trainingNotifications')
   };
   /* Teams and Book on Behalf are ticked automatically whenever the matching reservation type
-     ("team-leader" / "booked-on-behalf") is selected on floorsense-reservation-types-01.html —
+     ("team-leader" / "booked-on-behalf") is selected on floorsense-reservation-types.html —
      since they're clearly in use, training is assumed relevant. This is a live OR with the
      checkbox's own saved state, not just a one-time default: as long as the type stays selected
      on page 01, the box here stays ticked even if someone unchecks it, and reverts to the last
@@ -2666,7 +2666,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   });
 
   /* ---------------- core policy: Check-in Behaviour toggles ----------------
-     Replaces the group's old Edit link (which just pointed at floorsense-checkin-methods-02.html
+     Replaces the group's old Edit link (which just pointed at floorsense-checkin-methods.html
      without any dedicated controls there) with an actual on/off switch, on by default, matching
      CORE_POLICY_DEFAULTS' autoCancelOnElsewhere field also used on the additional policy cards below.
      Autosaves on toggle, independent of "Confirm & finish". Second swipe checks out no longer has a
@@ -2714,7 +2714,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   });
 
   /* ---------------- Remote Booking Confirmation toggle: added alongside
-     floorsense-optional-features-06.html's own switch for this feature, both reading/writing
+     floorsense-optional-features.html's own switch for this feature, both reading/writing
      project.floorsense.wizard.remoteConfirm.enabled — a separate top-level state key, NOT nested
      under outOfBoxPolicy like Recurring bookings/Privacy above, so this can't reuse
      coreAdditionalToggles as-is (that loop always writes into outOfBoxPolicy). Same
@@ -2733,7 +2733,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
     });
   })();
 
-  /* ---------------- NSNP row: reflect what was actually configured on floorsense-nsnp-11.html
+  /* ---------------- NSNP row: reflect what was actually configured on floorsense-nsnp.html
      (project.floorsense.wizard.nsnp), rather than a fixed "Off by default" placeholder. Read-only
      here — NSNP itself is only ever configured on its own page, reached via the Edit link. ---------------- */
   const NSNP_MODE_LABELS = {
@@ -2752,7 +2752,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
       desc += ' Grace period on: stays powered ' + graceMinutes + ' min after the reservation ends.';
     }
     // "Custom setup" (mode 'other') has its own free-text arrangement note on
-    // floorsense-nsnp-11.html (project.floorsense.wizard.nsnp.otherNote) — only mention it here when
+    // floorsense-nsnp.html (project.floorsense.wizard.nsnp.otherNote) — only mention it here when
     // the client actually typed something; an empty note just falls back to the plain "custom setup"
     // value line above with no extra description text.
     if (mode === 'other' && savedNsnp.otherNote && savedNsnp.otherNote.trim()) {
@@ -2762,7 +2762,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   })();
 
   /* ---------------- Check-in Window row: reflect what was actually configured on
-     floorsense-checkin-window-08.html (project.floorsense.wizard.checkinWindow), rather than a
+     floorsense-checkin-window.html (project.floorsense.wizard.checkinWindow), rather than a
      fixed "60 min before – 60 min after" placeholder. Read-only here — Check-in Window is only
      ever configured on its own page, reached via this group's Edit link. ---------------- */
   function formatCheckinMinutes(m) {
@@ -2798,7 +2798,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   })();
 
   /* ---------------- Desk Allocation Method summary: reads the reservation types selected on
-     floorsense-reservation-types-01.html. "adhoc" ("Reserved by User as Needed") is that page's
+     floorsense-reservation-types.html. "adhoc" ("Reserved by User as Needed") is that page's
      default selection whenever reservationTypes has never been saved (a brand-new project, or the
      Pre-Configured shortcut that bypasses the customise wizard entirely), so it's the fallback here
      too — matching what a user would actually see pre-selected if they visited that page. Multiple
@@ -2915,7 +2915,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   (function renderFmeSummary() {
     const savedFme = project.floorsense.wizard.fme || {};
     const mode = savedFme.mode || 'none';
-    // The motor-details acknowledgment checkbox on floorsense-optional-features-06.html only ever
+    // The motor-details acknowledgment checkbox on floorsense-optional-features.html only ever
     // matters while FME is actually on, and only when it's actually been checked — an unchecked (or
     // FME-off) state just falls back to the plain mode description below with no extra mention.
     const motorAckGiven = mode !== 'none' && !!savedFme.motorDetailsAck;
@@ -2935,7 +2935,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
 
   (function renderAdhSummary() {
     // Per a follow-up request, the field labeled "Max Same-Desk Bookings" on
-    // floorsense-anti-desk-hogging-13.html/floorsense-optional-features-06.html (maxBookings in
+    // floorsense-anti-desk-hogging.html/floorsense-optional-features.html (maxBookings in
     // state) counts booking occurrences rather than calendar days — a same-day rebooking of this
     // desk counts as an extra booking once there's more than a 1-hour gap since the previous
     // release, per that field's own on-page hint — so it's formatted with formatBookings() here,
@@ -2969,7 +2969,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
     const savedDuration = project.floorsense.wizard.defaultReservationTimes || {};
     const savedBusinessHours = project.floorsense.wizard.businessHours || {};
     const endMode = savedDuration.endMode === 'fixed-end' ? 'fixed-end' : 'duration';
-    // Reservation start/end share their values with floorsense-business-hours-05.html's
+    // Reservation start/end share their values with floorsense-business-hours.html's
     // Arrival/Departure pins, so businessHours is read first — this way, whichever of the two pages
     // (05 or 07) the user edited most recently is what shows up here.
     const startTime = savedBusinessHours.arrivalTime || savedDuration.defaultStartTime || '08:30';
@@ -3132,7 +3132,7 @@ the extracted script block, and a jsdom test confirming `#coreSwipeOutToggle` no
   }
 
   // Only reveal the Additional Policies section once Desk Groups and/or User Groups are actually
-  // set up to carry their OWN different policy — set on floorsense-desk-user-groups-03.html via the
+  // set up to carry their OWN different policy — set on floorsense-desk-user-groups.html via the
   // "We would also like to apply different policy (booking rules) to different desk groups" /
   // "We want to apply different override policy for different User Groups to trump the Desk Group
   // policy or default booking policy" checkboxes (the `policy` field). Just using Desk Groups or

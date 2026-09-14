@@ -216,27 +216,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -320,10 +320,10 @@
       </label>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-idle-release-09.html" id="pageNavPrev">
+        <a class="page-nav-btn" href="floorsense-idle-release.html" id="pageNavPrev">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="floorsense-nsnp-11.html" id="pageNavNext">
+        <a class="page-nav-btn next" href="floorsense-nsnp.html" id="pageNavNext">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -347,7 +347,7 @@
 
 <!--
   NOTE for Oleg: module 07 of the Floorsense wizard family (renamed twice — see below) — follows
-  floorsense-prebooking-advance-04.html. This page was split out of the original Check-in Policy
+  floorsense-prebooking-advance.html. This page was split out of the original Check-in Policy
   page per a later request, so it covers two related settings: Default Reservation Length: a radio group defaulting
   to "Until the user releases the desk themselves" (no default was specified in the brief, so the
   first/most permissive option was picked — flag if a different default is wanted); selecting
@@ -364,55 +364,55 @@
   { mode, otherValue, allowMeetingSpaceTag } in the same "configurationProject" localStorage key
   as the other Floorsense modules.
 
-  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release-09.html) was
-  inserted earlier in the wizard, which bumped floorsense-prebooking-advance-04.html to -05.html;
+  Per a later request, a new "Auto-Release on Idle" page (floorsense-idle-release.html) was
+  inserted earlier in the wizard, which bumped floorsense-prebooking-advance.html to -05.html;
   this file was renamed from floorsense-reservation-length-05.html to -06.html to keep the numbers
   sequential (a straight filesystem rename — field ids, state shape, and everything else below are
-  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance-04.html
+  unchanged). This page's back-arrow was updated to floorsense-prebooking-advance.html
   accordingly, and its progress bar gained a 7th "idle-release" segment between "Check-in Policy"
   and "Prebooking Window".
 
   RENAME CASCADE (most recent): per a follow-up request to split Default Reservation Times into
   its own page before Check-in Window, this file was renamed AGAIN, from
   floorsense-reservation-length-06.html to -07.html, to keep numbers sequential after
-  floorsense-default-reservation-times-07.html was inserted earlier in the wizard (which bumped
+  floorsense-default-reservation-times.html was inserted earlier in the wizard (which bumped
   every downstream file up by one). This page's back-arrow was updated to
-  floorsense-prebooking-advance-04.html (itself renamed from -05.html in the same cascade); field
+  floorsense-prebooking-advance.html (itself renamed from -05.html in the same cascade); field
   ids and state shape are unchanged. The progress bar above gained an eighth segment ("Default
-  Reservation Times") inserted before "Check-in Window" — see floorsense-checkin-window-08.html's
-  and floorsense-default-reservation-times-07.html's own NOTEs for the full story of that split.
+  Reservation Times") inserted before "Check-in Window" — see floorsense-checkin-window.html's
+  and floorsense-default-reservation-times.html's own NOTEs for the full story of that split.
 
   MOST RECENT CHANGE: per a follow-up request ("move page 07 forward to follow 03"), Prebooking was
   relocated from module 07 to immediately follow Business Hours (module 04 now); this page's own
   file number (08) didn't change, since it was already last, but its back-arrow now points to
-  floorsense-idle-release-09.html (was floorsense-prebooking-advance-04.html, itself renamed from
+  floorsense-idle-release.html (was floorsense-prebooking-advance.html, itself renamed from
   -07.html) since Auto-Release on Idle now immediately precedes it instead of Prebooking. See
-  floorsense-prebooking-advance-04.html's own NOTE for the full reorder.
+  floorsense-prebooking-advance.html's own NOTE for the full reorder.
 
-  MOST RECENT CHANGE: a new module 09, floorsense-nsnp-11.html ("No Swipe No Power"), was appended
+  MOST RECENT CHANGE: a new module 09, floorsense-nsnp.html ("No Swipe No Power"), was appended
   after this page — this is no longer the last module in the wizard. Its previously-disabled
-  next-arrow is now a live link to floorsense-nsnp-11.html, and the Continue button's missing
+  next-arrow is now a live link to floorsense-nsnp.html, and the Continue button's missing
   redirect (noted above as a fix applied to every other page but skipped here since there was
   nothing to redirect to) now points there too. The progress bar above gained a tenth "nsnp"
-  segment at the end. See floorsense-nsnp-11.html's own NOTE for the new page's full details.
+  segment at the end. See floorsense-nsnp.html's own NOTE for the new page's full details.
 
-  MOST RECENT CHANGE: per a request for a new floorsense-optional-features-06.html hub page that
+  MOST RECENT CHANGE: per a request for a new floorsense-optional-features.html hub page that
   lets a client switch each optional module on/off (skipping disabled ones during click-through),
   both of this page's page-nav arrows are now resolved dynamically at load time via a
   NAV_SEQUENCE/seqResolve() walk instead of fixed hrefs: back-arrow lands on
-  floorsense-idle-release-09.html if enabled (project.floorsense.wizard.idleRelease.enabled),
-  otherwise floorsense-checkin-window-08.html; next-arrow/Continue lands on the first of
-  floorsense-nsnp-11.html / floorsense-fme-12.html / floorsense-anti-desk-hogging-13.html that's
+  floorsense-idle-release.html if enabled (project.floorsense.wizard.idleRelease.enabled),
+  otherwise floorsense-checkin-window.html; next-arrow/Continue lands on the first of
+  floorsense-nsnp.html / floorsense-fme.html / floorsense-anti-desk-hogging.html that's
   enabled (each page's own project.floorsense.wizard.<key>.mode !== 'none'), or becomes a disabled
   "last page" (no Continue redirect) if all three are off. This page itself is never skippable, so
   it's still always reached — only which neighbour it links to changes. See
-  floorsense-optional-features-06.html's own NOTE for the full skip-navigation design.
+  floorsense-optional-features.html's own NOTE for the full skip-navigation design.
   MOST RECENT CHANGE: per a request to remove every progress-bar segment that follows Optional
   Features, the progress bar above shrank from 14 segments (fixed 00-13 numeric order) to 7, now in
   actual click-through order: Desk Allocation Method, Check-in Methods, Desk & User Groups,
   Prebooking Window, Business Hours, Optional Features, and Core Complete
-  (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
-  reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
+  (floorsense-setup-path.html). See floorsense-setup-path.html's own NOTE for the full
+  reasoning, including why floorsense-default-reservation-times.html onward (07-13) no longer
   appear in the bar at all.
 
   MOST RECENT CHANGE: per a request to fix "Save & continue" on this and the other 6 orphaned pages
@@ -424,7 +424,7 @@
   manual "browse the next/previous orphaned page in sequence" affordance, distinct from the primary
   Save & continue action. Verified via jsdom that clicking Continue still saves `moduleStatus` and
   triggers navigation to the new target with no runtime errors.
-MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head, .duration-options (covers both #durationOptions and #maxDesksOptions), .duration-fields, and .toggle-card (all max-width: 640px) gained margin: 0 auto (or margin: 14px auto 0 where a top margin already existed), so the heading and stacked option/field blocks are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head, .duration-options (covers both #durationOptions and #maxDesksOptions), .duration-fields, and .toggle-card (all max-width: 640px) gained margin: 0 auto (or margin: 14px auto 0 where a top margin already existed), so the heading and stacked option/field blocks are horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
@@ -432,22 +432,33 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: Reviewed this page for the site-wide glass-card/icon-badge propagation from floorsense-reservation-types-01.html and made no changes, by design. This page's only bordered elements are `.duration-option` (the radio rows for Default Reservation Length / Maximum Desks Per User) and `.toggle-card` (the meeting-space-tag checkbox row) — both use `border: 1px solid var(--line)` and `border-radius: var(--radius-sm)` (10px) with compact ~12-14px padding, reading as small settings-list rows rather than large floating content cards; `--radius-lg` (the 20px token every other page's glass-card treatment targets) isn't used anywhere in this file's CSS outside its `:root` definition. That matches the propagation's own explicit exclusion for "toggle-rows"/small `var(--radius-md)`-or-smaller panels, so neither class was converted. This page also has no icon markup at all — no `<svg>` or `<img>` outside the header logo and the two circular page-nav-arrow chevrons (themselves excluded by name) — so there was nothing to wrap in an icon badge either. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (both untouched — no markup or CSS was modified).
+MOST RECENT CHANGE: Reviewed this page for the site-wide glass-card/icon-badge propagation from floorsense-reservation-types.html and made no changes, by design. This page's only bordered elements are `.duration-option` (the radio rows for Default Reservation Length / Maximum Desks Per User) and `.toggle-card` (the meeting-space-tag checkbox row) — both use `border: 1px solid var(--line)` and `border-radius: var(--radius-sm)` (10px) with compact ~12-14px padding, reading as small settings-list rows rather than large floating content cards; `--radius-lg` (the 20px token every other page's glass-card treatment targets) isn't used anywhere in this file's CSS outside its `:root` definition. That matches the propagation's own explicit exclusion for "toggle-rows"/small `var(--radius-md)`-or-smaller panels, so neither class was converted. This page also has no icon markup at all — no `<svg>` or `<img>` outside the header logo and the two circular page-nav-arrow chevrons (themselves excluded by name) — so there was nothing to wrap in an icon badge either. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (both untouched — no markup or CSS was modified).
 
 MOST RECENT CHANGE: Per a request to remove the "eyebrow" pill label from every Floorsense page, removed all 3 `<span class="eyebrow">` instances on this page: "Getting Started" above the hero title, and "Configure" above each of the two section headings (Default Reservation Length, Maximum Desks Per User). All three parent containers (`.panel-intro` and the two `.section-head` blocks) kept their other heading/paragraph content, so only the spans were removed, none of the parents were deleted. Also removed the base `.eyebrow`, `.panel-intro .eyebrow`, and `.section-head .eyebrow` CSS rulesets from the inline stylesheet. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched).
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-reservation-length-10.html` to `floorsense-reservation-length.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>
@@ -596,19 +607,19 @@ touched file.
 
   /* ---------------- dynamic skip-navigation ----------------
      Both neighbours of this page (Auto-Release on Idle before it, NSNP/FME/Anti Desk Hogging after
-     it) are optional and may be switched off from floorsense-optional-features-06.html. This page
+     it) are optional and may be switched off from floorsense-optional-features.html. This page
      itself is never skippable, so it's always reached, but which neighbour it actually links to
      depends on which optional modules are currently on. See
-     floorsense-optional-features-06.html's own NOTE for the full design; NAV_SEQUENCE/seqResolve are
+     floorsense-optional-features.html's own NOTE for the full design; NAV_SEQUENCE/seqResolve are
      duplicated verbatim on every page in this affected zone (this project keeps each page fully
      self-contained rather than sharing an external script). ---------------- */
   const NAV_SEQUENCE = [
-    { key: 'checkin-window', href: 'floorsense-checkin-window-08.html' },
-    { key: 'idle-release', href: 'floorsense-idle-release-09.html', flagPath: ['idleRelease', 'enabled'], flagType: 'bool' },
-    { key: 'reservation-length', href: 'floorsense-reservation-length-10.html' },
-    { key: 'nsnp', href: 'floorsense-nsnp-11.html', flagPath: ['nsnp', 'mode'], flagType: 'mode' },
-    { key: 'fme', href: 'floorsense-fme-12.html', flagPath: ['fme', 'mode'], flagType: 'mode' },
-    { key: 'anti-desk-hogging', href: 'floorsense-anti-desk-hogging-13.html', flagPath: ['antiDeskHogging', 'mode'], flagType: 'mode' }
+    { key: 'checkin-window', href: 'floorsense-checkin-window.html' },
+    { key: 'idle-release', href: 'floorsense-idle-release.html', flagPath: ['idleRelease', 'enabled'], flagType: 'bool' },
+    { key: 'reservation-length', href: 'floorsense-reservation-length.html' },
+    { key: 'nsnp', href: 'floorsense-nsnp.html', flagPath: ['nsnp', 'mode'], flagType: 'mode' },
+    { key: 'fme', href: 'floorsense-fme.html', flagPath: ['fme', 'mode'], flagType: 'mode' },
+    { key: 'anti-desk-hogging', href: 'floorsense-anti-desk-hogging.html', flagPath: ['antiDeskHogging', 'mode'], flagType: 'mode' }
   ];
   function seqEnabled(entry) {
     if (!entry.flagPath) return true;

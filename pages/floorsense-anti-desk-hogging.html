@@ -109,11 +109,11 @@
 
   .panel-scroll { flex: 1; padding: 28px 0 48px; }
 
-  /* ---------- feature intro card: originally ported from floorsense-idle-release-09.html's
+  /* ---------- feature intro card: originally ported from floorsense-idle-release.html's
      .checkin-card/.idle-toggle-row/.switch/.idle-body suite (replacing the old 2-mode
      .path-check-grid radio choice), then later simplified further by removing its own inline
      "Enable Anti Desk Hogging" toggle entirely — this feature's on/off state is controlled solely
-     by the master switch on floorsense-optional-features-06.html, so a second, redundant toggle
+     by the master switch on floorsense-optional-features.html, so a second, redundant toggle
      here was removed; the settings below are now always shown. See the MOST RECENT CHANGE note
      below. ---------- */
   .checkin-card {
@@ -140,7 +140,7 @@
   .checkin-card-desc { font-size: 14.76px; font-weight: 400; color: var(--ink); line-height: 1.65; margin: 2px 0 0; }
 
   /* ---------- Time Window timeline: the same segmented-rail/draggable-pin control as
-     floorsense-prebooking-advance-04.html's advance-booking diagram — a single-handle 1-14 day
+     floorsense-prebooking-advance.html's advance-booking diagram — a single-handle 1-14 day
      slider. Every rail/zone/tick/pin/label class, colour and dimension below is copied verbatim
      from that page. Max Same-Desk Bookings used to be a second copy of this same control but is now
      a plain fill-in field instead, positioned above this card rather than inside one of its own — see the
@@ -151,7 +151,7 @@
   .policy-hint { font-size: 11.89px; font-weight: 500; color: var(--header-grey-light); line-height: 1.5; margin: 14px 0 0; }
 
   /* ---------- Max Same-Desk Bookings field: unboxed (no .timeline-card background), matching
-     floorsense-prebooking-advance-04.html's own number-field-outside-the-grey-box placement above
+     floorsense-prebooking-advance.html's own number-field-outside-the-grey-box placement above
      its timeline diagram — see that page's own NOTE and the reference screenshot in this file's
      MOST RECENT CHANGE note. Sits directly above the Time Window card, inset the same 22px each
      side so its label/stepper align with the checkin-card-header content above it. ---------- */
@@ -261,7 +261,7 @@
   }
 
   /* ---------- Max Same-Desk Bookings: a plain fill-in number field, styled and structured exactly
-     like floorsense-prebooking-advance-04.html's own "Advance booking limit" field — .minute-field/
+     like floorsense-prebooking-advance.html's own "Advance booking limit" field — .minute-field/
      .minute-input/.minute-suffix copied verbatim from that page (a compact 88px bordered number
      input plus a plain-text suffix span) rather than this page's earlier bespoke up/down-chevron
      stepper. Per a follow-up request, this value remains independent of (not capped by) the Time
@@ -333,27 +333,27 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types-01.html">
+        <a class="progress-seg" data-module="reservation-types" href="floorsense-reservation-types.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk Allocation Method</span>
         </a>
-        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods-02.html">
+        <a class="progress-seg" data-module="checkin-methods" href="floorsense-checkin-methods.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Check-in Methods</span>
         </a>
-        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups-03.html">
+        <a class="progress-seg" data-module="desk-user-groups" href="floorsense-desk-user-groups.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Desk &amp; User Groups</span>
         </a>
-        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance-04.html">
+        <a class="progress-seg" data-module="prebooking-advance" href="floorsense-prebooking-advance.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Allow Booking in Advance</span>
         </a>
-        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours-05.html">
+        <a class="progress-seg" data-module="business-hours" href="floorsense-business-hours.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Business Hours</span>
         </a>
-        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features-06.html">
+        <a class="progress-seg" data-module="optional-features" href="floorsense-optional-features.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Optional Features</span>
         </a>
@@ -425,7 +425,7 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="floorsense-fme-12.html" id="pageNavPrev">
+        <a class="page-nav-btn" href="floorsense-fme.html" id="pageNavPrev">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
         <span class="page-nav-btn disabled">
@@ -452,20 +452,20 @@
 
 <!--
   NOTE for Oleg: module 11 of the Floorsense wizard family, new — appended after
-  floorsense-fme-12.html per a request to add "Anti Desk Hogging": restricts users from booking the
+  floorsense-fme.html per a request to add "Anti Desk Hogging": restricts users from booking the
   same desk multiple days in a row, to encourage cross-team interaction and discourage a return to
   quasi-fixed-desk working. This is the wizard's fourth optional module (after Auto-Release on Idle,
   NSNP, and FME), following the same "Additional Features · Optional" hero eyebrow and "(Optional)"
   progress-bar tooltip convention.
 
   Structurally this is the simplest of the four opt-in pages: a 2-mode .path-check-grid (ported from
-  floorsense-setup-path-00.html/floorsense-nsnp-11.html) — "We will enable this feature" vs. "We will
+  floorsense-setup-path.html/floorsense-nsnp.html) — "We will enable this feature" vs. "We will
   NOT enable this feature" (the default, off) — matching the exact two options given in the brief.
   Selecting "enable" reveals a settings panel with two independent value drums rather than the
-  rail/pin timeline diagram used on floorsense-idle-release-09.html/floorsense-nsnp-11.html: "how
+  rail/pin timeline diagram used on floorsense-idle-release.html/floorsense-nsnp.html: "how
   many times may the same desk be booked" within "how many days" isn't a single before/after moment
   you can plot on a timeline the way a duration-until-an-event is, so this reuses just the Apple
-  Clock time-drum mechanics (ported from floorsense-nsnp-11.html's createTimeDrum/buildDrumRows),
+  Clock time-drum mechanics (ported from floorsense-nsnp.html's createTimeDrum/buildDrumRows),
   not the timeline-track-wrapper/anchor-pin/label-time/big-anchor suite — hence no reveal-animation
   CSS either, since there are no pins/zones to animate. Two drums: "Time Window" (1-14 days,
   default 2) and "Number of Same Desk Bookings" (1-7 times, default 1), with a live summary sentence
@@ -480,7 +480,7 @@
   both values persist even while mode is 'none', so re-enabling doesn't lose a previously-chosen
   setting. markModuleSaved key is 'anti-desk-hogging'.
 
-  This is currently the last module in the wizard: back-arrow goes to floorsense-fme-12.html (whose
+  This is currently the last module in the wizard: back-arrow goes to floorsense-fme.html (whose
   own previously-disabled next-arrow/Continue-redirect now point here — see that file's NOTE), and
   this page's own next-arrow is disabled with no Continue redirect. The progress bar above gained a
   twelfth "anti-desk-hogging" segment at the end on all 12 Floorsense pages.
@@ -488,12 +488,12 @@
   MOST RECENT CHANGE: per a request for a new "Optional Features" hub page (module 06, between
   Business Hours and Default Reservation Times) listing every optional module with a single on/off
   switch, this file (renamed from -12 to -13 as part of that insertion — see
-  floorsense-optional-features-06.html's own NOTE for the full hub design) gained dynamic
+  floorsense-optional-features.html's own NOTE for the full hub design) gained dynamic
   back-arrow resolution: a duplicated NAV_SEQUENCE/seqEnabled/seqResolve walker (identical copies
-  also live on floorsense-checkin-window-08.html, floorsense-reservation-length-10.html,
-  floorsense-nsnp-11.html, and floorsense-fme-12.html) that skips any optional page whose toggle is
+  also live on floorsense-checkin-window.html, floorsense-reservation-length.html,
+  floorsense-nsnp.html, and floorsense-fme.html) that skips any optional page whose toggle is
   currently off. pageNavPrev.href is now set dynamically via seqResolve('anti-desk-hogging', -1),
-  which always resolves since floorsense-reservation-length-10.html is a non-optional "floor" that
+  which always resolves since floorsense-reservation-length.html is a non-optional "floor" that
   every backward walk terminates at if nothing else is enabled in between. The next-arrow is
   unaffected — this remains the last page in the wizard, still disabled with no Continue redirect.
   The progress bar itself is unaffected by any of this: it always lists every module and remains
@@ -502,8 +502,8 @@
   Features, the progress bar above shrank from 14 segments (fixed 00-13 numeric order) to 7, now in
   actual click-through order: Desk Allocation Method, Check-in Methods, Desk & User Groups,
   Prebooking Window, Business Hours, Optional Features, and Core Complete
-  (floorsense-setup-path-00.html). See floorsense-setup-path-00.html's own NOTE for the full
-  reasoning, including why floorsense-default-reservation-times-07.html onward (07-13) no longer
+  (floorsense-setup-path.html). See floorsense-setup-path.html's own NOTE for the full
+  reasoning, including why floorsense-default-reservation-times.html onward (07-13) no longer
   appear in the bar at all.
 
   MOST RECENT CHANGE: per a request to fix "Save & continue" on this and the other 6 orphaned pages
@@ -516,11 +516,11 @@
   leave alone here — only the dynamic back-arrow (`#pageNavPrev`, via `seqResolve()`) is unaffected.
   Verified via jsdom that clicking Continue still saves `moduleStatus` and triggers navigation to
   the new target with no runtime errors.
-MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head and .path-check-grid (max-width: 640px) gained margin: 0 auto, and .adh-settings (max-width: 760px, the time-drum settings block shown once a path is selected) gained margin: 20px auto 0, so the heading, option grid, and settings block are all horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path-00.html's .complete-card { max-width: 720px; margin: 0 auto; }.
+MOST RECENT CHANGE: Centered the single-column layout to match the page-00 pattern. .section-head and .path-check-grid (max-width: 640px) gained margin: 0 auto, and .adh-settings (max-width: 760px, the time-drum settings block shown once a path is selected) gained margin: 20px auto 0, so the heading, option grid, and settings block are all horizontally centered within the panel rather than flush-left, per a site-wide centering audit against floorsense-setup-path.html's .complete-card { max-width: 720px; margin: 0 auto; }.
 
 MOST RECENT CHANGE: per a request to remove the decorative "eyebrow" pill labels site-wide across the Floorsense branch, removed both `<span class="eyebrow">` instances on this page ("Additional Features · Optional" in .panel-intro above the hero title, and "Configure" in .section-head above the section title) — both parent containers still had their heading/paragraph content, so only the span lines were deleted, not the containers. Also removed all three related CSS rulesets from the inline <style> block: the base `.eyebrow { ... }` rule and the `.panel-intro .eyebrow` / `.section-head .eyebrow` modifier rules. Verified via an HTML tag-balance check (all tags still properly nested/closed) and `node --check` on the extracted <script> body (no syntax errors, JS untouched).
 
-MOST RECENT CHANGE: per the site-wide icon-size unification and semantic review, this page's icons were already bare 56x56px (matching floorsense-reservation-types-01.html's .desk-icon-img), so only the 'We will enable this feature' icon needed a redesign — it previously used a generic circle-with-checkmark glyph shared with several other 'confirmed/on' states across the site. Replaced it with the same circular repeat-arrow-with-a-slash-through-it glyph now used for Anti Desk Hogging on floorsense-optional-features-06.html, directly depicting 'repeated same-desk bookings are blocked' rather than a generic on/confirmed signal. The 'We will NOT enable this feature' icon (a circle with a diagonal slash, a clear and already-consistent 'off' glyph) was left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
+MOST RECENT CHANGE: per the site-wide icon-size unification and semantic review, this page's icons were already bare 56x56px (matching floorsense-reservation-types.html's .desk-icon-img), so only the 'We will enable this feature' icon needed a redesign — it previously used a generic circle-with-checkmark glyph shared with several other 'confirmed/on' states across the site. Replaced it with the same circular repeat-arrow-with-a-slash-through-it glyph now used for Anti Desk Hogging on floorsense-optional-features.html, directly depicting 'repeated same-desk bookings are blocked' rather than a generic on/confirmed signal. The 'We will NOT enable this feature' icon (a circle with a diagonal slash, a clear and already-consistent 'off' glyph) was left unchanged. Validated via python3 /tmp/validate.py and node --check on the extracted script block.
 
 MOST RECENT CHANGE: Replaced the header brand lockup's placeholder assets with the real logo files: the Smartalock wordmark (assets/images/smartalock-logo.png, swapped in place so it updates sitewide via the shared .brand-logo image) and a new Floorsense wordmark image (assets/images/floorsense-logo.png), which now replaces the plain-text ".brand-logo-floorsense" span so both product marks in the top bar are the client's actual logos.
 MOST RECENT CHANGE: Shrunk the .brand-logo Smartalock wordmark image 30% (height: 22px to 15.4px, width auto) per a follow-up request, so it sits smaller relative to the Floorsense logo/tagline beside it in the header lockup.
@@ -528,36 +528,36 @@ MOST RECENT CHANGE: Per a request that each product's logo only appear on its ow
 
 MOST RECENT CHANGE: Per a site-wide request that Floorsense branch pages use Smartalock's blue instead of green, this page's `:root` accent tokens changed from `--accent: #1FAA59; --accent-wash: #E6F7ED; --accent-deep: #178A48;` to `--accent: #0071E3; --accent-wash: #E8F1FC; --accent-deep: #0058B0;` — the exact same values already used on the Smartalock branch, so every element that derives its color from these three variables now renders blue with no per-element edits needed. Applied identically across all 15 Floorsense wizard pages plus pick-a-product.html's Floorsense choice card and the hardcoded colors in floorsense-desk-booking-guide-live.html. Validated via an inline HTMLParser tag-balance check and `node --check` on every touched file's extracted script block, and visually confirmed via a weasyprint render.
 
-MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types-01.html to this page. `.path-check-card` (the 2-mode enable/don't-enable grid) dropped its solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment, with hover and `.checked` now read through the shadow tint/background tint instead of a border-color change. `.timeline-card.standalone` (the settings panel with the two time-window/max-bookings drums, shown once "enable" is picked) got the same base glass treatment — its inherited `background: var(--paper-soft)` was overridden with the translucent glass background since it's a static panel with no hover/selected state of its own; the shared, non-`.standalone` `.timeline-card` base rule (padding only) was left untouched. Both bare `.path-icon-img` line icons (We will enable this feature, We will NOT enable this feature) were wrapped in new `.path-icon-badge badge-COLOR` divs (60x60px white canvas, colored border) with their svg renamed to `.path-icon-glyph` (34.5px) — neither SVG contains a canvas `<rect>`+fill-opacity highlight, so neither qualified for the site's separate "Style 1" glass-icon treatment. Colors cycle in DOM order: blue (enable), pink (don't enable). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change, no JS logic affected).
+MOST RECENT CHANGE: Propagated the glass-card/icon-badge styling introduced on floorsense-reservation-types.html to this page. `.path-check-card` (the 2-mode enable/don't-enable grid) dropped its solid `border: 1.5px solid var(--line)` for the translucent-white/backdrop-blur/fuzzy-shadow "glass" treatment, with hover and `.checked` now read through the shadow tint/background tint instead of a border-color change. `.timeline-card.standalone` (the settings panel with the two time-window/max-bookings drums, shown once "enable" is picked) got the same base glass treatment — its inherited `background: var(--paper-soft)` was overridden with the translucent glass background since it's a static panel with no hover/selected state of its own; the shared, non-`.standalone` `.timeline-card` base rule (padding only) was left untouched. Both bare `.path-icon-img` line icons (We will enable this feature, We will NOT enable this feature) were wrapped in new `.path-icon-badge badge-COLOR` divs (60x60px white canvas, colored border) with their svg renamed to `.path-icon-glyph` (34.5px) — neither SVG contains a canvas `<rect>`+fill-opacity highlight, so neither qualified for the site's separate "Style 1" glass-icon treatment. Colors cycle in DOM order: blue (enable), pink (don't enable). Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — markup/CSS-only change, no JS logic affected).
 
-MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path-00.html from the wizard's
+MOST RECENT CHANGE: per a follow-up to excluding floorsense-setup-path.html from the wizard's
 linear flow, its "Core Complete" segment was also removed from the progress bar itself, on all 15
 Floorsense wizard pages (this one included) -- the segment previously stayed as a directly-clickable
 shortcut even after the enforced Continue/back-arrow path stopped routing through it, but per an
 explicit follow-up request it's now excluded from the progress bar entirely, not just the linear
 flow. The progress bar now shows 6 segments ending at "Optional Features" instead of 7. The JS reads
 segments dynamically via `document.querySelectorAll('.progress-seg[data-module]')`, so nothing else
-needed updating for the count to change. floorsense-setup-path-00.html itself was not deleted and
+needed updating for the count to change. floorsense-setup-path.html itself was not deleted and
 remains fully functional -- it just has no progress-bar entry point anywhere anymore; it's still
 directly reachable by URL, and its own back-arrow/Continue button still work as before. Verified via
 an inline HTMLParser tag-balance check and `node --check` on the extracted script block on every
 touched file.
 
 MOST RECENT CHANGE: per a request to remove the "We will NOT enable this feature" option, remove
-the radio buttons, and add a timeline+slider control like floorsense-prebooking-advance-04.html's,
+the radio buttons, and add a timeline+slider control like floorsense-prebooking-advance.html's,
 this page's entire `.path-check-grid` (both 2-mode radio cards) and `.adh-settings` (the two Apple
-Clock time-drums) were replaced. The intro/toggle now matches floorsense-idle-release-09.html's own
+Clock time-drums) were replaced. The intro/toggle now matches floorsense-idle-release.html's own
 `.checkin-card`/`.idle-toggle-row`/`.switch`/`.idle-body` suite exactly: a single explainer card with
 an inline on/off switch (`#adhEnableSwitch`) — `state.mode` still stores the string 'enable'/'none'
-it always did (not converted to a boolean), since floorsense-optional-features-06.html's own switch
+it always did (not converted to a boolean), since floorsense-optional-features.html's own switch
 and every NAV_SEQUENCE/seqEnabled walker sitewide already read/write `antiDeskHogging.mode` this way;
 only the on-page control changed; the way the value is stored didn't. The card's icon was also
 updated from the old repeat-arrow-with-a-slash glyph to the same bird-in-a-nest glyph
-floorsense-optional-features-06.html's own Anti Desk Hogging row uses (badge-teal), since that row
+floorsense-optional-features.html's own Anti Desk Hogging row uses (badge-teal), since that row
 was redesigned after this page's icon was originally set and the two had drifted apart.
 
 Below the switch, once on, are two rail/pin sliders ported verbatim from
-floorsense-prebooking-advance-04.html's advance-booking diagram (same `.timeline-card`/
+floorsense-prebooking-advance.html's advance-booking diagram (same `.timeline-card`/
 `.timeline-rail`/`.timeline-zone`/`.timeline-zone-seg`/`.timeline-ticks`/`.timeline-node`/
 `.anchor-pin`/`.label-time`/`.label-desc` classes, `lerpColor()` segment-gradient helper, pointer-drag
 and arrow-key stepping, and scroll-triggered `.animate-in` reveal). "Time Window" is a single-handle
@@ -579,7 +579,7 @@ all unchanged by this redesign — they only ever read/write `state.mode`/`state
 
 Per a follow-up request, this exact same slider pair (reading/writing the same
 `antiDeskHogging.windowDays`/`maxBookings` fields) was also added inline on
-floorsense-optional-features-06.html's own Anti Desk Hogging row, revealed only while that row's own
+floorsense-optional-features.html's own Anti Desk Hogging row, revealed only while that row's own
 switch is on — see that file's own NOTE for the full design of that copy.
 
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, a
@@ -611,7 +611,7 @@ window" phrasing, since M no longer bounds N). The intro paragraph was reworded 
 rolling time window, and separately, how many days out of any window the same desk may be booked").
 Time Window's own slider (`windowNode` and everything around it) is completely unchanged — the
 request was explicit that it should be "left as is." The identical stepper (same ids, `adh`-prefixed)
-replaced the second slider on floorsense-optional-features-06.html's inline copy too — see that
+replaced the second slider on floorsense-optional-features.html's inline copy too — see that
 file's own NOTE. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted
 script block, a jsdom test confirming: the stepper defaults to 1/disables its down button; a saved
 `maxBookings` value greater than the current `windowDays` is preserved rather than clamped down
@@ -621,7 +621,7 @@ the summary sentence pluralizes correctly at 1 vs. more. Also a Playwright scree
 stepper's look matches the supplied reference image.
 
 MOST RECENT CHANGE: per a follow-up request that Same-Desk Booking Days "not have its own card" and
-instead sit above the Time Window card — styled the way floorsense-prebooking-advance-04.html places
+instead sit above the Time Window card — styled the way floorsense-prebooking-advance.html places
 its own number field directly above its timeline diagram, per a reference screenshot of that page —
 the stepper's `.timeline-card` wrapper was removed and the whole block (now a plain `.adh-field-block`
 div, no background/border of its own) was moved above the Time Window `.timeline-card` in the DOM.
@@ -633,7 +633,7 @@ comments describing the timeline CSS were reworded to reflect the current single
 layout. No JS changed — `renderBookingStepper()`/`setMaxBookings()` reference elements purely by id,
 which are unaffected by their new position in the markup; the reveal-animation `querySelectorAll
 ('.timeline-card')` now simply matches one element instead of two. The identical reorder was applied
-to floorsense-optional-features-06.html's inline copy — see that file's own NOTE. Verified via an
+to floorsense-optional-features.html's inline copy — see that file's own NOTE. Verified via an
 inline HTMLParser tag-balance check, `node --check` on the extracted script block, a re-run of every
 existing jsdom test for this page (all still pass unchanged, confirming the reorder is purely
 visual), and a Playwright screenshot confirming the new layout matches the supplied reference image.
@@ -643,7 +643,7 @@ bird-in-nest glyph's own `<rect x="4" y="4" width="16" height="16" rx="2"/>` can
 `fill="none"`/`stroke="currentColor"` from the parent `<svg>`, it rendered as a second rounded-square
 outline sitting just inside the `.checkin-card-icon-badge`'s own white/teal-bordered square, i.e. two
 concentric edges around one glyph. This `<rect>` is the "Style 1" canvas-icon convention used
-elsewhere on the site (e.g. floorsense-optional-features-06.html's own Anti Desk Hogging row icon
+elsewhere on the site (e.g. floorsense-optional-features.html's own Anti Desk Hogging row icon
 still has it, alongside every other icon on that hub), but here — nested inside an already-bordered
 badge rather than shown bare — it was redundant, not consistent framing. Only the `<rect>` was
 removed; the highlight circle, bird/nest paths, and eye dot are unchanged, so the glyph itself is
@@ -652,10 +652,10 @@ Playwright screenshot (zoomed on the icon badge) confirming only the badge's own
 remains.
 
 MOST RECENT CHANGE: per a request to remove the "Enable Anti Desk Hogging" toggle and restyle "Same-
-Desk Booking Days" to match floorsense-prebooking-advance-04.html exactly, two things changed. First,
+Desk Booking Days" to match floorsense-prebooking-advance.html exactly, two things changed. First,
 the `.idle-toggle-row` (label + `#adhEnableSwitch`) was removed entirely, along with the now-unused
 `.idle-toggle-row`/`.idle-toggle-label`/`.switch`/`.idle-body`/`.idle-body.show` CSS — this feature's
-on/off state is controlled solely by the master switch on floorsense-optional-features-06.html, so a
+on/off state is controlled solely by the master switch on floorsense-optional-features.html, so a
 second, redundant toggle here (which never actually gated navigation — NAV_SEQUENCE already skips this
 page when the hub's switch is off) was removed, and the settings block (`#adhBody`, no longer
 conditionally hidden) is now always shown. `state.mode` itself is untouched: it's still loaded from and
@@ -665,13 +665,13 @@ just never read or written from this page anymore — Reset no longer touches it
 
 Second, the Same-Desk Booking Days up/down-chevron stepper (`#bookingValue`/`#bookingUpBtn`/
 `#bookingDownBtn`) was replaced with a plain fill-in number field styled and wired exactly like
-floorsense-prebooking-advance-04.html's own "Advance booking limit" field: `.minute-field`/
+floorsense-prebooking-advance.html's own "Advance booking limit" field: `.minute-field`/
 `.minute-input`/`.minute-suffix` copied verbatim from that page (an 88px bordered number input plus a
 plain-text suffix span), and a new `clampBookingDays()` that reads/clamps/writes the input's own
 `.value` directly, mirroring that page's `clampPrebookingDays()`, in place of the old stepper's
 separate render function. The field keeps the same fixed 1-5 range and the same independence from the
 Time Window slider as before — only the on-screen control changed. The identical restyle was applied to
-floorsense-optional-features-06.html's inline copy (`#adhBookingDaysInput`, `adh`-prefixed function
+floorsense-optional-features.html's inline copy (`#adhBookingDaysInput`, `adh`-prefixed function
 names) — see that file's own NOTE. Verified via an inline HTMLParser tag-balance check, `node --check`
 on the extracted script block, a jsdom test confirming: the field defaults to 1 and has no toggle/switch
 anywhere on the page; a saved state renders correctly with the settings always visible; typing a value
@@ -703,9 +703,9 @@ input's own id (`bookingDaysInput`), its `.minute-suffix` ("days within the roll
 and every other current-state comment describing the field were updated to match the new name too,
 except this file's own historical MOST RECENT CHANGE paragraphs above, which are left saying "Days"
 since they're a record of what the field was called at the time, not live copy — matching the same
-convention used for other renames on this site (e.g. floorsense-prebooking-advance-04.html's own
+convention used for other renames on this site (e.g. floorsense-prebooking-advance.html's own
 "Prebooking" to "Booking" rename). The field's underlying unit is unchanged — it's still a day-count
-(1-5), just relabeled; the mirrored copy on floorsense-optional-features-06.html's Anti Desk Hogging
+(1-5), just relabeled; the mirrored copy on floorsense-optional-features.html's Anti Desk Hogging
 row was renamed identically — see that file's own NOTE. Verified via an inline HTMLParser tag-balance
 check, `node --check` on the extracted script block, and a jsdom test confirming the new label/aria-
 label/hint text render with zero runtime errors and no functional regression, plus a Playwright
@@ -724,7 +724,7 @@ as an extra time when it follows the previous release within 1 hour (e.g. a quic
 in), not whenever it happens to fall on the same calendar day. The underlying field, id
 (`bookingDaysInput`), and 1-5 range are unchanged — only its displayed unit and the added explanation.
 The same suffix change (but not the hint, since the hub's inline copies never carry `.policy-hint` text
-for any feature) was mirrored on floorsense-optional-features-06.html — see that file's own NOTE.
+for any feature) was mirrored on floorsense-optional-features.html — see that file's own NOTE.
 floorsense-out-of-box-policy.html's Configuration Summary row was also updated: `renderAdhSummary()`
 gained a `formatTimes()` helper (mirroring the existing `formatDays()`) so the row and its static
 fallback description both now say "times" for the booking-count value while windowDays (Time Window)
@@ -746,7 +746,7 @@ too; historical NOTE paragraphs above are left saying "Same-Desk Booking Times"/
 established convention of not rewriting historical record. The field's underlying id
 (`bookingDaysInput`), 1-5 range, and same-day-rebooking-within-1-hour counting rule are all unchanged —
 only the label and surrounding copy. The identical rename was mirrored on
-floorsense-optional-features-06.html's inline copy — see that file's own NOTE. On
+floorsense-optional-features.html's inline copy — see that file's own NOTE. On
 floorsense-out-of-box-policy.html, `renderAdhSummary()`'s `formatTimes()` helper was renamed
 `formatBookings()` ("1 booking"/"N bookings", was "1 time"/"N times") so the Configuration Summary's
 phrasing matches the new field name. Verified via an inline HTMLParser tag-balance check and `node
@@ -755,7 +755,7 @@ text and the renamed summary helper all render correctly with zero runtime error
 screenshot of the card confirming the new copy reads cleanly.
 
 MOST RECENT CHANGE: per a request to apply the same pin treatment used on
-floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html to this page's own pin,
+floorsense-prebooking-advance.html/floorsense-business-hours.html to this page's own pin,
 `#windowNode` gained a small decorative left/right chevron flanking its `#windowNodeLabel` text
 (stroked `#fff`) — the `id` moved from the `.label-time.primary` div onto a new inner `<span>`
 wrapping just the text, so the existing `windowNodeLabel.textContent = formatDays(days)` assignment
@@ -772,7 +772,7 @@ MOST RECENT CHANGE: per a request to apply the same tap-to-type pin editing roll
 other timeline pages to this page's Time Window pin, `#windowLabelPill` gained a
 `title="Tap to type a value"`, `#windowNodeLabel` got `class="label-static-text"`, and a sibling
 `<input type="number" id="windowDaysInput">` (min 1, max 14) was added, matching
-floorsense-prebooking-advance-04.html's plain-integer pattern since the displayed value ("N days")
+floorsense-prebooking-advance.html's plain-integer pattern since the displayed value ("N days")
 is already the same number the user types. Commit routes through the existing `setWindowDays()`,
 so the same `clampWindowDays()` bounds the drag/arrow-key handlers already use apply here too. The
 pin isn't nested inside a `<label>`/radio, so only `stopPropagation()` was needed on the pill's own
@@ -781,6 +781,17 @@ drag pointerdown handler and the Reset button. Verified via an inline HTMLParser
 `node --check` on the extracted script block, and a Playwright test confirming: tapping the pill
 enters edit mode and typing commits the value; typing above 14 or below 1 clamps correctly; Escape
 cancels without committing; dragging still works; and tap-to-edit still works right after a drag.
+
+MOST RECENT CHANGE: renamed this file from `floorsense-anti-desk-hogging-13.html` to `floorsense-anti-desk-hogging.html` as part of a sitewide rename that
+strips the numeric step-order suffix from every Smartalock and Floorsense wizard page filename (kept
+only as an internal ordering aid, but a recurring source of confusion). Every same-repo reference to
+the old filename - progress-bar hrefs, back/next nav-btn hrefs, JS nextUrl fallbacks, Edit-link
+targets on both Configuration Summary pages, and other pages' own hrefs/prose - was updated to the new
+name in the same change; the git history was preserved via `git mv`. Verified via a sitewide
+broken-link scan (every href/src attribute across every live HTML file checked against disk) finding
+zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
+back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
 -->
 
 <script>
@@ -861,13 +872,13 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
 
   /* ---------------- this page no longer has its own on/off toggle — `state.mode` is still loaded
      from and saved back to storage unchanged (a plain string 'enable'/'none', per every
-     NAV_SEQUENCE/seqEnabled walker and floorsense-optional-features-06.html's own master switch
+     NAV_SEQUENCE/seqEnabled walker and floorsense-optional-features.html's own master switch
      that read/write it that way), but it's never read or written from this page anymore. The
      settings below are simply always shown; see this file's own NAV_SEQUENCE below, unchanged by
      this. ---------------- */
 
   /* ---------------- shared segmented-zone colour helper, ported verbatim from
-     floorsense-prebooking-advance-04.html/floorsense-business-hours-05.html ---------------- */
+     floorsense-prebooking-advance.html/floorsense-business-hours.html ---------------- */
   const ZONE_SEG_COLOR_START = '#0058B0';
   const ZONE_SEG_COLOR_END = '#5AC8FA';
   function lerpColor(hexA, hexB, t) {
@@ -890,7 +901,7 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   }
 
   /* ---------------- Time Window slider: single-handle 1-14 day rail, ported from
-     floorsense-prebooking-advance-04.html's advance-booking diagram. Percent-position math treats
+     floorsense-prebooking-advance.html's advance-booking diagram. Percent-position math treats
      day 0 as an implicit fixed anchor at the rail's left edge (same as that page), but the slider
      itself is clamped to 1-14 — there's no "0 days"/off state to represent here, since off is the
      switch above instead. ---------------- */
@@ -965,7 +976,7 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   });
 
   /* ---------------- tap-to-type: the pill can also be tapped to type the window's day count
-     directly, matching floorsense-prebooking-advance-04.html's plain-integer pattern (the value
+     directly, matching floorsense-prebooking-advance.html's plain-integer pattern (the value
      already displayed, "N days", is the same number the user types). Not nested inside a
      <label>/radio, so no focus-stealing concern applies. ---------------- */
   const windowLabelPill = document.getElementById('windowLabelPill');
@@ -999,7 +1010,7 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   windowDaysInput.addEventListener('blur', () => { if (windowLabelPill.classList.contains('editing')) commitWindowEditValue(); });
 
   /* ---------------- Max Same-Desk Bookings: a plain fill-in number field, wired exactly like
-     floorsense-prebooking-advance-04.html's own "Advance booking limit" field — clampBookingDays()
+     floorsense-prebooking-advance.html's own "Advance booking limit" field — clampBookingDays()
      reads/clamps/writes the input's own .value directly (mirroring that page's
      clampPrebookingDays()), rather than the old up/down-stepper's separate render function. Per a
      follow-up request this value remains independent of (not capped by) the Time Window slider
@@ -1027,7 +1038,7 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   });
 
   /* ---------------- reveal animation: plays once as the Time Window card scrolls into view,
-     ported verbatim from floorsense-prebooking-advance-04.html. Only one .timeline-card remains on
+     ported verbatim from floorsense-prebooking-advance.html. Only one .timeline-card remains on
      this page now that Max Same-Desk Bookings is an unboxed plain number field, but this still uses
      querySelectorAll so it needs no changes if another card is ever added back. ---------------- */
   const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1057,16 +1068,16 @@ cancels without committing; dragging still works; and tap-to-edit still works ri
   applyState();
 
   /* ---------------- dynamic skip-navigation ----------------
-     See floorsense-optional-features-06.html's NOTE for the full design. This walks the fixed
+     See floorsense-optional-features.html's NOTE for the full design. This walks the fixed
      module sequence from this page's own position, skipping any optional page whose toggle is
      currently off, so Back always lands on the nearest enabled (or non-optional "floor") page. */
   const NAV_SEQUENCE = [
-    { key: 'checkin-window', href: 'floorsense-checkin-window-08.html' },
-    { key: 'idle-release', href: 'floorsense-idle-release-09.html', flagPath: ['idleRelease', 'enabled'], flagType: 'bool' },
-    { key: 'reservation-length', href: 'floorsense-reservation-length-10.html' },
-    { key: 'nsnp', href: 'floorsense-nsnp-11.html', flagPath: ['nsnp', 'mode'], flagType: 'mode' },
-    { key: 'fme', href: 'floorsense-fme-12.html', flagPath: ['fme', 'mode'], flagType: 'mode' },
-    { key: 'anti-desk-hogging', href: 'floorsense-anti-desk-hogging-13.html', flagPath: ['antiDeskHogging', 'mode'], flagType: 'mode' }
+    { key: 'checkin-window', href: 'floorsense-checkin-window.html' },
+    { key: 'idle-release', href: 'floorsense-idle-release.html', flagPath: ['idleRelease', 'enabled'], flagType: 'bool' },
+    { key: 'reservation-length', href: 'floorsense-reservation-length.html' },
+    { key: 'nsnp', href: 'floorsense-nsnp.html', flagPath: ['nsnp', 'mode'], flagType: 'mode' },
+    { key: 'fme', href: 'floorsense-fme.html', flagPath: ['fme', 'mode'], flagType: 'mode' },
+    { key: 'anti-desk-hogging', href: 'floorsense-anti-desk-hogging.html', flagPath: ['antiDeskHogging', 'mode'], flagType: 'mode' }
   ];
   function seqEnabled(entry) {
     if (!entry.flagPath) return true;

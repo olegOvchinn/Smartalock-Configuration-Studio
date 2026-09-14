@@ -73,7 +73,7 @@
   added a full "Smartalock" section, positioned between the shared "Project Details" section and the
   (renamed, for symmetry) "Floorsense" section — matching the requested Smartalock-before-Floorsense
   order. The new Smartalock section mirrors every field on
-  `smartalock-configuration-summary-08.html` (its own client-facing Configuration Summary) across its
+  `smartalock-configuration-summary.html` (its own client-facing Configuration Summary) across its
   7 groups: Initial Locker Access Methods, Locker Door Behaviour, Reservation Type, Locker Policy,
   User Policy, Kiosk Customisation, and Locker Types — reformatted the same way the existing
   Floorsense section already is: no descriptions, and every duration field normalized through the same
@@ -90,7 +90,7 @@
     already established for the Floorsense section's SSO Scope/FME/NSNP rows.
   - Locker Types renders one row per selected type (or a single "No locker types selected yet." row),
     built the same way the Additional Policies list already builds its dynamic blocks.
-  - This section intentionally mirrors `smartalock-configuration-summary-08.html`'s existing field set
+  - This section intentionally mirrors `smartalock-configuration-summary.html`'s existing field set
     exactly, including its own pre-existing gaps (cardAssignMethod/pinAssignMethod, two kiosk toggles
     the summary's own TOGGLES array omits, and the Background Colour row not checking
     `customBgEnabled`) rather than also fixing those — same posture as the Floorsense section's
@@ -165,7 +165,7 @@
   coverage above plus the tag-balance and syntax checks.
 
   MOST RECENT CHANGE: per a request to (1) surface detail on the choices made on
-  smartalock-access-methods-09.html's "Building access cards" and "PIN number at touchscreen" cards,
+  smartalock-access-methods.html's "Building access cards" and "PIN number at touchscreen" cards,
   and (2) add a new "Outstanding" section — to this page and to both client-facing Configuration
   Summary pages — listing items the client still has to provide, with the CSN-spreadsheet-import
   default (and, per a follow-up message, the "client provides a PIN list" choice) triggering it.
@@ -219,7 +219,7 @@
 
   MOST RECENT CHANGE: per a request to rename the Locker Policy field label, "Open When Idle" is now
   "Release When Idle" (row id/value id unchanged — this is a label-only rename, same as the matching
-  rename on smartalock-configuration-summary-08.html). Verified via an inline HTMLParser tag-balance
+  rename on smartalock-configuration-summary.html). Verified via an inline HTMLParser tag-balance
   check, `node --check` on the extracted script block, and a jsdom test confirming the new label text
   renders and the old one no longer appears.
 
@@ -289,7 +289,7 @@
   a value is entered the item disappears. Both reuse the same kiosk/customLogoOn variables already
   computed by the Kiosk Customisation block above rather than re-deriving them. Verified via an inline
   HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (19
-  assertions across this page and smartalock-configuration-summary-08.html) covering: neither trigger
+  assertions across this page and smartalock-configuration-summary.html) covering: neither trigger
   active, logo trigger alone (with and without a typed file name), background-colour trigger alone
   (empty vs filled-in vs toggle-off), and both triggers active together.
 
@@ -312,7 +312,7 @@
 
   MOST RECENT CHANGE: per a request mirroring the Smartalock side's res_adhoc key, the Floorsense
   Reservation Types Selected row's setting-key cell now shows book_adhoc = false whenever
-  floorsense-reservation-types-01.html's Reserved by User as Needed card (data-template/value adhoc)
+  floorsense-reservation-types.html's Reserved by User as Needed card (data-template/value adhoc)
   is deselected - including when nothing is selected at all. Added #tsReservationTypesKey to the row's
   key cell (previously always empty) alongside the existing tsReservationTypes value cell. Verified via
   an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
@@ -790,7 +790,7 @@
     <table class="trow outstanding" id="outstandingTable"></table>
   </div>
 
-  <div class="dev-link">Dev convenience only (not shown to the client): <a href="smartalock-configuration-summary-08.html">View Smartalock Configuration Summary</a> · <a href="floorsense-out-of-box-policy.html">View Floorsense Configuration Summary</a></div>
+  <div class="dev-link">Dev convenience only (not shown to the client): <a href="smartalock-configuration-summary.html">View Smartalock Configuration Summary</a> · <a href="floorsense-out-of-box-policy.html">View Floorsense Configuration Summary</a></div>
 
 </div>
 
@@ -988,7 +988,7 @@
   /* ---------------- Locker Door Behaviour ---------------- */
   const lockerBehaviour = saWizard.lockerBehaviour || {};
   // Legacy single-select save (lockerBehaviour.lockerBehaviour was '' for Pop Open or 'push-open')
-  // migrated the same way smartalock-configuration-summary-08.html's own reader does.
+  // migrated the same way smartalock-configuration-summary.html's own reader does.
   const popOpenEnabled = typeof lockerBehaviour.popOpenEnabled === 'boolean' ? lockerBehaviour.popOpenEnabled : lockerBehaviour.lockerBehaviour !== 'push-open';
   const pushOpenEnabled = typeof lockerBehaviour.pushOpenEnabled === 'boolean' ? lockerBehaviour.pushOpenEnabled : lockerBehaviour.lockerBehaviour === 'push-open';
   const BEHAVIOUR_SCOPE_LABELS = { "": "All lockers", unknown: "Don't know yet", specific: "Specific locker bank or lockers" };

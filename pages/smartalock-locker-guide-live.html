@@ -10,7 +10,7 @@
   small on-screen toolbar (hidden via @media print) has a "Print / Save as PDF" button that calls
   window.print(); the visitor's own browser print dialog produces the PDF using this page's print
   CSS, so — same as the Floorsense version — there's no client-side PDF-generation library
-  dependency to maintain. Opened from smartalock-configuration-summary-08.html's new download-card
+  dependency to maintain. Opened from smartalock-configuration-summary.html's new download-card
   (see that file's own NOTE) in a new tab.
 
   Rows made dynamic here, and their source keys (all under project.smartalock.wizard):
@@ -31,7 +31,7 @@
     customIdleDuration.
   - At the Kiosk <- kioskCustomisation.{openEnabled,lockerEnabled,qrEnabled,cardEnabled} (each
     defaults to true per this wizard's own flag() helper convention, matching
-    smartalock-configuration-summary-08.html's own reading of these fields) — lists only the
+    smartalock-configuration-summary.html's own reading of these fields) — lists only the
     actions actually available, and separately lists any of the four that are off in a compact
     "not available at this kiosk" note (only rendered if at least one is off).
   - Locker Types Available <- lockerType.selected, in the same fixed display order
@@ -44,7 +44,7 @@
   same reasoning the Floorsense guide already applies to its own admin-only fields.
 
   MOST RECENT CHANGE: per a site-wide request to propagate the glass-card/icon-badge styling already
-  finished on floorsense-reservation-types-01.html, applied the identical treatment already worked
+  finished on floorsense-reservation-types.html, applied the identical treatment already worked
   out for this page's Floorsense twin, floorsense-desk-booking-guide-live.html (see that file's own
   matching NOTE for the fuller reasoning, reproduced briefly here). No large bordered CARD elements
   exist to convert: `.not-on-box` (renamed here to describe kiosk actions rather than Floorsense
@@ -76,7 +76,7 @@
   branch's own access-methods row already references "the Floorsense app" as one of its login
   methods, so the same Floorsense-branded guide applies here too). It links to one of the same two
   Floorsense-hosted Notion guides depending on whether the client chose SSO on
-  smartalock-it-configuration-02.html — `project.smartalock.wizard.it.ssoMethod`, the exact same
+  smartalock-it-configuration.html — `project.smartalock.wizard.it.ssoMethod`, the exact same
   state key both pages' own IT Configuration step already writes, since this is the same
   `configurationProject` project record shared across both product branches. The old `.footer-note`
   ("This guide reflects your workplace's current Smartalock configuration as of today...") was
@@ -88,7 +88,7 @@
   while `#kioskNotOnBox` still does, and a full-page Playwright screenshot confirming the new section
   renders correctly directly below Locker Types Available.
 
-  MOST RECENT CHANGE: per a follow-up to smartalock-locker-policy-05.html reducing "Lockers per User"
+  MOST RECENT CHANGE: per a follow-up to smartalock-locker-policy.html reducing "Lockers per User"
   to just a "1" default plus a "Custom..." option (see that file's own NOTE), the fixed `LIMIT_LABELS`
   map here (`'1'`/`'2'`/`'3'`/`unlimited`) no longer matches the wizard's possible values, so it was
   replaced with a small `lockerLimitPhrase()` function: returns `'1 locker'` for the default, or reads
@@ -101,7 +101,7 @@
   five render the expected title/text with zero runtime errors.
 
 MOST RECENT CHANGE: per the companion change making Pop Open and Push to Open independently
-selectable on `smartalock-locker-behaviour-03.html` (see that file's own NOTE), the Opening Your
+selectable on `smartalock-locker-behaviour.html` (see that file's own NOTE), the Opening Your
 Locker section no longer assumes exactly one of the two is ever chosen. It now reads
 `lockerBehaviour.popOpenEnabled`/`pushOpenEnabled` (falling back to migrating the legacy
 `lockerBehaviour.lockerBehaviour` string for older saves) and, when both are enabled, shows a new
@@ -250,7 +250,7 @@ legacy-migration fallback both render correctly.
   <div class="toolbar">
     <p class="toolbar-note">Live preview — reflects the settings currently saved for this project. Use Print to save it as a PDF.</p>
     <div class="toolbar-actions">
-      <a class="toolbar-btn secondary" href="smartalock-configuration-summary-08.html">Back to Summary</a>
+      <a class="toolbar-btn secondary" href="smartalock-configuration-summary.html">Back to Summary</a>
       <button type="button" class="toolbar-btn primary" id="printBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         Print / Save as PDF
@@ -551,7 +551,7 @@ legacy-migration fallback both render correctly.
 
   /* ---------------- mobile app installation guide ----------------
      Links to one of two Floorsense-hosted guides depending on whether the client chose SSO on
-     smartalock-it-configuration-02.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
+     smartalock-it-configuration.html: project.smartalock.wizard.it.ssoMethod is "" for "No SSO"
      and a non-empty string ("okta"/"azure"/"other"/etc.) once any SSO option is selected there.
      Same behaviour and same source key as floorsense-desk-booking-guide-live.html's own "Floorsense
      User App" section, since both guides read from the same project.smartalock.wizard.it state. */
