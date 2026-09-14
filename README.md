@@ -495,6 +495,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Applied the same card/icon treatment to `floorsense-nsnp.html`'s 4 mode cards, leaving the page's separate relay-confirmation and grace-period panels on their existing styling since they aren't selectable option cards.
 - Applied the same card/icon treatment to `floorsense-default-reservation-times.html`'s 2 selectable end-mode cards, plus its 3rd, non-selectable "Start time" card's icon, leaving that card's own panel and the end-mode wrapper on their existing styling.
 - Applied the same card/icon treatment to `smartalock-access-methods.html`'s 4 access-method cards, replacing all 4 raster icon illustrations with new bare SVGs redrawn in the navy-outline-plus-accent-fill style (keeping each card's own sampled accent colour), and switching its visible tick mark to plain white/black.
+- Applied the same card/icon treatment to `smartalock-locker-types.html`'s 7 locker-type chip cards, replacing all 7 raster icon illustrations with new bare SVGs redrawn in the navy-outline-plus-accent-fill style at this page's own compact 56px size (keeping the existing shared blue for the 6 shape-based types and purple for Custom Type), and switching its visible tick mark to plain white/black.
 
 ## Status
 
