@@ -364,6 +364,25 @@
   tag-balance check, node --check on the extracted script block, and a jsdom test (5 assertions)
   confirming both keys appear together in fixed-end mode while the row stays hidden and empty for the
   default duration mode.
+
+  MOST RECENT CHANGE: added static setting keys and hide-at-default behaviour to the three remaining
+  Prebooking & Duration rows. Default Start Time gets key book_day_start and is hidden whenever
+  startMinutes equals 540 (9:00 AM) - this is book_day_start's own shipped platform default, distinct
+  from this wizard's own 8:30 AM preset used elsewhere for fsChanged tracking, so the row can be
+  visible even on an otherwise-untouched project. Default End Time gets key book_day_end and is hidden
+  whenever endMinutes equals 1080 (6:00 PM), but only in fixed-end mode where a real end-of-day value
+  exists - duration mode still always shows its existing "n/a (duration mode)" text, since there's no
+  numeric value there to compare. Default Reservation Duration gets key book_duration_default and is
+  hidden whenever the effective duration is exactly 9 hours (540 min) - in fixed-end mode this compares
+  the start/end span itself (which is 540 min when both start and end sit at their own 540/1080
+  defaults), and in duration mode it compares defaultDurationHours directly, mirroring the existing
+  fsChanged check for that field. Verified via an inline HTMLParser tag-balance check, node --check on
+  the extracted script block, and two jsdom tests (12 + 8 assertions) covering: Start Time hidden at
+  540/shown at the wizard's 08:30 default with correct key and text; End Time hidden at 1080 in
+  fixed-end mode, shown at a non-default fixed-end value, and always shown with "n/a (duration mode)"
+  text in duration mode regardless of the 1080 rule; Duration Row hidden at the 9-hour default in both
+  duration mode and fixed-end mode (09:00-18:00 span), and shown with the correct key/text at
+  non-default values in both modes.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -561,9 +580,9 @@
     <table class="trow">
       <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
       <tr id="tsReservationModeRow" hidden><td class="label">Default Reservation Mode</td><td class="key" id="tsReservationModeKey"></td><td class="value" id="tsReservationMode"></td></tr>
-      <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
-      <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
-      <tr><td class="label">Default Reservation Duration</td><td class="key"></td><td class="value" id="tsDefaultDuration"></td></tr>
+      <tr id="tsDefaultStartRow" hidden><td class="label">Default Start Time</td><td class="key">book_day_start</td><td class="value" id="tsDefaultStart"></td></tr>
+      <tr id="tsDefaultEndRow" hidden><td class="label">Default End Time</td><td class="key">book_day_end</td><td class="value" id="tsDefaultEnd"></td></tr>
+      <tr id="tsDefaultDurationRow" hidden><td class="label">Default Reservation Duration</td><td class="key">book_duration_default</td><td class="value" id="tsDefaultDuration"></td></tr>
     </table>
 
     <p class="tsec-sub">Check-in Window</p>
@@ -1090,17 +1109,33 @@
     set('tsReservationMode', 'fixed-end');
     set('tsReservationModeKey', 'res_duration_type = 1, book_day_end_mode = 1');
   }
-  set('tsDefaultStart', formatClockWithMinutes(startMinutes));
+  // book_day_start's own shipped default (540 min = 9:00 AM) is the platform default, not this
+  // wizard's own 8:30 AM preset — the row is hidden only when the two happen to coincide.
+  const defaultStartRowChanged = startMinutes !== 540;
+  showRow('tsDefaultStartRow', defaultStartRowChanged);
+  if (defaultStartRowChanged) set('tsDefaultStart', formatClockWithMinutes(startMinutes));
 
   if (endMode === 'fixed-end') {
     const endMinutes = clockStringToMinutes(businessHours.departureTime || defaultReservationTimes.defaultEndTime, 17 * 60);
-    set('tsDefaultEnd', formatClockWithMinutes(endMinutes));
+    // Same idea as book_day_start above — book_day_end's own shipped default is 1080 min (6:00 PM).
+    const defaultEndRowChanged = endMinutes !== 1080;
+    showRow('tsDefaultEndRow', defaultEndRowChanged);
+    if (defaultEndRowChanged) set('tsDefaultEnd', formatClockWithMinutes(endMinutes));
     const spanMinutes = ((endMinutes - startMinutes) + 1440) % 1440;
-    set('tsDefaultDuration', formatDuration(spanMinutes));
+    // book_duration_default's own shipped default span is 540 min (9 hours) — the gap between
+    // book_day_start (540) and book_day_end (1080) at their own defaults.
+    const defaultDurationRowChanged = spanMinutes !== 540;
+    showRow('tsDefaultDurationRow', defaultDurationRowChanged);
+    if (defaultDurationRowChanged) set('tsDefaultDuration', formatDuration(spanMinutes));
   } else {
+    // Duration mode has no real end-of-day value to compare against 1080 — keep showing the
+    // existing "n/a (duration mode)" row as before.
+    showRow('tsDefaultEndRow', true);
     set('tsDefaultEnd', 'n/a (duration mode)');
     const durationHours = Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9;
-    set('tsDefaultDuration', formatDuration(durationHours * 60));
+    const defaultDurationRowChanged = durationHours !== 9;
+    showRow('tsDefaultDurationRow', defaultDurationRowChanged);
+    if (defaultDurationRowChanged) set('tsDefaultDuration', formatDuration(durationHours * 60));
     if (durationHours !== 9) fsChanged = true;
   }
   // Ships defaulting to: 8-day advance window, duration mode, 8:30am start — changed if any of

@@ -460,6 +460,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Default Reservation Mode row is now hidden entirely unless "fixed-end" mode is selected (the default duration mode no longer shows a row).
 - The Tech Summary's Default Reservation Mode row's value cell now reads just "fixed-end" instead of "fixed-end (fixed start & end clock times)".
 - The Tech Summary's Default Reservation Mode row's key cell now also shows `book_day_end_mode = 1` alongside `res_duration_type = 1` whenever fixed-end mode is selected.
+- Added setting keys and hide-at-default behaviour to the Tech Summary's remaining Prebooking & Duration rows: Default Start Time (`book_day_start`, hidden at the 9:00 AM platform default), Default End Time (`book_day_end`, hidden at the 6:00 PM platform default in fixed-end mode only), and Default Reservation Duration (`book_duration_default`, hidden at the 9-hour default in either mode).
 
 ## Status
 
