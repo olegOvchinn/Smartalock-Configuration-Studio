@@ -431,6 +431,17 @@
   via an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom
   test (8 assertions) confirming each new label renders, each old label no longer appears anywhere, and
   the two "— Threshold" rows are unaffected.
+
+  MOST RECENT CHANGE: per a follow-up request, merged the separate "— Threshold" rows into their
+  parent Auto-Release on Idle / Auto Check-In on Occupancy rows and removed both "— Threshold" rows
+  entirely (#tsIdleHours and #tsAutoCheckinMinutes no longer exist). #tsIdleRow / #tsAutoCheckinRow are
+  now each hidden unless their feature is enabled; when enabled, the parent row's own value cell shows
+  the threshold duration (formatDuration of idleHours/minutes) instead of a plain Yes. Verified via an
+  inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (13
+  assertions) covering: both features disabled (both rows hidden), idle enabled at its 3-hour default
+  and a custom 5-hour value (row visible, correct duration text, not "Yes"), auto-checkin enabled at
+  its 10-min default and a custom 25-min value (row visible, correct duration text), and confirming the
+  removed elements/labels no longer exist anywhere in the DOM.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -654,10 +665,8 @@
     <p class="tsec-sub">Additional Options</p>
     <table class="trow">
       <tr id="tsMaxDesksRow" hidden><td class="label">Maximum Desks Per User</td><td class="key">book_user_limit</td><td class="value" id="tsMaxDesks"></td></tr>
-      <tr><td class="label">Auto-Release on Idle</td><td class="key"></td><td class="value" id="tsIdleEnabled"></td></tr>
-      <tr><td class="label">Auto-Release on Idle — Threshold</td><td class="key"></td><td class="value" id="tsIdleHours"></td></tr>
-      <tr><td class="label">Auto Check-In on Occupancy</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
-      <tr><td class="label">Auto Check-In on Occupancy — Threshold</td><td class="key"></td><td class="value" id="tsAutoCheckinMinutes"></td></tr>
+      <tr id="tsIdleRow" hidden><td class="label">Auto-Release on Idle</td><td class="key"></td><td class="value" id="tsIdleEnabled"></td></tr>
+      <tr id="tsAutoCheckinRow" hidden><td class="label">Auto Check-In on Occupancy</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
       <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key"></td><td class="value" id="tsNsnpMode"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceMinutes"></td></tr>
@@ -1233,13 +1242,13 @@
   if (maxDesksChanged) fsChanged = true;
 
   const idleRelease = wizard.idleRelease || {};
-  set('tsIdleEnabled', YES_NO(!!idleRelease.enabled));
-  set('tsIdleHours', formatDuration((Number.isFinite(idleRelease.idleHours) ? idleRelease.idleHours : 3) * 60));
+  showRow('tsIdleRow', !!idleRelease.enabled);
+  if (idleRelease.enabled) set('tsIdleEnabled', formatDuration((Number.isFinite(idleRelease.idleHours) ? idleRelease.idleHours : 3) * 60));
   if (idleRelease.enabled) fsChanged = true;
 
   const autoOccupancyCheckin = wizard.autoOccupancyCheckin || {};
-  set('tsAutoCheckinEnabled', YES_NO(!!autoOccupancyCheckin.enabled));
-  set('tsAutoCheckinMinutes', formatDuration(Number.isFinite(autoOccupancyCheckin.minutes) ? autoOccupancyCheckin.minutes : 10));
+  showRow('tsAutoCheckinRow', !!autoOccupancyCheckin.enabled);
+  if (autoOccupancyCheckin.enabled) set('tsAutoCheckinEnabled', formatDuration(Number.isFinite(autoOccupancyCheckin.minutes) ? autoOccupancyCheckin.minutes : 10));
   if (autoOccupancyCheckin.enabled) fsChanged = true;
 
   const NSNP_MODE_LABELS = { all: 'On — all desks', list: 'On — selected desks', other: 'On — custom setup', none: 'Off' };

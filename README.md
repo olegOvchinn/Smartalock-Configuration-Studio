@@ -467,6 +467,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the Second Swipe Checks Out row from the Tech Summary's Check-in Behaviour group entirely, and removed that field's ON/OFF switch from floorsense-out-of-box-policy.html's Check-in Behaviour card (the row now shows only its label and description, with no interactive control).
 - The Tech Summary's Maximum Desks Per User row now has setting key `book_user_limit` and is hidden whenever its value is at the shipped default of 1.
 - Renamed three Tech Summary row labels: "Auto-Release on Idle — Enabled" to "Auto-Release on Idle", "Auto Check-In on Occupancy — Enabled" to "Auto Check-In on Occupancy", and "NSNP — Grace Period Enabled" to "NSNP — Grace Period".
+- Merged the Tech Summary's separate "— Threshold" rows into their parent Auto-Release on Idle / Auto Check-In on Occupancy rows and removed the "— Threshold" rows entirely; each parent row is now hidden unless its feature is enabled, and shows the threshold duration instead of a plain "Yes" when it is.
 
 ## Status
 
