@@ -465,6 +465,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Check-in Late Threshold row now has a static setting key, `booking_confirm_mins` (always shown, no hiding).
 - The Tech Summary's Auto-Cancel When Checking In Elsewhere row now shows `book_adhoc_autorelease = false` whenever it's turned off, and the whole Check-in Behaviour sub-section is hidden unless at least one of its two fields differs from its enabled-by-default shipped state.
 - Removed the Second Swipe Checks Out row from the Tech Summary's Check-in Behaviour group entirely, and removed that field's ON/OFF switch from floorsense-out-of-box-policy.html's Check-in Behaviour card (the row now shows only its label and description, with no interactive control).
+- The Tech Summary's Maximum Desks Per User row now has setting key `book_user_limit` and is hidden whenever its value is at the shipped default of 1.
 
 ## Status
 

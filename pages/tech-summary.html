@@ -417,6 +417,12 @@
   a jsdom test (3 of 8 total assertions, shared with the out-of-box-policy verification) confirming the
   row/element no longer exist, that swipeOutRequired alone no longer affects the group's visibility,
   and that Auto-Cancel's own hide/key behaviour is unaffected.
+
+  MOST RECENT CHANGE: the Maximum Desks Per User row now gets setting key book_user_limit and is
+  hidden whenever maxDesksPerUser equals its shipped default of 1. Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test (5 assertions)
+  covering: default 1 (hidden), the field missing entirely and falling back to 1 (hidden), and a
+  custom value of 3 (shown, correct key and text).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -639,7 +645,7 @@
 
     <p class="tsec-sub">Additional Options</p>
     <table class="trow">
-      <tr><td class="label">Maximum Desks Per User</td><td class="key"></td><td class="value" id="tsMaxDesks"></td></tr>
+      <tr id="tsMaxDesksRow" hidden><td class="label">Maximum Desks Per User</td><td class="key">book_user_limit</td><td class="value" id="tsMaxDesks"></td></tr>
       <tr><td class="label">Auto-Release on Idle — Enabled</td><td class="key"></td><td class="value" id="tsIdleEnabled"></td></tr>
       <tr><td class="label">Auto-Release on Idle — Threshold</td><td class="key"></td><td class="value" id="tsIdleHours"></td></tr>
       <tr><td class="label">Auto Check-In on Occupancy — Enabled</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
@@ -1213,8 +1219,10 @@
 
   /* ---------------- Additional Options ---------------- */
   const maxDesks = Number.isFinite(outOfBoxPolicy.maxDesksPerUser) ? outOfBoxPolicy.maxDesksPerUser : 1;
-  set('tsMaxDesks', String(maxDesks));
-  if (maxDesks !== 1) fsChanged = true;
+  const maxDesksChanged = maxDesks !== 1;
+  showRow('tsMaxDesksRow', maxDesksChanged);
+  if (maxDesksChanged) set('tsMaxDesks', String(maxDesks));
+  if (maxDesksChanged) fsChanged = true;
 
   const idleRelease = wizard.idleRelease || {};
   set('tsIdleEnabled', YES_NO(!!idleRelease.enabled));
