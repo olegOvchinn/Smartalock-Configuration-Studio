@@ -251,14 +251,6 @@
         </div>
 
         <nav class="progress-bar" id="progressBar" aria-label="Module progress">
-        <a class="progress-seg" data-module="registration" href="../smartalock-templates-00.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Project Registration</span>
-        </a>
-        <a class="progress-seg" data-module="it" href="smartalock-it-configuration-02.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">IT Configuration &amp; Integrations</span>
-        </a>
         <a class="progress-seg current" data-module="access" href="smartalock-access-methods-09.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Initial Locker Access Methods</span>
@@ -286,10 +278,6 @@
         <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Kiosk Customisation</span>
-        </a>
-        <a class="progress-seg" data-module="summary" href="smartalock-configuration-summary-08.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Configuration Summary</span>
         </a>
         </nav>
       </div>
@@ -440,6 +428,17 @@ smartalock-configuration-summary-08.html's Edit link, its Continue handler now c
 smartalock-configuration-summary-08.html when the param is present, and to
 smartalock-locker-behaviour-03.html as before when it is absent. Verified via Playwright
 end-to-end navigation tests covering both cases.
+
+MOST RECENT CHANGE: removed the Project Registration, IT Configuration & Integrations, and
+Configuration Summary segments (data-module="registration"/"it"/"summary") from this page's progress
+bar - the Smartalock wizard pages were the only ones showing segments for pages outside their own
+in-wizard flow; the Floorsense wizard pages have never shown equivalent registration/IT/summary
+segments, only their own module-to-module steps. The progress bar now shows only the Smartalock
+in-wizard modules. renderProgressBar() and the moduleStatus tracking already iterate over whichever
+.progress-seg[data-module] elements exist in the DOM, so no JS changes were needed. Verified via an
+inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
+(test_smartalock_progress_bar.js) confirming no registration/it/summary segment exists, at least one
+segment remains, and exactly one .current segment is present.
 -->
 
 <script>
