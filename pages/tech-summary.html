@@ -442,6 +442,16 @@
   and a custom 5-hour value (row visible, correct duration text, not "Yes"), auto-checkin enabled at
   its 10-min default and a custom 25-min value (row visible, correct duration text), and confirming the
   removed elements/labels no longer exist anywhere in the DOM.
+
+  MOST RECENT CHANGE: the Maximum Desks Per User row now also shows book_user_limit_force alongside
+  book_user_limit whenever the value is 2 or more (the row is already hidden at the shipped default of
+  1, and the field's own min=1/max=20 range means any shown value is always 2 or more, but the check is
+  explicit for robustness) - mirroring the Smartalock side's own res_user_limit/res_user_limit_force
+  pattern. The Auto-Release on Idle row's key cell (previously blank) now shows a static
+  book_idle_autorelease key whenever the row is visible. Verified via an inline HTMLParser tag-balance
+  check, node --check on the extracted script block, and a jsdom test (7 assertions) covering: Maximum
+  Desks Per User at its default (hidden), at 2 (force key included), and at 20 (force key included);
+  Auto-Release on Idle disabled (hidden) and enabled (key present).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -664,8 +674,8 @@
 
     <p class="tsec-sub">Additional Options</p>
     <table class="trow">
-      <tr id="tsMaxDesksRow" hidden><td class="label">Maximum Desks Per User</td><td class="key">book_user_limit</td><td class="value" id="tsMaxDesks"></td></tr>
-      <tr id="tsIdleRow" hidden><td class="label">Auto-Release on Idle</td><td class="key"></td><td class="value" id="tsIdleEnabled"></td></tr>
+      <tr id="tsMaxDesksRow" hidden><td class="label">Maximum Desks Per User</td><td class="key" id="tsMaxDesksKey"></td><td class="value" id="tsMaxDesks"></td></tr>
+      <tr id="tsIdleRow" hidden><td class="label">Auto-Release on Idle</td><td class="key">book_idle_autorelease</td><td class="value" id="tsIdleEnabled"></td></tr>
       <tr id="tsAutoCheckinRow" hidden><td class="label">Auto Check-In on Occupancy</td><td class="key"></td><td class="value" id="tsAutoCheckinEnabled"></td></tr>
       <tr><td class="label">No Swipe No Power (NSNP) — Mode</td><td class="key"></td><td class="value" id="tsNsnpMode"></td></tr>
       <tr><td class="label">NSNP — Grace Period</td><td class="key"></td><td class="value" id="tsNsnpGraceEnabled"></td></tr>
@@ -1238,7 +1248,10 @@
   const maxDesks = Number.isFinite(outOfBoxPolicy.maxDesksPerUser) ? outOfBoxPolicy.maxDesksPerUser : 1;
   const maxDesksChanged = maxDesks !== 1;
   showRow('tsMaxDesksRow', maxDesksChanged);
-  if (maxDesksChanged) set('tsMaxDesks', String(maxDesks));
+  if (maxDesksChanged) {
+    set('tsMaxDesks', String(maxDesks));
+    set('tsMaxDesksKey', maxDesks >= 2 ? 'book_user_limit, book_user_limit_force' : 'book_user_limit');
+  }
   if (maxDesksChanged) fsChanged = true;
 
   const idleRelease = wizard.idleRelease || {};
