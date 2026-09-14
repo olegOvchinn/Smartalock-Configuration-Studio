@@ -247,6 +247,13 @@
   value under 3 keep showing just "res_user_limit". Verified via an inline HTMLParser tag-balance
   check, `node --check` on the extracted script block, and a jsdom test covering the default, a custom
   value of 2 (below the threshold), custom values of 3 and 10 (both keys), and an empty custom value.
+
+  MOST RECENT CHANGE: per a request to show a setting key on Release Behaviour, its cell now reads
+  "res_release_on_expire = true" whenever `releaseBehaviour === 'immediate'` ("Release when
+  reservation expires") is selected. The default "Allow one final locker access after expiry" (grace)
+  has no key defined yet, so the cell stays blank for that case. Verified via an inline HTMLParser
+  tag-balance check, `node --check` on the extracted script block, and a jsdom test covering the
+  default, an explicit grace value, and the immediate case.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -398,7 +405,7 @@
     <table class="trow">
       <tr><td class="label">Release When Idle</td><td class="key" id="saIdleKey">res_release_idle_time</td><td class="value" id="saIdle"></td></tr>
       <tr><td class="label">Lockers Per User</td><td class="key" id="saLockerLimitKey">res_user_limit</td><td class="value" id="saLockerLimit"></td></tr>
-      <tr><td class="label">Release Behaviour</td><td class="key"></td><td class="value" id="saReleaseBehaviour"></td></tr>
+      <tr><td class="label">Release Behaviour</td><td class="key" id="saReleaseBehaviourKey"></td><td class="value" id="saReleaseBehaviour"></td></tr>
     </table>
 
     <p class="tsec-sub">User Policy</p>
@@ -807,6 +814,9 @@
   if (lockerLimitNumber >= 3) set('saLockerLimitKey', 'res_user_limit, res_user_limit_force');
   const RELEASE_LABELS = { grace: 'Allow one final locker access after expiry', immediate: 'Release when reservation expires' };
   set('saReleaseBehaviour', RELEASE_LABELS[locker.releaseBehaviour] ?? (locker.releaseBehaviour || RELEASE_LABELS.grace));
+  // Only "Release when reservation expires" maps to a real backend flag right now — the default
+  // "Allow one final locker access after expiry" (grace) has no key defined yet.
+  if (locker.releaseBehaviour === 'immediate') set('saReleaseBehaviourKey', 'res_release_on_expire = true');
   // Defaults this group ships with: idle release Off, 1 locker per user, "grace" release behaviour —
   // changed if any of the three differ from those same defaults used in the fallbacks just above.
   if ((locker.idleDuration && locker.idleDuration !== '') || locker.lockerLimit === 'custom'

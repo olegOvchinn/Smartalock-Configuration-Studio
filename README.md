@@ -447,6 +447,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Renamed the Locker Policy field "Open When Idle" to "Release When Idle" on both tech-summary.html and smartalock-configuration-summary-08.html (label-only rename).
 - Added a static `res_release_idle_time` setting key to the Tech Summary's Release When Idle row, and, for its custom free-text duration, added a best-effort minutes parser that appends the parsed total (e.g. "72 hours, 4320 min") whenever the text isn't already phrased in minutes; unparseable text is left as-is.
 - The Tech Summary's Lockers Per User row now also shows `res_user_limit_force` alongside its existing `res_user_limit` key whenever the custom limit is 3 or more lockers per user.
+- The Tech Summary's Release Behaviour row now shows `res_release_on_expire = true` whenever "Release when reservation expires" is selected (no key yet for the default "Allow one final locker access after expiry").
 
 ## Status
 
