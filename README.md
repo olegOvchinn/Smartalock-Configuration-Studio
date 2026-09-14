@@ -454,6 +454,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Custom Logo row now shows its placement choice (e.g. "left panel, above the Home button") in the value column instead of a plain "On".
 - Removed the Tech Summary's now-redundant "Custom Logo — Placement" row, since the Custom Logo row already shows the same placement text.
 - The Tech Summary's Floorsense Reservation Types Selected row now shows `book_adhoc = false` in its setting-key cell whenever "Reserved by User as Needed" is deselected, mirroring the Smartalock side's `res_adhoc` key.
+- The Tech Summary's Allow Booking In Advance row now has a static `book_advance_mins` setting key.
 
 ## Status
 

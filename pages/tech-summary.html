@@ -319,6 +319,13 @@
   (5 assertions) covering: adhoc selected alone (no key), adhoc deselected in favour of another single
   type (key shown), nothing selected (key shown), adhoc selected alongside other types (no key), and
   multiple non-adhoc types selected together (key shown).
+
+  MOST RECENT CHANGE: added a static book_advance_mins setting key to the Floorsense Allow Booking In
+  Advance row's key cell (same convention as the Smartalock section's res_duration_default/
+  res_user_limit static keys), since the key name doesn't depend on the specific value - present
+  whether the field is off (same-day only), at its 8-day default, or a custom value. Verified via an
+  inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (4
+  assertions) confirming the key renders for the default, an off/zero, and a custom advance-days value.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -514,7 +521,7 @@
 
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
-      <tr><td class="label">Allow Booking In Advance</td><td class="key"></td><td class="value" id="tsPrebookingAdvance"></td></tr>
+      <tr><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
       <tr><td class="label">Default Reservation Mode</td><td class="key"></td><td class="value" id="tsReservationMode"></td></tr>
       <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
       <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
