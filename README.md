@@ -486,6 +486,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the numeric fill-in field ("N days in advance (0 = off, max 30)") and its grey status-hint line from `floorsense-prebooking-advance.html`'s "Allow Booking in Advance" card, since the segmented timeline/pin diagram already lets that same value be set by dragging, tapping the arrows, or tapping the pill to type a number. `#prebookingAdvanceDays` was kept as a hidden input (still the backing data-store for the timeline JS), and the now-orphaned `renderStatusHint()` helper and its call sites were removed.
 - Restyled `floorsense-reservation-types.html`'s 5 reservation-type cards to match the "text-block-lot" card style/hover behaviour from floorsen.se/handset: flat light-grey resting background, 18px corners, and a hover lift (translate + white background + black outline) — while keeping the cards' existing multi-select behaviour, with `.checked` cards showing their own coloured outline/tint instead of the plain hover look.
 - Refined that same page's 5 icons to match floorsen.se/handset's own icon style: removed the bordered `.desk-icon-badge` square each sat in, and redrew each icon with that reference site's own recipe — a thick navy (`#0E1030`) outline plus one accent shape solid-filled in the reference's own palette (coral/blue/green/sky/orange), sat directly on the card background.
+- Made those same 5 icons 30% larger (56px → 72.8px) with all stroke widths thinned 30% (×0.7), so they read more delicate/fine-lined at the bigger size.
 
 ## Status
 
