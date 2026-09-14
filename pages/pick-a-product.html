@@ -80,19 +80,22 @@
   /* ---------- product choice cards ---------- */
 
   .tcard {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
     padding: 0; overflow: hidden; position: relative;
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .18s, background .18s;
+    transition: transform .3s, background-color .3s, outline .3s;
     display: flex; flex-direction: column; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-  .tcard[data-type="smartalock"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
-  .tcard[data-type="floorsense"] { --tc: #0071E3; --tc-wash: #E8F1FC; }
-  .tcard:hover { background: var(--tc-wash); box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08); }
-  .tcard.chosen { background: var(--tc-wash); box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08); }
+  .tcard:hover:not(.chosen) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
+  }
+  .tcard.chosen {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 2px solid #000;
+  }
 
   .tcard-logo-bar { padding: 18px 24px 14px; }
   .tcard-brand-logo { height: 32px; width: auto; display: block; }
@@ -251,6 +254,24 @@ MOST RECENT CHANGE: Fixed the Smartalock crop cutting into the standalone cabine
 MOST RECENT CHANGE: Per a request that Floorsense branch cards use Smartalock's blue instead of green (confirmed via follow-up to apply "everywhere," including this page), `.tcard[data-type="floorsense"]` changed from `{ --tc: #1FAA59; --tc-wash: #E6F7ED; }` to `{ --tc: #0071E3; --tc-wash: #E8F1FC; }` — the same blue already used by `.tcard[data-type="smartalock"]`, so both product cards on this picker now share one accent color. `.tcard[data-type="user"]` on smartalock-reservation-type.html (an unrelated internal card variant that happened to reuse the same green hex) was deliberately left untouched, as it has nothing to do with Floorsense/Smartalock product branding. Validated via an inline HTMLParser tag-balance check and `node --check` on the extracted script block, and visually confirmed via a weasyprint render.
 
 MOST RECENT CHANGE: per a site-wide request to propagate the glass-card styling already finished on floorsense-reservation-types.html to every other page, `.tcard`'s solid `background: var(--paper); border: 1.5px solid var(--line);` was replaced with the same translucent-glass pattern: a `rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px) saturate(160%)`, `border: none`, and a soft `box-shadow` standing in for the old border. Since these two cards are the primary clickable choice for the whole site (Smartalock vs. Floorsense), the existing `:hover`/`.chosen` border-color swap (via each card's own `--tc`/`--tc-wash` custom properties) was converted to a shadow-lift + background-tint pair, matching the reference page's `.desk-check-card:hover`/`.desk-check-card.checked` treatment — hover now brightens the shadow and tints the background toward `--tc-wash`, and `.chosen` does the same more strongly, so the cards still read clearly as clickable/selectable with no border anywhere. Verified via an inline HTMLParser tag-balance check and `node --check` on the extracted script block (untouched — CSS-only change).
+
+MOST RECENT CHANGE: per a request to update this page's card styling, `.tcard` moved from the
+translucent-glass treatment (`rgba(255,255,255,0.6)` background, `backdrop-filter: blur(10px)
+saturate(160%)`, soft box-shadow) to the flat "text-block-lot" recipe now used sitewide across the
+wizard pages: a flat `#F1F1F1` resting background, `border-radius: 18px` (was `var(--radius-lg)`,
+20px), and a hover lift (`transform: translate(-3px, -3px)`, white background, `1px solid #000`
+outline) via `.tcard:hover:not(.chosen)`; `.chosen` gets the same lift and white background with a
+heavier `2px solid #000` outline. The `--tc`/`--tc-wash` custom properties (both cards already shared
+the same blue value, from an earlier accent-unification change) are no longer referenced by any rule
+and were removed along with their `[data-type="smartalock"]`/`[data-type="floorsense"]` declarations,
+so both cards are now plain white-and-black like every other card in the wizard, with no colour in
+the selected state. `padding: 0`/`overflow: hidden`/the flex-column layout were left untouched, since
+the full-bleed top image still needs the card's own border-radius to clip its corners. Verified via
+an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched —
+CSS-only change), and a new jsdom test (test_pick_a_product_card_restyle.js, 11 assertions, run
+against the file with HTML comments stripped first) confirming the flat background/border-radius/
+hover-lift/chosen-outline CSS is in place, no `--tc-wash`/glass backdrop-filter remains on `.tcard`,
+and the existing select/clear click-to-toggle JS logic is completely unaffected.
 -->
 
 <script>
