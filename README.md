@@ -508,6 +508,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Converted `smartalock-kiosk-customisation.html`'s 9 `.kiosk-toggle-row` option rows to the same flat text-block-lot recipe — flat `#F1F1F1` background, white/black hover-lift and a black outline for the "on" state — replacing the old `var(--line)`-bordered resting state and accent-blue border/wash "on" state. The icon badges and revealed sub-panels were left untouched.
 - Removed the "Second swipe checks out" on/off toggle from each additional-policy per-desk-group/user-group card's Check-in Behaviour group on `floorsense-out-of-box-policy.html` — that row now shows only its label, matching how the same field already reads on the main Check-in Behaviour summary card. The sibling auto-cancel and unrelated switches on each card were left untouched.
 - Reworded the Wallet Pass at Desk card's description on `floorsense-checkin-methods.html` from "Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it." to "Floorsense issues each user a pass for their Apple Wallet or Google Wallet, which they tap at the desk to reserve it." — since Floorsense, not the user, creates and issues the pass.
+- Made "PIN number at touchscreen" and "Floorsense app" default-selected options on `smartalock-access-methods.html` (both on first load and after Reset), leaving Building Access Cards and QR Code unselected by default as before; an explicit saved selection still overrides the defaults.
 
 ## Status
 

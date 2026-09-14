@@ -522,6 +522,24 @@ file's own matching NOTE. Verified via an inline HTMLParser tag-balance check, `
 extracted script block (untouched — CSS-only change), and a new jsdom test
 (test_tick_box_thinner.js, 35 assertions across all 7 files) confirming each tick/radio-box element's
 border is now `2.1px solid var(--line)` with its size/radius/checked-state colours unchanged.
+
+MOST RECENT CHANGE: per a request that "PIN number at touchscreen" and "Floorsense app" be default
+options, added a `DEFAULT_SELECTED = ['pin', 'app']` constant (mirroring the existing
+DEFAULT_SELECTED pattern on floorsense-checkin-methods.html) and used it as the fallback for
+`state.selected` whenever there's no saved project state, instead of an empty array — so these two
+cards now render pre-checked (and the PIN card's optional assignment subfields pre-revealed) on a
+fresh load, while `cardAssignMethod`/`pinAssignMethod` still start at their existing defaults
+('import' / unset). An explicit saved selection is still respected as-is; defaults only apply when
+nothing has been saved yet. The Reset button now restores `DEFAULT_SELECTED.slice()` (a fresh copy,
+so the shared constant itself can never be mutated) instead of clearing to no selection, and its
+per-card loop was updated to check/uncheck each card against the new default set and re-sync the
+card/PIN subfield reveals accordingly, rather than unconditionally unchecking every card. Building
+access cards and QR code remain unselected by default, unchanged. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and a jsdom test
+(test_access_methods_defaults.js, 16 assertions) confirming: PIN and Floorsense app are checked
+(with PIN's subfields revealed) on a fresh load while card/QR stay unchecked; a saved selection
+overrides the defaults rather than being merged with them; and Reset re-checks PIN/app, unchecks
+card/QR, and reveals/hides the right subfields.
 -->
 
 <script>
@@ -552,9 +570,11 @@ border is now `2.1px solid var(--line)` with its size/radius/checked-state colou
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
+  const DEFAULT_SELECTED = ['pin', 'app'];
+
   const saved = project.smartalock.wizard.accessMethods || {};
   const state = {
-    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    selected: Array.isArray(saved.selected) ? saved.selected.slice() : DEFAULT_SELECTED.slice(),
     cardAssignMethod: saved.cardAssignMethod === 'self' ? 'self' : 'import',
     pinAssignMethod: ['random','list','shared'].includes(saved.pinAssignMethod) ? saved.pinAssignMethod : ''
   };
@@ -648,17 +668,19 @@ border is now `2.1px solid var(--line)` with its size/radius/checked-state colou
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.selected = [];
+    state.selected = DEFAULT_SELECTED.slice();
     state.cardAssignMethod = 'import';
     state.pinAssignMethod = '';
     grid.querySelectorAll('.access-check-card').forEach(card => {
-      card.classList.remove('checked');
-      card.querySelector('input[type="checkbox"]').checked = false;
+      const method = card.getAttribute('data-method');
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.checked = state.selected.includes(method);
+      card.classList.toggle('checked', checkbox.checked);
     });
     cardAssignRadios.forEach(radio => { radio.checked = radio.value === 'import'; });
     pinAssignRadios.forEach(radio => { radio.checked = false; });
-    applyCardSubfields(false);
-    applyPinSubfields(false);
+    applyCardSubfields(state.selected.includes('card'));
+    applyPinSubfields(state.selected.includes('pin'));
     renderEmptyHint();
     save();
   });
