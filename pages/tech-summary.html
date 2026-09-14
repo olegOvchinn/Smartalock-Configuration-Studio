@@ -342,6 +342,13 @@
   tag-balance check, node --check on the extracted script block, and a jsdom test (4 assertions)
   covering: default duration mode (no key), the field missing entirely and falling back to duration
   (no key), and fixed-end mode (key shown, value text unaffected).
+
+  MOST RECENT CHANGE: the Default Reservation Mode row is now hidden entirely unless fixed-end mode
+  is selected - the default duration mode (start + fixed length) isn't worth its own row. Reuses the
+  same endMode === 'fixed-end' condition already driving the res_duration_type key. Verified via an
+  inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test (5
+  assertions) covering: default duration mode (row hidden), the field missing entirely and falling
+  back to duration (row hidden), and fixed-end mode (row visible, key and value both correct).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -538,7 +545,7 @@
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
       <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
-      <tr><td class="label">Default Reservation Mode</td><td class="key" id="tsReservationModeKey"></td><td class="value" id="tsReservationMode"></td></tr>
+      <tr id="tsReservationModeRow" hidden><td class="label">Default Reservation Mode</td><td class="key" id="tsReservationModeKey"></td><td class="value" id="tsReservationMode"></td></tr>
       <tr><td class="label">Default Start Time</td><td class="key"></td><td class="value" id="tsDefaultStart"></td></tr>
       <tr><td class="label">Default End Time</td><td class="key"></td><td class="value" id="tsDefaultEnd"></td></tr>
       <tr><td class="label">Default Reservation Duration</td><td class="key"></td><td class="value" id="tsDefaultDuration"></td></tr>
@@ -1060,8 +1067,14 @@
   const businessHours = wizard.businessHours || {};
   const endMode = defaultReservationTimes.endMode || 'duration';
   const startMinutes = clockStringToMinutes(businessHours.arrivalTime || defaultReservationTimes.defaultStartTime, 8 * 60 + 30);
-  set('tsReservationMode', endMode === 'fixed-end' ? 'fixed-end (fixed start & end clock times)' : 'duration (start + fixed length)');
-  if (endMode === 'fixed-end') set('tsReservationModeKey', 'res_duration_type = 1');
+  // Row only shown for the non-default fixed-end mode — the default duration mode (start + fixed
+  // length) isn't worth reporting on its own row.
+  const fixedEndMode = endMode === 'fixed-end';
+  showRow('tsReservationModeRow', fixedEndMode);
+  if (fixedEndMode) {
+    set('tsReservationMode', 'fixed-end (fixed start & end clock times)');
+    set('tsReservationModeKey', 'res_duration_type = 1');
+  }
   set('tsDefaultStart', formatClockWithMinutes(startMinutes));
 
   if (endMode === 'fixed-end') {
