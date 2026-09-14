@@ -254,6 +254,18 @@
   has no key defined yet, so the cell stays blank for that case. Verified via an inline HTMLParser
   tag-balance check, `node --check` on the extracted script block, and a jsdom test covering the
   default, an explicit grace value, and the immediate case.
+
+  MOST RECENT CHANGE: per a request that Locker Types rows get positional setting keys — first
+  selected type is "lock_type_a", second "lock_type_b", and so on up to 10 types ("lock_type_j") — the
+  dynamically-generated Locker Types rows now compute their key from the row's position in the
+  rendered list (via the existing `forEach((t, index) => ...)` index), not from which locker type it
+  is: `String.fromCharCode(97 + index)` maps index 0-9 to "a"-"j". Since only 7 locker types exist to
+  select from today, index never reaches 10 in practice, but the `index < 10` guard is left in place
+  (keyless beyond that) to honor the stated 10-type ceiling if more types are ever added. Verified via
+  an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom
+  test confirming keys are assigned by position (a, b, c, ...) regardless of selection order, that all
+  7 existing types render lock_type_a through lock_type_g when all are selected, and that the empty
+  state (nothing selected) is unaffected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -849,12 +861,16 @@
   if (selectedLockerTypes.length) {
     lockerTypesEmptyRow.remove();
     const exampleNumbers = lockerType.exampleNumbers || {};
-    LOCKER_TYPE_ORDER.filter(t => selectedLockerTypes.includes(t)).forEach(t => {
+    // Setting key: assigned by position (1st selected type -> lock_type_a, 2nd -> lock_type_b, ...),
+    // not by which type it is — up to 10 types (lock_type_a through lock_type_j). Any type beyond
+    // the 10th (not currently reachable, since only 7 types exist to select from) is left keyless.
+    LOCKER_TYPE_ORDER.filter(t => selectedLockerTypes.includes(t)).forEach((t, index) => {
       const tr = document.createElement('tr');
       const value = t === 'custom'
         ? (exampleNumbers[t] ? 'Custom name: ' + exampleNumbers[t] : 'No custom name set yet')
         : (exampleNumbers[t] ? 'Example: ' + exampleNumbers[t] : 'No example number set yet');
-      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="key"></td><td class="value">' + value + '</td>';
+      const key = index < 10 ? ('lock_type_' + String.fromCharCode(97 + index)) : '';
+      tr.innerHTML = '<td class="label">' + LOCKER_TYPE_LABELS[t] + '</td><td class="key">' + key + '</td><td class="value">' + value + '</td>';
       lockerTypesTable.appendChild(tr);
     });
   }
