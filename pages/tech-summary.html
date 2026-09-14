@@ -356,6 +356,14 @@
   redundant. Verified via an inline HTMLParser tag-balance check, node --check on the extracted script
   block, and a jsdom test (5 assertions) confirming the value cell reads exactly "fixed-end" while the
   row's visibility and key cell are unaffected.
+
+  MOST RECENT CHANGE: added a second setting key, book_day_end_mode = 1, alongside the existing
+  res_duration_type = 1 in the Default Reservation Mode row's key cell whenever fixed-end mode is
+  selected - the cell now reads "res_duration_type = 1, book_day_end_mode = 1". No key is shown for
+  the default duration mode (row stays hidden, as before). Verified via an inline HTMLParser
+  tag-balance check, node --check on the extracted script block, and a jsdom test (5 assertions)
+  confirming both keys appear together in fixed-end mode while the row stays hidden and empty for the
+  default duration mode.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -1080,7 +1088,7 @@
   showRow('tsReservationModeRow', fixedEndMode);
   if (fixedEndMode) {
     set('tsReservationMode', 'fixed-end');
-    set('tsReservationModeKey', 'res_duration_type = 1');
+    set('tsReservationModeKey', 'res_duration_type = 1, book_day_end_mode = 1');
   }
   set('tsDefaultStart', formatClockWithMinutes(startMinutes));
 

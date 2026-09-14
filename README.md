@@ -459,6 +459,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Default Reservation Mode row now shows `res_duration_type = 1` in its setting-key cell whenever "fixed-end" mode is selected.
 - The Tech Summary's Default Reservation Mode row is now hidden entirely unless "fixed-end" mode is selected (the default duration mode no longer shows a row).
 - The Tech Summary's Default Reservation Mode row's value cell now reads just "fixed-end" instead of "fixed-end (fixed start & end clock times)".
+- The Tech Summary's Default Reservation Mode row's key cell now also shows `book_day_end_mode = 1` alongside `res_duration_type = 1` whenever fixed-end mode is selected.
 
 ## Status
 
