@@ -271,10 +271,6 @@
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Locker Door Behaviour</span>
         </a>
-        <a class="progress-seg current" data-module="locker-type" href="smartalock-locker-types-04.html">
-          <span class="progress-seg-fill"></span>
-          <span class="progress-seg-tip">Locker Types</span>
-        </a>
         <a class="progress-seg" data-module="reservation" href="smartalock-reservation-type-01.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">Reservation Type</span>
@@ -286,6 +282,10 @@
         <a class="progress-seg" data-module="user" href="smartalock-user-policy-06.html">
           <span class="progress-seg-fill"></span>
           <span class="progress-seg-tip">User Policy</span>
+        </a>
+        <a class="progress-seg current" data-module="locker-type" href="smartalock-locker-types-04.html">
+          <span class="progress-seg-fill"></span>
+          <span class="progress-seg-tip">Locker Types</span>
         </a>
         <a class="progress-seg" data-module="kiosk" href="smartalock-kiosk-customisation-07.html">
           <span class="progress-seg-fill"></span>
@@ -337,10 +337,10 @@
       </div>
 
       <div class="page-nav">
-        <a class="page-nav-btn" href="smartalock-locker-behaviour-03.html">
+        <a class="page-nav-btn" href="smartalock-user-policy-06.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <a class="page-nav-btn next" href="smartalock-reservation-type-01.html">
+        <a class="page-nav-btn next" href="smartalock-kiosk-customisation-07.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </a>
       </div>
@@ -386,6 +386,18 @@ in-wizard modules. renderProgressBar() and the moduleStatus tracking already ite
 inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_smartalock_progress_bar.js) confirming no registration/it/summary segment exists, at least one
 segment remains, and exactly one .current segment is present.
+
+MOST RECENT CHANGE: moved Locker Types in the Smartalock wizard flow to sit after User Policy instead
+of after Locker Door Behaviour. New order: Initial Locker Access Methods -> Locker Door Behaviour ->
+Reservation Type -> Locker Policy -> User Policy -> Locker Types -> Kiosk Customisation ->
+Configuration Summary. Updated this page's progress-bar segment order (the "locker-type" segment now
+renders between "user" and "kiosk" instead of between "behaviour" and "reservation") and, on the pages
+whose back/next chain changed, the page-nav-btn href and JS nextUrl fallback destination. The
+smartalock-configuration-summary-08.html Edit-link targets, its own review-section order, and each
+page's ?return=summary override behaviour are unaffected by this reorder. Verified via an inline
+HTMLParser tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_reorder_locker_types.js, 37 assertions) confirming the progress-bar order, the current-segment
+marker, and every back/next href and nextUrl fallback across all 7 pages match the new chain.
 -->
 
 <script>
@@ -522,7 +534,7 @@ segment remains, and exactly one .current segment is present.
     markModuleSaved('locker-type');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-reservation-type-01.html';
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary-08.html' : 'smartalock-kiosk-customisation-07.html';
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 

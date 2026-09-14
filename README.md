@@ -480,6 +480,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Remote Booking Confirmation row now has a static setting key, `book_confirm_occupied`.
 - The Tech Summary's Privacy (Do Not Disturb) row now has a static setting key, `desk_button_privacy`.
 - Removed the Project Registration, IT Configuration & Integrations, and Configuration Summary segments from the progress bar on all 7 Smartalock wizard pages (access-methods-09, locker-behaviour-03, locker-types-04, reservation-type-01, locker-policy-05, user-policy-06, kiosk-customisation-07), matching the Floorsense wizard pages, which have never shown segments for pages outside their own in-wizard flow.
+- Moved Locker Types in the Smartalock wizard flow to sit after User Policy instead of after Locker Door Behaviour. New order: Initial Locker Access Methods → Locker Door Behaviour → Reservation Type → Locker Policy → User Policy → Locker Types → Kiosk Customisation → Configuration Summary. Updated the progress-bar segment order and the affected pages' back/next navigation on all 7 Smartalock wizard pages.
 
 ## Status
 
