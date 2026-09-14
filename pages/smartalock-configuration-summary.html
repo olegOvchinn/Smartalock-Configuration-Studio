@@ -510,7 +510,6 @@ element remains and the panel's other content is unaffected.
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Desks Configuration
         </a>
-        <button class="ghost" id="printBtn" type="button">Print</button>
         <button class="primary" id="confirmBtn" type="button">Save &amp; Email Me Summary</button>
       </div>
     </div>
@@ -765,6 +764,19 @@ tag-balance check, node --check on the extracted script block, and a jsdom test 
 tech-summary.html, 19 assertions total) covering neither trigger active, logo trigger alone (with and
 without a typed file name), background-colour trigger alone (empty vs filled-in vs toggle-off), and
 both triggers active together.
+
+MOST RECENT CHANGE: per a request to remove the print option, removed the standalone `#printBtn`
+("Print") button from the action bar and its `window.print()` click listener — an earlier NOTE above
+described Print as "the only `.ghost` button alongside 'Save & Email Me Summary'"; that's no longer
+the case, this button is gone outright. The now-unused `button.ghost`/`button.ghost:hover` CSS rules
+were left in place (harmless, matches this project's convention for leftover styling after a control
+is removed) since nothing else on this page currently uses that class. "Save & Email Me Summary" and
+the "Desks Configuration" cross-product link are unaffected, as is the separate, unrelated "View /
+Print Guide" button (opens the end-user guide page — a distinct feature, not touched by this
+request). Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a jsdom test (test_remove_print_smartalock_summary.js) confirming `#printBtn` no longer
+exists, `window.print` is never invoked on load, and the rest of the action bar (including the
+unrelated guide button) is unaffected.
 -->
 
 <script>
@@ -1136,8 +1148,6 @@ both triggers active together.
       items.forEach(item => wrap.appendChild(row('Initial Locker Access Methods', item)));
     }
   })();
-
-  document.getElementById('printBtn').addEventListener('click', () => window.print());
 
   /* ---------------- summary email ----------------
      Builds a plain-text version of the summary by walking every rendered .summary-group/.summary-row
