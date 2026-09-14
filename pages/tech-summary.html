@@ -266,6 +266,19 @@
   test confirming keys are assigned by position (a, b, c, ...) regardless of selection order, that all
   7 existing types render lock_type_a through lock_type_g when all are selected, and that the empty
   state (nothing selected) is unaffected.
+
+  MOST RECENT CHANGE: Kiosk Customisation sub-section no longer shows default option text. Every row
+  in that group (Main Information Banner, Open Existing, Get A Locker, Scan QR Code, Place Card Here,
+  Information Banner, Custom Logo, Background Colour) is now independently hidden unless its own value
+  differs from its shipped default, matching the convention already used for banner text and custom
+  logo placement. The whole Kiosk Customisation heading/table is additionally wrapped in
+  #kioskCustomisationGroup and hidden entirely when none of its rows differ from default, contributing
+  to the parent saChanged flag only when kioskChanged is true. Verified via an inline HTMLParser
+  tag-balance check, `node --check` on the extracted script block, and a jsdom test covering: fully
+  default kiosk state (group and all rows hidden), a single toggle changed (only that row shown,
+  others still hidden), banner text customized while the banner stays on, custom logo enabled with
+  placement text, a custom background colour, and confirming the parent Smartalock section's
+  hidden/visible state is correctly driven by whether a Kiosk field changed.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -433,21 +446,23 @@
       <tr id="saLockerTypesEmptyRow"><td class="label" colspan="3">No locker types selected yet.</td></tr>
     </table>
 
-    <p class="tsec-sub">Kiosk Customisation</p>
-    <table class="trow">
-      <tr><td class="label">Main Information Banner</td><td class="key"></td><td class="value" id="saLogoEnabled"></td></tr>
-      <tr id="saLogoCustomTextRow" hidden><td class="label">Main Information Banner — Custom Text</td><td class="key"></td><td class="value" id="saLogoCustomText"></td></tr>
-      <tr><td class="label">Open Existing</td><td class="key"></td><td class="value" id="saOpenExisting"></td></tr>
-      <tr><td class="label">Get A Locker</td><td class="key"></td><td class="value" id="saGetLocker"></td></tr>
-      <tr><td class="label">Scan QR Code</td><td class="key"></td><td class="value" id="saScanQr"></td></tr>
-      <tr><td class="label">Place Card Here</td><td class="key"></td><td class="value" id="saPlaceCard"></td></tr>
-      <tr><td class="label">Information Banner</td><td class="key"></td><td class="value" id="saBannerEnabled"></td></tr>
-      <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="key"></td><td class="value" id="saBannerText"></td></tr>
-      <tr><td class="label">Custom Logo</td><td class="key"></td><td class="value" id="saCustomLogo"></td></tr>
-      <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="key"></td><td class="value" id="saCustomLogoPlacement"></td></tr>
-      <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="key"></td><td class="value" id="saCustomLogoFile"></td></tr>
-      <tr><td class="label">Background Colour</td><td class="key"></td><td class="value" id="saBgColour"></td></tr>
-    </table>
+    <div id="kioskCustomisationGroup" hidden>
+      <p class="tsec-sub">Kiosk Customisation</p>
+      <table class="trow">
+        <tr id="saLogoEnabledRow" hidden><td class="label">Main Information Banner</td><td class="key"></td><td class="value" id="saLogoEnabled"></td></tr>
+        <tr id="saLogoCustomTextRow" hidden><td class="label">Main Information Banner — Custom Text</td><td class="key"></td><td class="value" id="saLogoCustomText"></td></tr>
+        <tr id="saOpenExistingRow" hidden><td class="label">Open Existing</td><td class="key"></td><td class="value" id="saOpenExisting"></td></tr>
+        <tr id="saGetLockerRow" hidden><td class="label">Get A Locker</td><td class="key"></td><td class="value" id="saGetLocker"></td></tr>
+        <tr id="saScanQrRow" hidden><td class="label">Scan QR Code</td><td class="key"></td><td class="value" id="saScanQr"></td></tr>
+        <tr id="saPlaceCardRow" hidden><td class="label">Place Card Here</td><td class="key"></td><td class="value" id="saPlaceCard"></td></tr>
+        <tr id="saBannerEnabledRow" hidden><td class="label">Information Banner</td><td class="key"></td><td class="value" id="saBannerEnabled"></td></tr>
+        <tr id="saBannerTextRow" hidden><td class="label">Information Banner — Text</td><td class="key"></td><td class="value" id="saBannerText"></td></tr>
+        <tr id="saCustomLogoRow" hidden><td class="label">Custom Logo</td><td class="key"></td><td class="value" id="saCustomLogo"></td></tr>
+        <tr id="saCustomLogoPlacementRow" hidden><td class="label">Custom Logo — Placement</td><td class="key"></td><td class="value" id="saCustomLogoPlacement"></td></tr>
+        <tr id="saCustomLogoFileRow" hidden><td class="label">Custom Logo — File Name</td><td class="key"></td><td class="value" id="saCustomLogoFile"></td></tr>
+        <tr id="saBgColourRow" hidden><td class="label">Background Colour</td><td class="key"></td><td class="value" id="saBgColour"></td></tr>
+      </table>
+    </div>
   </div>
 
   <div class="tsec" id="floorsenseSection">
@@ -878,30 +893,51 @@
   if (selectedLockerTypes.length) saChanged = true;
 
   /* ---------------- Kiosk Customisation ---------------- */
+  // Per a request to stop showing default options here (and to hide the whole sub-section when
+  // nothing in it was changed), every row below is now independently conditional on differing from
+  // its own shipped default, rather than always rendering "Enabled"/default text. The default value
+  // itself is never worth reporting — only a deviation from it is.
   const kiosk = saWizard.kioskCustomisation || {};
   const kioskFlag = (key) => kiosk.hasOwnProperty(key) ? !!kiosk[key] : true;
+
   const logoOn = kioskFlag('logoEnabled');
-  set('saLogoEnabled', logoOn ? 'Enabled' : 'Removed');
+  const logoToggleChanged = !logoOn;
+  showRow('saLogoEnabledRow', logoToggleChanged);
+  if (logoToggleChanged) set('saLogoEnabled', 'Removed');
   const logoCustomTextGiven = logoOn && !!kiosk.logoCustomEnabled && !!(kiosk.logoCustomText && kiosk.logoCustomText.trim());
   showRow('saLogoCustomTextRow', logoCustomTextGiven);
   if (logoCustomTextGiven) set('saLogoCustomText', kiosk.logoCustomText.trim());
 
-  set('saOpenExisting', kioskFlag('openEnabled') ? 'Enabled' : 'Removed');
-  set('saGetLocker', kioskFlag('lockerEnabled') ? 'Enabled' : 'Removed');
-  set('saScanQr', kioskFlag('qrEnabled') ? 'Enabled' : 'Removed');
-  set('saPlaceCard', kioskFlag('cardEnabled') ? 'Enabled' : 'Removed');
+  const openChanged = !kioskFlag('openEnabled');
+  showRow('saOpenExistingRow', openChanged);
+  if (openChanged) set('saOpenExisting', 'Removed');
+  const lockerChanged = !kioskFlag('lockerEnabled');
+  showRow('saGetLockerRow', lockerChanged);
+  if (lockerChanged) set('saGetLocker', 'Removed');
+  const qrChanged = !kioskFlag('qrEnabled');
+  showRow('saScanQrRow', qrChanged);
+  if (qrChanged) set('saScanQr', 'Removed');
+  const cardChanged = !kioskFlag('cardEnabled');
+  showRow('saPlaceCardRow', cardChanged);
+  if (cardChanged) set('saPlaceCard', 'Removed');
 
   const bannerOn = kioskFlag('bannerEnabled');
-  set('saBannerEnabled', bannerOn ? 'Enabled' : 'Removed');
-  showRow('saBannerTextRow', bannerOn);
-  if (bannerOn) {
+  const bannerToggleChanged = !bannerOn;
+  showRow('saBannerEnabledRow', bannerToggleChanged);
+  if (bannerToggleChanged) set('saBannerEnabled', 'Removed');
+  const bannerLine1Custom = !!(kiosk.bannerLine1 && kiosk.bannerLine1 !== 'Scan your access card or');
+  const bannerLine2Custom = !!(kiosk.bannerLine2 && kiosk.bannerLine2 !== 'select an option to get started');
+  const bannerTextChanged = bannerOn && (bannerLine1Custom || bannerLine2Custom);
+  showRow('saBannerTextRow', bannerTextChanged);
+  if (bannerTextChanged) {
     const line1 = kiosk.bannerLine1 || 'Scan your access card or';
     const line2 = kiosk.bannerLine2 || 'select an option to get started';
     set('saBannerText', line2 ? (line1 + ' / ' + line2) : line1);
   }
 
   const customLogoOn = !!kiosk.customLogoEnabled;
-  set('saCustomLogo', customLogoOn ? 'On' : 'Off');
+  showRow('saCustomLogoRow', customLogoOn);
+  if (customLogoOn) set('saCustomLogo', 'On');
   showRow('saCustomLogoPlacementRow', customLogoOn);
   const customLogoFileGiven = customLogoOn && !!(kiosk.customLogoFileName && kiosk.customLogoFileName.trim());
   showRow('saCustomLogoFileRow', customLogoFileGiven);
@@ -911,16 +947,16 @@
     if (customLogoFileGiven) set('saCustomLogoFile', kiosk.customLogoFileName.trim());
   }
 
-  set('saBgColour', kiosk.bgColour || 'Default (#5B8FD7)');
-  // Every Kiosk Customisation toggle above ships enabled by default (via kioskFlag's own
-  // hasOwnProperty ? value : true fallback) except Custom Logo (default off) and Background
-  // Colour (default the stock blue) — changed if any toggle was explicitly turned off, any
-  // custom text/logo/colour was actually supplied, or Custom Logo was turned on.
-  if (!logoOn || logoCustomTextGiven || !kioskFlag('openEnabled') || !kioskFlag('lockerEnabled')
-    || !kioskFlag('qrEnabled') || !kioskFlag('cardEnabled') || !bannerOn
-    || (kiosk.bannerLine1 && kiosk.bannerLine1 !== 'Scan your access card or')
-    || (kiosk.bannerLine2 && kiosk.bannerLine2 !== 'select an option to get started')
-    || customLogoOn || (kiosk.bgColour && kiosk.bgColour !== '')) saChanged = true;
+  const bgColourChanged = !!(kiosk.bgColour && kiosk.bgColour !== '');
+  showRow('saBgColourRow', bgColourChanged);
+  if (bgColourChanged) set('saBgColour', kiosk.bgColour);
+
+  // Whole sub-section: hidden entirely unless at least one row above actually differs from its
+  // shipped default — same set of conditions this group already contributed to saChanged with.
+  const kioskChanged = logoToggleChanged || logoCustomTextGiven || openChanged || lockerChanged
+    || qrChanged || cardChanged || bannerToggleChanged || bannerTextChanged || customLogoOn || bgColourChanged;
+  document.getElementById('kioskCustomisationGroup').hidden = !kioskChanged;
+  if (kioskChanged) saChanged = true;
 
   /* ==================== FLOORSENSE ==================== */
   // Same "did anything move from its shipped default" tracking as saChanged above, checked against

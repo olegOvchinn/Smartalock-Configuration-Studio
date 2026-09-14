@@ -449,6 +449,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Lockers Per User row now also shows `res_user_limit_force` alongside its existing `res_user_limit` key whenever the custom limit is 3 or more lockers per user.
 - The Tech Summary's Release Behaviour row now shows `res_release_on_expire = true` whenever "Release when reservation expires" is selected (no key yet for the default "Allow one final locker access after expiry").
 - The Tech Summary's Locker Types rows now get positional setting keys — `lock_type_a` for the first selected type, `lock_type_b` for the second, and so on up to 10 types (`lock_type_j`) — assigned by row position rather than by which type it is.
+- The Tech Summary's Kiosk Customisation sub-section no longer shows default option text: every row (Main Information Banner, Open Existing, Get A Locker, Scan QR Code, Place Card Here, Information Banner, Custom Logo, Background Colour) is hidden unless its value differs from its shipped default, and the whole sub-section is hidden entirely when nothing in it has changed.
 
 ## Status
 
