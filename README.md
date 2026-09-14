@@ -493,6 +493,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Applied `floorsense-reservation-types.html`'s full card/icon treatment to `floorsense-checkin-methods.html`'s 4 method cards: flat-grey text-block-lot cards with a white/black hover-lift and colourless `.checked` state, and all 4 icons redrawn bare (no bordered badge box) at 87.36px in the navy-outline-plus-accent-fill style, keeping each card's existing blue/pink/purple/teal as its icon's accent colour.
 - Applied the same card/icon treatment to `floorsense-fme.html`'s 3 mode cards: flat-grey text-block-lot cards with a white/black hover-lift and colourless `.checked` state, and all 3 icons redrawn bare at 87.36px in the navy-outline-plus-accent-fill style, keeping each card's existing blue/pink/purple as its icon's accent colour.
 - Applied the same card/icon treatment to `floorsense-nsnp.html`'s 4 mode cards, leaving the page's separate relay-confirmation and grace-period panels on their existing styling since they aren't selectable option cards.
+- Applied the same card/icon treatment to `floorsense-default-reservation-times.html`'s 2 selectable end-mode cards, plus its 3rd, non-selectable "Start time" card's icon, leaving that card's own panel and the end-mode wrapper on their existing styling.
 
 ## Status
 
