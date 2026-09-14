@@ -117,52 +117,48 @@
   /* ---------- mode-select radio cards, ported verbatim from floorsense-setup-path.html /
      floorsense-nsnp.html ---------- */
   .path-check-grid { display: flex; flex-direction: column; gap: 14px; max-width: 640px; margin: 0 auto; }
-  /* ---------- glass card: per the site-wide glass-card treatment introduced on
-     floorsense-reservation-types.html, .path-check-card dropped its solid
-     `border: 1.5px solid var(--line)` in favour of a translucent white background with
-     `backdrop-filter: blur()` and a soft fuzzy `box-shadow` standing in for the border. Hover/checked
-     states, previously shown via `border-color`, now read through the shadow's tint/spread and the
-     background tint instead — see the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- text-block-lot card: per a request to apply floorsense-reservation-types.html's
+     card and icon treatment sitewide, `.path-check-card` dropped its glass-blur treatment
+     (backdrop-filter, translucent background, fuzzy box-shadow) for that page's own later
+     "text-block-lot" recipe (itself matching floorsen.se/handset's own card component): a flat
+     light-grey resting background (`#F1F1F1`, no border), `border-radius: 18px`, and on hover a
+     small "lift" — `transform: translate(-3px, -3px)` plus the background flipping to solid white
+     and a crisp `1px solid #000` outline. `.checked` gets the same lift and white background, but a
+     heavier `2px solid #000` outline, carrying no accent colour at all (this page never had its own
+     per-card `--tc` wash/glow — `.checked`'s background was always a single fixed blue tint — so
+     there was no separate colour-removal step needed here, unlike reservation-types.html/
+     checkin-methods.html). This page has no visible tick/radio-dot (removed in an earlier change),
+     so the card's own background/outline shift remains the only selection indicator. ---------- */
   .path-check-card {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
     padding: 18px 20px;
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+    transition: transform .3s, background-color .3s, outline .3s;
   }
-  .path-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  .path-check-card:hover:not(.checked) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
   }
   .path-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 2px solid #000;
   }
   .path-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .path-check-card input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-  /* ---------- path-icon-badge: matches floorsense-reservation-types.html's .desk-icon-badge —
-     a flat white square canvas with a light colored border per option, replacing the old bare
-     56x56px accent-blue line icon. See the MOST RECENT CHANGE note below. ---------- */
-  .path-icon-badge {
-    width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: #fff;
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .path-icon-badge.badge-blue { border-color: #4A8DF0; }
-  .path-icon-badge.badge-blue .path-icon-glyph { color: #4A8DF0; }
-  .path-icon-badge.badge-pink { border-color: #EC6BA5; }
-  .path-icon-badge.badge-pink .path-icon-glyph { color: #EC6BA5; }
-  .path-icon-badge.badge-purple { border-color: #9B6BEC; }
-  .path-icon-badge.badge-purple .path-icon-glyph { color: #9B6BEC; }
-  .path-icon-badge.badge-teal { border-color: #2FBF9F; }
-  .path-icon-badge.badge-teal .path-icon-glyph { color: #2FBF9F; }
-  .path-icon-badge.badge-amber { border-color: #F2A154; }
-  .path-icon-badge.badge-amber .path-icon-glyph { color: #F2A154; }
-  .path-icon-glyph { width: 34.5px; height: 34.5px; color: var(--accent); position: relative; z-index: 1; }
+  /* ---------- path-icon-glyph: per the same request, the bordered white `.path-icon-badge` square
+     canvas each icon sat inside was removed entirely, matching reservation-types.html's own
+     icon-refinement choice — icons now sit directly on the card's own background. `.path-icon-glyph`
+     (87.36px, flex-shrink:0) is now the icon's only wrapper, at reservation-types.html's own final
+     icon size. Each icon's SVG markup was redrawn to match that page's two-tone recipe: a thick,
+     uniform dark-navy outline (`#0E1030`) with rounded stroke caps/joins for the "base" shape, plus
+     one secondary accent shape rendered solid-filled (with the same navy outline around it). This
+     page's own pre-existing per-option badge colours (`#4A8DF0` blue / `#EC6BA5` pink / `#9B6BEC`
+     purple) were kept as each icon's accent fill, matching the precedent set on
+     floorsense-checkin-methods.html of keeping a page's own established per-card colours rather than
+     switching to reservation-types.html's reference-derived palette. ---------- */
+  .path-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
   .path-card-body { min-width: 0; flex: 1; }
   .path-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin: 0 0 8px; }
   .path-desc { font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; margin: 0; }
@@ -292,7 +288,7 @@
         <div class="path-check-card" data-mode="all">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="all">
-            <div class="path-icon-badge badge-blue"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 21h10"/><path d="M9 8l3-3 3 3"/></svg></div>
+            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><path d="M12 2.2v13.6M8.7 5.6L12 2.2l3.3 3.4M8.7 12.4L12 15.8l3.3-3.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="17.3" width="16" height="3.4" rx="1.2" fill="#4A8DF0" stroke="#0E1030" stroke-width="0.62"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">All sit-stand desks</h3>
               <p class="path-desc">Every desk is a sit-stand desk, so FME can be used anywhere.</p>
@@ -303,7 +299,7 @@
         <div class="path-check-card" data-mode="list">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="list">
-            <div class="path-icon-badge badge-pink"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="18.5" rx="2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="8.5" y="2" width="7" height="3" rx="1" fill="#EC6BA5" stroke="#0E1030" stroke-width="0.62"/><line x1="7.2" y1="9.5" x2="16.8" y2="9.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="13" x2="16.8" y2="13" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><line x1="7.2" y1="16.5" x2="14" y2="16.5" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">We will provide a list of desk types</h3>
               <p class="path-desc">Not all desks are sit-stand — we'll send Smartalock a list of which desk types support FME.</p>
@@ -314,7 +310,7 @@
         <div class="path-check-card" data-mode="none">
           <label class="path-row">
             <input type="radio" name="fmeMode" value="none">
-            <div class="path-icon-badge badge-purple"><svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg></div>
+            <svg class="path-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="6.2" y="2.2" width="10.6" height="18.6" rx="2.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.6" y1="18.3" x2="13.4" y2="18.3" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><circle cx="17.5" cy="17.5" r="4.3" fill="#9B6BEC" stroke="#0E1030" stroke-width="0.67"/><line x1="15.4" y1="19.6" x2="19.6" y2="15.4" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/></svg>
             <div class="path-card-body">
               <h3 class="path-title">We will not enable mobile app FME</h3>
               <p class="path-desc">Skip this feature — end users won't be able to save or apply a custom sit-stand height via the mobile app.</p>
@@ -483,6 +479,36 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request to roll floorsense-reservation-types.html's card and icon
+treatment out to the rest of the site, ported that page's full final recipe onto this page's 3
+`.path-check-card`s (`all`/`list`/`none`, via `data-mode`). `.path-check-card` dropped its glass-blur
+treatment (`backdrop-filter`, translucent background, fuzzy box-shadow) for reservation-types.html's
+text-block-lot recipe: flat `#F1F1F1` resting background, `border-radius: 18px`, and a hover lift
+(`transform: translate(-3px, -3px)`, white background, `1px solid #000` outline); `.checked` gets the
+same lift and white background with a heavier `2px solid #000` outline. This page never had its own
+per-card `--tc` wash/glow (its `.checked` background was always a single fixed blue tint, and there's
+no tick/radio-dot to recolour either, since that was removed in an earlier change), so unlike
+reservation-types.html/checkin-methods.html there was no separate colour-removal step needed — the
+card/outline colour was simply never anything but this fixed blue before.
+
+Each card's `.path-icon-badge` wrapper (a 60px white-fill, coloured-border square) was removed
+entirely -- icons now sit bare on the card background, resized from 34.5px to 87.36px to match
+reservation-types.html's own final icon size -- and every icon's SVG was redrawn in that page's
+two-tone recipe: a `#0E1030` navy-stroke outline shape plus one secondary shape solid-filled in an
+accent colour with its own thinner navy stroke. Each icon kept this page's pre-existing per-option
+badge colour as its accent fill (`#4A8DF0` blue / `#EC6BA5` pink / `#9B6BEC` purple), matching the
+precedent set on floorsense-checkin-methods.html of keeping a page's own established per-card colours
+rather than switching to reservation-types.html's reference-derived palette: "All sit-stand desks" is
+now an up/down height-adjust arrow above a blue-filled desk-surface bar; "We will provide a list of
+desk types" is a clipboard with a pink-filled clip tab and three list lines; "We will not enable
+mobile app FME" is a phone silhouette with a purple-filled "prohibited" badge in the corner. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched
+-- markup/CSS only), a weasyprint render (forced `.checked` state on the "All sit-stand desks" card)
+confirming the flat grey resting cards, the selected card's white/black 2px-outline state, and all 3
+redrawn icons rendering cleanly at the larger size, and a new jsdom test
+(test_fme_card_icon_restyle.js, 21 assertions) confirming the live CSS/markup match this recipe and
+that the radio-wiring JS logic (mode switching between all/list/none) is completely unaffected.
 -->
 
 <script>

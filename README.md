@@ -491,6 +491,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Thinned those same 5 icons' stroke widths a further 20% (×0.8, same 87.36px size), and removed this page's per-card colour theming from the cards, headings, and tick boxes — `.checked` cards, tick fills, and card headings all now use the site's single shared blue/grey tokens instead of a distinct colour per card. The icons' own reference-site accent colours were left unchanged.
 - Removed colour from that page's selected-card state entirely: a `.checked` card now shows a plain white background with a solid black 2px outline (was the shared blue accent wash/outline), its tick box is white with a black border, and the checkmark itself is now black instead of white so it still shows up against the lighter fill.
 - Applied `floorsense-reservation-types.html`'s full card/icon treatment to `floorsense-checkin-methods.html`'s 4 method cards: flat-grey text-block-lot cards with a white/black hover-lift and colourless `.checked` state, and all 4 icons redrawn bare (no bordered badge box) at 87.36px in the navy-outline-plus-accent-fill style, keeping each card's existing blue/pink/purple/teal as its icon's accent colour.
+- Applied the same card/icon treatment to `floorsense-fme.html`'s 3 mode cards: flat-grey text-block-lot cards with a white/black hover-lift and colourless `.checked` state, and all 3 icons redrawn bare at 87.36px in the navy-outline-plus-accent-fill style, keeping each card's existing blue/pink/purple as its icon's accent colour.
 
 ## Status
 
