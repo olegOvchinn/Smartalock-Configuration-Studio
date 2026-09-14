@@ -147,15 +147,15 @@
      `background-color` and `outline` exactly as the reference page does. Since this page's cards
      are still a selectable form (unlike the reference site's plain hover-only info cards — kept
      per an explicit choice when asked), the `.checked` state keeps its own distinct look rather
-     than reusing the hover site's plain black: it gets the same lift transform (so a selected card
-     reads as "raised" like a hovered one), a light tint background, and a 2px outline instead of
-     black — so hovering an unselected card and having a card selected are always visually
-     distinguishable from one another. `:hover` only applies its plain black-outline lift to cards
-     that aren't already `.checked`, so a selected card's outline is never replaced by the hover
-     state's black one. Per a later request to remove this page's own per-card colour theming (see
-     that change's own note further down), the checked wash/outline now read the single shared
-     `var(--accent-wash)`/`var(--accent)` tokens instead of a per-`data-template` `--tc`/`--tc-wash`
-     pair. ---------- */
+     than being visually identical to a merely-hovered card: it gets the same lift transform (so a
+     selected card reads as "raised" like a hovered one) and the same white background, but a
+     heavier `2px solid #000` outline (vs hover's `1px`) so a persistently-selected card can still be
+     told apart from one that's just being hovered. `:hover` only applies its own `1px` black-outline
+     lift to cards that aren't already `.checked`, so a selected card's `2px` outline is never
+     replaced by the hover state's thinner one. Per a later request to remove all colour from the
+     selected state (cards, headings, and tick boxes alike — see that change's own note further
+     down), `.checked` no longer tints its background or outline with any accent colour at all; it's
+     plain white-and-black, same as the rest of this recipe. ---------- */
   .desk-check-card {
     background: #F1F1F1;
     border: none; border-radius: 18px;
@@ -169,29 +169,32 @@
   }
   .desk-check-card.checked {
     transform: translate(-3px, -3px);
-    background: var(--accent-wash);
-    outline: 2px solid var(--accent);
+    background: #fff;
+    outline: 2px solid #000;
   }
   /* ---------- per-card theme colour REMOVED: this page previously tinted each card's heading text,
      tick fill, and checked/hover wash+outline with its own colour per `data-template` (via a `--tc`/
      `--tc-wash`/`--tc-glow`/`--tc-glow-strong` custom-property set, matching
-     smartalock-reservation-type.html's own per-type theming). Per a later request to remove that
-     per-card colouring from the cards, headings, and tick boxes, all 5 `data-template` `--tc*`
-     declarations were deleted outright, and `.desk-check-card.checked`, `.desk-tick`'s checked fill,
-     and `.desk-title` below were all switched to this page's single shared `var(--accent)`/
-     `var(--accent-wash)`/`var(--header-grey)` tokens (the same ones used elsewhere across this
-     site), so every card now reads identically regardless of type. The icons' own accent colours
-     (coral/blue/green/sky/orange, sampled from floorsen.se/handset — see that change's own note)
-     were left untouched, since this request was scoped to cards/headers/tickboxes only. ---------- */
+     smartalock-reservation-type.html's own per-type theming). Per a request to remove that per-card
+     colouring from the cards, headings, and tick boxes, all 5 `data-template` `--tc*` declarations
+     were deleted outright, and `.desk-title` below was switched to this page's single shared
+     `var(--header-grey)` token. A follow-up request went further still, removing colour from the
+     selected state entirely rather than just de-personalising it per card: `.desk-check-card.checked`
+     and `.desk-tick`'s checked fill/border (above/below) now use plain white/black instead of even a
+     single shared accent colour (`var(--accent)`/`var(--accent-wash)`), so a selected card, its
+     border, and its tick all read as a plain white-and-black state with no colour anywhere. The
+     icons' own accent colours (coral/blue/green/sky/orange, sampled from floorsen.se/handset — see
+     that change's own note) were left untouched, since this request was scoped to
+     cards/headers/tickboxes only. ---------- */
   .desk-tick {
     width: 22px; height: 22px; border-radius: 6px; border: 3px solid var(--line); flex-shrink: 0;
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
-  .desk-check-card.checked .desk-tick { border-color: var(--accent); background: var(--accent); }
+  .desk-check-card.checked .desk-tick { border-color: #000; background: #fff; }
   .desk-tick::after {
     content: ''; width: 6px; height: 10px; margin-top: -1px;
-    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    border: solid #000; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
     opacity: 0; transition: opacity .15s;
   }
   .desk-check-card.checked .desk-tick::after { opacity: 1; }
@@ -1010,6 +1013,28 @@ assertions) confirming no `--tc` custom property remains anywhere in the live st
 the checked card/tick/heading rules all read the shared tokens instead; and
 test_reservation_types_icon_refinement.js (now 33 assertions) confirming none of the stroke-width
 values from any of the three earlier rounds remain in any of the 5 live icon `<svg>`s.
+
+MOST RECENT CHANGE: per a request that "selected card turns white, cards edge line black, tick box
+theme is also white and black," `.desk-check-card.checked` went from the single shared
+`var(--accent-wash)` background / `var(--accent)` outline (introduced by the immediately-preceding
+change, which had only de-personalised the per-card colour into one shared accent) to plain
+`background: #fff; outline: 2px solid #000;` -- removing colour from the selected state entirely
+rather than just sharing one colour across cards. `.desk-check-card.checked .desk-tick` likewise
+changed from a solid `var(--accent)` fill/border to `border-color: #000; background: #fff;`, and
+`.desk-tick::after` (the checkmark glyph itself, previously `border: solid #fff` so it showed up
+against a coloured fill) switched to `border: solid #000` so it still reads clearly against the
+now-white tick. The icons' own reference-site accent colours (coral/blue/green/sky/orange) were
+untouched, as before. One accepted consequence: `.desk-check-card:hover:not(.checked)` already used
+`background: #fff; outline: 1px solid #000` from the earlier text-block-lot restyle, so a hovered-
+but-unselected card and an actually-selected card now look almost identical, distinguished only by
+outline weight (1px vs 2px) -- a deliberate result of this and the immediately-preceding request
+both simplifying toward a colourless design, not flagged as needing further clarification. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block (untouched
+-- CSS-only change), a weasyprint render forcing the "Dedicated Workstations" card into `.checked`
+confirming a white card with a solid black 2px border, a white/black-bordered tick with a black
+checkmark, and all other cards left in their normal light-grey resting state, and an updated
+test_reservation_types_card_restyle.js (now 22 assertions) confirming the checked card, its tick,
+and its checkmark all read plain white/black with no `var(--accent`/`--tc` reference anywhere.
 -->
 
 <script>
