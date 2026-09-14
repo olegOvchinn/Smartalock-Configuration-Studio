@@ -141,31 +141,18 @@
   .page-visual-frame.show-image .page-visual-placeholder-content { display: none; }
   .page-visual-frame.show-image img { display: block; width: 80.5%; height: 80.5%; object-fit: contain; }
 
-  /* ---------- text-block-lot card: per a request to bring this page's cards in line with the
-     flat text-block-lot recipe used sitewide, .qcard dropped the glass-blur treatment
-     (backdrop-filter, translucent background, fuzzy box-shadow, accent-tinted `.visual-active`) in
-     favour of a flat `#F1F1F1` resting background with a hover/active "lift" (translate + white
-     background + black outline), matching `.desk-check-card`/`.tcard` elsewhere. Unlike those
-     pages' `.checked`/`.chosen`, `.visual-active` here isn't a persisted "selection" — it just marks
-     whichever of these 3 always-visible form cards is currently driving the side preview image (via
-     `showPolicyVisual()`, toggled on focus/click) — but per an explicit choice when asked, it gets
-     the exact same visual treatment as a `.checked` card elsewhere: the same lift and white
-     background, with a heavier `2px solid #000` outline vs. hover's `1px`. ---------- */
+  /* ---------- flat card, no hover/active state: per a request specific to this page, .qcard has
+     no visual state changes at all — no hover lift/outline, and no distinct look for whichever
+     card is currently `.visual-active` (which of these 3 always-visible form cards is driving the
+     side preview image via `showPolicyVisual()`). Every card just sits as a plain flat `#F1F1F1`
+     box all the time; only the side preview image itself changes on hover/click/focus, per the
+     existing JS. This deliberately diverges from the sitewide text-block-lot recipe's hover-lift/
+     `.checked`-outline convention used elsewhere (e.g. `.desk-check-card`/`.tcard`), which this page
+     had briefly adopted before this request reverted just the state-change styling. ---------- */
   .qcard {
     background: #F1F1F1;
     border: none; border-radius: 18px;
     padding: 22px 24px; margin-bottom: 18px; max-width: 560px;
-    transition: transform .3s, background-color .3s, outline .3s;
-  }
-  .qcard:hover:not(.visual-active) {
-    transform: translate(-3px, -3px);
-    background: #fff;
-    outline: 1px solid #000;
-  }
-  .qcard.visual-active {
-    transform: translate(-3px, -3px);
-    background: #fff;
-    outline: 2px solid #000;
   }
   .qcard h3 { font-family: var(--font-display); font-weight: 500; font-size: 21.32px; margin: 0 0 6px; color: var(--header-grey); display: flex; align-items: center; gap: 8px; }
   .qcard h3 .qcard-icon { width: 72px; height: 72px; flex-shrink: 0; }
@@ -491,6 +478,24 @@ existing `showPolicyVisual()`/`previewPolicyVisual()` hover-preview logic alread
 first) confirming the flat background/border-radius/hover-lift/active-outline CSS is in place, the
 icon badges are untouched, and the existing hover-preview / click-to-activate / restore-on-leave
 behaviour for all 3 cards still works correctly.
+
+MOST RECENT CHANGE: per a follow-up request specific to this page, removed all visual state changes
+from `.qcard` — the `.qcard:hover:not(.visual-active)` rule (lift transform, white background, `1px`
+outline) and `.qcard.visual-active`'s own lift/white-background/`2px`-outline styling were both
+deleted outright, along with the now-unused `transition: transform .3s, background-color .3s,
+outline .3s;` on the base rule. Every card now sits as a plain flat `#F1F1F1` box all the time,
+whether idle, hovered, or currently the active preview — no lift, no colour change, no outline
+anywhere. This is a deliberate divergence from the sitewide text-block-lot hover/`.checked` outline
+convention this page had briefly adopted in the immediately preceding change; it's scoped to this
+page only, not propagated elsewhere. `.visual-active` itself is still toggled by the existing
+`showPolicyVisual()`/`previewPolicyVisual()` JS exactly as before — only its visual styling was
+removed, so it still correctly tracks which card's image is showing in the side preview; nothing
+about the hover-preview/click-to-activate/restore-on-leave *behaviour* changed, only its appearance.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block
+(untouched — CSS-only change), and an updated jsdom test (test_locker_policy_card_restyle.js, 14
+assertions) confirming no `.qcard:hover` rule exists at all, `.visual-active` carries no
+transform/outline/white-background styling, and the hover-preview/click-to-activate/restore-on-leave
+image-swap logic for all 3 cards is unaffected.
 -->
 
 <script>
