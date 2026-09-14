@@ -510,6 +510,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded the Wallet Pass at Desk card's description on `floorsense-checkin-methods.html` from "Users add a Floorsense pass to their Apple Wallet or Google Wallet and tap their phone at the desk to reserve it." to "Floorsense issues each user a pass for their Apple Wallet or Google Wallet, which they tap at the desk to reserve it." — since Floorsense, not the user, creates and issues the pass.
 - Made "PIN number at touchscreen" and "Floorsense app" default-selected options on `smartalock-access-methods.html` (both on first load and after Reset), leaving Building Access Cards and QR Code unselected by default as before; an explicit saved selection still overrides the defaults.
 - On `smartalock-access-methods.html`, made "Random" the default PIN assignment method (was unset), and reworded the Floorsense app card's description from "Available for known users only — opens their locker from the Floorsense app." to "Opens their locker from the Floorsense app — available on mobile and desktop, where users also manage their reservations."
+- Tightened that same Floorsense app description further to "Mobile and desktop app for opening lockers and managing reservations." — shorter, and no longer leading with "Opens their locker...".
 
 ## Status
 

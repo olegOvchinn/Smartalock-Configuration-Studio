@@ -360,7 +360,7 @@
             <span class="access-icon-badge badge-teal"><img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt=""></span>
             <div class="access-card-body">
               <span class="access-title">Floorsense app</span>
-              <span class="access-desc">Opens their locker from the Floorsense app — available on mobile and desktop, where users also manage their reservations.</span>
+              <span class="access-desc">Mobile and desktop app for opening lockers and managing reservations.</span>
             </div>
           </label>
         </div>
@@ -555,6 +555,15 @@ where users manage their reservations. Verified via an inline HTMLParser tag-bal
 25 assertions) confirming "Random" is checked by default (and after Reset) while an explicitly saved
 PIN method is still respected, and that the Floorsense app description no longer contains "known
 users only" and now mentions mobile/desktop and managing reservations.
+
+MOST RECENT CHANGE: per a follow-up request for something clearer and shorter that doesn't open with
+"Opens their locker...", the Floorsense app card's description was tightened from "Opens their locker
+from the Floorsense app — available on mobile and desktop, where users also manage their
+reservations." to "Mobile and desktop app for opening lockers and managing reservations." — same two
+facts (locker opening, reservation management, mobile + desktop availability), just leading with what
+the app is rather than what it does first. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and an updated jsdom test (test_access_methods_defaults.js)
+confirming the exact new description text and that it no longer starts with "Opens their locker".
 -->
 
 <script>
