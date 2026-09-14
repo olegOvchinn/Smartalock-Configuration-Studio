@@ -122,27 +122,31 @@
   /* ---------- access method checkbox grid ---------- */
   .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; }
   @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
-  /* ---------- glass card: per the site-wide glass-card treatment introduced on
-     floorsense-reservation-types.html, .access-check-card dropped its solid `border: 1.5px solid
-     var(--line)` in favour of a translucent white background, backdrop-filter blur, and a soft fuzzy
-     box-shadow standing in for the border. The existing hover/`.checked` states (previously shown via
-     `border-color: var(--accent)` + a solid `--accent-wash` background) now read through the shadow's
-     tint/spread and a translucent background tint instead — see the MOST RECENT CHANGE note below. ---------- */
+  /* ---------- text-block-lot card: per a request to apply floorsense-reservation-types.html's
+     card and icon treatment sitewide, `.access-check-card` dropped its glass-blur treatment
+     (backdrop-filter, translucent background, fuzzy box-shadow) for that page's own later
+     "text-block-lot" recipe: a flat light-grey resting background (`#F1F1F1`, no border),
+     `border-radius: 18px`, and on hover a small "lift" — `transform: translate(-3px, -3px)` plus the
+     background flipping to solid white and a crisp `1px solid #000` outline. `.checked` gets the
+     same lift and white background, but a heavier `2px solid #000` outline, carrying no accent
+     colour at all (matching reservation-types.html's own final colourless state). The `.access-tick`
+     checkbox marker likewise switched from a solid `var(--accent)` fill/border to plain white/black,
+     matching the same page's `.desk-tick`. ---------- */
   .access-check-card {
     padding: 18px 20px;
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: none; border-radius: var(--radius-lg);
-    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
-    transition: box-shadow .2s, background .2s;
+    background: #F1F1F1;
+    border: none; border-radius: 18px;
+    transition: transform .3s, background-color .3s, outline .3s;
   }
-  .access-check-card:hover {
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.22), 0 3px 12px rgba(16,42,67,0.08);
+  .access-check-card:hover:not(.checked) {
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 1px solid #000;
   }
   .access-check-card.checked {
-    background: rgba(232,241,252,0.7);
-    box-shadow: 0 16px 40px -8px rgba(0,113,227,0.3), 0 3px 12px rgba(16,42,67,0.08);
+    transform: translate(-3px, -3px);
+    background: #fff;
+    outline: 2px solid #000;
   }
   .access-row { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
   .access-check-card input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
@@ -151,30 +155,26 @@
     margin-top: 2px; position: relative; transition: border-color .18s, background .18s;
     display: flex; align-items: center; justify-content: center;
   }
-  .access-check-card.checked .access-tick { border-color: var(--accent); background: var(--accent); }
+  .access-check-card.checked .access-tick { border-color: #000; background: #fff; }
   .access-tick::after {
     content: ''; width: 6px; height: 10px; margin-top: -1px;
-    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
+    border: solid #000; border-width: 0 2.5px 2.5px 0; transform: rotate(40deg);
     opacity: 0; transition: opacity .15s;
   }
   .access-check-card.checked .access-tick::after { opacity: 1; }
-  .access-icon-img { width: 56px; height: 56px; flex-shrink: 0; }
-  /* ---------- access-icon-badge: wraps each raster <img class="access-icon-img"> in a white square
-     badge with a colored border, matching floorsense-reservation-types.html's .desk-icon-badge
-     pattern. Each badge's border color is sampled from its own icon's PNG pixels rather than an
-     arbitrary rotation — see the MOST RECENT CHANGE note below. Only the badge's border is colored;
-     the raster icon images are left untouched. ---------- */
-  .access-icon-badge {
-    width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
-    margin-top: 2px;
-    display: flex; align-items: center; justify-content: center;
-    background: #fff; border: 1.5px solid var(--accent);
-    box-shadow: 0 3px 6px rgba(16,42,67,0.10);
-  }
-  .access-icon-badge.badge-green { border-color: #328456; }
-  .access-icon-badge.badge-amber { border-color: #8E7645; }
-  .access-icon-badge.badge-teal { border-color: #0A5E5F; }
-  .access-icon-badge.badge-blue { border-color: #214A74; }
+  /* ---------- access-icon-glyph: per the same request, each raster `<img class="access-icon-img">`
+     illustration and its bordered white `.access-icon-badge` square canvas were replaced with a bare
+     inline SVG redrawn in reservation-types.html's own two-tone recipe: a thick, uniform dark-navy
+     outline (`#0E1030`) with rounded stroke caps/joins for the "base" shape, plus one secondary
+     accent shape rendered solid-filled (with the same navy outline around it). This page's own
+     pre-existing per-card badge colours (`#328456` green / `#8E7645` amber / `#0A5E5F` teal /
+     `#214A74` blue — each originally sampled from its own now-replaced icon PNG) were kept as each
+     new icon's accent fill. `.access-icon-glyph` (87.36px, flex-shrink:0) is now the icon's only
+     wrapper, at reservation-types.html's own final icon size. The 4 replaced PNGs
+     (icon-access-card-illus.png, icon-access-pin-illus.png, icon-access-app-illus.png,
+     icon-access-qr-illus.png) are no longer referenced by this page but were left in place rather
+     than deleted, matching this site's convention for superseded assets. ---------- */
+  .access-icon-glyph { width: 87.36px; height: 87.36px; flex-shrink: 0; }
   .access-card-body { min-width: 0; flex: 1; }
   .access-title { display: block; font-family: var(--font-display); font-weight: 500; font-size: 21.32px; color: var(--header-grey); margin-bottom: 8px; }
   .access-desc { display: block; font-size: 14.76px; font-weight: 400; color: var(--ink-soft); line-height: 1.55; }
@@ -304,7 +304,7 @@
           <label class="access-row">
             <input type="checkbox" value="card">
             <span class="access-tick" aria-hidden="true"></span>
-            <span class="access-icon-badge badge-green"><img class="access-icon-img" src="../assets/images/icon-access-card-illus.png" alt=""></span>
+            <svg class="access-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.2" y="5.5" width="19.6" height="13" rx="2.2" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="2.2" y="8.6" width="19.6" height="3.4" fill="#328456" stroke="#0E1030" stroke-width="0.62"/></svg>
             <div class="access-card-body">
               <span class="access-title">Building access cards</span>
               <span class="access-desc">Existing building access cards or fobs open lockers directly.</span>
@@ -326,7 +326,7 @@
           <label class="access-row">
             <input type="checkbox" value="pin">
             <span class="access-tick" aria-hidden="true"></span>
-            <span class="access-icon-badge badge-amber"><img class="access-icon-img" src="../assets/images/icon-access-pin-illus.png" alt=""></span>
+            <svg class="access-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="4.5" y="2.2" width="15" height="19.6" rx="2.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="1.05" fill="#0E1030" stroke="none"/><circle cx="12" cy="9" r="1.05" fill="#0E1030" stroke="none"/><circle cx="15" cy="9" r="1.05" fill="#0E1030" stroke="none"/><circle cx="9" cy="12.5" r="1.05" fill="#0E1030" stroke="none"/><circle cx="12" cy="12.5" r="1.35" fill="#8E7645" stroke="#0E1030" stroke-width="0.5"/><circle cx="15" cy="12.5" r="1.05" fill="#0E1030" stroke="none"/><circle cx="9" cy="16" r="1.05" fill="#0E1030" stroke="none"/><circle cx="12" cy="16" r="1.05" fill="#0E1030" stroke="none"/><circle cx="15" cy="16" r="1.05" fill="#0E1030" stroke="none"/></svg>
             <div class="access-card-body">
               <span class="access-title">PIN number at touchscreen</span>
               <span class="access-desc">Users enter a PIN code on the kiosk touchscreen to open their locker.</span>
@@ -353,7 +353,7 @@
           <label class="access-row">
             <input type="checkbox" value="app">
             <span class="access-tick" aria-hidden="true"></span>
-            <span class="access-icon-badge badge-teal"><img class="access-icon-img" src="../assets/images/icon-access-app-illus.png" alt=""></span>
+            <svg class="access-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="6.2" y="2.2" width="10.6" height="18.6" rx="2.4" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.6" y1="18.3" x2="13.4" y2="18.3" stroke="#0E1030" stroke-width="0.58" stroke-linecap="round"/><circle cx="17.3" cy="16.8" r="4.1" fill="#0A5E5F" stroke="#0E1030" stroke-width="0.67"/><path d="M15.4 16.9l1.3 1.3l2.3-2.6" stroke="#0E1030" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="access-card-body">
               <span class="access-title">Floorsense app</span>
               <span class="access-desc">Available for known users only — opens their locker from the Floorsense app.</span>
@@ -365,7 +365,7 @@
           <label class="access-row">
             <input type="checkbox" value="qr">
             <span class="access-tick" aria-hidden="true"></span>
-            <span class="access-icon-badge badge-blue"><img class="access-icon-img" src="../assets/images/icon-access-qr-illus.png" alt=""></span>
+            <svg class="access-icon-glyph" viewBox="0 0 24 24" fill="none"><rect x="2.3" y="2.3" width="6.2" height="6.2" rx="0.9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="4.2" y="4.2" width="2.4" height="2.4" fill="#0E1030" stroke="none"/><rect x="15.5" y="2.3" width="6.2" height="6.2" rx="0.9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="17.4" y="4.2" width="2.4" height="2.4" fill="#0E1030" stroke="none"/><rect x="2.3" y="15.5" width="6.2" height="6.2" rx="0.9" stroke="#0E1030" stroke-width="0.76" stroke-linecap="round" stroke-linejoin="round"/><rect x="4.2" y="17.4" width="2.4" height="2.4" fill="#0E1030" stroke="none"/><rect x="13.3" y="13.3" width="2.8" height="2.8" fill="#214A74" stroke="#0E1030" stroke-width="0.58"/><rect x="17.3" y="13.3" width="2.8" height="2.8" fill="#214A74" stroke="#0E1030" stroke-width="0.58"/><rect x="13.3" y="17.3" width="2.8" height="2.8" fill="#214A74" stroke="#0E1030" stroke-width="0.58"/><rect x="17.3" y="17.3" width="2.8" height="2.8" fill="#214A74" stroke="#0E1030" stroke-width="0.58"/></svg>
             <div class="access-card-body">
               <span class="access-title">QR code</span>
               <span class="access-desc">Users scan a QR code at the kiosk to open their locker.</span>
@@ -462,6 +462,38 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request to roll floorsense-reservation-types.html's card and icon
+treatment out to the rest of the site, ported that page's full final recipe onto this page's 4
+`.access-check-card`s (card/pin/app/qr, via `data-method`). `.access-check-card` dropped its
+glass-blur treatment (`backdrop-filter`, translucent background, fuzzy box-shadow) for
+reservation-types.html's text-block-lot recipe: flat `#F1F1F1` resting background, `border-radius:
+18px`, and a hover lift (`transform: translate(-3px, -3px)`, white background, `1px solid #000`
+outline); `.checked` gets the same lift and white background with a heavier `2px solid #000`
+outline, carrying no accent colour at all. The `.access-tick` checkbox marker (this page's visible
+tick, unlike some other ported pages which have none) likewise switched from a solid `var(--accent)`
+fill/border to plain white/black, matching reservation-types.html's own `.desk-tick`.
+
+Each card's raster `<img class="access-icon-img">` illustration and its bordered white
+`.access-icon-badge` square canvas were replaced entirely with a bare inline SVG redrawn in the
+two-tone recipe: a `#0E1030` navy-stroke outline shape plus one secondary shape solid-filled in an
+accent colour with its own thinner navy stroke, resized from 56px to 87.36px. Each new icon kept this
+page's pre-existing per-card badge colour (each originally sampled from its own now-replaced icon
+PNG) as its accent fill: "Building access cards" (`#328456` green) reuses the card-plus-stripe design
+from floorsense-checkin-methods.html's identical-concept icon; "PIN number at touchscreen"
+(`#8E7645` amber) is a touchscreen keypad with its centre key highlighted amber; "Floorsense app"
+(`#0A5E5F` teal) is a phone with a teal-filled checkmark badge; "QR code" (`#214A74` blue) reuses the
+same QR-finder-pattern design from floorsense-checkin-methods.html, recoloured blue. The 4 replaced
+PNGs (icon-access-card-illus.png, icon-access-pin-illus.png, icon-access-app-illus.png,
+icon-access-qr-illus.png) are no longer referenced by this page but were left in place rather than
+deleted. Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block (untouched -- markup/CSS only), a weasyprint render (forced `.checked` state on "Building
+access cards") confirming the flat grey resting cards, the selected card's white/black state with a
+matching white/black tick, and all 4 redrawn icons rendering cleanly at the larger size, and a new
+jsdom test (test_access_methods_card_icon_restyle.js, 26 assertions, parsed via jsdom rather than raw
+substring scans so the bottom NOTE block's own literal-markup quotations can't cause false
+positives/negatives) confirming the live CSS/markup match this recipe and that the
+checkbox-wiring/card-and-pin-subfields JS logic is completely unaffected.
 -->
 
 <script>
