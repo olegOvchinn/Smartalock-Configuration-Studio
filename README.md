@@ -475,6 +475,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's NSNP — Custom Arrangement Note row now also adds a Floorsense-branch item to the Outstanding section (quoting the note text) whenever that note is present — the first Floorsense-branch Outstanding trigger.
 - The Tech Summary's Sit-Stand Desks (FME) — Mode row now has a static setting key, `desk_user_control`.
 - Corrected the Tech Summary's Anti Desk Hogging setting-key placement: the Mode row now shows `book_window_adhoc, book_window_advance`, the Window row now shows `book_window_advance_mins, book_window_adhoc_mins`, and the Max Bookings row's key cell is empty.
+- Removed the Tech Summary's Anti Desk Hogging — Mode row entirely; its `book_window_adhoc, book_window_advance` keys moved to the Max Bookings row (which now shows those keys, alongside the Window row's `book_window_advance_mins, book_window_adhoc_mins`).
 - The Tech Summary's Recurring Bookings row now has a static setting key, `book_repeat_user`.
 - The Tech Summary's Remote Booking Confirmation row now has a static setting key, `book_confirm_occupied`.
 - The Tech Summary's Privacy (Do Not Disturb) row now has a static setting key, `desk_button_privacy`.

@@ -525,6 +525,16 @@
   now empty). Verified via an inline HTMLParser tag-balance check, node --check on the extracted script
   block, and an updated jsdom test confirming the keys now render on the Window row (not Max Bookings)
   at both an off and an on Anti Desk Hogging state.
+
+  MOST RECENT CHANGE: removed the Anti Desk Hogging - Mode row entirely (and its now-unused
+  ADH_MODE_LABELS/adhMode JS), and moved its book_window_adhoc / book_window_advance setting keys onto
+  the Max Bookings row's key cell (which previously had no key). Anti Desk Hogging now has two rows:
+  Window (key: book_window_advance_mins, book_window_adhoc_mins) and Max Bookings (key:
+  book_window_adhoc, book_window_advance) - the on/off state is still tracked internally via
+  adh.mode for the branch-changed flag and the "n/a" value fallback on both remaining rows, it's just
+  no longer shown as its own row. Verified via an inline HTMLParser tag-balance check, node --check on
+  the extracted script block, and an updated jsdom test confirming the Mode row no longer exists and
+  both remaining rows show their corrected keys at both an off and an on Anti Desk Hogging state.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -755,9 +765,8 @@
       <tr id="tsNsnpOtherNoteRow" hidden><td class="label">NSNP — Custom Arrangement Note</td><td class="key"></td><td class="value" id="tsNsnpOtherNote"></td></tr>
       <tr><td class="label">Sit-Stand Desks (FME) — Mode</td><td class="key">desk_user_control</td><td class="value" id="tsFmeMode"></td></tr>
       <tr id="tsFmeMotorAckRow" hidden><td class="label">FME — Motor Details Acknowledged</td><td class="key"></td><td class="value" id="tsFmeMotorAck"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Mode</td><td class="key">book_window_adhoc, book_window_advance</td><td class="value" id="tsAdhMode"></td></tr>
       <tr><td class="label">Anti Desk Hogging — Window</td><td class="key">book_window_advance_mins, book_window_adhoc_mins</td><td class="value" id="tsAdhWindow"></td></tr>
-      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key"></td><td class="value" id="tsAdhMaxBookings"></td></tr>
+      <tr><td class="label">Anti Desk Hogging — Max Bookings</td><td class="key">book_window_adhoc, book_window_advance</td><td class="value" id="tsAdhMaxBookings"></td></tr>
       <tr><td class="label">Recurring Bookings</td><td class="key">book_repeat_user</td><td class="value" id="tsRecurring"></td></tr>
       <tr><td class="label">Remote Booking Confirmation</td><td class="key">book_confirm_occupied</td><td class="value" id="tsRemoteConfirm"></td></tr>
       <tr><td class="label">Privacy (Do Not Disturb)</td><td class="key">desk_button_privacy</td><td class="value" id="tsDnd"></td></tr>
@@ -1359,10 +1368,7 @@
   // FME ships Off by default — changed if a mode is actually set.
   if (fme.mode && fme.mode !== 'none') fsChanged = true;
 
-  const ADH_MODE_LABELS = { enable: 'On', none: 'Off' };
   const adh = wizard.antiDeskHogging || {};
-  const adhMode = adh.mode && adh.mode !== 'none' ? (ADH_MODE_LABELS[adh.mode] || adh.mode) : 'Off';
-  set('tsAdhMode', adhMode);
   const adhWindowDays = Number.isFinite(adh.windowDays) ? adh.windowDays : 2;
   const adhMaxBookings = Number.isFinite(adh.maxBookings) ? adh.maxBookings : 1;
   set('tsAdhWindow', adh.mode && adh.mode !== 'none' ? formatDuration(adhWindowDays * 1440) : 'n/a');
