@@ -471,6 +471,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - The Tech Summary's Maximum Desks Per User row now also shows `book_user_limit_force` alongside `book_user_limit` whenever the value is 2 or more. The Auto-Release on Idle row's key cell now shows a static `book_idle_autorelease` key.
 - The Tech Summary's No Swipe No Power (NSNP) — Mode row now has a static setting key, `desk_power_policy`.
 - Removed the redundant top "NSNP — Grace Period" row (the plain Yes/No one) from the Tech Summary — the remaining row already shows the actual grace duration or "n/a".
+- The Tech Summary's remaining NSNP — Grace Period row now has a static setting key, `desk_power_grace`.
 
 ## Status
 
