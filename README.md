@@ -529,6 +529,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed `floorsense-out-of-box-policy.html`'s hero sub entirely and moved that fine-tuning text onto the paragraph under the "Project Details" heading instead.
 - Reworded that Project Details paragraph on `floorsense-out-of-box-policy.html` again, to "Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required."
 - Appended a sentence to that same paragraph: "If not modified, the fine-tune settings will inherit recommended system defaults."
+- Rewrote that Project Details paragraph on `floorsense-out-of-box-policy.html` once more, to "Here's what's included so far. Review the details and change anything that doesn't suit your workplace. Select Edit on any row to make further changes. If left unchanged, the recommended default will be used."
 
 ## Status
 
