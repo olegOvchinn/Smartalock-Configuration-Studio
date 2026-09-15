@@ -281,9 +281,9 @@
             <div class="sso-scope-field" id="ssoScopeField">
               <label>Applies to</label>
               <select id="ssoScope">
-                <option value="both">Mobile app &amp; admin portal (both)</option>
-                <option value="app">Mobile app only (end users)</option>
-                <option value="portal">Admin portal only (system admins)</option>
+                <option value="both">End Users &amp; Admin Users (both)</option>
+                <option value="app">End Users only</option>
+                <option value="portal">Admin Users only</option>
               </select>
             </div>
 
@@ -588,6 +588,19 @@ badge, the description paragraph, and the `#ssoMethod` select/subfields are all 
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a
 jsdom test (test_it_config_signin_card_rename.js) confirming the new heading text and that the
 tag/icon/description/select are unchanged.
+
+MOST RECENT CHANGE: per a request, reworded the "Applies to" (`#ssoScope`) options on the same
+card — "Mobile app & admin portal (both)" became "End Users & Admin Users (both)", "Mobile app only
+(end users)" became "End Users only", and "Admin portal only (system admins)" became "Admin Users
+only". The now-redundant "(end users)"/"(system admins)" parentheticals were dropped from the latter
+two options since the audience they clarified is now named directly in the option text itself; the
+`both` option's parenthetical stayed since it doesn't repeat anything. Only the option labels
+changed — `value="both"/"app"/"portal"`, the default (`"both"`), the field's show/hide wiring, and
+the card's description paragraph above it (out of scope for this request) are all untouched.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
+and a jsdom test (test_sso_scope_options_reword.js) confirming the three new option labels, no
+leftover "mobile app"/"admin portal" wording in the select, and that the default value, visibility
+wiring, and description paragraph are unchanged.
 -->
 
 <script>
