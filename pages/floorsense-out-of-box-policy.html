@@ -567,7 +567,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
-        <p class="sub" id="pageHeroSub">Here's what's included so far — review it below and adjust anything that needs to change for your workplace.</p>
+        <p class="sub" id="pageHeroSub">Here's what's included so far — review it below and adjust anything that needs to change for your workplace. There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further if required.</p>
       </div>
     </div>
   </div>
@@ -2537,6 +2537,17 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request, appended a sentence to the hero sub text (`#pageHeroSub`) — in
+both its default HTML value and the JS preset-variant string set for `?preset=relaxed`/`?preset=
+strict` loads — pointing out that there are more fine-tuning options on this page beyond what's
+shown, and to tap the row-level "Edit" links to review and adjust them further. The original
+"included so far — review it below and adjust..." sentence is unchanged; the new sentence reads
+"There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further
+if required." ("if required" was added per a follow-up request.) Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_oob_policy_hero_sub_fine_tune.js, 4 assertions) confirming the appended sentence in both the
+default load and a `?preset=strict` load.
 -->
 
 
@@ -2660,7 +2671,7 @@ that have this row, with spacing/layout preserved.
   if (PRESET_LABELS[preset]) {
     document.getElementById('pageHeroTitle').textContent = PRESET_LABELS[preset] + ' Preset';
     document.getElementById('pageHeroSub').textContent =
-      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset so far — review it below and adjust anything that needs to change for your workplace.";
+      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset so far — review it below and adjust anything that needs to change for your workplace. There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further if required.";
   }
 
   const savedOOB = project.floorsense.wizard.outOfBoxPolicy || {};
