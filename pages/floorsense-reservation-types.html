@@ -84,20 +84,20 @@
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
+  /* ---------- h1.hero-title: per a request to drop the separate sub text and put that sentence
+     directly in the hero title, the original short-title treatment (76px, nowrap, 100vw full-bleed)
+     no longer fits — a full sentence at that size/nowrap would overflow far past the viewport. Sized
+     down to a readable sentence-scale heading, wrapping normally within .panel-intro's own 640px
+     max-width instead of breaking out to 100vw. ---------- */
   h1.hero-title {
     font-family: 'Inter', sans-serif;
-    font-size: 76px;
+    font-size: 34px;
     font-weight: 200; /* Extra Light */
-    letter-spacing: -2px;
-    line-height: 1.05;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
     color: #102A43;
-    margin: 0 0 24px;
-    white-space: nowrap;
+    margin: 0;
     text-align: center;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
   }
   .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
@@ -318,8 +318,7 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Desk Allocation Method</h1>
-        <p class="sub">Choose which desk reservation types this site should support.</p>
+        <h1 class="hero-title">Choose which desk reservation types this site should support.</h1>
       </div>
     </div>
   </div>
@@ -1076,6 +1075,19 @@ logic (saveDot.classList.add('show') on save) and the status text beside it are 
 via an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom
 test (test_save_dot_red_bigger.js) confirming the new width/height/background across all 24 pages
 that share this component.
+
+MOST RECENT CHANGE: per a request, removed the separate `<p class="sub">` entirely and merged its
+copy directly into the hero title: `<h1 class="hero-title">` now reads "Choose which desk
+reservation types this site should support." (was "Desk Allocation Method"). Since the original
+hero-title styling (76px, `white-space: nowrap`, 100vw full-bleed) was built for a short 2-4 word
+title and would badly overflow a full sentence at that size, `h1.hero-title`'s CSS was resized down
+to a readable sentence-scale heading (34px, wrapping normally within `.panel-intro`'s existing 640px
+max-width) as a necessary side effect of this change — flagged here since it goes beyond the literal
+text swap. The `<title>` tag and the progress-bar's own tooltip label both still read "Desk
+Allocation Method" (untouched, as they're shared naming conventions used elsewhere on this page and
+across the site). Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and a jsdom test (test_reservation_types_hero_merge.js) confirming `p.sub`
+is gone, the hero title carries the new sentence, and the `<title>`/tooltip label are unchanged.
 -->
 
 <script>
