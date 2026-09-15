@@ -518,6 +518,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Marked the "both" option in that same "Applies to" select as recommended: "End Users & Admin Users (both)" → "End Users & Admin Users (both, recommended)".
 - Restyled the shared "Selection saved automatically" save-indicator dot (`.save-dot`) red and 30% bigger (6px → 7.8px) across all 24 pages that use it.
 - Removed `floorsense-reservation-types.html`'s separate sub text and merged it into the hero title ("Choose which desk reservation types this site should support."), resizing the hero-title styling to fit a full sentence.
+- Reworded that hero title on `floorsense-reservation-types.html` to "Choose Desk Allocation Method".
 
 ## Status
 

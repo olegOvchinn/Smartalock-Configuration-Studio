@@ -318,7 +318,7 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Choose which desk reservation types this site should support.</h1>
+        <h1 class="hero-title">Choose Desk Allocation Method</h1>
       </div>
     </div>
   </div>
@@ -1088,6 +1088,13 @@ Allocation Method" (untouched, as they're shared naming conventions used elsewhe
 across the site). Verified via an inline HTMLParser tag-balance check, `node --check` on the
 extracted script block, and a jsdom test (test_reservation_types_hero_merge.js) confirming `p.sub`
 is gone, the hero title carries the new sentence, and the `<title>`/tooltip label are unchanged.
+
+MOST RECENT CHANGE: per a follow-up request, reworded the hero title from the full sentence to
+"Choose Desk Allocation Method" — text only; the 34px sentence-scale sizing from the previous change
+was left as-is since it still reads fine for this shorter title, and the `<title>` tag/progress-bar
+tooltip label remain "Desk Allocation Method" as before. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and an updated jsdom test
+(test_reservation_types_hero_merge.js) confirming the new hero title text.
 -->
 
 <script>
