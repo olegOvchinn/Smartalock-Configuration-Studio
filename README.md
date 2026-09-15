@@ -530,6 +530,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded that Project Details paragraph on `floorsense-out-of-box-policy.html` again, to "Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required."
 - Appended a sentence to that same paragraph: "If not modified, the fine-tune settings will inherit recommended system defaults."
 - Rewrote that Project Details paragraph on `floorsense-out-of-box-policy.html` once more, to "Here's what's included so far. Review the details and change anything that doesn't suit your workplace. Select Edit on any row to make further changes. If left unchanged, the recommended default will be used."
+- Removed the leading "Example:" word from the check-in window example text in the first section of `floorsense-desk-booking-guide-live.html`.
 
 ## Status
 

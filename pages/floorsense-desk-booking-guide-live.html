@@ -193,6 +193,15 @@ tag-balance check, `node --check` on the extracted script block, the existing js
 covering all 3 SSO cases) confirming the new closing sentence appears in both variants' body text,
 and a full-page Playwright screenshot confirming the new "Floorsense User App" section now sits
 directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on the page.
+
+MOST RECENT CHANGE: per a request, removed the leading "Example: " word from the
+`#checkinWindowExample` text in the first section's first row ("Check in any time within your
+window", under the "Booking & Check-in" eyebrow) — it now reads "8:00 AM booking → check in
+between ..." directly instead of "Example: 8:00 AM booking → check in between ...". No other text
+on the page used the word "Example:". Verified via an inline HTMLParser tag-balance check,
+`node --check` on the extracted script block, and a new jsdom test
+(test_desk_booking_guide_remove_example_word.js, 4 assertions) confirming the leading word is gone,
+the text still starts with "8:00 AM booking", and no "Example:" text remains anywhere on the page.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -523,7 +532,7 @@ directly below Your Privacy with no `.not-on-box`/`.footer-note` remaining on th
     formatMinutes(lateMin) + ' after it starts. If you don\'t check in within that window, your desk becomes available to others.';
   const exampleStartTotalMin = 8 * 60;
   document.getElementById('checkinWindowExample').textContent =
-    'Example: 8:00 AM booking → check in between ' + formatClock(exampleStartTotalMin - earlyMin) + '–' + formatClock(exampleStartTotalMin + lateMin);
+    '8:00 AM booking → check in between ' + formatClock(exampleStartTotalMin - earlyMin) + '–' + formatClock(exampleStartTotalMin + lateMin);
 
   /* ---------------- plan ahead ---------------- */
   const prebookingAdvance = wizard.prebookingAdvance || {};
