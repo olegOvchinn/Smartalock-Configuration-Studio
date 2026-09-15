@@ -526,6 +526,8 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded `floorsense-desk-user-groups.html`'s hero sub text to insert "granular" before "reporting".
 - Reworded `floorsense-desk-user-groups.html`'s hero sub text again, to "Group desks into neighbourhoods and users into groups to enable granular reporting and targeted policy overrides."
 - Appended a sentence to `floorsense-out-of-box-policy.html`'s hero sub text (default and preset-variant) noting there are more fine-tuning options on the page, and to tap Edit on a row to adjust it further if required.
+- Removed `floorsense-out-of-box-policy.html`'s hero sub entirely and moved that fine-tuning text onto the paragraph under the "Project Details" heading instead.
+- Reworded that Project Details paragraph on `floorsense-out-of-box-policy.html` again, to "Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required."
 
 ## Status
 

@@ -567,7 +567,6 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
-        <p class="sub" id="pageHeroSub">Here's what's included so far — review it below and adjust anything that needs to change for your workplace. There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further if required.</p>
       </div>
     </div>
   </div>
@@ -577,7 +576,7 @@
 
       <div class="section-head project-details-head">
         <h2 class="section-title">Project Details</h2>
-        <p>Registration and IT configuration details collected before this branch was chosen — shared with the Smartalock branch, since both use the same project.</p>
+        <p>Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required.</p>
       </div>
 
       <div class="project-details-column" id="projectDetailsColumn">
@@ -2548,6 +2547,35 @@ if required." ("if required" was added per a follow-up request.) Verified via an
 tag-balance check, node --check on the extracted script block, and a new jsdom test
 (test_oob_policy_hero_sub_fine_tune.js, 4 assertions) confirming the appended sentence in both the
 default load and a `?preset=strict` load.
+
+MOST RECENT CHANGE: per a request, moved that same fine-tuning sentence off the hero sub entirely —
+the hero sub (`#pageHeroSub`, a `<p class="sub">` inside `.panel-intro`) was removed outright rather
+than emptied, and the previously separate "Registration and IT configuration details collected
+before this branch was chosen — shared with the Smartalock branch, since both use the same
+project." paragraph under the "Project Details" heading was replaced with the full "Here's what's
+included so far — review it below and adjust anything that needs to change for your workplace.
+There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further
+if required." text instead. Since the JS preset-param branch (`?preset=relaxed`/`?preset=strict`)
+previously also set `#pageHeroSub`'s textContent, that assignment was removed too — left in place it
+would throw against the now-missing element on every preset load; the `#pageHeroTitle` swap to
+"Relaxed Preset"/"Strict Preset" in that same branch is untouched. The hero title
+("Configuration Summary" by default) is otherwise unaffected, and the "Project Details" heading
+text itself is unchanged. Verified via an inline HTMLParser tag-balance check, node --check on the
+extracted script block, and a rewritten jsdom test (test_oob_policy_hero_sub_fine_tune.js, now 10
+assertions) confirming `#pageHeroSub` no longer exists, the Project Details paragraph carries the
+exact fine-tune text, the Project Details heading is unchanged, and a `?preset=strict` load neither
+throws nor re-creates `#pageHeroSub` while still swapping the hero title.
+
+MOST RECENT CHANGE: per a request, reworded the Project Details paragraph's text again, from
+"Here's what's included so far — review it below and adjust anything that needs to change for your
+workplace. There's more you can fine-tune on this page, so review each row and tap Edit to adjust
+it further if required." to "Here's what's included so far. Review the details below and adjust
+anything that needs to change for your workplace. There are more settings you can fine-tune on
+this page, so review each row and select Edit to make further changes if required." (curly
+apostrophes in the request text were normalized to the straight apostrophes used everywhere else on
+the site.) Verified via an inline HTMLParser tag-balance check, node --check on the extracted
+script block, and the updated jsdom test (test_oob_policy_hero_sub_fine_tune.js, 10 assertions)
+confirming the exact new paragraph text.
 -->
 
 
@@ -2670,8 +2698,6 @@ default load and a `?preset=strict` load.
   const preset = PRESET_LABELS[presetParam] ? presetParam : 'recommended';
   if (PRESET_LABELS[preset]) {
     document.getElementById('pageHeroTitle').textContent = PRESET_LABELS[preset] + ' Preset';
-    document.getElementById('pageHeroSub').textContent =
-      "Here's what's included in the " + PRESET_LABELS[preset].toLowerCase() + " preset so far — review it below and adjust anything that needs to change for your workplace. There's more you can fine-tune on this page, so review each row and tap Edit to adjust it further if required.";
   }
 
   const savedOOB = project.floorsense.wizard.outOfBoxPolicy || {};
