@@ -322,7 +322,7 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Choose Desk Allocation Method</h1>
+        <h1 class="hero-title">Select Initial Allocation Types</h1>
       </div>
     </div>
   </div>
@@ -1119,6 +1119,13 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a follow-up request, reworded the hero title again from "Choose Desk
+Allocation Method" to "Select Initial Allocation Types" — text only. The `<title>` tag and
+progress-bar tooltip label remain "Desk Allocation Method", unaffected, matching the same scoping as
+the prior two hero-title reword changes. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and an updated jsdom test
+(test_reservation_types_hero_merge.js) confirming the new hero title text.
 -->
 
 <script>

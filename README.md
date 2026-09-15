@@ -521,6 +521,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded that hero title on `floorsense-reservation-types.html` to "Choose Desk Allocation Method".
 - Restored that hero title's CSS on `floorsense-reservation-types.html` to the standard site-wide hero-title pattern (76px, nowrap, 100vw full-bleed), matching every other page.
 - Removed the divider line above the prev/next page-nav row (`.page-nav`'s border-top) across all 24 pages that have it; the bottom action-bar's own divider was left in place.
+- Reworded `floorsense-reservation-types.html`'s hero title again, from "Choose Desk Allocation Method" to "Select Initial Allocation Types".
 
 ## Status
 
