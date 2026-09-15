@@ -281,7 +281,7 @@
             <div class="sso-scope-field" id="ssoScopeField">
               <label>Applies to</label>
               <select id="ssoScope">
-                <option value="both">End Users &amp; Admin Users (both)</option>
+                <option value="both">End Users &amp; Admin Users (both, recommended)</option>
                 <option value="app">End Users only</option>
                 <option value="portal">Admin Users only</option>
               </select>
@@ -601,6 +601,14 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 and a jsdom test (test_sso_scope_options_reword.js) confirming the three new option labels, no
 leftover "mobile app"/"admin portal" wording in the select, and that the default value, visibility
 wiring, and description paragraph are unchanged.
+
+MOST RECENT CHANGE: per a request, marked the "both" option in the same "Applies to" (`#ssoScope`)
+select as recommended — `<option value="both">End Users &amp; Admin Users (both)</option>` became
+`<option value="both">End Users &amp; Admin Users (both, recommended)</option>`. Only this option's
+label text changed; the "app"/"portal" options, all three values, the default (`"both"`), and the
+field's show/hide wiring are untouched. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and an updated jsdom test (test_sso_scope_options_reword.js)
+confirming the new "both" option label.
 -->
 
 <script>

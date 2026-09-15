@@ -515,6 +515,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded `tech-summary.html`'s header from "Raw configuration values, normalized to days / hours / minutes" to "Tech Summary Snapshot".
 - Renamed the first card's heading on `smartalock-it-configuration.html` from "Sign-In & Access Control" to "User Authentication".
 - Reworded that same card's "Applies to" options from "Mobile app & admin portal (both)" / "Mobile app only (end users)" / "Admin portal only (system admins)" to "End Users & Admin Users (both)" / "End Users only" / "Admin Users only".
+- Marked the "both" option in that same "Applies to" select as recommended: "End Users & Admin Users (both)" → "End Users & Admin Users (both, recommended)".
 
 ## Status
 
