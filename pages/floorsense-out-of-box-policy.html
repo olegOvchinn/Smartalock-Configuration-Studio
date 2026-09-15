@@ -576,7 +576,7 @@
 
       <div class="section-head project-details-head">
         <h2 class="section-title">Project Details</h2>
-        <p>Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required.</p>
+        <p>Here's what's included so far. Review the details below and adjust anything that needs to change for your workplace. There are more settings you can fine-tune on this page, so review each row and select Edit to make further changes if required. If not modified, the fine-tune settings will inherit recommended system defaults.</p>
       </div>
 
       <div class="project-details-column" id="projectDetailsColumn">
@@ -2576,6 +2576,12 @@ apostrophes in the request text were normalized to the straight apostrophes used
 the site.) Verified via an inline HTMLParser tag-balance check, node --check on the extracted
 script block, and the updated jsdom test (test_oob_policy_hero_sub_fine_tune.js, 10 assertions)
 confirming the exact new paragraph text.
+
+MOST RECENT CHANGE: per a request, appended one more sentence to the same Project Details
+paragraph: "If not modified, the fine-tune settings will inherit recommended system defaults." The
+rest of the paragraph is unchanged. Verified via an inline HTMLParser tag-balance check, node
+--check on the extracted script block, and the updated jsdom test
+(test_oob_policy_hero_sub_fine_tune.js, 10 assertions) confirming the exact new paragraph text.
 -->
 
 
