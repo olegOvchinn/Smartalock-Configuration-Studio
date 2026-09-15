@@ -519,6 +519,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Restyled the shared "Selection saved automatically" save-indicator dot (`.save-dot`) red and 30% bigger (6px → 7.8px) across all 24 pages that use it.
 - Removed `floorsense-reservation-types.html`'s separate sub text and merged it into the hero title ("Choose which desk reservation types this site should support."), resizing the hero-title styling to fit a full sentence.
 - Reworded that hero title on `floorsense-reservation-types.html` to "Choose Desk Allocation Method".
+- Restored that hero title's CSS on `floorsense-reservation-types.html` to the standard site-wide hero-title pattern (76px, nowrap, 100vw full-bleed), matching every other page.
 
 ## Status
 

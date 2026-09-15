@@ -84,20 +84,24 @@
   .progress-seg:last-child.tapped .progress-seg-tip { transform: translateX(0) translateY(0); }
 
   .panel-intro { margin: 28px auto 28px; max-width: 640px; text-align: center; }
-  /* ---------- h1.hero-title: per a request to drop the separate sub text and put that sentence
-     directly in the hero title, the original short-title treatment (76px, nowrap, 100vw full-bleed)
-     no longer fits — a full sentence at that size/nowrap would overflow far past the viewport. Sized
-     down to a readable sentence-scale heading, wrapping normally within .panel-intro's own 640px
-     max-width instead of breaking out to 100vw. ---------- */
+  /* ---------- h1.hero-title: restored to the standard site-wide hero-title pattern (76px, nowrap,
+     100vw full-bleed) used on every other page, per a request to keep this in sync now that the
+     title is short again ("Choose Desk Allocation Method") — the sentence-scale downsizing from
+     when this briefly held a full sentence is no longer needed. ---------- */
   h1.hero-title {
     font-family: 'Inter', sans-serif;
-    font-size: 34px;
+    font-size: 76px;
     font-weight: 200; /* Extra Light */
-    letter-spacing: -0.5px;
-    line-height: 1.25;
+    letter-spacing: -2px;
+    line-height: 1.05;
     color: #102A43;
-    margin: 0;
+    margin: 0 0 24px;
+    white-space: nowrap;
     text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
@@ -1095,6 +1099,17 @@ was left as-is since it still reads fine for this shorter title, and the `<title
 tooltip label remain "Desk Allocation Method" as before. Verified via an inline HTMLParser
 tag-balance check, `node --check` on the extracted script block, and an updated jsdom test
 (test_reservation_types_hero_merge.js) confirming the new hero title text.
+
+MOST RECENT CHANGE: per a request to keep the hero title's size/style consistent with the rest of
+the page's main hero pattern, restored `h1.hero-title`'s CSS to the standard site-wide values used
+on every other Floorsense/Smartalock page (76px, `white-space: nowrap`, 100vw full-bleed via
+`left: 50%; transform: translateX(-50%)`, `letter-spacing: -2px`, `line-height: 1.05`,
+`margin: 0 0 24px`) — the sentence-scale downsizing (34px, wrapping) from when this title briefly
+held a full sentence is gone now that it's short again. Confirmed byte-for-byte identical to
+floorsense-checkin-methods.html's own `h1.hero-title` rule. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and an updated jsdom test
+(test_reservation_types_hero_merge.js) confirming the restored font-size/white-space/width/
+letter-spacing values.
 -->
 
 <script>
