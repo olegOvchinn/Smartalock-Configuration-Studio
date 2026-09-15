@@ -486,9 +486,6 @@ element remains and the panel's other content is unaffected.
         <a class="page-nav-btn" href="smartalock-kiosk-customisation.html">
           <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
         </a>
-        <span class="page-nav-btn next disabled">
-          <span class="page-nav-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-        </span>
       </div>
 
       <div class="submit-guides-panel" id="submitGuidesPanel">
@@ -786,6 +783,17 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request to remove the forward button from the bottom of the summary
+pages, removed the disabled "next" arrow (`<span class="page-nav-btn next disabled">`) from this
+page's bottom `.page-nav` — this page is the last step in the Smartalock wizard, so that button was
+always non-clickable and led nowhere. Only the back arrow (to
+`smartalock-kiosk-customisation.html`) remains in `.page-nav` now. The `.page-nav-btn.next` CSS
+rules were left in place (unused here, but shared with wizard step pages where the forward button
+is still live). Verified via an inline HTMLParser tag-balance check, node --check on the extracted
+script block, and a new jsdom test (test_summary_pages_forward_button_removed.js, covering both this
+page and floorsense-out-of-box-policy.html) confirming the disabled next button is gone and the back
+arrow is untouched.
 -->
 
 <script>
