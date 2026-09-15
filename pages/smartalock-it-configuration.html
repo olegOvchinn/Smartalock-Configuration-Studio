@@ -268,7 +268,7 @@
         <div class="page-text">
 
           <div class="qcard">
-            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>Sign-In &amp; Access Control <span class="group-tag">Recommended</span></h3>
+            <h3><div class="qcard-icon-badge icon-sso"><img class="qcard-icon" src="../assets/images/icon-sso.png" alt=""></div>User Authentication <span class="group-tag">Recommended</span></h3>
             <p class="qdesc">Decide who controls sign-in for this deployment: connect your company's own login system so you decide who can access the mobile app as a user and who can manage the full system portal as an admin, using Single Sign-On. If you don't set this up, Floorsense will handle authentication for you using our own tools.</p>
             <label>Authentication method</label>
             <select id="ssoMethod">
@@ -581,6 +581,13 @@ broken-link scan (every href/src attribute across every live HTML file checked a
 zero new broken links, an inline HTMLParser tag-balance check, node --check on the extracted script
 block, and a jsdom test (test_rename_chain.js) confirming the Smartalock wizard's progress-bar order,
 back/next hrefs, and nextUrl fallbacks all resolve correctly under the new filenames.
+
+MOST RECENT CHANGE: per a request, renamed the first card's `<h3>` heading from "Sign-In & Access
+Control" to "User Authentication" — a label-only change; the "Recommended" tag, the `icon-sso`
+badge, the description paragraph, and the `#ssoMethod` select/subfields are all unaffected. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a
+jsdom test (test_it_config_signin_card_rename.js) confirming the new heading text and that the
+tag/icon/description/select are unchanged.
 -->
 
 <script>

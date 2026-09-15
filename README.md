@@ -513,6 +513,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Tightened that same Floorsense app description further to "Mobile and desktop app for opening lockers and managing reservations." — shorter, and no longer leading with "Opens their locker...".
 - Removed the standalone Print button from `smartalock-configuration-summary.html`'s action bar (and its `window.print()` listener); "Save & Email Me Summary", the Desks Configuration link, and the separate "View / Print Guide" control are unaffected.
 - Reworded `tech-summary.html`'s header from "Raw configuration values, normalized to days / hours / minutes" to "Tech Summary Snapshot".
+- Renamed the first card's heading on `smartalock-it-configuration.html` from "Sign-In & Access Control" to "User Authentication".
 
 ## Status
 
