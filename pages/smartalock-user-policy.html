@@ -222,7 +222,7 @@
   }
   .action-bar .panel-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .save-note { font-size: 11.48px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
-  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .2s; }
+  .save-dot { width: 7.8px; height: 7.8px; border-radius: 50%; background: var(--danger); opacity: 0; transition: opacity .2s; }
   .save-dot.show { opacity: 1; }
   button.primary {
     font-family: var(--font-text); font-weight: 600; font-size: 13.12px; color: #fff;
@@ -429,6 +429,15 @@ Verified via an inline HTMLParser tag-balance check, `node --check` on the extra
 assertions) confirming the flat background/border-radius CSS is in place with no leftover glass
 properties or hover rule, the icon badge is untouched, and the existing access-policy
 select/group-box show-hide/visual-image/Reset logic is completely unaffected.
+
+MOST RECENT CHANGE: per a request, restyled the shared save-indicator dot (`.save-dot`, the small
+dot next to the save-status text in the bottom action bar) — enlarged 30% (6px to 7.8px, both width
+and height) and changed its color from `var(--accent)` (blue) to `var(--danger)` (red, #FF3B30,
+already defined as a design token on this page). Only the dot's own CSS rule changed; the JS toggle
+logic (saveDot.classList.add('show') on save) and the status text beside it are unaffected. Verified
+via an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom
+test (test_save_dot_red_bigger.js) confirming the new width/height/background across all 24 pages
+that share this component.
 -->
 
 <script>
