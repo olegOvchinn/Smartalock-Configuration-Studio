@@ -331,7 +331,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <h1 class="hero-title">Desk &amp; User Groups</h1>
-        <p class="sub">Group desks into neighbourhoods, and users into groups, for reporting and policy overrides.</p>
+        <p class="sub">Group desks into neighbourhoods, and users into groups, for granular reporting and policy overrides.</p>
       </div>
     </div>
   </div>
@@ -908,6 +908,14 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request, reworded the hero sub text from "Group desks into
+neighbourhoods, and users into groups, for reporting and policy overrides." to "Group desks into
+neighbourhoods, and users into groups, for granular reporting and policy overrides." (inserted
+"granular" before "reporting"). The hero title and all other copy on the page are unchanged.
+Verified via an inline HTMLParser tag-balance check, node --check on the extracted script block,
+and a jsdom test (test_desk_user_groups_sub_reword.js, 3 assertions) confirming the exact reworded
+sub text and the untouched hero title.
 -->
 
 
