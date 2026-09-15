@@ -535,6 +535,15 @@
   no longer shown as its own row. Verified via an inline HTMLParser tag-balance check, node --check on
   the extracted script block, and an updated jsdom test confirming the Mode row no longer exists and
   both remaining rows show their corrected keys at both an off and an on Anti Desk Hogging state.
+
+  MOST RECENT CHANGE: per a request, reworded the page's `.doc-title` header from "Raw configuration
+  values, normalized to days / hours / minutes" to "Tech Summary Snapshot" — a plain page-title label
+  in place of the old description-style text. The `.doc-kicker` line above it ("Smartalock &
+  Floorsense · Technical Configuration Summary") and the meta-grid (Project ID/Client/etc.) beneath it
+  are unaffected; this is a pure copy change with no markup/CSS/JS behaviour touched. Verified via an
+  inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
+  (test_tech_summary_title_reword.js) confirming the new header text and that the kicker/meta-grid are
+  unchanged.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -630,7 +639,7 @@
 
   <div class="doc-header">
     <p class="doc-kicker">Smartalock &amp; Floorsense · Technical Configuration Summary</p>
-    <h1 class="doc-title">Raw configuration values, normalized to days / hours / minutes</h1>
+    <h1 class="doc-title">Tech Summary Snapshot</h1>
     <div class="meta-grid">
       <div><span class="k">Project ID</span><span class="v" id="metaProjectId"></span></div>
       <div><span class="k">Client</span><span class="v" id="metaClient"></span></div>

@@ -512,6 +512,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-access-methods.html`, made "Random" the default PIN assignment method (was unset), and reworded the Floorsense app card's description from "Available for known users only — opens their locker from the Floorsense app." to "Opens their locker from the Floorsense app — available on mobile and desktop, where users also manage their reservations."
 - Tightened that same Floorsense app description further to "Mobile and desktop app for opening lockers and managing reservations." — shorter, and no longer leading with "Opens their locker...".
 - Removed the standalone Print button from `smartalock-configuration-summary.html`'s action bar (and its `window.print()` listener); "Save & Email Me Summary", the Desks Configuration link, and the separate "View / Print Guide" control are unaffected.
+- Reworded `tech-summary.html`'s header from "Raw configuration values, normalized to days / hours / minutes" to "Tech Summary Snapshot".
 
 ## Status
 
