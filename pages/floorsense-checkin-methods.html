@@ -308,18 +308,14 @@
 
     <div class="panel-inner">
       <div class="panel-intro">
-        <h1 class="hero-title">Check-in Methods</h1>
-        <p class="sub">Choose how end users can reserve and check into a desk.</p>
+        <h1 class="hero-title">Select Check-in Methods</h1>
+        <p class="sub">How end users can reserve and check into a desk?</p>
       </div>
     </div>
   </div>
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <h2 class="section-title">Initial Desk Reservation Methods</h2>
-      </div>
 
       <div class="desk-check-grid" id="methodGrid">
         <div class="desk-check-card" data-method="card">
@@ -798,6 +794,19 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request, reworded the main hero title from "Check-in Methods" to "Select
+Check-in Methods", reworded the sub text from "Choose how end users can reserve and check into a
+desk." to "How end users can reserve and check into a desk?" (a follow-up request added the
+trailing question mark), and removed the "Initial Desk
+Reservation Methods" section heading above the method-card grid. Since removing that heading left
+its `.section-head` wrapper div empty, the wrapper was removed along with it (a judgment call, since
+the request named only the heading line) — the shared `.section-head`/`.section-title` CSS rules
+were left in place as they are a site-wide pattern, just unused on this page now. The page `<title>`
+and the progress-bar tooltip label ("Check-in Methods") were left unchanged, as they were not part
+of the request. Verified via an inline HTMLParser tag-balance check, node --check on the extracted
+script block, and a jsdom test (test_checkin_methods_hero_reword.js, 11 assertions) confirming the
+reworded hero title and sub text, the removed heading and wrapper, and the untouched title/tooltip.
 -->
 
 
