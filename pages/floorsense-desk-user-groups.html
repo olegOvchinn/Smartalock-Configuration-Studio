@@ -331,7 +331,7 @@
     <div class="panel-inner">
       <div class="panel-intro">
         <h1 class="hero-title">Desk &amp; User Groups</h1>
-        <p class="sub">Group desks into neighbourhoods, and users into groups, for granular reporting and policy overrides.</p>
+        <p class="sub">Group desks into neighbourhoods and users into groups to enable granular reporting and targeted policy overrides.</p>
       </div>
     </div>
   </div>
@@ -916,6 +916,16 @@ neighbourhoods, and users into groups, for granular reporting and policy overrid
 Verified via an inline HTMLParser tag-balance check, node --check on the extracted script block,
 and a jsdom test (test_desk_user_groups_sub_reword.js, 3 assertions) confirming the exact reworded
 sub text and the untouched hero title.
+
+MOST RECENT CHANGE: per a follow-up request, replaced the hero sub text again — from "Group desks
+into neighbourhoods, and users into groups, for granular reporting and policy overrides." to "Group
+desks into neighbourhoods and users into groups to enable granular reporting and targeted policy
+overrides." A trailing period was added to match the punctuation convention used by every other
+page's hero sub text on the site, since the request text itself had none. The hero title and all
+other copy on the page are unchanged. Verified via an inline HTMLParser tag-balance check, node
+--check on the extracted script block, and the updated jsdom test
+(test_desk_user_groups_sub_reword.js, 3 assertions) confirming the exact new sub text and the
+untouched hero title.
 -->
 
 

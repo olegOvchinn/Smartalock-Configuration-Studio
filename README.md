@@ -524,6 +524,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded `floorsense-reservation-types.html`'s hero title again, from "Choose Desk Allocation Method" to "Select Initial Allocation Types".
 - Reworded `floorsense-checkin-methods.html`'s hero title to "Select Check-in Methods" and its sub text to "How end users can reserve and check into a desk?"; removed the "Initial Desk Reservation Methods" section heading (and its now-empty wrapper) above the method-card grid.
 - Reworded `floorsense-desk-user-groups.html`'s hero sub text to insert "granular" before "reporting".
+- Reworded `floorsense-desk-user-groups.html`'s hero sub text again, to "Group desks into neighbourhoods and users into groups to enable granular reporting and targeted policy overrides."
 
 ## Status
 
