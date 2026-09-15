@@ -278,7 +278,7 @@
   /* ---------- prev / next page nav ---------- */
   .page-nav {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+    margin-top: 40px; padding-top: 26px;
   }
   .page-nav-btn { display: flex; text-decoration: none; color: inherit; cursor: pointer; }
   .page-nav-arrow {
@@ -801,6 +801,15 @@ logic (saveDot.classList.add('show') on save) and the status text beside it are 
 via an inline HTMLParser tag-balance check, node --check on the extracted script block, and a jsdom
 test (test_save_dot_red_bigger.js) confirming the new width/height/background across all 24 pages
 that share this component.
+
+MOST RECENT CHANGE: per a request, removed the horizontal divider line above the prev/next page
+nav row (`.page-nav`'s `border-top: 1px solid var(--line)`). The row's spacing (margin-top: 40px,
+padding-top: 26px) and layout (flex, space-between) are unchanged — only the visible rule line is
+gone. The bottom action-bar's own separate divider (`.action-bar`'s border-top) was explicitly left
+in place, per the request being scoped to this line only. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a jsdom test
+(test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
+that have this row, with spacing/layout preserved.
 -->
 
 <script>
