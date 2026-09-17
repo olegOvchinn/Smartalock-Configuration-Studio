@@ -532,6 +532,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Rewrote that Project Details paragraph on `floorsense-out-of-box-policy.html` once more, to "Here's what's included so far. Review the details and change anything that doesn't suit your workplace. Select Edit on any row to make further changes. If left unchanged, the recommended default will be used."
 - Removed the leading "Example:" word from the check-in window example text in the first section of `floorsense-desk-booking-guide-live.html`.
 - Removed the disabled forward/next arrow from the bottom page-nav on both summary pages (`smartalock-configuration-summary.html` and `floorsense-out-of-box-policy.html`), leaving only the back arrow.
+- Moved the hero block (title + sub + hidden module-heading) into the sticky top-frame on all 7 Smartalock wizard step pages, so it stays visible below the progress bar for the entire page scroll; `smartalock-configuration-summary.html` was excluded per the request.
 
 ## Status
 

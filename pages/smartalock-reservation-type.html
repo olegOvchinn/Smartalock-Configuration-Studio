@@ -332,15 +332,13 @@
           <span class="progress-seg-tip">Kiosk Customisation</span>
         </a>
         </nav>
-      </div>
-    </div>
 
-    <div class="panel-inner">
-      <div class="panel-intro">
-        <h1 class="hero-title">Reservation Type</h1>
-        <p class="sub">Choose how lockers are handed out on this site.</p>
+        <div class="panel-intro">
+          <h1 class="hero-title">Reservation Type</h1>
+          <p class="sub">Choose how lockers are handed out on this site.</p>
+        </div>
+        <h1 class="module-heading">Reservation Type</h1>
       </div>
-      <h1 class="module-heading">Reservation Type</h1>
     </div>
   </div>
 
@@ -593,6 +591,23 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request to move the hero block into the sticky top-frame so it stays
+visible below the progress bar as the user scrolls, moved `.panel-intro` (the `h1.hero-title` +
+`p.sub`) and the hidden `h1.module-heading` out of the separate sibling `.panel-inner` that used to
+sit below `.top-frame` inside `.panel-topbar`, into `.top-frame`'s own `.panel-inner`, directly
+after the progress-bar `<nav>` closes. `.top-frame` (brand + progress bar + hero + sub) is now the
+sole child of `.panel-topbar`, so the whole header block — not just the brand/nav row — remains
+pinned for the entire page scroll. As a side effect this also fixes the same containing-block bug
+noted in an earlier change on this page: since `.panel-topbar` no longer has any sibling content
+alongside `.top-frame`, it's always exactly as tall as the sticky element itself, so `.top-frame`
+never runs out of room to stay stuck. No text, CSS, or hidden/visible state of the hero, sub, or
+module-heading was changed — only where they sit in the document. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_smartalock_hero_into_topframe.js, 140 assertions across all 7 pages) confirming
+`.panel-topbar`'s only child is `.top-frame`, the hero/sub/module-heading now live inside
+`.top-frame` after the nav, nothing was duplicated or lost, `.top-frame` remains position: sticky,
+and `.panel-scroll` no longer contains the hero block.
 -->
 
 <script>
