@@ -388,13 +388,11 @@
           <span class="progress-seg-tip">Optional Features</span>
         </a>
         </nav>
-      </div>
-    </div>
 
-    <div class="panel-inner">
-      <div class="panel-intro">
-        <h1 class="hero-title">Auto-Release on Idle</h1>
-        <p class="sub">Optionally free up desks that were reserved but never actually used — off by default.</p>
+        <div class="panel-intro">
+          <h1 class="hero-title">Auto-Release on Idle</h1>
+          <p class="sub">Optionally free up desks that were reserved but never actually used — off by default.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -841,6 +839,22 @@ CSS was changed - only this one declaration was added. Verified via an inline HT
 tag-balance check and node --check on the extracted script block across all 15 Floorsense pages
 that share this shell; jsdom has no layout engine so it can't render scroll/sticky behavior, so
 this still needs a live re-check in the browser to confirm the header now holds.
+
+MOST RECENT CHANGE: per a request to apply the same "move hero into top-frame" treatment used on
+the 7 Smartalock wizard pages, moved `.panel-intro` (the `h1.hero-title` + `p.sub`, where present)
+out of the separate sibling `.panel-inner` that used to sit below `.top-frame` inside
+`.panel-topbar`, into `.top-frame`'s own `.panel-inner`, directly after the progress-bar `<nav>`
+closes. `.top-frame` (brand + progress bar + hero + sub) is now the sole child of `.panel-topbar`.
+Unlike the Smartalock pages, these Floorsense pages have no hidden `h1.module-heading` duplicate,
+so only `.panel-intro` moved. No text, CSS, or hidden/visible state of the hero or sub was changed
+- only where it sits in the document. `floorsense-out-of-box-policy.html` (the Configuration
+Summary page) was excluded per the request. Verified via an inline HTMLParser tag-balance check,
+node --check on the extracted script block, and a new jsdom test
+(test_floorsense_hero_into_topframe.js, 238 assertions across all 14 pages) confirming
+`.panel-topbar`'s only child is `.top-frame`, the hero/sub now live inside `.top-frame` after the
+nav, nothing was duplicated or lost, `.top-frame` remains position: sticky with the prior
+display: contents fix on `.panel-topbar` intact, and `.panel-scroll` no longer contains the hero
+block.
 -->
 
 <script>
