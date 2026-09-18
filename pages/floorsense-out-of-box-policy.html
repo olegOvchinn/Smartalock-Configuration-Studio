@@ -563,7 +563,7 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
+          <h1 class="hero-title" id="pageHeroTitle">Configuration Review</h1>
           <p class="sub">Review every answer captured across the wizard.</p>
         </div>
       </div>
@@ -2639,6 +2639,22 @@ after the hero title, and that a `?preset=strict` load neither throws nor alters
 test_oob_policy_hero_sub_fine_tune.js (9 assertions, `p.sub` presence/absence check removed since a
 sub now legitimately exists again, just not `#pageHeroSub` by id) and test_summary_pages_hero_
 into_topframe.js (27 assertions, hasSub flipped to true for this page).
+
+MOST RECENT CHANGE: per a request to change the hero title, reworded `#pageHeroTitle`'s default
+text from "Configuration Summary" to "Configuration Review". Only the hero title element itself was
+changed -- the document `<title>` tag and the progress-bar tooltip text (both still "Configuration
+Summary") were left as-is, since the request named only the hero title; unlike an earlier change on
+this page that explicitly asked to update the `<title>`, tooltip, and hero title together, this one
+did not. The hidden hero sub added in the immediately preceding change is unaffected, and the
+`?preset=relaxed`/`?preset=strict` swap to "Relaxed Preset"/"Strict Preset" still overrides
+whatever default text is present, so it's unaffected too. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, a new jsdom test
+(test_oob_policy_hero_title_reword.js, 7 assertions) confirming the new default title text, that
+the `<title>` tag and progress-bar tooltip are unchanged, that the hero sub is untouched, and that a
+`?preset=strict` load still swaps to "Strict Preset" without throwing, and updated
+test_oob_policy_hero_sub_added.js (10 assertions) and test_oob_policy_hero_sub_fine_tune.js (9
+assertions) and test_summary_pages_hero_into_topframe.js (27 assertions), all of which had
+hardcoded the old "Configuration Summary" default title text for this page.
 -->
 
 
