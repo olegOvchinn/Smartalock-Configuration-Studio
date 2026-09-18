@@ -334,10 +334,9 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Reservation Type</h1>
-          <p class="sub">Choose how lockers are handed out on this site.</p>
+          <h1 class="hero-title">Pick How Lockers Are Handed Out</h1>
         </div>
-        <h1 class="module-heading">Reservation Type</h1>
+        <h1 class="module-heading">Pick How Lockers Are Handed Out</h1>
       </div>
     </div>
   </div>
@@ -632,6 +631,20 @@ assertions across the 5 affected pages) confirming the eyebrow and its wrapper a
 CSS remains, and the untouched exceptions (smartalock-locker-types.html's Optional-badge eyebrow,
 smartalock-kiosk-customisation.html's separate "Preview" eyebrow, and
 smartalock-configuration-summary.html's "Review" eyebrow) are all unaffected.
+
+MOST RECENT CHANGE: per a request to change the hero title and remove the sub, reworded the hero
+title from "Reservation Type" to "Pick How Lockers Are Handed Out" (Title Case, matching the
+sitewide hero-title convention) and removed `<p class="sub">Choose how lockers are handed out on
+this site.</p>` from `.panel-intro` entirely, since the new title already states that idea.
+`h1.module-heading` (the hidden duplicate used for semantics) was updated to match the new title
+text. The unrelated `.duration-option .sub` captions further down the page (the 3 duration-choice
+descriptions: "24 hours", "Specify duration", "Never expires") share the same CSS class name but
+are a different component and were left untouched. Verified via an inline HTMLParser tag-balance
+check, node --check on the extracted script block, and a new jsdom test
+(test_reservation_type_hero_reword.js, 9 assertions) confirming the new title text, the removed
+sub, the matching module-heading, and the 3 unrelated `.duration-option .sub` captions still
+present; also updated the shared `NO_SUB_PAGES` arrays in test_smartalock_hero_into_topframe.js
+and test_smartalock_topframe_display_contents_fix.js to include this page.
 -->
 
 <script>

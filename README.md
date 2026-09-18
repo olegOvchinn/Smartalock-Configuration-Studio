@@ -541,6 +541,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-access-methods.html`, reworded the hero title again to "Pick Suitable Access Methods" and fixed the access-method card grid sitting flush against the left edge instead of centered, by adding `margin: 0 auto` to `.access-check-grid` (it had a max-width narrower than its parent but no auto margins of its own).
 - Removed the "Configure" eyebrow (and its now-empty `.section-head` wrapper) from `smartalock-locker-policy.html`, `smartalock-user-policy.html`, `smartalock-kiosk-customisation.html`, `smartalock-reservation-type.html`, and `smartalock-locker-behaviour.html`; `smartalock-locker-types.html` was excluded since its eyebrow also carries an "Optional" badge.
 - On `smartalock-locker-behaviour.html`, reworded the hero title to "Set Locker Door Behaviour" and removed the sub text.
+- On `smartalock-reservation-type.html`, reworded the hero title to "Pick How Lockers Are Handed Out" and removed the sub text.
 
 ## Status
 
