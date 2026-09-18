@@ -564,6 +564,7 @@
 
         <div class="panel-intro">
           <h1 class="hero-title" id="pageHeroTitle">Configuration Summary</h1>
+          <p class="sub">Review every answer captured across the wizard.</p>
         </div>
       </div>
     </div>
@@ -2623,6 +2624,21 @@ block, and a new jsdom test (test_summary_pages_hero_into_topframe.js, 26 assert
 page and smartalock-configuration-summary.html) confirming `.panel-topbar`'s only child is
 `.top-frame`, the hero now lives inside `.top-frame` after the nav, nothing was duplicated or lost,
 and `.panel-scroll` no longer contains the hero block.
+
+MOST RECENT CHANGE: per a request to add a hero sub to this page, added
+`<p class="sub">Review every answer captured across the wizard.</p>` inside `.panel-intro`, right
+after `#pageHeroTitle` -- matching the wording already used on the Smartalock branch's equivalent
+page (`smartalock-configuration-summary.html`), and re-using the existing `.panel-intro p.sub` CSS
+rule (left in place, unused, since this page's original hero sub was removed in an earlier change).
+This is a plain, id-less element -- it is not the same as the earlier, now-removed `#pageHeroSub`,
+and no JS references it, so the `?preset=relaxed`/`?preset=strict` title-swap branch is unaffected
+and doesn't touch it. Verified via an inline HTMLParser tag-balance check, node --check on the
+extracted script block, a new jsdom test (test_oob_policy_hero_sub_added.js, 10 assertions)
+confirming the new sub's text, that it has no id, that it sits inside `.panel-intro`/`.top-frame`
+after the hero title, and that a `?preset=strict` load neither throws nor alters it, and an updated
+test_oob_policy_hero_sub_fine_tune.js (9 assertions, `p.sub` presence/absence check removed since a
+sub now legitimately exists again, just not `#pageHeroSub` by id) and test_summary_pages_hero_
+into_topframe.js (27 assertions, hasSub flipped to true for this page).
 -->
 
 
