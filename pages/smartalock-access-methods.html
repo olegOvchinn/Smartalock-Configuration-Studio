@@ -120,7 +120,7 @@
   .section-head p { color: var(--ink-soft); font-size: 11.89px; line-height: 1.6; margin: 0; }
 
   /* ---------- access method checkbox grid ---------- */
-  .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; }
+  .access-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; margin: 0 auto; }
   @media (max-width: 720px) { .access-check-grid { grid-template-columns: 1fr; } }
   /* ---------- text-block-lot card: per a request to apply floorsense-reservation-types.html's
      card and icon treatment sitewide, `.access-check-card` dropped its glass-blur treatment
@@ -286,9 +286,9 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Choose Access Methods</h1>
+          <h1 class="hero-title">Pick Suitable Access Methods</h1>
         </div>
-        <h1 class="module-heading">Choose Access Methods</h1>
+        <h1 class="module-heading">Pick Suitable Access Methods</h1>
       </div>
     </div>
   </div>
@@ -637,6 +637,22 @@ the matching module-heading, the removed eyebrow and section-head wrapper, the u
 CSS rules, and that `.panel-scroll` now starts directly with the access-method card grid. The
 prior test_access_methods_hero_sub_merge.js was updated to expect the new, shorter title text
 instead of the one it originally checked, so it doesn't keep asserting stale wording.
+
+MOST RECENT CHANGE: per a request, reworded `h1.hero-title`/`h1.module-heading` again, to "Pick
+Suitable Access Methods" (was "Choose Access Methods"; the request said "use similar to" a given
+example rather than dictating it verbatim, so it was applied in the sitewide Title Case convention
+those elements already use). Also fixed the main content grid appearing flush against the left
+edge instead of centered: `.access-check-grid` had `max-width: 900px` but no auto margins, so
+inside its wider 1120px `.panel-inner` ancestor it sat flush-left rather than centered -- added
+`margin: 0 auto`, matching the sibling pattern already used by equivalent grids on other pages
+(`.desk-check-grid` on floorsense-checkin-methods.html/floorsense-reservation-types.html,
+`.path-check-grid` on floorsense-fme.html/floorsense-nsnp.html). Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_access_methods_content_centering.js, 7 assertions) confirming the new hero title text, the
+matching module-heading, and that `.access-check-grid` still has its 900px max-width plus the new
+centering margin. The prior test_access_methods_shorten_hero_remove_eyebrow.js and
+test_access_methods_hero_sub_merge.js were updated to expect the new title text instead of
+asserting stale wording.
 -->
 
 <script>
