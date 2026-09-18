@@ -542,6 +542,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the "Configure" eyebrow (and its now-empty `.section-head` wrapper) from `smartalock-locker-policy.html`, `smartalock-user-policy.html`, `smartalock-kiosk-customisation.html`, `smartalock-reservation-type.html`, and `smartalock-locker-behaviour.html`; `smartalock-locker-types.html` was excluded since its eyebrow also carries an "Optional" badge.
 - On `smartalock-locker-behaviour.html`, reworded the hero title to "Set Locker Door Behaviour" and removed the sub text.
 - On `smartalock-reservation-type.html`, reworded the hero title to "Pick How Lockers Are Handed Out" and removed the sub text.
+- On `smartalock-locker-policy.html`, removed the hero sub text and reworded the hero title to "Configure Locker Policy".
 
 ## Status
 

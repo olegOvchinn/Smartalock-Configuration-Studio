@@ -282,10 +282,9 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Locker Policy</h1>
-          <p class="sub">Idle timeout, per-user limits and release timing.</p>
+          <h1 class="hero-title">Configure Locker Policy</h1>
         </div>
-        <h1 class="module-heading">Locker Policy</h1>
+        <h1 class="module-heading">Configure Locker Policy</h1>
       </div>
     </div>
   </div>
@@ -553,6 +552,24 @@ assertions across the 5 affected pages) confirming the eyebrow and its wrapper a
 CSS remains, and the untouched exceptions (smartalock-locker-types.html's Optional-badge eyebrow,
 smartalock-kiosk-customisation.html's separate "Preview" eyebrow, and
 smartalock-configuration-summary.html's "Review" eyebrow) are all unaffected.
+
+MOST RECENT CHANGE: per a request to remove the hero sub, removed
+`<p class="sub">Idle timeout, per-user limits and release timing.</p>` from `.panel-intro`. The
+hero title ("Locker Policy") and `h1.module-heading` were left unchanged -- only the sub text was
+deleted. This page has no other `.sub`-classed elements elsewhere, so no unrelated content needed
+to be distinguished from it. Verified via an inline HTMLParser tag-balance check, node --check on
+the extracted script block, and a new jsdom test (test_locker_policy_remove_sub.js) confirming the
+sub is gone (with zero `.sub` elements remaining anywhere on the page), the hero title and
+module-heading text are unchanged, and the `.panel-intro`/`.top-frame` structure from prior fixes
+is intact; also updated the shared `NO_SUB_PAGES` arrays in test_smartalock_hero_into_topframe.js
+and test_smartalock_topframe_display_contents_fix.js to include this page.
+
+MOST RECENT CHANGE: per a follow-up request, reworded the hero title from "Locker Policy" to
+"Configure Locker Policy" (exact text as given). `h1.module-heading` was updated to match. The
+just-removed sub stays removed. Verified via an inline HTMLParser tag-balance check, node --check
+on the extracted script block, and an updated test_locker_policy_remove_sub.js (8 assertions,
+EXPECTED_TITLE now "Configure Locker Policy") confirming the new title, the matching
+module-heading, the still-removed sub, and the intact `.panel-intro`/`.top-frame` structure.
 -->
 
 <script>
