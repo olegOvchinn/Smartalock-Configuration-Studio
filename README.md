@@ -544,6 +544,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-reservation-type.html`, reworded the hero title to "Pick How Lockers Are Handed Out" and removed the sub text.
 - On `smartalock-locker-policy.html`, removed the hero sub text and reworded the hero title to "Configure Locker Policy".
 - On `smartalock-locker-types.html`, reworded the hero title to "Pick Locker Types" and removed the sub text.
+- On `smartalock-kiosk-customisation.html`, reworded the hero title to "Kiosk UI Customisation" and removed the sub text.
 
 ## Status
 

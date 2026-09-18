@@ -431,10 +431,9 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Kiosk Customisation</h1>
-          <p class="sub">Choose what appears on the kiosk screen.</p>
+          <h1 class="hero-title">Kiosk UI Customisation</h1>
         </div>
-        <h1 class="module-heading">Kiosk Customisation</h1>
+        <h1 class="module-heading">Kiosk UI Customisation</h1>
       </div>
     </div>
   </div>
@@ -787,6 +786,20 @@ assertions across the 5 affected pages) confirming the eyebrow and its wrapper a
 CSS remains, and the untouched exceptions (smartalock-locker-types.html's Optional-badge eyebrow,
 smartalock-kiosk-customisation.html's separate "Preview" eyebrow, and
 smartalock-configuration-summary.html's "Review" eyebrow) are all unaffected.
+
+MOST RECENT CHANGE: per a request to change the hero title and remove the sub, reworded the hero
+title from "Kiosk Customisation" to "Kiosk UI Customisation" (exact text as given) and removed
+`<p class="sub">Choose what appears on the kiosk screen.</p>` from `.panel-intro`.
+`h1.module-heading` was updated to match the new title. The page's separate "Preview" eyebrow
+(kept untouched in the earlier sitewide Configure-eyebrow removal, since it's a different label)
+is unrelated to the hero/sub and was left alone; the progress-bar tooltip text elsewhere on the
+page, which still reads "Kiosk Customisation", was also left as-is since it wasn't part of this
+request. Verified via an inline HTMLParser tag-balance check, node --check on the extracted script
+block, and a new jsdom test (test_kiosk_customisation_hero_reword.js, 8 assertions) confirming the
+new title text, the removed sub (zero `.sub` elements remain on the page), the matching
+module-heading, the intact `.panel-intro`/`.top-frame` structure, and the untouched "Preview"
+eyebrow; also updated the shared `NO_SUB_PAGES` arrays in test_smartalock_hero_into_topframe.js
+and test_smartalock_topframe_display_contents_fix.js to include this page.
 -->
 
 <script>
