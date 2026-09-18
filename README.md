@@ -534,6 +534,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the disabled forward/next arrow from the bottom page-nav on both summary pages (`smartalock-configuration-summary.html` and `floorsense-out-of-box-policy.html`), leaving only the back arrow.
 - Moved the hero block (title + sub + hidden module-heading) into the sticky top-frame on all 7 Smartalock wizard step pages, so it stays visible below the progress bar for the entire page scroll; `smartalock-configuration-summary.html` was excluded per the request.
 - Fixed the sticky top-frame actually failing to stick (scrolling away immediately) on all 7 Smartalock wizard step pages, by adding `display: contents` to `.panel-topbar` so `.top-frame` becomes a direct flex item of `.page-main`, matching the already-working sticky `.action-bar` pattern.
+- Applied the same sticky top-frame fix (`display: contents` on `.panel-topbar`) to all 15 Floorsense pages that share this page shell.
 
 ## Status
 

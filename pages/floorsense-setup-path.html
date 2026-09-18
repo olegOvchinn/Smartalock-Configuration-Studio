@@ -101,7 +101,7 @@
   }
   .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
-  .panel-topbar { padding: 0; }
+  .panel-topbar { padding: 0; display: contents; }
   .top-frame {
     position: sticky; top: 0; z-index: 50; background: var(--paper);
     padding: 20px 0 16px; border-bottom: 1px solid var(--line);
@@ -511,6 +511,19 @@ in place, per the request being scoped to this line only. Verified via an inline
 tag-balance check, node --check on the extracted script block, and a jsdom test
 (test_page_nav_divider_removed.js) confirming border-top is gone from .page-nav across all 24 pages
 that have this row, with spacing/layout preserved.
+
+MOST RECENT CHANGE: per a request to apply the same sticky top-frame fix used on the Smartalock
+branch, root-caused and fixed the same bug here: `.top-frame` (sticky, holds the brand/progress-bar/
+hero) sat one level *inside* `.panel-topbar` rather than being a direct flex item of `.page-main`
+itself, unlike the bottom `.action-bar` (also sticky), which IS a direct flex item and sticks
+correctly. That extra wrapper level was enough to stop the sticky offset from being computed
+against the flex layout correctly. Fixed by adding `display: contents` to `.panel-topbar`, which
+drops its own box out of layout so `.top-frame` becomes a genuine flex item of `.page-main`,
+structurally matching the working `.action-bar` pattern exactly. No DOM structure, text, or other
+CSS was changed - only this one declaration was added. Verified via an inline HTMLParser
+tag-balance check and node --check on the extracted script block across all 15 Floorsense pages
+that share this shell; jsdom has no layout engine so it can't render scroll/sticky behavior, so
+this still needs a live re-check in the browser to confirm the header now holds.
 -->
 
 <script>
