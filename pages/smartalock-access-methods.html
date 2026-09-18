@@ -286,19 +286,15 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Choose every access method this site should support</h1>
+          <h1 class="hero-title">Choose Access Methods</h1>
         </div>
-        <h1 class="module-heading">Choose every access method this site should support</h1>
+        <h1 class="module-heading">Choose Access Methods</h1>
       </div>
     </div>
   </div>
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
 
       <div class="access-check-grid" id="accessCheckGrid">
         <div class="access-check-card" data-method="card">
@@ -623,6 +619,24 @@ extracted script block, and a new jsdom test (test_access_methods_hero_sub_merge
 assertions) confirming the new hero title text, zero p.sub elements, the module-heading matching
 the new title, and the untouched title/tooltip. The existing hero-into-top-frame and sticky-fix
 regression tests were also updated to expect zero p.sub on this one page instead of one.
+
+MOST RECENT CHANGE: per a request to shorten the hero title (a direct follow-up to the previous
+change's flag that the new title was too long for the sitewide `h1.hero-title` CSS, which is sized
+for short 2-5 word titles: `white-space: nowrap`, `width: 100vw`, 76px font) and remove the
+"Configure" eyebrow, shortened `h1.hero-title`/`h1.module-heading` from "Choose every access
+method this site should support" to "Choose Access Methods" (exact wording was not dictated, so a
+short verb-first title was chosen to match the sitewide pattern, e.g. "Select Check-in Methods",
+"Allow Booking in Advance"), and removed the `<span class="eyebrow">Configure</span>` above the
+access-method card grid. Since removing the eyebrow left its `.section-head` wrapper div empty,
+the wrapper was removed along with it (a judgment call, matching the precedent set on
+floorsense-checkin-methods.html) -- the shared `.eyebrow`/`.section-head` CSS rules were left in
+place as they are a sitewide pattern, just unused on this page now. Verified via an inline
+HTMLParser tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_access_methods_shorten_hero_remove_eyebrow.js, 12 assertions) confirming the shortened title,
+the matching module-heading, the removed eyebrow and section-head wrapper, the untouched shared
+CSS rules, and that `.panel-scroll` now starts directly with the access-method card grid. The
+prior test_access_methods_hero_sub_merge.js was updated to expect the new, shorter title text
+instead of the one it originally checked, so it doesn't keep asserting stale wording.
 -->
 
 <script>

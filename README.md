@@ -537,6 +537,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Applied the same sticky top-frame fix (`display: contents` on `.panel-topbar`) to all 15 Floorsense pages that share this page shell.
 - Moved the hero block (title + sub) into the sticky top-frame on all 14 Floorsense wizard step pages, so it stays visible below the progress bar for the entire page scroll; `floorsense-out-of-box-policy.html` (Configuration Summary) was excluded per the request.
 - On `smartalock-access-methods.html`, replaced the hero title with the former sub text ("Choose every access method this site should support") and removed the sub entirely, updating the hidden module-heading duplicate to match.
+- On `smartalock-access-methods.html`, shortened the hero title to "Choose Access Methods" and removed the "Configure" eyebrow (and its now-empty `.section-head` wrapper) above the access-method card grid.
 
 ## Status
 
