@@ -345,10 +345,6 @@
   <div class="panel-scroll">
     <div class="panel-inner">
 
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
-
       <div class="content-with-visual">
         <div class="page-text">
 
@@ -620,6 +616,22 @@ pattern exactly. No DOM structure, text, or other CSS was changed — only this 
 added. Verified via an inline HTMLParser tag-balance check and node --check on the extracted
 script block across all 7 pages; jsdom has no layout engine so it can't render scroll/sticky
 behavior, so this still needs a live re-check in the browser to confirm the header now holds.
+
+MOST RECENT CHANGE: per a request to remove the "Configure" eyebrow from all pages across both
+branches (except pages whose eyebrow also carries an "Optional" badge, e.g.
+smartalock-locker-types.html's "Configure <Optional>" eyebrow, which was left alone since it
+conveys extra meaning), removed the plain `<span class="eyebrow">Configure</span>` above the
+section content on this page. Since that left its `.section-head` wrapper div empty, the wrapper
+was removed too, matching the precedent set on smartalock-access-methods.html/
+floorsense-checkin-methods.html. The shared `.eyebrow`/`.section-head` CSS rules were left in
+place as a sitewide pattern, just unused on this page now. (The Floorsense branch already had all
+its "Configure" eyebrows removed in an earlier batch; smartalock-access-methods.html's was removed
+in a separate, prior change.) Verified via an inline HTMLParser tag-balance check, node --check on
+the extracted script block, and a new jsdom test (test_smartalock_remove_configure_eyebrow.js, 24
+assertions across the 5 affected pages) confirming the eyebrow and its wrapper are gone, the shared
+CSS remains, and the untouched exceptions (smartalock-locker-types.html's Optional-badge eyebrow,
+smartalock-kiosk-customisation.html's separate "Preview" eyebrow, and
+smartalock-configuration-summary.html's "Review" eyebrow) are all unaffected.
 -->
 
 <script>

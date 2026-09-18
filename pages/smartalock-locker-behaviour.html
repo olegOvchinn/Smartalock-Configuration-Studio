@@ -327,20 +327,15 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Locker Door Behaviour</h1>
-          <p class="sub">Set how locker doors open and close on this site.</p>
+          <h1 class="hero-title">Set Locker Door Behaviour</h1>
         </div>
-        <h1 class="module-heading">Locker Door Behaviour</h1>
+        <h1 class="module-heading">Set Locker Door Behaviour</h1>
       </div>
     </div>
   </div>
 
   <div class="panel-scroll">
     <div class="panel-inner">
-
-      <div class="section-head">
-        <span class="eyebrow">Configure</span>
-      </div>
 
       <div class="decision-grid">
         <div class="dcard chosen" id="card-pop">
@@ -587,6 +582,35 @@ pattern exactly. No DOM structure, text, or other CSS was changed — only this 
 added. Verified via an inline HTMLParser tag-balance check and node --check on the extracted
 script block across all 7 pages; jsdom has no layout engine so it can't render scroll/sticky
 behavior, so this still needs a live re-check in the browser to confirm the header now holds.
+
+MOST RECENT CHANGE: per a request to remove the "Configure" eyebrow from all pages across both
+branches (except pages whose eyebrow also carries an "Optional" badge, e.g.
+smartalock-locker-types.html's "Configure <Optional>" eyebrow, which was left alone since it
+conveys extra meaning), removed the plain `<span class="eyebrow">Configure</span>` above the
+section content on this page. Since that left its `.section-head` wrapper div empty, the wrapper
+was removed too, matching the precedent set on smartalock-access-methods.html/
+floorsense-checkin-methods.html. The shared `.eyebrow`/`.section-head` CSS rules were left in
+place as a sitewide pattern, just unused on this page now. (The Floorsense branch already had all
+its "Configure" eyebrows removed in an earlier batch; smartalock-access-methods.html's was removed
+in a separate, prior change.) Verified via an inline HTMLParser tag-balance check, node --check on
+the extracted script block, and a new jsdom test (test_smartalock_remove_configure_eyebrow.js, 24
+assertions across the 5 affected pages) confirming the eyebrow and its wrapper are gone, the shared
+CSS remains, and the untouched exceptions (smartalock-locker-types.html's Optional-badge eyebrow,
+smartalock-kiosk-customisation.html's separate "Preview" eyebrow, and
+smartalock-configuration-summary.html's "Review" eyebrow) are all unaffected.
+
+MOST RECENT CHANGE: per a request, reworded `h1.hero-title`/`h1.module-heading` from "Locker Door
+Behaviour" to "Set Locker Door Behaviour" and removed the `p.sub` element ("Set how locker doors
+open and close on this site."), whose "Set..." wording effectively duplicated the new title. The
+unrelated `.scope-option .sub` captions further down the page (inside the "All lockers"/"Don't know
+yet"/"Specific locker bank or lockers" radio options) share the `.sub` class name but are a
+different component and were left untouched. No CSS was changed. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and a new jsdom test
+(test_locker_behaviour_hero_reword.js, 8 assertions) confirming the new hero title text, the
+removed `p.sub`, the matching module-heading, and that the 3 unrelated `.scope-option .sub`
+captions still exist. The existing test_smartalock_hero_into_topframe.js and
+test_smartalock_topframe_display_contents_fix.js regression tests were updated to expect zero
+p.sub on this page too (alongside smartalock-access-methods.html).
 -->
 
 <script>
