@@ -286,10 +286,9 @@
         </nav>
 
         <div class="panel-intro">
-          <h1 class="hero-title">Initial Locker Access Methods</h1>
-          <p class="sub">Choose every access method this site should support.</p>
+          <h1 class="hero-title">Choose every access method this site should support</h1>
         </div>
-        <h1 class="module-heading">Initial Locker Access Methods</h1>
+        <h1 class="module-heading">Choose every access method this site should support</h1>
       </div>
     </div>
   </div>
@@ -609,6 +608,21 @@ pattern exactly. No DOM structure, text, or other CSS was changed — only this 
 added. Verified via an inline HTMLParser tag-balance check and node --check on the extracted
 script block across all 7 pages; jsdom has no layout engine so it can't render scroll/sticky
 behavior, so this still needs a live re-check in the browser to confirm the header now holds.
+
+MOST RECENT CHANGE: per a request, replaced the hero title with the former sub text and removed
+the sub entirely: `h1.hero-title` now reads "Choose every access method this site should support"
+(was "Initial Locker Access Methods"), and the `p.sub` element ("Choose every access method this
+site should support.") is gone. `h1.module-heading` (the hidden accessibility duplicate) was
+updated to match the new title text, per the sitewide convention that it always mirrors
+`h1.hero-title`. The `<title>` tag and the progress-bar tooltip for this page were left untouched,
+since the request was scoped to the hero/sub only, matching precedent from earlier hero/sub
+reword requests on other pages. No CSS was changed; the shared `.panel-intro p.sub` rule remains
+in the stylesheet unused on this page, matching how other pages that previously dropped a sub
+element were handled. Verified via an inline HTMLParser tag-balance check, node --check on the
+extracted script block, and a new jsdom test (test_access_methods_hero_sub_merge.js, 11
+assertions) confirming the new hero title text, zero p.sub elements, the module-heading matching
+the new title, and the untouched title/tooltip. The existing hero-into-top-frame and sticky-fix
+regression tests were also updated to expect zero p.sub on this one page instead of one.
 -->
 
 <script>
