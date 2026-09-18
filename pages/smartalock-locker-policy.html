@@ -106,7 +106,7 @@
   }
   .panel-intro p.sub { font-size: 17.59px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
-  .panel-topbar { padding: 0; }
+  .panel-topbar { padding: 0; display: contents; }
   .top-frame {
     position: sticky; top: 0; z-index: 50; background: var(--paper);
     padding: 20px 0 16px; border-bottom: 1px solid var(--line);
@@ -529,6 +529,18 @@ tag-balance check, node --check on the extracted script block, and a new jsdom t
 `.panel-topbar`'s only child is `.top-frame`, the hero/sub/module-heading now live inside
 `.top-frame` after the nav, nothing was duplicated or lost, `.top-frame` remains position: sticky,
 and `.panel-scroll` no longer contains the hero block.
+
+MOST RECENT CHANGE: per a report that the sticky top-frame was scrolling away immediately
+instead of staying pinned, root-caused it: `.top-frame` sat one level *inside* `.panel-topbar`
+rather than being a direct flex item of `.page-main` itself, unlike the already-working sticky
+`.action-bar`, which IS a direct flex item of `.page-main`. That extra wrapper level was enough
+to stop the sticky offset from being computed against the flex layout correctly. Fixed by adding
+`display: contents` to `.panel-topbar`, which drops its own box out of layout so `.top-frame`
+becomes a genuine flex item of `.page-main`, structurally matching the working `.action-bar`
+pattern exactly. No DOM structure, text, or other CSS was changed — only this one declaration was
+added. Verified via an inline HTMLParser tag-balance check and node --check on the extracted
+script block across all 7 pages; jsdom has no layout engine so it can't render scroll/sticky
+behavior, so this still needs a live re-check in the browser to confirm the header now holds.
 -->
 
 <script>
