@@ -545,6 +545,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `smartalock-locker-policy.html`, removed the hero sub text and reworded the hero title to "Configure Locker Policy".
 - On `smartalock-locker-types.html`, reworded the hero title to "Pick Locker Types" and removed the sub text.
 - On `smartalock-kiosk-customisation.html`, reworded the hero title to "Kiosk UI Customisation" and removed the sub text.
+- Moved the hero block into the sticky top-frame on both branch summary pages (`smartalock-configuration-summary.html` and `floorsense-out-of-box-policy.html`), matching the earlier wizard-page fix that had excluded the summary page.
 
 ## Status
 

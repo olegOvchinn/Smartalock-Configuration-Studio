@@ -310,15 +310,13 @@
             <span class="progress-seg-tip">Configuration Summary</span>
           </a>
         </nav>
-      </div>
-    </div>
 
-    <div class="panel-inner">
-      <div class="panel-intro">
-        <h1 class="hero-title">Configuration Summary</h1>
-        <p class="sub">Review every answer captured across the wizard.</p>
+        <div class="panel-intro">
+          <h1 class="hero-title">Configuration Summary</h1>
+          <p class="sub">Review every answer captured across the wizard.</p>
+        </div>
+        <h1 class="module-heading">Configuration Summary</h1>
       </div>
-      <h1 class="module-heading">Configuration Summary</h1>
     </div>
   </div>
 
@@ -794,6 +792,20 @@ is still live). Verified via an inline HTMLParser tag-balance check, node --chec
 script block, and a new jsdom test (test_summary_pages_forward_button_removed.js, covering both this
 page and floorsense-out-of-box-policy.html) confirming the disabled next button is gone and the back
 arrow is untouched.
+
+MOST RECENT CHANGE: per a request to move the hero block to the top sticky frame on both branch
+summary pages, moved `.panel-intro` (the `h1.hero-title` + `p.sub`) and the hidden
+`h1.module-heading` out of the separate sibling `.panel-inner` that used to sit below `.top-frame`
+inside `.panel-topbar`, into `.top-frame`'s own `.panel-inner`, directly after the progress-bar
+`<nav>` closes -- the same move already applied to the wizard pages on both branches, just not
+previously done for the summary page since it was explicitly excluded from those earlier batches.
+`.panel-topbar` is now `.top-frame`'s sole child. No text or CSS was changed, and this page's
+`.top-frame` was not given the `display: contents` sticky-scroll fix applied elsewhere, since that
+fix wasn't requested here. Verified via an inline HTMLParser tag-balance check, node --check on the
+extracted script block, and a new jsdom test (test_summary_pages_hero_into_topframe.js, 26
+assertions covering this page and floorsense-out-of-box-policy.html) confirming `.panel-topbar`'s
+only child is `.top-frame`, the hero/sub/module-heading now live inside `.top-frame` after the nav,
+nothing was duplicated or lost, and `.panel-scroll` no longer contains the hero block.
 -->
 
 <script>
