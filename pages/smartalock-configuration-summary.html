@@ -108,7 +108,7 @@
   }
   .panel-intro p.sub { font-size: 15.99px; line-height: 1.55; color: var(--ink-soft); margin: 0 auto; }
 
-  .panel-topbar { padding: 0; }
+  .panel-topbar { padding: 0; display: contents; }
   .top-frame {
     position: sticky; top: 0; z-index: 50; background: var(--paper);
     padding: 20px 0 16px; border-bottom: 1px solid var(--line);
@@ -806,6 +806,22 @@ extracted script block, and a new jsdom test (test_summary_pages_hero_into_topfr
 assertions covering this page and floorsense-out-of-box-policy.html) confirming `.panel-topbar`'s
 only child is `.top-frame`, the hero/sub/module-heading now live inside `.top-frame` after the nav,
 nothing was duplicated or lost, and `.panel-scroll` no longer contains the hero block.
+
+MOST RECENT CHANGE: per a report that the top-frame still isn't sticky on this page, applied the
+same fix already used on the 7 Smartalock wizard pages: `.top-frame` sat one level inside
+`.panel-topbar` rather than being a direct flex item of `.page-main`, unlike the bottom
+`.action-bar` (also sticky), which is a direct flex item and sticks correctly. That extra wrapper
+level broke the sticky offset calculation. Fixed by adding `display: contents` to `.panel-topbar`,
+which drops its own box out of layout so `.top-frame` becomes a genuine flex item of `.page-main`,
+matching the working `.action-bar` pattern exactly -- no DOM or text changes. This page had been
+missed by the earlier wizard-page sticky-fix batch, since that batch only covered the 7 wizard
+pages, not the summary page. Verified via an inline HTMLParser tag-balance check, node --check on
+the extracted script block, and by adding this page to the existing
+test_smartalock_topframe_display_contents_fix.js suite (88/88 passing) confirming `.panel-topbar`
+has `display: contents`, `.top-frame` remains `position: sticky` and is still `.panel-topbar`'s
+sole child, and the hero/sub/module-heading content from the prior move is intact; jsdom has no
+layout engine so it can't render scroll/sticky behavior, so this still needs a live re-check in the
+browser to confirm the header now holds.
 -->
 
 <script>
