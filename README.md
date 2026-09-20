@@ -551,6 +551,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `floorsense-out-of-box-policy.html`, reworded the hero title from "Configuration Summary" to "Configuration Review" (the document `<title>` and progress-bar tooltip were left unchanged).
 - On `floorsense-out-of-box-policy.html`, reworded the hero sub to point out the extra fine-tuning options on the page and to tap "Save Core Policy" once reviewed.
 - Rewrote that same `floorsense-out-of-box-policy.html` hero sub into plainer, non-technical English.
+- On `tech-summary.html`, the Reservation Types Selected row's key cell now also shows `book_adhoc_disable` alongside `book_adhoc = false` whenever "Reserved by User as Needed" isn't selected.
 
 ## Status
 

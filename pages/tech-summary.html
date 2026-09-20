@@ -544,6 +544,19 @@
   inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a jsdom test
   (test_tech_summary_title_reword.js) confirming the new header text and that the kicker/meta-grid are
   unchanged.
+
+  MOST RECENT CHANGE: per a request, when "Reserved by User as Needed" (adhoc) isn't among the
+  selected Desk Allocation Method reservation types, the Reservation Types Selected row's key cell
+  now also shows `book_adhoc_disable` alongside the existing `book_adhoc = false`, comma-separated
+  in the same cell (the cell now reads "book_adhoc = false, book_adhoc_disable") — matching the
+  existing convention elsewhere on this page for combining more than one setting key in a single
+  row (e.g. the Default Reservation Mode row's "res_duration_type = 1, book_day_end_mode = 1").
+  Nothing else about the row changed: it's still hidden/shown by the same adhoc-presence check, and
+  no key is shown when adhoc IS among the selected types. Verified via an inline HTMLParser
+  tag-balance check, `node --check` on the extracted script block, and an updated jsdom test
+  (test_book_adhoc_key.js, 5 assertions) confirming both keys now appear together whenever adhoc is
+  absent (fixed-only, empty selection, and multiple non-adhoc types), and that no key still appears
+  when adhoc is present (alone or alongside other types).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -1241,7 +1254,10 @@
     : 'None selected');
   // "Reserved by User as Needed" (adhoc) deselected -> book_adhoc = false, mirroring the Smartalock
   // Reservation Types Selected row's res_adhoc key for the same "User Self-Allocated" concept.
-  if (!selectedReservationTypes.includes('adhoc')) set('tsReservationTypesKey', 'book_adhoc = false');
+  // book_adhoc_disable is shown alongside it in the same cell, comma-separated, matching the
+  // existing convention for combining more than one key in a single row (see
+  // res_duration_type = 1, book_day_end_mode = 1 above in the Default Reservation Mode row).
+  if (!selectedReservationTypes.includes('adhoc')) set('tsReservationTypesKey', 'book_adhoc = false, book_adhoc_disable');
   // Ships defaulting to ["adhoc"] only (the fallback above) — changed if the saved selection is
   // anything other than exactly that single default type.
   if (!(selectedReservationTypes.length === 1 && selectedReservationTypes[0] === 'adhoc')) fsChanged = true;
