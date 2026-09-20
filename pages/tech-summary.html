@@ -564,6 +564,19 @@
   true". No other behaviour changed. Verified via an inline HTMLParser tag-balance check, `node
   --check` on the extracted script block, and an updated jsdom test (test_book_adhoc_key.js, 5
   assertions) confirming the new "= true" suffix appears in all the same cases as before.
+
+  MOST RECENT CHANGE: per a request that Allow Booking In Advance also flag when advance booking is
+  disabled outright (prebookingAdvanceDays === 0, "Off (same-day only)"), the row's previously-static
+  key cell now has an id (tsPrebookingAdvanceKey) and is JS-populated: it reads plain
+  "book_advance_mins" for any changed-from-default value, but "book_advance_mins,
+  book_advance_disable = true" specifically when the value is 0 — the same comma-separated
+  combined-key convention used elsewhere on this page (e.g. the Reservation Types Selected row's
+  "book_adhoc = false, book_adhoc_disable = true"). The row's existing hidden/shown-at-default logic
+  and the value cell's wording are unchanged. Verified via an inline HTMLParser tag-balance check,
+  `node --check` on the extracted script block, and a new jsdom test (test_book_advance_disable_key.js,
+  7 assertions) confirming the key cell reads plain "book_advance_mins" at the 8-day default (hidden)
+  and for a custom non-zero value (3 days), and reads the combined
+  "book_advance_mins, book_advance_disable = true" only when the value is exactly 0.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -759,7 +772,7 @@
 
     <p class="tsec-sub">Prebooking &amp; Duration</p>
     <table class="trow">
-      <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
+      <tr id="tsPrebookingAdvanceRow" hidden><td class="label">Allow Booking In Advance</td><td class="key" id="tsPrebookingAdvanceKey">book_advance_mins</td><td class="value" id="tsPrebookingAdvance"></td></tr>
       <tr id="tsReservationModeRow" hidden><td class="label">Default Reservation Mode</td><td class="key" id="tsReservationModeKey"></td><td class="value" id="tsReservationMode"></td></tr>
       <tr id="tsDefaultStartRow" hidden><td class="label">Default Start Time</td><td class="key">book_day_start</td><td class="value" id="tsDefaultStart"></td></tr>
       <tr id="tsDefaultEndRow" hidden><td class="label">Default End Time</td><td class="key">book_day_end</td><td class="value" id="tsDefaultEnd"></td></tr>
@@ -1277,6 +1290,10 @@
   const advanceDaysChanged = advanceDays !== 8;
   showRow('tsPrebookingAdvanceRow', advanceDaysChanged);
   if (advanceDaysChanged) set('tsPrebookingAdvance', advanceDays <= 0 ? 'Off (same-day only), 0 min' : formatDuration(advanceDays * 1440));
+  // advanceDays === 0 (Off, same-day only) also disables advance booking outright, so
+  // book_advance_disable = true is shown alongside the static book_advance_mins key,
+  // comma-separated, matching the combined-key convention used elsewhere on this page.
+  if (advanceDaysChanged) set('tsPrebookingAdvanceKey', advanceDays === 0 ? 'book_advance_mins, book_advance_disable = true' : 'book_advance_mins');
 
   const defaultReservationTimes = wizard.defaultReservationTimes || {};
   const businessHours = wizard.businessHours || {};
