@@ -564,7 +564,7 @@
 
         <div class="panel-intro">
           <h1 class="hero-title" id="pageHeroTitle">Configuration Review</h1>
-          <p class="sub">There are extra fine-tuning options on this page to look through, letting you configure more details. Once you've reviewed them, tap Save Core Policy.</p>
+          <p class="sub">There are a few extra options on this page worth a look — they let you set things up in more detail. Once you're happy with them, tap Save Core Policy.</p>
         </div>
       </div>
     </div>
@@ -2670,6 +2670,19 @@ id-less and inside `.panel-intro`, that the hero title is unaffected, and that `
 ("Save Core Policy") actually exists on the page matching what the sub now references, and updated
 test_oob_policy_hero_sub_added.js (10 assertions) and test_oob_policy_hero_title_reword.js (7
 assertions), both of which had hardcoded the prior sub text.
+
+MOST RECENT CHANGE: per a request to rewrite the sub in clear, plain, non-technical English,
+changed the text from "There are extra fine-tuning options on this page to look through, letting
+you configure more details. Once you've reviewed them, tap Save Core Policy." to "There are a few
+extra options on this page worth a look — they let you set things up in more detail. Once you're
+happy with them, tap Save Core Policy." -- dropping jargon like "fine-tuning" and "configure" for
+everyday wording, while keeping the same two points (there are extra options that let you set
+things up in more detail, and to tap Save Core Policy once done) and the same reference to the
+actual `#coreSaveBtn` button. No other element was changed. Verified via an inline HTMLParser
+tag-balance check, node --check on the extracted script block, and updated jsdom tests
+(test_oob_policy_hero_sub_reword.js, 6 assertions; test_oob_policy_hero_sub_added.js, 10
+assertions; test_oob_policy_hero_title_reword.js, 7 assertions), all of which had hardcoded the
+prior, more technical sub text.
 -->
 
 

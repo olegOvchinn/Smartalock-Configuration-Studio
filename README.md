@@ -550,6 +550,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a hero sub to `floorsense-out-of-box-policy.html`: "Review every answer captured across the wizard.", matching the wording already used on `smartalock-configuration-summary.html`.
 - On `floorsense-out-of-box-policy.html`, reworded the hero title from "Configuration Summary" to "Configuration Review" (the document `<title>` and progress-bar tooltip were left unchanged).
 - On `floorsense-out-of-box-policy.html`, reworded the hero sub to point out the extra fine-tuning options on the page and to tap "Save Core Policy" once reviewed.
+- Rewrote that same `floorsense-out-of-box-policy.html` hero sub into plainer, non-technical English.
 
 ## Status
 
