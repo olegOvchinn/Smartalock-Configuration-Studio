@@ -549,6 +549,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Fixed the top-frame not staying sticky on `smartalock-configuration-summary.html` by adding `display: contents` to `.panel-topbar`, the same fix already applied to the 7 Smartalock wizard pages (this summary page had been missed by that earlier batch). `floorsense-out-of-box-policy.html` already had this fix from the earlier Floorsense batch.
 - Added a hero sub to `floorsense-out-of-box-policy.html`: "Review every answer captured across the wizard.", matching the wording already used on `smartalock-configuration-summary.html`.
 - On `floorsense-out-of-box-policy.html`, reworded the hero title from "Configuration Summary" to "Configuration Review" (the document `<title>` and progress-bar tooltip were left unchanged).
+- On `floorsense-out-of-box-policy.html`, reworded the hero sub to point out the extra fine-tuning options on the page and to tap "Save Core Policy" once reviewed.
 
 ## Status
 

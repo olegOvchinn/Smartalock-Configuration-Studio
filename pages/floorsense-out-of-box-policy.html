@@ -564,7 +564,7 @@
 
         <div class="panel-intro">
           <h1 class="hero-title" id="pageHeroTitle">Configuration Review</h1>
-          <p class="sub">Review every answer captured across the wizard.</p>
+          <p class="sub">There are extra fine-tuning options on this page to look through, letting you configure more details. Once you've reviewed them, tap Save Core Policy.</p>
         </div>
       </div>
     </div>
@@ -2655,6 +2655,21 @@ the `<title>` tag and progress-bar tooltip are unchanged, that the hero sub is u
 test_oob_policy_hero_sub_added.js (10 assertions) and test_oob_policy_hero_sub_fine_tune.js (9
 assertions) and test_summary_pages_hero_into_topframe.js (27 assertions), all of which had
 hardcoded the old "Configuration Summary" default title text for this page.
+
+MOST RECENT CHANGE: per a request to reword the hero sub so it tells the user this page has extra
+fine-tuning options that let them configure more details, and to tap the "Save Core Policy" button
+once reviewed, changed the sub text from "Review every answer captured across the wizard." to
+"There are extra fine-tuning options on this page to look through, letting you configure more
+details. Once you've reviewed them, tap Save Core Policy." -- referencing the actual
+`<button class="primary" id="coreSaveBtn">Save Core Policy</button>` already on this page. No other
+element was changed: the sub stays a plain, id-less `<p class="sub">` inside `.panel-intro`, right
+after `#pageHeroTitle` ("Configuration Review"), with no JS wiring. Verified via an inline
+HTMLParser tag-balance check, node --check on the extracted script block, a new jsdom test
+(test_oob_policy_hero_sub_reword.js, 6 assertions) confirming the new sub text, that it remains
+id-less and inside `.panel-intro`, that the hero title is unaffected, and that `#coreSaveBtn`
+("Save Core Policy") actually exists on the page matching what the sub now references, and updated
+test_oob_policy_hero_sub_added.js (10 assertions) and test_oob_policy_hero_title_reword.js (7
+assertions), both of which had hardcoded the prior sub text.
 -->
 
 
