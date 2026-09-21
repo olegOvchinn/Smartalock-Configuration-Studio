@@ -270,8 +270,10 @@
   /* ---------- #outstandingIntro: the section's own quick note (amber .summary-note, tying it
      visually to the amber "Information We Need" icon) gets a border-bottom so the heading+note
      block reads as one distinct zone, clearly separated from the actual item rows listed below
-     it -- otherwise the note ran straight into the first item row with no visual break. ---------- */
-  #outstandingIntro { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 4px; }
+     it -- otherwise the note ran straight into the first item row with no visual break. Also
+     overrides .summary-note's own 11.48px with a 30% larger 14.92px so the note reads more
+     prominently than a routine per-row note. ---------- */
+  #outstandingIntro { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 4px; font-size: 14.92px; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
@@ -2777,6 +2779,15 @@ extracted script block, and an extended jsdom test (test_oob_policy_outstanding_
 now 32 assertions) confirming the new "Information We Need" heading (<=3 words), that
 `#outstandingIntro` carries `.summary-note` (not `.summary-desc`) and a `border-bottom` rule, and
 that both item descriptions now read as parallel noun-phrases.
+
+MOST RECENT CHANGE: per a follow-up request, enlarged `#outstandingIntro`'s own text 30% -- its
+base `.summary-note` font-size (11.48px) is now overridden to 14.92px (11.48 * 1.3) in the same
+`#outstandingIntro` rule that already carries the divider border-bottom, rather than changing the
+shared `.summary-note` class itself (which would also affect any future, currently-nonexistent
+usage elsewhere). Nothing else about the note (color, position, divider) changed. Verified via an
+inline HTMLParser tag-balance check, `node --check` on the extracted script block, and an extended
+jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 34 assertions) confirming
+`#outstandingIntro` carries `font-size: 14.92px`.
 -->
 
 

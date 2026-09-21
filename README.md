@@ -558,6 +558,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Fixed the Outstanding section on `floorsense-out-of-box-policy.html` to match the Core Policy card's width and centering, and moved each item's full sentence into a short description line below a plain "Required" value so the text no longer overflows the card.
 - Reworded the Outstanding section's User Groups item to ask for a spreadsheet with a concrete example row (name | email | group), and added a quick intro line below the "Outstanding" header telling clients to send these items to oleg@smartalock.com by the target installation date.
 - Renamed that section's heading from "Outstanding" to "Information We Need", switched its intro note to the page's amber `.summary-note` styling so it reads as tied to the heading, tightened the wording on both the intro and item descriptions, and added a divider line separating the heading/intro from the item list.
+- Enlarged that intro note's own text 30% (11.48px → 14.92px) so it reads more prominently.
 
 ## Status
 
