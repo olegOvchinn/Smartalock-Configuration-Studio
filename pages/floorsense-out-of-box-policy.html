@@ -265,10 +265,13 @@
      base .summary-group rule above (max-width: 640px, no auto margins) instead of matching the
      Core Policy card's width and centering -- it rendered narrower than, and flush left against,
      the Core Policy card above it. Gets the same 915.2px cap + margin:0 auto treatment as
-     #coreSettingsColumn/.project-details-column so all three read as one continuous canvas. ---------- */
-  #outstandingGroup { max-width: 915.2px; margin: 0 auto 18px; }
+     #coreSettingsColumn/.project-details-column so all three read as one continuous canvas.
+     margin-top: 40px (up from the implicit 0) adds breathing room above the section, since it
+     previously sat right up against the "+ Create New Policy" button/count row above it with no
+     visual gap. ---------- */
+  #outstandingGroup { max-width: 915.2px; margin: 40px auto 18px; }
   /* ---------- #outstandingIntro: the section's own quick note (amber .summary-note, tying it
-     visually to the amber "Information We Need" icon) gets a border-bottom so the heading+note
+     visually to the amber "Outstanding" icon) gets a border-bottom so the heading+note
      block reads as one distinct zone, clearly separated from the actual item rows listed below
      it -- otherwise the note ran straight into the first item row with no visual break. Also
      overrides .summary-note's own 11.48px with a 30% larger 14.92px so the note reads more
@@ -952,7 +955,7 @@
         <div class="summary-group-head">
           <div class="summary-group-heading">
             <div class="summary-icon-badge badge-amber"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></div>
-            <h3>Information We Need</h3>
+            <h3>Outstanding</h3>
           </div>
         </div>
         <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date, so we have at least one business day to configure the system accordingly.</p>
@@ -2796,6 +2799,19 @@ least one business day to configure the system accordingly." Nothing else about 
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and an extended jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 35 assertions)
 confirming the new closing clause.
+
+MOST RECENT CHANGE: per a follow-up request, reverted the section heading from "Information We
+Need" back to "Outstanding" (its original name from before that rename), and added a 40px
+margin-top to `#outstandingGroup` (its margin shorthand is now `40px auto 18px`, up from `0 auto
+18px`) so there's clear breathing room between the section and the "+ Create New Policy"
+button/count row directly above it in the Additional Policies section -- previously the two sat
+right up against each other with no visual gap. The CSS comments referencing the old "Information
+We Need" heading text were also updated to say "Outstanding" again. Nothing else about the
+section (the amber `.summary-note` intro styling, its enlarged 14.92px font-size, the divider
+border-bottom, or the item descriptions) changed. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and an updated jsdom test
+(test_oob_policy_outstanding_deskusergroups.js, still 35 assertions) confirming the heading reads
+"Outstanding" again and that `#outstandingGroup`'s margin now starts with `40px`.
 -->
 
 
