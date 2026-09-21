@@ -260,6 +260,14 @@
   .project-details-head.compact { max-width: 657.8px; }
   .project-details-column.compact { max-width: 657.8px; }
 
+  /* ---------- Outstanding (#outstandingGroup): sits below both #coreSettingsColumn and
+     #policiesSection as a bare .summary-group, so without its own override it fell back to the
+     base .summary-group rule above (max-width: 640px, no auto margins) instead of matching the
+     Core Policy card's width and centering -- it rendered narrower than, and flush left against,
+     the Core Policy card above it. Gets the same 915.2px cap + margin:0 auto treatment as
+     #coreSettingsColumn/.project-details-column so all three read as one continuous canvas. ---------- */
+  #outstandingGroup { max-width: 915.2px; margin: 0 auto 18px; }
+
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
      policies a client is now actively managing, so it's rendered narrower/denser rather than at
@@ -2698,6 +2706,26 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, a ne
 both/missing-deskUserGroups states, and an updated comment in the pre-existing
 tmp/test_outstanding_fs.js (which seeds no deskUserGroups and so still correctly asserts the
 section stays hidden, but whose message previously and inaccurately claimed "no trigger exists").
+
+MOST RECENT CHANGE: per a request that the Outstanding section be centered, match the Core Policy
+card's width, keep its text from overflowing, and carry a quick description, made three fixes.
+First, `#outstandingGroup` sat directly in `.panel-inner` below `#coreSettingsColumn`/
+`#policiesSection` with no wrapper of its own, so it fell back to the base `.summary-group` rule
+(max-width: 640px, no auto margins) instead of matching the Core Policy card's actual width -- it
+rendered both narrower than and flush-left against the card above it. A dedicated `#outstandingGroup`
+CSS rule now gives it the same 915.2px max-width + margin:0 auto treatment as
+`#coreSettingsColumn`/`.project-details-column`, so all three read as one continuous, centered
+canvas. Second, each item's full sentence was previously placed directly in the row's `.value`
+span, which is `white-space: nowrap` and right-aligned (sized for short values like "Subject to
+creation" on the Configured Separately card just above), so the long sentence overflowed past the
+edge of the card instead of wrapping. Each row's `.value` now just reads "Required", with the full
+sentence moved into a `<p class="summary-desc">` paragraph below it -- the same short-value-plus-
+description convention already used by the Teams/Book on Behalf/Notifications rows in that same
+Configured Separately card, which doubles as the "quick description" the request asked for. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and an
+extended jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 19 assertions) confirming
+the `.value` cell reads exactly "Required", the full sentence lives in a `.summary-desc` paragraph,
+and the new `#outstandingGroup` CSS rule carries both the 915.2px max-width and margin:0 auto.
 -->
 
 
@@ -2807,11 +2835,17 @@ section stays hidden, but whose message previously and inaccurately claimed "no 
   (function () {
     const duGroups = project.floorsense.wizard.deskUserGroups || {};
     const items = [];
+    // Each item's own explanatory sentence goes in a .summary-desc paragraph below the row (same
+    // short-value-plus-description convention already used just above in the "Configured
+    // Separately" card's Teams/Book on Behalf/Notifications rows), rather than being crammed into
+    // the .value span itself -- that span is nowrap/right-aligned (sized for short values like
+    // "Subject to creation"), so a full sentence there overflowed past the edge of the card instead
+    // of wrapping.
     if (duGroups.deskGroups && duGroups.deskGroups.provide) {
-      items.push({ label: 'Desk Groups', value: 'List of desk numbers, with each one marked up on a floorplan showing which group it belongs to.' });
+      items.push({ label: 'Desk Groups', value: 'Required', desc: 'List of desk numbers, with each one marked up on a floorplan showing which group it belongs to.' });
     }
     if (duGroups.userGroups && duGroups.userGroups.provide) {
-      items.push({ label: 'User Groups', value: 'List of User Group names, plus a spreadsheet identifying which user belongs to which group, for upload.' });
+      items.push({ label: 'User Groups', value: 'Required', desc: 'List of User Group names, plus a spreadsheet identifying which user belongs to which group, for upload.' });
     }
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
@@ -2819,7 +2853,8 @@ section stays hidden, but whose message previously and inaccurately claimed "no 
       items.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'summary-row';
-        div.innerHTML = '<div class="summary-row-top"><span class="label">' + entry.label + '</span><span class="value">' + entry.value + '</span></div>';
+        div.innerHTML = '<div class="summary-row-top"><span class="label">' + entry.label + '</span><span class="value">' + entry.value + '</span></div>' +
+          '<p class="summary-desc">' + entry.desc + '</p>';
         wrap.appendChild(div);
       });
     }
