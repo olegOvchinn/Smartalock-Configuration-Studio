@@ -253,6 +253,15 @@ block, and an extended jsdom test (test_desk_booking_guide_toolbox_eyebrow.js, 9
 confirming "Ways to Check In" and "Your Privacy" are both gone, exactly one "Your Toolbox"
 eyebrow exists, the checkin-methods row still sits directly beneath it, and `#row-dnd` is now
 reached from the Your Toolbox eyebrow without hitting any other `.section-eyebrow` first.
+
+MOST RECENT CHANGE: per a request, removed the hero `<p class="sub">` paragraph ("A quick,
+plain-English guide to how check-in, booking and privacy work — no jargon, just the
+essentials.") that sat between the `<h1>` and `.hero-icons`. The `<h1>` heading and `.hero-icons`
+row are otherwise unchanged and now sit directly adjacent to each other. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a new jsdom test
+(test_desk_booking_guide_remove_hero_sub.js, 4 assertions) confirming the removed sentence no
+longer appears anywhere on the page, the `<h1>` text is unchanged, and `.hero-icons` is now the
+`<h1>`'s next sibling with no `.sub` paragraph left in between.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -398,7 +407,6 @@ reached from the Your Toolbox eyebrow without hitting any other `.section-eyebro
       <span class="brand-kicker">Desk Booking Guide</span>
     </div>
     <h1>Everything you need to know about booking a desk</h1>
-    <p class="sub">A quick, plain-English guide to how check-in, booking and privacy work — no jargon, just the essentials.</p>
     <div class="hero-icons">
       <span class="hero-icon-badge badge-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="hero-icon-badge badge-pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
