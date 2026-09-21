@@ -554,6 +554,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `tech-summary.html`, the Reservation Types Selected row's key cell now also shows `book_adhoc_disable` alongside `book_adhoc = false` whenever "Reserved by User as Needed" isn't selected.
 - Changed that `book_adhoc_disable` key on `tech-summary.html` to `book_adhoc_disable = true`, giving it an explicit value like every other key on the page.
 - On `tech-summary.html`, the Allow Booking In Advance row's key cell now also shows `book_advance_disable = true` alongside `book_advance_mins` whenever advance booking is set to 0 (Off, same-day only).
+- On `floorsense-out-of-box-policy.html`, the Outstanding section now surfaces two Desk & User Groups items ("we will provide" desk numbers with floorplan markup, and "we will provide" User Group names via spreadsheet) whenever their respective "provide" checkbox is chosen.
 
 ## Status
 

@@ -930,9 +930,9 @@
       </div>
 
       <!-- Outstanding: derived list of items the client still has to provide, hidden entirely
-           unless there's actually something outstanding. No Floorsense-specific trigger exists yet
-           (see the MOST RECENT CHANGE note near the top of this file's script), so this stays empty
-           and hidden until a follow-up request adds one. -->
+           unless there's actually something outstanding. Populated from two Desk & User Groups
+           "provide" triggers (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups}.provide)
+           -- see the MOST RECENT CHANGE note near the top of this file's script for the full detail. -->
       <div class="summary-group" id="outstandingGroup" hidden>
         <div class="summary-group-head">
           <div class="summary-group-heading">
@@ -2683,6 +2683,21 @@ tag-balance check, node --check on the extracted script block, and updated jsdom
 (test_oob_policy_hero_sub_reword.js, 6 assertions; test_oob_policy_hero_sub_added.js, 10
 assertions; test_oob_policy_hero_title_reword.js, 7 assertions), all of which had hardcoded the
 prior, more technical sub text.
+
+MOST RECENT CHANGE: per a request to add a Floorsense-specific Outstanding trigger, the previously
+always-empty `items` array in the Outstanding IIFE now has two real conditions, both read from
+`project.floorsense.wizard.deskUserGroups` (set on floorsense-desk-user-groups.html): if
+`deskGroups.provide` is true, an item asks for "List of desk numbers, with each one marked up on a
+floorplan showing which group it belongs to."; if `userGroups.provide` is true, a separate item
+asks for "List of User Group names, plus a spreadsheet identifying which user belongs to which
+group, for upload." -- matching the wording of each option's own on-page checkbox label. The two
+checkboxes are independent, so either, both, or neither item can appear; the section's existing
+hidden/shown-by-`items.length` wiring and row-building markup are unchanged. Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, a new jsdom test
+(test_oob_policy_outstanding_deskusergroups.js, 12 assertions) covering neither/desk-only/user-only/
+both/missing-deskUserGroups states, and an updated comment in the pre-existing
+tmp/test_outstanding_fs.js (which seeds no deskUserGroups and so still correctly asserts the
+section stays hidden, but whose message previously and inaccurately claimed "no trigger exists").
 -->
 
 
@@ -2778,15 +2793,26 @@ prior, more technical sub text.
   })();
 
   /* ---------------- Outstanding ----------------
-     Items the client still has to provide before this configuration can go live. No
-     Floorsense-specific trigger exists yet — the two triggers added so far (Building access cards'
-     default spreadsheet-import method, and PIN assignment's "client provides a list" option) both
-     live on the Smartalock branch's Initial Locker Access Methods page, so they surface on
-     smartalock-configuration-summary.html and the combined tech-summary.html instead of here.
-     This block is left in place, structurally wired up and ready, for whenever a Floorsense-side
-     outstanding item is requested. */
+     Items the client still has to provide before this configuration can go live. Two
+     Floorsense-specific triggers, both from Desk & User Groups' "provide" checkbox option in each
+     column (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups}.provide): if Desk
+     Groups is set to "we will provide" the client still owes us a list of desk numbers with each
+     one marked up on a floorplan; if User Groups is set to "we will provide" the client still owes
+     us a list of User Group names plus a spreadsheet of which user belongs to which group. The two
+     checkboxes are independent, so either, both, or neither item can appear. (The earlier two
+     triggers — Building access cards' default spreadsheet-import method, and PIN assignment's
+     "client provides a list" option — both live on the Smartalock branch's Initial Locker Access
+     Methods page, so they surface on smartalock-configuration-summary.html and the combined
+     tech-summary.html instead of here.) */
   (function () {
+    const duGroups = project.floorsense.wizard.deskUserGroups || {};
     const items = [];
+    if (duGroups.deskGroups && duGroups.deskGroups.provide) {
+      items.push({ label: 'Desk Groups', value: 'List of desk numbers, with each one marked up on a floorplan showing which group it belongs to.' });
+    }
+    if (duGroups.userGroups && duGroups.userGroups.provide) {
+      items.push({ label: 'User Groups', value: 'List of User Group names, plus a spreadsheet identifying which user belongs to which group, for upload.' });
+    }
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
       const wrap = document.getElementById('outstandingList');
