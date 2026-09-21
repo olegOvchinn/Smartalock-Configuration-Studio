@@ -267,6 +267,11 @@
      the Core Policy card above it. Gets the same 915.2px cap + margin:0 auto treatment as
      #coreSettingsColumn/.project-details-column so all three read as one continuous canvas. ---------- */
   #outstandingGroup { max-width: 915.2px; margin: 0 auto 18px; }
+  /* ---------- #outstandingIntro: the section's own quick note (amber .summary-note, tying it
+     visually to the amber "Information We Need" icon) gets a border-bottom so the heading+note
+     block reads as one distinct zone, clearly separated from the actual item rows listed below
+     it -- otherwise the note ran straight into the first item row with no visual break. ---------- */
+  #outstandingIntro { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 4px; }
 
   /* ---------- shrink the core policy column once at least one additional (neighbourhood) policy
      has been created — the core policy becomes reference material sitting above the named
@@ -945,10 +950,10 @@
         <div class="summary-group-head">
           <div class="summary-group-heading">
             <div class="summary-icon-badge badge-amber"><svg class="summary-icon-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6L2.7 17a1.8 1.8 0 0 0 1.6 2.7h15.4a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0z"/><line x1="12" y1="9.5" x2="12" y2="13.5"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg></div>
-            <h3>Outstanding</h3>
+            <h3>Information We Need</h3>
           </div>
         </div>
-        <p class="summary-desc" id="outstandingIntro">Please send these items to oleg@smartalock.com by the target installation date, so we have at least one business day to make any changes.</p>
+        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date, so we have at least one business day to make any necessary changes.</p>
         <div id="outstandingList"></div>
       </div>
 
@@ -2747,6 +2752,31 @@ tag-balance check, `node --check` on the extracted script block, and an extended
 in the User Groups description, and that `#outstandingIntro` exists, mentions
 oleg@smartalock.com/"target installation date"/"one business day", and sits before `#outstandingList`
 in DOM order.
+
+MOST RECENT CHANGE: per a follow-up request to rename the section, make the intro note read as
+more visually tied to the heading, tighten the wording, and add a divider, made four changes.
+First, renamed the `<h3>` from "Outstanding" to "Information We Need" (3 words, as requested) --
+the internal ids/classes/comments (`outstandingGroup`, `outstandingList`, `outstandingIntro`, the
+"Outstanding" IIFE, etc.) were deliberately left unchanged, since only the visible heading text
+was asked to change and renaming ids risked unrelated breakage for no requested benefit. Second,
+switched `#outstandingIntro` from the plain body-text `.summary-desc` class to the existing
+`.summary-note` class (amber `#B36B00`, previously defined in this page's CSS but not actually used
+anywhere) so the intro note visually ties to the section's own amber icon badge/heading instead of
+reading like just another paragraph -- this is the "visually more relevant to the section title"
+follow-up. Third, tightened the intro's wording ("Please send" -> "Please email", matching that it's
+literally an email address; "make any changes" -> "make any necessary changes") and reworded both
+item descriptions from imperative/inconsistent phrasing ("List of desk numbers, with each one..." /
+"Send us a spreadsheet...") into parallel noun-phrases ("A list of desk numbers, each marked..." /
+"A spreadsheet identifying...") that no longer redundantly repeat "send us" now that the intro note
+above already instructs the client to email these items -- the User Groups item's John Smith
+example is unchanged in substance. Fourth, added a `border-bottom` + `padding-bottom`/`margin-bottom`
+rule scoped to `#outstandingIntro` so a visible divider line now separates the heading+intro zone
+from the actual item rows below it, rather than the note running straight into the first row with
+no visual break. Verified via an inline HTMLParser tag-balance check, `node --check` on the
+extracted script block, and an extended jsdom test (test_oob_policy_outstanding_deskusergroups.js,
+now 32 assertions) confirming the new "Information We Need" heading (<=3 words), that
+`#outstandingIntro` carries `.summary-note` (not `.summary-desc`) and a `border-bottom` rule, and
+that both item descriptions now read as parallel noun-phrases.
 -->
 
 
@@ -2863,10 +2893,10 @@ in DOM order.
     // "Subject to creation"), so a full sentence there overflowed past the edge of the card instead
     // of wrapping.
     if (duGroups.deskGroups && duGroups.deskGroups.provide) {
-      items.push({ label: 'Desk Groups', value: 'Required', desc: 'List of desk numbers, with each one marked up on a floorplan showing which group it belongs to.' });
+      items.push({ label: 'Desk Groups', value: 'Required', desc: 'A list of desk numbers, each marked on a floorplan showing which group it belongs to.' });
     }
     if (duGroups.userGroups && duGroups.userGroups.provide) {
-      items.push({ label: 'User Groups', value: 'Required', desc: 'Send us a spreadsheet identifying which user belongs to which group, e.g. John Smith | J.Smith@mail.com | Finance.' });
+      items.push({ label: 'User Groups', value: 'Required', desc: 'A spreadsheet identifying which user belongs to which group, e.g. John Smith | J.Smith@mail.com | Finance.' });
     }
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
