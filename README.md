@@ -573,6 +573,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworked the "Your desk is yours for a set period" duration section on that page to branch on the Desk Allocation Method (Dedicated Workstations vs Reserved by User as Needed) and show a concrete default start/end time for the latter.
 - Reworded that section's "end of day" case to "Reservation ends at close of business hours" with a book-early-for-longer explanation.
 - Rebuilt that section's "fixed period" case to "Default reservation duration," mirroring floorsense-out-of-box-policy.html's own row and description algorithm exactly.
+- Fixed a bug on that page where the "Plan up to N days ahead" description also showed default reservation duration values (start/duration/end time), duplicating and sometimes contradicting the duration section below it; it now states only the advance-booking window.
 
 ## Status
 
