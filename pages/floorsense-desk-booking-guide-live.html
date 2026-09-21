@@ -262,6 +262,31 @@ HTMLParser tag-balance check, `node --check` on the extracted script block, and 
 (test_desk_booking_guide_remove_hero_sub.js, 4 assertions) confirming the removed sentence no
 longer appears anywhere on the page, the `<h1>` text is unchanged, and `.hero-icons` is now the
 `<h1>`'s next sibling with no `.sub` paragraph left in between.
+
+MOST RECENT CHANGE: per a request that the "Your desk is yours for a set period" duration
+section show "the duration value and type," and a follow-up clarifying what should actually
+drive it, this section now branches first on the Desk Allocation Method selected on
+floorsense-reservation-types.html (`project.floorsense.wizard.reservationTypes.selected`,
+defaulting to `['adhoc']` like that page's own default). If "Dedicated Workstations" (`'fixed'`)
+is among the selected methods, the whole booking-duration framing is replaced outright with
+"Your desk is permanently yours" / "Your desk is permanently allocated to you by an admin —
+there's no daily booking process to worry about." — Dedicated Workstations takes priority even
+if other methods are also selected, since a permanently-assigned desk has no booking duration to
+speak of. Otherwise (Reserved by User as Needed, or any other allocation method), the existing
+`reservationLengthMode` branches (endOfDay/fixed/release, from
+floorsense-reservation-length.html) still decide the title and framing exactly as before, but
+each one now also states a concrete default start-and-end time — reusing `defStartClock`/
+`defStartMinutes` and the same `defaultReservationTimes`/`businessHours` logic already computed
+above for `planAheadText`, so a new `defEndMinutesForDuration`/`defEndClockForDuration` pair
+derives the default end time (the fixed-end clock time when `endMode === 'fixed-end'`, or
+start-plus-duration otherwise). This turns each mode's abstract duration talk into something with
+an actual example: "...by default, that means from 8:30 AM to 5:30 PM." Verified via an inline
+HTMLParser tag-balance check, `node --check` on the extracted script block, and a new jsdom test
+(test_desk_booking_guide_duration_section.js, 14 assertions) covering: Dedicated Workstations
+selected (permanent-allocation title/text, no release/duration wording); adhoc + each of the
+three reservationLengthMode values, each with its specific computed start/end time; missing
+reservationTypes defaulting to adhoc without crashing; and Dedicated Workstations still winning
+when selected alongside another method.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -628,20 +653,47 @@ longer appears anywhere on the page, the `<h1>` text is unchanged, and `.hero-ic
     'Need to plan your week? You can book a desk as much as ' + advanceDays + (advanceDays === 1 ? ' day' : ' days') +
     ' before you need it. ' + defaultTimeSentence;
 
-  /* ---------------- duration ---------------- */
+  /* ---------------- duration ----------------
+     Branches first on the Desk Allocation Method selected on floorsense-reservation-types.html
+     (project.floorsense.wizard.reservationTypes.selected, defaulting to ['adhoc'] like that page's
+     own default) — "Dedicated Workstations" ('fixed') means the desk is permanently assigned by an
+     admin, so none of the booking-duration talk below applies at all. Everything else falls under
+     "Reserved by User as Needed" (or any other allocation method), where the existing
+     reservationLengthMode branches (endOfDay/fixed/release, from floorsense-reservation-length.html)
+     still decide the framing, but each one now also states the concrete default start-and-end time
+     (reusing defStartClock/defStartMinutes and the same defaultReservationTimes/businessHours logic
+     computed above for planAheadText), so bookings read as having an actual start and end rather
+     than just an abstract duration. ---------------- */
+  const reservationTypes = wizard.reservationTypes || {};
+  const selectedReservationTypes = Array.isArray(reservationTypes.selected) ? reservationTypes.selected : ['adhoc'];
+  const isDedicatedWorkstation = selectedReservationTypes.includes('fixed');
+
   const reservationLength = wizard.reservationLength || {};
   const durationMode = reservationLength.reservationLengthMode || 'release';
+  const defEndMinutesForDuration = defaultReservationTimes.endMode === 'fixed-end'
+    ? (function () {
+        const [endH, endM] = (defaultBusinessHours.departureTime || defaultReservationTimes.defaultEndTime || '17:00').split(':').map(Number);
+        return (Number.isFinite(endH) ? endH : 17) * 60 + (Number.isFinite(endM) ? endM : 0);
+      })()
+    : defStartMinutes + Math.round((Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9) * 60);
+  const defEndClockForDuration = formatClock(defEndMinutesForDuration);
+
   let durationTitle, durationText;
-  if (durationMode === 'endOfDay') {
+  if (isDedicatedWorkstation) {
+    durationTitle = 'Your desk is permanently yours';
+    durationText = 'Your desk is permanently allocated to you by an admin — there\'s no daily booking process to worry about.';
+  } else if (durationMode === 'endOfDay') {
     durationTitle = 'Your desk is yours for the day';
-    durationText = 'Every booking runs until the end of the day, however long you actually need it for.';
+    durationText = 'Every booking runs until the end of the day, however long you actually need it for — by default, that means from ' +
+      defStartClock + ' to ' + defEndClockForDuration + '.';
   } else if (durationMode === 'fixed') {
     const desc = (reservationLength.reservationLengthFixedDescription || '').trim() || 'a fixed period set by your workplace';
     durationTitle = 'Your desk is yours for a set period';
-    durationText = 'Every booking lasts ' + desc + '.';
+    durationText = 'Every booking lasts ' + desc + ' — by default, that means from ' + defStartClock + ' to ' + defEndClockForDuration + '.';
   } else {
     durationTitle = 'Your desk is yours until you release it';
-    durationText = 'When you book a desk, it stays reserved until you check out or release it yourself — no need to watch the clock.';
+    durationText = 'When you book a desk, it stays reserved until you check out or release it yourself — no need to watch the clock. By default, bookings run from ' +
+      defStartClock + ' to ' + defEndClockForDuration + ' unless you end yours sooner.';
   }
   document.getElementById('durationTitle').textContent = durationTitle;
   document.getElementById('durationText').textContent = durationText;

@@ -570,6 +570,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added the my.floorsense.com.au URL after "desktop browser portal" in the "Use whatever's easiest for you" check-in methods description.
 - Renamed the "Ways to Check In" section eyebrow to "Your Toolbox", and folded the separate "Your Privacy" section (Do Not Disturb) into it.
 - Removed the hero subtitle ("A quick, plain-English guide...") from floorsense-desk-booking-guide-live.html.
+- Reworked the "Your desk is yours for a set period" duration section on that page to branch on the Desk Allocation Method (Dedicated Workstations vs Reserved by User as Needed) and show a concrete default start/end time for the latter.
 
 ## Status
 
