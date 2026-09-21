@@ -450,7 +450,7 @@
       <div class="demo-video-card">
         <h3 class="demo-video-title">See it in action</h3>
         <video class="demo-video" controls loop playsinline preload="metadata">
-          <source src="../assets/videos/prebooking-advance-demo-v2.mp4" type="video/mp4">
+          <source src="../assets/videos/prebooking-advance-demo-v3.mp4" type="video/mp4">
         </video>
         <p class="demo-video-caption">A quick look at adjusting the advance booking limit.</p>
       </div>
@@ -1140,6 +1140,21 @@ HTMLParser tag-balance check, node --check on the extracted script block, `ffpro
 confirming the new file's `moov` atom now precedes `mdat`, and an extended jsdom test
 (test_prebooking_advance_demo_video.js, 25 assertions) that reads the new file's raw bytes and
 asserts the same ordering, plus the updated `-v2` source path.
+
+MOST RECENT CHANGE: per a request to remove the now-unused v1 asset and trim the clip, deleted
+`assets/videos/prebooking-advance-demo.mp4` (the original, pre-faststart file - approved via the
+delete-permission flow since files already written to this folder can't be removed directly) and
+trimmed the v2 asset down to just the 0:05-0:12 window of the original ~19s recording (a 7-second
+clip), re-encoding with `ffmpeg -ss 5 -to 12 -c:v libx264 -movflags +faststart` since an accurate
+cut can't be done with `-c copy` alone and faststart still needs to be preserved on the trimmed
+output. Saved as a new file, `assets/videos/prebooking-advance-demo-v3.mp4` (the v2 file itself
+couldn't be overwritten in place either), and repointed the `<source src>` at it; v2 is now the
+unused one, left in place pending an explicit request to remove it, same as v1 was until this
+change. Verified via an inline HTMLParser tag-balance check, node --check on the extracted script
+block, `ffprobe` confirming the trimmed file's duration is ~7s and its moov atom precedes mdat,
+and an extended jsdom test (test_prebooking_advance_demo_video.js, 27 assertions) that checks the
+same via `ffprobe`/raw byte offsets, the updated `-v3` source path, and that the old v1 file no
+longer exists on disk.
 -->
 
 

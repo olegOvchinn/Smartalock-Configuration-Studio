@@ -564,6 +564,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added a looping demo video below the policy card on floorsense-prebooking-advance.html, in a glass-card block matching the existing card's styling and width.
 - Added a "See it in action" title and a short caption to that demo video card.
 - Fixed the demo video not looping: remuxed it with the moov atom moved to the front of the file ("faststart") so browsers can seek back to the start reliably, and repointed the card at the new file.
+- Removed the now-unused original video file, and trimmed the demo video down to the 0:05-0:12 window (7 seconds).
 
 ## Status
 
