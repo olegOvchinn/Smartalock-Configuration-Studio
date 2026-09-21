@@ -562,6 +562,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded that intro note's closing clause from "to make any necessary changes" to "to configure the system accordingly."
 - Reverted that section's heading from "Information We Need" back to "Outstanding", and added extra spacing above the section so it no longer sits flush against the "+ Create New Policy" button/count row above it.
 - Added a looping demo video below the policy card on floorsense-prebooking-advance.html, in a glass-card block matching the existing card's styling and width.
+- Added a "See it in action" title and a short caption to that demo video card.
 
 ## Status
 

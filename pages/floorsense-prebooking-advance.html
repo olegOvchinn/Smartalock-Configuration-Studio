@@ -185,6 +185,8 @@
     box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
   }
   .demo-video { display: block; width: 100%; border-radius: 10px; background: #000; }
+  .demo-video-title { font-family: var(--font-display); font-weight: 500; font-size: 16.94px; color: var(--header-grey); margin: 0 0 4px; }
+  .demo-video-caption { font-size: 12.9px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; margin: 10px 0 0; }
 
   .minute-field { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
   .minute-input {
@@ -446,9 +448,11 @@
       </div>
 
       <div class="demo-video-card">
+        <h3 class="demo-video-title">See it in action</h3>
         <video class="demo-video" controls loop playsinline preload="metadata">
           <source src="../assets/videos/prebooking-advance-demo.mp4" type="video/mp4">
         </video>
+        <p class="demo-video-caption">A quick look at adjusting the advance booking limit.</p>
       </div>
 
       <div class="page-nav">
@@ -1111,6 +1115,17 @@ tag-balance check, node --check on the extracted script block, and a new jsdom t
 policy card and before the page-nav in DOM order, the `<source>` src/type are correct, the `loop`
 attribute is present, the asset file exists on disk at a non-trivial size, and the
 `.demo-video-card` CSS rule matches the 760px max-width.
+
+MOST RECENT CHANGE: per a request to add an annotation to the video card, added a title
+(`h3.demo-video-title`, "See it in action") above the `<video>` and a short caption
+(`p.demo-video-caption`, "A quick look at adjusting the advance booking limit.") below it, so the
+clip reads as a labeled demo rather than a bare embed. Styled as scaled-down echoes of the
+existing `.policy-title`/`.policy-hint` treatment on the policy card above (same font stack/colors,
+smaller sizes: 16.94px title, 12.9px caption) rather than reusing those classes directly, since this
+card is visually a secondary/supporting element next to the main policy card. Verified via an
+inline HTMLParser tag-balance check, node --check on the extracted script block, and an extended
+jsdom test (test_prebooking_advance_demo_video.js, 23 assertions) confirming both elements exist
+with the exact wording and sit in title-then-video-then-caption order inside `.demo-video-card`.
 -->
 
 
