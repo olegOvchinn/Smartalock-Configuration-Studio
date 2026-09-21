@@ -559,6 +559,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Reworded the Outstanding section's User Groups item to ask for a spreadsheet with a concrete example row (name | email | group), and added a quick intro line below the "Outstanding" header telling clients to send these items to oleg@smartalock.com by the target installation date.
 - Renamed that section's heading from "Outstanding" to "Information We Need", switched its intro note to the page's amber `.summary-note` styling so it reads as tied to the heading, tightened the wording on both the intro and item descriptions, and added a divider line separating the heading/intro from the item list.
 - Enlarged that intro note's own text 30% (11.48px → 14.92px) so it reads more prominently.
+- Reworded that intro note's closing clause from "to make any necessary changes" to "to configure the system accordingly."
 
 ## Status
 
