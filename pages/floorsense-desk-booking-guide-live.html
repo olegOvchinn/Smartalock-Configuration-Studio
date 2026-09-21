@@ -304,6 +304,28 @@ check, `node --check` on the extracted script block, and an updated jsdom test
 (test_desk_booking_guide_duration_section.js, still 14 assertions) confirming the new title/desc
 text, the "book early for a longer reservation" mechanic explanation, and that the description
 states the fixed default end time but no longer states a fixed start time.
+
+MOST RECENT CHANGE: per a request to rebuild the `durationMode === 'fixed'` branch, the title
+changed from "Your desk is yours for a set period" to "Default reservation duration" (the exact
+label floorsense-out-of-box-policy.html already uses for its own row), and the description
+algorithm was replaced entirely — it no longer reads `reservationLength.
+reservationLengthFixedDescription` (that free-text field is now unused by this branch), and
+instead mirrors that summary page's `renderDefaultDurationSummary()` function exactly: branching
+on `defaultReservationTimes.endMode`, it's either "...defaults to starting at {start} and always
+ends at {end}, regardless of when it starts." (`endMode === 'fixed-end'`) or "...defaults to
+starting at {start} and lasting {hours} (until {end})." (duration mode), reusing the already-
+computed `defStartMinutes`/`defEndMinutesForDuration`. Since the summary page's own algorithm
+always pads minutes (e.g. "9:00 AM", not "9 AM"), a new `formatCheckinClock()` helper was added
+— a copy of that page's own function of the same name — so this branch's wording is byte-for-byte
+identical to the Configuration Summary row for the same underlying data, rather than approximated
+with this file's more colloquial `formatClock()` (which drops `:00`). `formatCheckinClock()` is
+scoped to this branch only; the `endOfDay`/`release` branches and `formatClock()`'s other
+call-sites elsewhere on the page were untouched. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and an extended jsdom test
+(test_desk_booking_guide_duration_section.js, 16 assertions) confirming the new title, that the
+old free-text description is now ignored, and that the description text matches
+renderDefaultDurationSummary()'s wording exactly in both its duration-mode and fixed-end-mode
+forms.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -622,6 +644,20 @@ states the fixed default end time but no longer states a fixed start time.
     return hour12 + (minute === 0 ? '' : ':' + String(minute).padStart(2, '0')) + ' ' + suffix;
   }
 
+  // Always-padded clock format (e.g. "9:00 AM" rather than formatClock's colloquial "9 AM"),
+  // matching floorsense-out-of-box-policy.html's own formatCheckinClock() exactly -- used only by
+  // the "Default reservation duration" duration-section branch below, so that branch's wording
+  // stays byte-for-byte in sync with the Configuration Summary row it mirrors.
+  function formatCheckinClock(totalMinutesFromMidnight) {
+    let m = ((totalMinutesFromMidnight % 1440) + 1440) % 1440;
+    let hour24 = Math.floor(m / 60);
+    const minute = m % 60;
+    const suffix = hour24 >= 12 ? 'PM' : 'AM';
+    let hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12;
+    return hour12 + ':' + String(minute).padStart(2, '0') + ' ' + suffix;
+  }
+
   /* ---------------- check-in window ---------------- */
   const checkinWindow = wizard.checkinWindow || {};
   const earlyMin = Number.isFinite(checkinWindow.checkInEarlyMinutes) ? checkinWindow.checkInEarlyMinutes : 30;
@@ -704,9 +740,23 @@ states the fixed default end time but no longer states a fixed start time.
     durationText = 'Every booking ends at the same time each day, no matter when it starts — book early for a longer reservation, book late for a shorter one. By default, that\'s ' +
       defEndClockForDuration + '.';
   } else if (durationMode === 'fixed') {
-    const desc = (reservationLength.reservationLengthFixedDescription || '').trim() || 'a fixed period set by your workplace';
-    durationTitle = 'Your desk is yours for a set period';
-    durationText = 'Every booking lasts ' + desc + ' — by default, that means from ' + defStartClock + ' to ' + defEndClockForDuration + '.';
+    // Mirrors floorsense-out-of-box-policy.html's own "Default reservation duration" row exactly
+    // (its renderDefaultDurationSummary() function) -- same title, same two-branch algorithm keyed
+    // off defaultReservationTimes.endMode, and the same formatCheckinClock time formatting -- so
+    // this guide states the identical default reservation duration the client's Configuration
+    // Summary already shows for the same underlying defaultReservationTimes/businessHours data,
+    // rather than the free-text reservationLengthFixedDescription used here previously.
+    durationTitle = 'Default reservation duration';
+    if (defaultReservationTimes.endMode === 'fixed-end') {
+      durationText = 'If someone books without choosing a time, their reservation defaults to starting at ' +
+        formatCheckinClock(defStartMinutes) + ' and always ends at ' + formatCheckinClock(defEndMinutesForDuration) +
+        ', regardless of when it starts.';
+    } else {
+      const fixedHours = Number.isFinite(defaultReservationTimes.defaultDurationHours) ? defaultReservationTimes.defaultDurationHours : 9;
+      const fixedHoursLabel = fixedHours + (fixedHours === 1 ? ' hour' : ' hours');
+      durationText = 'If someone books without choosing a time, their reservation defaults to starting at ' +
+        formatCheckinClock(defStartMinutes) + ' and lasting ' + fixedHoursLabel + ' (until ' + formatCheckinClock(defEndMinutesForDuration) + ').';
+    }
   } else {
     durationTitle = 'Your desk is yours until you release it';
     durationText = 'When you book a desk, it stays reserved until you check out or release it yourself — no need to watch the clock. By default, bookings run from ' +

@@ -572,6 +572,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the hero subtitle ("A quick, plain-English guide...") from floorsense-desk-booking-guide-live.html.
 - Reworked the "Your desk is yours for a set period" duration section on that page to branch on the Desk Allocation Method (Dedicated Workstations vs Reserved by User as Needed) and show a concrete default start/end time for the latter.
 - Reworded that section's "end of day" case to "Reservation ends at close of business hours" with a book-early-for-longer explanation.
+- Rebuilt that section's "fixed period" case to "Default reservation duration," mirroring floorsense-out-of-box-policy.html's own row and description algorithm exactly.
 
 ## Status
 
