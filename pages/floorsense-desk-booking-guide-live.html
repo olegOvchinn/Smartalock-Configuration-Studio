@@ -214,6 +214,19 @@ recurring booking that reserves it automatically...". The row's existing hide/sh
 (test_desk_booking_guide_recurring_wording.js, 7 assertions) confirming the row shows the exact
 new wording (including the my.floorsense.com.au reference) when recurringEnabled is true, stays
 hidden when false or missing, and no longer contains the old "reserves it automatically" phrase.
+
+MOST RECENT CHANGE: per a request, reworded the `#sitstandText` copy shown when `fme.mode ===
+'all'` — the previous "Every desk here is a sit-stand desk — save and apply your preferred
+height..." overclaimed that every physical desk is sit-stand capable just because FME was
+configured for all desks, which isn't necessarily true. It now starts directly with "Save and
+apply your preferred height right from the Floorsense mobile app or the desk's handset." The
+`fme.mode === 'list'` wording ("Some desks support sit-stand height presets...") and the row's
+existing hide/show gating were both untouched. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and a new jsdom test
+(test_desk_booking_guide_sitstand_wording.js, 7 assertions) confirming the 'all'-mode text now
+starts with "Save and apply" and no longer contains the "Every desk here is a sit-stand desk"
+phrase, the 'list'-mode text is unchanged, and the row still stays hidden when fme.mode is
+neither 'all' nor 'list'.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -680,7 +693,7 @@ hidden when false or missing, and no longer contains the old "reserves it automa
   const sitStandOn = fme.mode === 'all' || fme.mode === 'list';
   if (sitStandOn) {
     document.getElementById('sitstandText').textContent = fme.mode === 'all'
-      ? 'Every desk here is a sit-stand desk — save and apply your preferred height right from the Floorsense mobile app or the desk\'s handset.'
+      ? 'Save and apply your preferred height right from the Floorsense mobile app or the desk\'s handset.'
       : 'Some desks support sit-stand height presets via the Floorsense mobile app or handset — look for signage or ask your workplace team which desks support it.';
     document.getElementById('row-sitstand').hidden = false;
   }
