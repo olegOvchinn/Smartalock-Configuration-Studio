@@ -556,6 +556,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - On `tech-summary.html`, the Allow Booking In Advance row's key cell now also shows `book_advance_disable = true` alongside `book_advance_mins` whenever advance booking is set to 0 (Off, same-day only).
 - On `floorsense-out-of-box-policy.html`, the Outstanding section now surfaces two Desk & User Groups items ("we will provide" desk numbers with floorplan markup, and "we will provide" User Group names via spreadsheet) whenever their respective "provide" checkbox is chosen.
 - Fixed the Outstanding section on `floorsense-out-of-box-policy.html` to match the Core Policy card's width and centering, and moved each item's full sentence into a short description line below a plain "Required" value so the text no longer overflows the card.
+- Reworded the Outstanding section's User Groups item to ask for a spreadsheet with a concrete example row (name | email | group), and added a quick intro line below the "Outstanding" header telling clients to send these items to oleg@smartalock.com by the target installation date.
 
 ## Status
 

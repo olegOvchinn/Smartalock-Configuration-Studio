@@ -948,6 +948,7 @@
             <h3>Outstanding</h3>
           </div>
         </div>
+        <p class="summary-desc" id="outstandingIntro">Please send these items to oleg@smartalock.com by the target installation date, so we have at least one business day to make any changes.</p>
         <div id="outstandingList"></div>
       </div>
 
@@ -2726,6 +2727,26 @@ via an inline HTMLParser tag-balance check, `node --check` on the extracted scri
 extended jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 19 assertions) confirming
 the `.value` cell reads exactly "Required", the full sentence lives in a `.summary-desc` paragraph,
 and the new `#outstandingGroup` CSS rule carries both the 915.2px max-width and margin:0 auto.
+
+MOST RECENT CHANGE: per a follow-up request, reworded the User Groups item's description from
+"List of User Group names, plus a spreadsheet identifying which user belongs to which group, for
+upload." to "Send us a spreadsheet identifying which user belongs to which group, e.g. John Smith |
+J.Smith@mail.com | Finance." -- adding a concrete example row (name | email | group) in the same
+pipe-separated format the request specified, and matching this page's existing "e.g." convention
+(used throughout, e.g. the additional-policy name placeholder "e.g. Finance, Help Desk"). The Desk
+Groups item's own description was not touched. Separately, added a static, always-present intro
+paragraph (`<p class="summary-desc" id="outstandingIntro">`) directly below the "Outstanding" `<h3>`
+and above `#outstandingList`, reusing the same `.summary-desc` class as the per-item description
+paragraphs rather than introducing a new CSS rule: "Please send these items to
+oleg@smartalock.com by the target installation date, so we have at least one business day to make
+any changes." This paragraph is static markup, not JS-populated -- it's always present in the DOM
+regardless of which (if any) items are triggered; visibility is still controlled entirely by the
+`hidden` attribute on `#outstandingGroup` itself, same as before. Verified via an inline HTMLParser
+tag-balance check, `node --check` on the extracted script block, and an extended jsdom test
+(test_oob_policy_outstanding_deskusergroups.js, now 25 assertions) confirming the new example text
+in the User Groups description, and that `#outstandingIntro` exists, mentions
+oleg@smartalock.com/"target installation date"/"one business day", and sits before `#outstandingList`
+in DOM order.
 -->
 
 
@@ -2845,7 +2866,7 @@ and the new `#outstandingGroup` CSS rule carries both the 915.2px max-width and 
       items.push({ label: 'Desk Groups', value: 'Required', desc: 'List of desk numbers, with each one marked up on a floorplan showing which group it belongs to.' });
     }
     if (duGroups.userGroups && duGroups.userGroups.provide) {
-      items.push({ label: 'User Groups', value: 'Required', desc: 'List of User Group names, plus a spreadsheet identifying which user belongs to which group, for upload.' });
+      items.push({ label: 'User Groups', value: 'Required', desc: 'Send us a spreadsheet identifying which user belongs to which group, e.g. John Smith | J.Smith@mail.com | Finance.' });
     }
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
