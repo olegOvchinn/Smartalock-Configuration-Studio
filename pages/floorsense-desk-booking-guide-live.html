@@ -238,6 +238,21 @@ block, and a new jsdom test (test_desk_booking_guide_checkin_methods_portal_url.
 confirming the URL appears right after "desktop browser portal" whether `prebooking` is selected
 alone or combined with another method, and that it's absent entirely when `prebooking` isn't
 selected.
+
+MOST RECENT CHANGE: per a request, renamed the `.section-eyebrow` above the check-in-methods row
+from "Ways to Check In" to "Your Toolbox" (a broader label, since that section already also
+covers sit-stand and recurring bookings, not just check-in methods). A follow-up request then
+asked to fold the separate "Your Privacy" eyebrow/section into Your Toolbox too, so the
+`<div class="section-eyebrow">Your Privacy</div>` line right before `#row-dnd` was removed
+outright — `#row-dnd` (Do Not Disturb) now sits directly under Your Toolbox with no eyebrow of
+its own, rather than starting a new labelled section. Updated the stale `.app-guide-box` CSS
+comment ("Floorsense User App section right after Your Privacy") to reflect that it now follows
+Your Toolbox instead. No row content, hide/show gating, or ordering was otherwise changed.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and an extended jsdom test (test_desk_booking_guide_toolbox_eyebrow.js, 9 assertions)
+confirming "Ways to Check In" and "Your Privacy" are both gone, exactly one "Your Toolbox"
+eyebrow exists, the checkin-methods row still sits directly beneath it, and `#row-dnd` is now
+reached from the Your Toolbox eyebrow without hitting any other `.section-eyebrow` first.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -337,7 +352,7 @@ selected.
   .row-body p.example { margin-top: 6px; color: #1D1D1F; font-weight: 600; }
 
   /* ---------- mobile app installation guide link, "Floorsense User App" section right after
-     Your Privacy ---------- */
+     Your Toolbox (which now also holds the Do Not Disturb row) ---------- */
   .app-guide-box {
     display: flex; gap: 16px; align-items: flex-start; background: #E8F1FC; border-radius: 14px;
     padding: 20px 24px; margin: 0 0 30px; page-break-inside: avoid;
@@ -471,7 +486,7 @@ selected.
       </div>
     </div>
 
-    <div class="section-eyebrow">Ways to Check In</div>
+    <div class="section-eyebrow">Your Toolbox</div>
 
     <div class="row">
       <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
@@ -496,8 +511,6 @@ selected.
         <p>Need the same desk on a regular schedule? You can set up a recurring booking in one go via my.floorsense.com.au desktop app, so you don't have to book it fresh every time.</p>
       </div>
     </div>
-
-    <div class="section-eyebrow">Your Privacy</div>
 
     <div class="row" id="row-dnd" hidden>
       <div class="row-icon warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div>
