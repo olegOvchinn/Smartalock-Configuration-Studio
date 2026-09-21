@@ -202,6 +202,18 @@ on the page used the word "Example:". Verified via an inline HTMLParser tag-bala
 `node --check` on the extracted script block, and a new jsdom test
 (test_desk_booking_guide_remove_example_word.js, 4 assertions) confirming the leading word is gone,
 the text still starts with "8:00 AM booking", and no "Example:" text remains anywhere on the page.
+
+MOST RECENT CHANGE: per a request, reworded the `#row-recurring` description ("Set up repeating
+bookings", shown only when `project.floorsense.wizard.outOfBoxPolicy.recurringEnabled` is true) to
+point the client at where recurring bookings are actually set up: "Need the same desk on a regular
+schedule? You can set up a recurring booking in one go via my.floorsense.com.au desktop app, so
+you don't have to book it fresh every time." — replacing the previous, more generic "...a
+recurring booking that reserves it automatically...". The row's existing hide/show gating on
+`recurringEnabled` was untouched. Verified via an inline HTMLParser tag-balance check, `node
+--check` on the extracted script block, and a new jsdom test
+(test_desk_booking_guide_recurring_wording.js, 7 assertions) confirming the row shows the exact
+new wording (including the my.floorsense.com.au reference) when recurringEnabled is true, stays
+hidden when false or missing, and no longer contains the old "reserves it automatically" phrase.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -457,7 +469,7 @@ the text still starts with "8:00 AM booking", and no "Example:" text remains any
       <div class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></div>
       <div class="row-body">
         <h3>Set up repeating bookings</h3>
-        <p>Need the same desk on a regular schedule? You can set up a recurring booking that reserves it automatically, so you don't have to book it fresh every time.</p>
+        <p>Need the same desk on a regular schedule? You can set up a recurring booking in one go via my.floorsense.com.au desktop app, so you don't have to book it fresh every time.</p>
       </div>
     </div>
 
