@@ -450,7 +450,7 @@
       <div class="demo-video-card">
         <h3 class="demo-video-title">See it in action</h3>
         <video class="demo-video" controls loop playsinline preload="metadata">
-          <source src="../assets/videos/prebooking-advance-demo.mp4" type="video/mp4">
+          <source src="../assets/videos/prebooking-advance-demo-v2.mp4" type="video/mp4">
         </video>
         <p class="demo-video-caption">A quick look at adjusting the advance booking limit.</p>
       </div>
@@ -1126,6 +1126,20 @@ card is visually a secondary/supporting element next to the main policy card. Ve
 inline HTMLParser tag-balance check, node --check on the extracted script block, and an extended
 jsdom test (test_prebooking_advance_demo_video.js, 23 assertions) confirming both elements exist
 with the exact wording and sit in title-then-video-then-caption order inside `.demo-video-card`.
+
+MOST RECENT CHANGE: per a report that the video wasn't looping, `ffprobe -v trace` on the original
+`assets/videos/prebooking-advance-demo.mp4` showed its `moov` atom (the metadata/seek table) sits
+after the `mdat` payload rather than before it - i.e. the file wasn't "faststart," so browsers
+can't reliably learn the duration/seek points or loop back to the start until the whole file has
+downloaded. Remuxed it with `ffmpeg -c copy -movflags +faststart` (no re-encode - same H.264
+stream, 702x208, ~19s) and saved the result as a new file, `assets/videos/prebooking-advance-demo-v2.mp4`,
+since the original file could not be overwritten in place; the `<source src>` was repointed at the
+new file, and the original v1 file was left in place, untracked from this page but still present in
+the repo's history/working tree, pending an explicit request to remove it. Verified via an inline
+HTMLParser tag-balance check, node --check on the extracted script block, `ffprobe -v trace`
+confirming the new file's `moov` atom now precedes `mdat`, and an extended jsdom test
+(test_prebooking_advance_demo_video.js, 25 assertions) that reads the new file's raw bytes and
+asserts the same ordering, plus the updated `-v2` source path.
 -->
 
 
