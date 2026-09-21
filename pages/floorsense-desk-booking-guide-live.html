@@ -287,6 +287,23 @@ selected (permanent-allocation title/text, no release/duration wording); adhoc +
 three reservationLengthMode values, each with its specific computed start/end time; missing
 reservationTypes defaulting to adhoc without crashing; and Dedicated Workstations still winning
 when selected alongside another method.
+
+MOST RECENT CHANGE: per a follow-up providing two specific alternative phrasings to describe the
+"end of day" case, reworded the `durationMode === 'endOfDay'` branch: the title changed from
+"Your desk is yours for the day" to "Reservation ends at close of business hours" (reusing the
+exact phrase floorsense-default-reservation-times.html already uses for its own `endMode:
+'fixed-end'` card), and the description changed from "Every booking runs until the end of the
+day, however long you actually need it for" to "Every booking ends at the same time each day, no
+matter when it starts — book early for a longer reservation, book late for a shorter one." Since
+this new description explains that the end time is fixed while the start time varies by when the
+user books, the trailing "by default, that means from {start} to {end}" clause no longer fit —
+there is no single default start to quote — so it was replaced with just "By default, that's
+{end}." (the fixed end clock time alone). The `fixed` and `release` branches, and the Dedicated
+Workstations branch above them, were untouched. Verified via an inline HTMLParser tag-balance
+check, `node --check` on the extracted script block, and an updated jsdom test
+(test_desk_booking_guide_duration_section.js, still 14 assertions) confirming the new title/desc
+text, the "book early for a longer reservation" mechanic explanation, and that the description
+states the fixed default end time but no longer states a fixed start time.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -683,9 +700,9 @@ when selected alongside another method.
     durationTitle = 'Your desk is permanently yours';
     durationText = 'Your desk is permanently allocated to you by an admin — there\'s no daily booking process to worry about.';
   } else if (durationMode === 'endOfDay') {
-    durationTitle = 'Your desk is yours for the day';
-    durationText = 'Every booking runs until the end of the day, however long you actually need it for — by default, that means from ' +
-      defStartClock + ' to ' + defEndClockForDuration + '.';
+    durationTitle = 'Reservation ends at close of business hours';
+    durationText = 'Every booking ends at the same time each day, no matter when it starts — book early for a longer reservation, book late for a shorter one. By default, that\'s ' +
+      defEndClockForDuration + '.';
   } else if (durationMode === 'fixed') {
     const desc = (reservationLength.reservationLengthFixedDescription || '').trim() || 'a fixed period set by your workplace';
     durationTitle = 'Your desk is yours for a set period';
