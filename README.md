@@ -567,6 +567,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Removed the now-unused original video file, and trimmed the demo video down to the 0:05-0:12 window (7 seconds).
 - Reworded the "Set up repeating bookings" description on floorsense-desk-booking-guide-live.html to point clients at the my.floorsense.com.au desktop app.
 - Reworded the sit-stand description for fme.mode "all" on that same page, dropping the "every desk is sit-stand" overclaim so it starts with "Save and apply your preferred height...".
+- Added the my.floorsense.com.au URL after "desktop browser portal" in the "Use whatever's easiest for you" check-in methods description.
 
 ## Status
 

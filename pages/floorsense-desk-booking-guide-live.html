@@ -227,6 +227,17 @@ check, `node --check` on the extracted script block, and a new jsdom test
 starts with "Save and apply" and no longer contains the "Every desk here is a sit-stand desk"
 phrase, the 'list'-mode text is unchanged, and the row still stays hidden when fme.mode is
 neither 'all' nor 'list'.
+
+MOST RECENT CHANGE: per a request, added the actual portal URL to the "Use whatever's easiest
+for you" description's `prebooking` method phrase in `METHOD_PHRASES` — it now reads "the
+Floorsense mobile app or the desktop browser portal (my.floorsense.com.au)" instead of just
+"...the desktop browser portal", so the client knows exactly where to find it. The other method
+phrases (card/QR/wallet) and the sentence-joining logic around `METHOD_PHRASES` were untouched.
+Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script
+block, and a new jsdom test (test_desk_booking_guide_checkin_methods_portal_url.js, 5 assertions)
+confirming the URL appears right after "desktop browser portal" whether `prebooking` is selected
+alone or combined with another method, and that it's absent entirely when `prebooking` isn't
+selected.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -640,7 +651,7 @@ neither 'all' nor 'list'.
     ? checkinMethods.selected : ['card', 'prebooking'];
   const METHOD_PHRASES = {
     card: 'your building access card',
-    prebooking: 'the Floorsense mobile app or the desktop browser portal',
+    prebooking: 'the Floorsense mobile app or the desktop browser portal (my.floorsense.com.au)',
     qr: 'a QR code at the desk',
     wallet: 'a wallet pass on your phone'
   };
