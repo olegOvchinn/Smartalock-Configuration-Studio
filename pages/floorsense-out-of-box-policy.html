@@ -243,16 +243,18 @@
      of its own and its already-640px-capped children rendered flush left instead of centered — a
      visible "jump to the left" the moment a group override was selected. .centered is kept as a
      harmless no-op class (the JS still toggles it) now that the base rule already covers it. ---------- */
-  .core-settings-column { max-width: 915.2px; margin: 0 auto; }
+  .core-settings-column { max-width: 804px; margin: 0 auto; }
+  /* 804px = the width smartalock-configuration-summary.html's summary groups render at (its 860px
+     --panel-maxw minus the .panel-inner's 28px side padding each side), so both summary pages match. */
 
   /* ---------- "Project Details" (Project Registration + IT Configuration & Integrations) sits above
      #summaryColumns and needs to match #coreSettingsColumn's own width/centering exactly, so the two
      read as one continuous canvas rather than a narrower strip sitting above a wider one. Both the
-     heading and the column wrapping the two summary-groups get the same 915.2px cap + margin:0 auto;
+     heading and the column wrapping the two summary-groups get the same 804px cap + margin:0 auto;
      the summary-groups' own base 640px max-width is neutralized inside the column the same way
      .core-policy-body .summary-group already does for the Core Policy card's groups. ---------- */
-  .project-details-head { max-width: 915.2px; margin: 0 auto 22px; }
-  .project-details-column { max-width: 915.2px; margin: 0 auto; }
+  .project-details-head { max-width: 804px; margin: 0 auto 22px; }
+  .project-details-column { max-width: 804px; margin: 0 auto; }
   .project-details-column .summary-group { max-width: none; }
   /* ---------- #coreSettingsColumn also shrinks to .compact (657.8px) once at least one additional
      policy exists (see the JS toggle below) — mirrored here so Project Details stays exactly as wide
@@ -264,15 +266,15 @@
      #policiesSection as a bare .summary-group, so without its own override it fell back to the
      base .summary-group rule above (max-width: 640px, no auto margins) instead of matching the
      Core Policy card's width and centering -- it rendered narrower than, and flush left against,
-     the Core Policy card above it. Gets the same 915.2px cap + margin:0 auto treatment as
+     the Core Policy card above it. Gets the same 804px cap + margin:0 auto treatment as
      #coreSettingsColumn/.project-details-column so all three read as one continuous canvas.
      margin-top: 40px (up from the implicit 0) adds breathing room above the section, since it
      previously sat right up against the "+ Create New Policy" button/count row above it with no
      visual gap. ---------- */
-  #outstandingGroup { max-width: 915.2px; margin: 40px auto 18px; }
+  #outstandingGroup { max-width: 804px; margin: 40px auto 18px; }
   /* Mirrors #coreSettingsColumn.compact (and .project-details-column.compact): once an additional
      policy exists the Core Policy card narrows to 657.8px, so Outstanding narrows with it instead
-     of staying at 915.2px and reading wider than the card above it. */
+     of staying at 804px and reading wider than the card above it. */
   #outstandingGroup.compact { max-width: 657.8px; }
   /* ---------- #outstandingIntro: the section's own quick note (amber .summary-note, tying it
      visually to the amber "Outstanding" icon) gets a border-bottom so the heading+note
@@ -2840,6 +2842,17 @@ Core Policy width in both states. Verified via `node --check` on the extracted s
 test_oob_policy_outstanding_tool_links.js (now 13 assertions: no `.compact` without additional
 policies, `.compact` toggled on and off with them, and the CSS rule present). Not checked
 visually in a browser.
+
+MOST RECENT CHANGE: per a request to match the Smartalock summary page's width, checked
+smartalock-configuration-summary.html: its summary groups have no max-width of their own, so they
+fill `.panel-inner` (860px `--panel-maxw` minus 28px padding per side) = 804px. Changed the
+default-state width of `.core-settings-column`, `.project-details-head`, `.project-details-column`
+and `#outstandingGroup` here from 915.2px to 804px so both summary pages render at the same width
+(inline CSS/JS comments updated; earlier NOTE paragraphs above still mention 915.2px as history).
+The `.compact` width (657.8px, used once additional policies exist) and the 1120px `--panel-maxw`
+were left alone, as the Smartalock page has no equivalent state. Verified via `node --check`, the
+existing outstanding tests, and a jsdom test (test_oob_policy_summary_width.js) asserting the four
+rules read 804px and no 915.2px remains in the CSS. Computed from CSS, not measured in a browser.
 -->
 
 
@@ -3846,7 +3859,7 @@ visually in a browser.
     // policy exists — it becomes reference material once named policies are the active focus.
     // Project Details (Project Registration + IT Configuration & Integrations) mirrors the exact
     // same toggle so it stays exactly as wide as the Core Policy card in both states — otherwise it
-    // would stay at 915.2px while Core Policy narrowed to 657.8px, breaking the width alignment the
+    // would stay at 804px while Core Policy narrowed to 657.8px, breaking the width alignment the
     // two are meant to share.
     const isCompact = additionalPolicies.length > 0;
     document.getElementById('coreSettingsColumn').classList.toggle('compact', isCompact);
