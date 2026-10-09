@@ -13,12 +13,6 @@
   it does not touch the shared "configurationProject" localStorage key. Work in progress is kept in this
   browser's IndexedDB (database "desk-numbering"). Styled with the same inline Inter + tokens as the
   other pages in this folder. noindex so search engines don't pick it up.
-
-  MOST RECENT CHANGE: this page is now linked from the Floorsense Configuration Summary's
-  Outstanding section (floorsense-out-of-box-policy.html, "Desk Numbering", marked Required), so the
-  "not linked from any wizard page" statement above no longer holds. Also added a line to the "Good
-  to know" notice suggesting the client save as a JSON project file (to edit again later) and a PNG,
-  and email the PNG to oleg@smartalock.com.
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -245,7 +239,6 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
     <div><b>Good to know</b>
       <p>Desk number placement does not need to be perfect. Floorsense will not use this image in the app; it is only kept as our reference, so tapping close to each desk is enough.</p>
       <p>This page and the <a href="mapper.html">Neighbourhood Mapper</a> are used one after the other: desk numbering first, then the mapper. Desk numbering needs to be completed. The mapper is optional, unless you have chosen to use desk groups and user groups, in which case it is required too.</p>
-      <p>When you are done, we suggest saving your work in two formats: a project file (JSON), so you can come back and edit it again, and an image (PNG). Please email the PNG to <a href="mailto:oleg@smartalock.com">oleg@smartalock.com</a>.</p>
     </div>
   </div>
 </div>
@@ -337,7 +330,7 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
         </div>
       </div>
 
-      <div class="sec">
+      <div class="sec" id="secDesk">
         <h2>Desk numbering</h2>
         <div class="field">
           <label for="nPrefix">Prefix</label>
@@ -358,7 +351,7 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
         <button class="btn" id="nRenumber" type="button">Renumber in order</button>
       </div>
 
-      <div class="sec">
+      <div class="sec" id="secRoom">
         <h2>Room naming</h2>
         <div class="field">
           <label for="rPrefix">Prefix</label>
@@ -750,6 +743,11 @@ bind('#sDelete','click',deleteSel);
 bind('#clearFloor','click',function(){var fl=F();if(!fl||(!fl.desks.length&&!fl.rooms.length))return;fl.desks=[];fl.rooms=[];fl.next=1;fl.nextRoom=1;S.sel=null;commit();syncAll();toast('Cleared this floor. Undo brings it back.',4000);});
 bind('#fRemove','click',function(){var fl=F();if(fl)removeFloor(fl.id);});
 
+/* Working in a panel switches to the matching tool, so the next click on the plan does what the panel is about. */
+function autoTool(t){if(F()&&S.tool!==t)setTool(t);}
+$('#secDesk').addEventListener('focusin',function(){autoTool('desk');});
+$('#secRoom').addEventListener('focusin',function(){autoTool('room');});
+$('#sLabel').addEventListener('focusin',function(){if(S.sel)autoTool(S.sel.kind==='room'?'room':'desk');});
 bind('#toolSelect','click',function(){setTool('select');});
 bind('#toolDesk','click',function(){setTool('desk');});
 bind('#toolRoom','click',function(){setTool('room');});
