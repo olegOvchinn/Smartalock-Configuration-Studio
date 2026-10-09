@@ -11,6 +11,12 @@
   progress is kept in this browser's IndexedDB (database "neighbourhood-mapper") and can also be
   saved to / opened from a project .json file. Styled with the same Inter + tokens as the wizard pages
   (inline, like the other pages in this folder). noindex so search engines don't pick it up.
+
+  MOST RECENT CHANGE: this page is now linked from the Floorsense Configuration Summary's
+  Outstanding section (floorsense-out-of-box-policy.html, "Neighbourhood Mapper", marked Optional),
+  so the "not linked from any wizard page" statement above no longer holds. Also added a line to the
+  "Second in the sequence" notice suggesting the client save as a JSON project file (to edit again
+  later) and a PNG, and email the PNG to oleg@smartalock.com.
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -141,6 +147,12 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .studio-frame{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
 .foot{max-width:1320px;margin:-28px auto 0;padding:0 28px 48px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
 .empty-stage{position:absolute;inset:0;display:grid;place-items:center;padding:20px;z-index:2}
+.notice{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;border-radius:16px;background:var(--accent-wash);color:var(--ink);font-size:13.5px;line-height:1.6}
+.notice p{margin:4px 0 0;color:#2b3a4a}
+.notice p:first-of-type{margin-top:2px}
+.notice b{font-weight:600;color:var(--navy)}
+.notice a{color:var(--accent-deep);font-weight:500}
+.notice .req-ico{background:#fff}
 .empty-stage[hidden]{display:none}
 .logoprev{width:44px;height:44px;border:1px dashed var(--line);border-radius:8px;display:grid;place-items:center;flex:none;background:var(--chip);overflow:hidden}
 .logoprev img{max-width:100%;max-height:100%;display:block}
@@ -199,6 +211,16 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     <span class="eyebrow">Floor plan neighbourhoods</span>
     <h1 class="hero-title">Mark up your floor plan</h1>
     <p class="sub">Upload a clean image of your floor, outline each neighbourhood or team area, give it a name and a colour, and export the finished plan.</p>
+  </div>
+</div>
+
+<div class="req" style="margin-bottom:18px">
+  <div class="notice" role="note">
+    <span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+    <div><b>Second in the sequence</b>
+      <p>This page is used after <a href="desk-numbering.html">Desk Numbering</a>: desk numbering first, then the mapper. Completing the mapper is optional by default. It becomes required if you have chosen to use desk groups and user groups.</p>
+      <p>When you are done, we suggest saving your work in two formats: a project file (JSON), so you can come back and edit it again, and an image (PNG). Please email the PNG to <a href="mailto:oleg@smartalock.com">oleg@smartalock.com</a>.</p>
+    </div>
   </div>
 </div>
 

@@ -947,9 +947,10 @@
 
       </div>
 
-      <!-- Outstanding: derived list of items the client still has to provide, hidden entirely
-           unless there's actually something outstanding. Populated from two Desk & User Groups
-           "provide" triggers (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups}.provide)
+      <!-- Outstanding: list of items the client still has to provide. Always shown: it always carries
+           links to the standalone Desk Numbering (required) and Neighbourhood Mapper (optional)
+           pages, plus any Desk & User Groups "provide" triggers
+           (project.floorsense.wizard.deskUserGroups.{deskGroups,userGroups}.provide)
            -- see the MOST RECENT CHANGE note near the top of this file's script for the full detail. -->
       <div class="summary-group" id="outstandingGroup" hidden>
         <div class="summary-group-head">
@@ -2812,6 +2813,19 @@ border-bottom, or the item descriptions) changed. Verified via an inline HTMLPar
 check, `node --check` on the extracted script block, and an updated jsdom test
 (test_oob_policy_outstanding_deskusergroups.js, still 35 assertions) confirming the heading reads
 "Outstanding" again and that `#outstandingGroup`'s margin now starts with `40px`.
+
+MOST RECENT CHANGE: per a request, the Outstanding section now always carries links to the two new
+standalone tool pages, pages/desk-numbering.html ("Desk Numbering", value "Required") and
+pages/mapper.html ("Neighbourhood Mapper", value "Optional"), each rendered as a normal Outstanding
+row with an "Open" `.row-edit-link` pill next to its value. They're appended after any Desk/User
+Groups "provide" items, so `#outstandingGroup` is now always visible (it used to stay hidden unless
+one of those triggers fired). Each row's description suggests saving as a JSON project file (so the
+work can be re-opened and edited) plus a PNG, and asks the client to email the PNG to
+oleg@smartalock.com; the mapper row also says completing it is optional. The renderer gained an
+optional `href`/`linkText` per item and wraps value+link in `.value-group` when present. Verified
+via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a new
+jsdom test (test_oob_policy_outstanding_tool_links.js) covering the always-visible section, both
+links/labels/values, and coexistence with the Desk/User Groups items.
 -->
 
 
@@ -2913,7 +2927,9 @@ check, `node --check` on the extracted script block, and an updated jsdom test
      Groups is set to "we will provide" the client still owes us a list of desk numbers with each
      one marked up on a floorplan; if User Groups is set to "we will provide" the client still owes
      us a list of User Group names plus a spreadsheet of which user belongs to which group. The two
-     checkboxes are independent, so either, both, or neither item can appear. (The earlier two
+     checkboxes are independent, so either, both, or neither item can appear. Two further items,
+     Desk Numbering (required) and Neighbourhood Mapper (optional), are always appended with links
+     to their standalone pages, so the section is always visible. (The earlier two
      triggers — Building access cards' default spreadsheet-import method, and PIN assignment's
      "client provides a list" option — both live on the Smartalock branch's Initial Locker Access
      Methods page, so they surface on smartalock-configuration-summary.html and the combined
@@ -2933,13 +2949,30 @@ check, `node --check` on the extracted script block, and an updated jsdom test
     if (duGroups.userGroups && duGroups.userGroups.provide) {
       items.push({ label: 'User Groups', value: 'Required', desc: 'A spreadsheet identifying which user belongs to which group, e.g. John Smith | J.Smith@mail.com | Finance.' });
     }
+    // Desk Numbering and the Neighbourhood Mapper are standalone tool pages (pages/desk-numbering.html,
+    // pages/mapper.html) that aren't part of the wizard's click-through, so they're surfaced here as
+    // links. Both rows ALWAYS appear, which also means this section is now always visible (it used to
+    // stay hidden unless a Desk/User Groups "provide" trigger fired). Desk Numbering is required; the
+    // Mapper is optional. Both save a JSON project file (to re-open and edit later) plus a PNG, and
+    // the PNG is emailed to oleg@smartalock.com.
+    items.push({
+      label: 'Desk Numbering', value: 'Required', href: 'desk-numbering.html', linkText: 'Open',
+      desc: 'Number each desk on your floor plans. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
+    });
+    items.push({
+      label: 'Neighbourhood Mapper', value: 'Optional', href: 'mapper.html', linkText: 'Open',
+      desc: 'Mark up your floor plan with coloured neighbourhood areas. Completing this is optional. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
+    });
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
       const wrap = document.getElementById('outstandingList');
       items.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'summary-row';
-        div.innerHTML = '<div class="summary-row-top"><span class="label">' + entry.label + '</span><span class="value">' + entry.value + '</span></div>' +
+        const valueHtml = entry.href
+          ? '<span class="value-group"><span class="value">' + entry.value + '</span><a class="row-edit-link" href="' + entry.href + '">' + entry.linkText + '</a></span>'
+          : '<span class="value">' + entry.value + '</span>';
+        div.innerHTML = '<div class="summary-row-top"><span class="label">' + entry.label + '</span>' + valueHtml + '</div>' +
           '<p class="summary-desc">' + entry.desc + '</p>';
         wrap.appendChild(div);
       });
