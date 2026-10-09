@@ -577,6 +577,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Added links to the standalone Desk Numbering (required) and Neighbourhood Mapper (optional) pages in the Floorsense Configuration Summary's Outstanding section, which is now always visible. Both pages' notices (and the Outstanding rows) suggest saving as JSON (to re-edit) and PNG, and emailing the PNG to oleg@smartalock.com.
 - Made the Outstanding section narrow with the Core Policy card (657.8px) once an additional policy exists, instead of staying at 915.2px.
 - Set the Floorsense Configuration Summary's core/Project Details/Outstanding width to 804px so it matches the Smartalock summary page.
+- Renamed the Floorsense Outstanding rows to "Number your workspaces" and "Allocate neighbourhoods".
 
 ## Status
 

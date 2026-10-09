@@ -2853,6 +2853,12 @@ The `.compact` width (657.8px, used once additional policies exist) and the 1120
 were left alone, as the Smartalock page has no equivalent state. Verified via `node --check`, the
 existing outstanding tests, and a jsdom test (test_oob_policy_summary_width.js) asserting the four
 rules read 804px and no 915.2px remains in the CSS. Computed from CSS, not measured in a browser.
+
+MOST RECENT CHANGE: per a request, renamed the two Outstanding row labels for the standalone tool
+pages: "Desk Numbering" is now "Number your workspaces" and "Neighbourhood Mapper" is now "Allocate
+neighbourhoods". Only the row labels on this page changed; links, Required/Optional values,
+descriptions, and the tool pages' own titles are untouched. Verified via `node --check` and an
+updated test_oob_policy_outstanding_tool_links.js (13 assertions) checking the new labels.
 -->
 
 
@@ -2976,18 +2982,19 @@ rules read 804px and no 915.2px remains in the CSS. Computed from CSS, not measu
     if (duGroups.userGroups && duGroups.userGroups.provide) {
       items.push({ label: 'User Groups', value: 'Required', desc: 'A spreadsheet identifying which user belongs to which group, e.g. John Smith | J.Smith@mail.com | Finance.' });
     }
-    // Desk Numbering and the Neighbourhood Mapper are standalone tool pages (pages/desk-numbering.html,
+    // Desk Numbering and the Neighbourhood Mapper (shown here as "Number your workspaces" and
+    // "Allocate neighbourhoods") are standalone tool pages (pages/desk-numbering.html,
     // pages/mapper.html) that aren't part of the wizard's click-through, so they're surfaced here as
     // links. Both rows ALWAYS appear, which also means this section is now always visible (it used to
     // stay hidden unless a Desk/User Groups "provide" trigger fired). Desk Numbering is required; the
     // Mapper is optional. Both save a JSON project file (to re-open and edit later) plus a PNG, and
     // the PNG is emailed to oleg@smartalock.com.
     items.push({
-      label: 'Desk Numbering', value: 'Required', href: 'desk-numbering.html', linkText: 'Open',
+      label: 'Number your workspaces', value: 'Required', href: 'desk-numbering.html', linkText: 'Open',
       desc: 'Number each desk on your floor plans. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
     });
     items.push({
-      label: 'Neighbourhood Mapper', value: 'Optional', href: 'mapper.html', linkText: 'Open',
+      label: 'Allocate neighbourhoods', value: 'Optional', href: 'mapper.html', linkText: 'Open',
       desc: 'Mark up your floor plan with coloured neighbourhood areas. Completing this is optional. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
     });
     if (items.length) {
