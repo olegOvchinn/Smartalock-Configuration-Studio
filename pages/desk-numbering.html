@@ -13,6 +13,10 @@
   it does not touch the shared "configurationProject" localStorage key. Work in progress is kept in this
   browser's IndexedDB (database "desk-numbering"). Styled with the same inline Inter + tokens as the
   other pages in this folder. noindex so search engines don't pick it up.
+
+  MOST RECENT CHANGE: removed the "Before you upload: image requirements" box (requirements grid, "How it
+  works" steps and its upload button) from this page. Upload now starts from the canvas prompt below. The
+  upload size/sharpness check message (#imgCheck) is kept as a small strip above the editor.
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -243,30 +247,8 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
   </div>
 </div>
 
-<div class="req">
-  <details class="req-card" id="reqCard" open>
-    <summary>Before you upload: image requirements <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></summary>
-    <div class="req-grid">
-      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div><h3>Around 1&ndash;2 MB per floor</h3><p>A JPG or PNG of roughly 1&ndash;2 MB for each floor. Much larger files are slow to work with; much smaller ones are usually too blurry.</p></div></div>
-      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></span><div><h3>Sharp and clear</h3><p>Every desk should be clearly visible when you zoom in. Aim for about 2000&ndash;4000 px on the long side. Use the original export, not a photo or a screenshot of a printout.</p></div></div>
-      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></span><div><h3>No existing desk numbers or extra annotations</h3><p>Remove old desk numbers, furniture codes, dimensions, markups, title blocks and legends first, so the new numbers are the only ones on the plan.</p></div></div>
-      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg></span><div><h3>One whole floor per image, upright</h3><p>Cropped to the floor area, not rotated or skewed. Upload as many floors as you need; each one gets its own level number.</p></div></div>
-    </div>
-    <div class="steps"><b>How it works</b>
-      <ol>
-        <li>Upload your floor plans and check the level number of each one.</li>
-        <li>Choose <b>Number desks</b> and tap the first desk, then each desk after it. Numbers follow on automatically, for example L23.001, L23.002, L23.003.</li>
-        <li>Use <b>Label rooms</b> and click each room. Rooms are named automatically too, for example Room L23.01, Room L23.02, and you can type a real name over any of them. Change the prefix, digits or next number in the Desk numbering and Room naming panels for a custom scheme.</li>
-        <li>Choose <b>Save&hellip;</b> to get the numbered images, a desk list (CSV) and a project file.</li>
-      </ol>
-    </div>
-    <div class="req-up">
-      <button class="btn primary lg" type="button" data-pick="img">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M3 13h10"/></svg>Upload floor plan images</button>
-      <span class="up-note">JPG, PNG or WebP. Select several files at once, or drag them onto the canvas below.</span>
-      <div class="imgcheck" id="imgCheck" role="status" aria-live="polite"></div>
-    </div>
-  </details>
+<div class="req" style="margin:0 auto">
+  <div class="imgcheck" id="imgCheck" role="status" aria-live="polite" style="margin-bottom:18px"></div>
 </div>
 
 <div class="studio">
@@ -801,7 +783,7 @@ function checkImages(infos){
   });
   el.className='imgcheck show '+(bad.length?'warn':'ok');
   el.innerHTML='<div>'+(bad.length?'<b>Uploaded '+infos.length+'. A few things to check:</b><ul>'+bad.join('')+'</ul><div>Also make sure existing desk numbers and other annotations are removed.</div>':'<b>Looks good.</b> '+infos.length+' image'+(infos.length===1?'':'s')+' uploaded, all within the recommended size and sharpness.')+'</div>';
-  $('#reqCard').open=false;
+  
 }
 async function replaceImage(f){
   var fl=F();if(!fl)return;
@@ -839,7 +821,7 @@ async function handleFiles(list){
       if(S.floors.length&&!window.confirm('Opening a project replaces what is on this page. Continue?'))return;
       var o=JSON.parse(await readFile(proj[0],true));
       if(!o||!Array.isArray(o.floors))throw new Error('This file is not a Desk Numbering project');
-      await applyProject(o);scheduleSave();$('#reqCard').open=false;toast('Opened '+proj[0].name);
+      await applyProject(o);scheduleSave();toast('Opened '+proj[0].name);
     }catch(err){toast(err.message||'That file could not be opened',4500);}
     return;
   }
@@ -946,7 +928,7 @@ window.__DN={S:S,F:F};
 (async function(){
   syncAll();
   var saved=await kvGet('project');
-  try{if(saved&&Array.isArray(saved.floors)&&saved.floors.length){await applyProject(saved);$('#reqCard').open=false;}}catch(e){}
+  try{if(saved&&Array.isArray(saved.floors)&&saved.floors.length){await applyProject(saved);}}catch(e){}
 })();
 })();
 </script>
