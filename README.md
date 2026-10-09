@@ -575,6 +575,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Rebuilt that section's "fixed period" case to "Default reservation duration," mirroring floorsense-out-of-box-policy.html's own row and description algorithm exactly.
 - Fixed a bug on that page where the "Plan up to N days ahead" description also showed default reservation duration values (start/duration/end time), duplicating and sometimes contradicting the duration section below it; it now states only the advance-booking window.
 - Added links to the standalone Desk Numbering (required) and Neighbourhood Mapper (optional) pages in the Floorsense Configuration Summary's Outstanding section, which is now always visible. Both pages' notices (and the Outstanding rows) suggest saving as JSON (to re-edit) and PNG, and emailing the PNG to oleg@smartalock.com.
+- Made the Outstanding section narrow with the Core Policy card (657.8px) once an additional policy exists, instead of staying at 915.2px.
 
 ## Status
 

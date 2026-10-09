@@ -270,6 +270,10 @@
      previously sat right up against the "+ Create New Policy" button/count row above it with no
      visual gap. ---------- */
   #outstandingGroup { max-width: 915.2px; margin: 40px auto 18px; }
+  /* Mirrors #coreSettingsColumn.compact (and .project-details-column.compact): once an additional
+     policy exists the Core Policy card narrows to 657.8px, so Outstanding narrows with it instead
+     of staying at 915.2px and reading wider than the card above it. */
+  #outstandingGroup.compact { max-width: 657.8px; }
   /* ---------- #outstandingIntro: the section's own quick note (amber .summary-note, tying it
      visually to the amber "Outstanding" icon) gets a border-bottom so the heading+note
      block reads as one distinct zone, clearly separated from the actual item rows listed below
@@ -2826,6 +2830,16 @@ optional `href`/`linkText` per item and wraps value+link in `.value-group` when 
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a new
 jsdom test (test_oob_policy_outstanding_tool_links.js) covering the always-visible section, both
 links/labels/values, and coexistence with the Desk/User Groups items.
+
+MOST RECENT CHANGE: per a report that the Core Policy card was narrower than Outstanding, found
+that once an additional policy exists `#coreSettingsColumn`, `.project-details-column` and
+`.project-details-head` all narrow to 657.8px via `.compact` (toggled in `renderPolicies()`), but
+`#outstandingGroup` stayed at 915.2px. Added `#outstandingGroup.compact { max-width: 657.8px }`
+and toggled that class in the same `renderPolicies()` block, so Outstanding keeps matching the
+Core Policy width in both states. Verified via `node --check` on the extracted script and
+test_oob_policy_outstanding_tool_links.js (now 13 assertions: no `.compact` without additional
+policies, `.compact` toggled on and off with them, and the CSS rule present). Not checked
+visually in a browser.
 -->
 
 
@@ -3840,6 +3854,9 @@ links/labels/values, and coexistence with the Desk/User Groups items.
     if (projectDetailsColumn) projectDetailsColumn.classList.toggle('compact', isCompact);
     const projectDetailsHead = document.querySelector('.project-details-head');
     if (projectDetailsHead) projectDetailsHead.classList.toggle('compact', isCompact);
+    // Outstanding follows the same toggle so its width keeps matching the Core Policy card's.
+    const outstandingGroupEl = document.getElementById('outstandingGroup');
+    if (outstandingGroupEl) outstandingGroupEl.classList.toggle('compact', isCompact);
   }
 
   document.getElementById('addPolicyBtn').addEventListener('click', () => {
