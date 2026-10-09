@@ -579,6 +579,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Set the Floorsense Configuration Summary's core/Project Details/Outstanding width to 804px so it matches the Smartalock summary page.
 - Renamed the Floorsense Outstanding rows to "Number your workspaces" and "Allocate neighbourhoods".
 - Corrected the Floorsense Outstanding intro to say "at least one business day per floor".
+- Shortened the Floorsense Outstanding intro and the two tool-page row descriptions.
 
 ## Status
 

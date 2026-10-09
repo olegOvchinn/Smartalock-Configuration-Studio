@@ -965,7 +965,7 @@
             <h3>Outstanding</h3>
           </div>
         </div>
-        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date, so we have at least one business day per floor to configure the system accordingly.</p>
+        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date. We need at least one business day per floor to configure the system.</p>
         <div id="outstandingList"></div>
       </div>
 
@@ -2865,6 +2865,16 @@ oleg@smartalock.com by the target installation date, so we have at least one bus
 floor to configure the system accordingly." (added "per floor"). Only that sentence changed; no
 other Outstanding text or styling. Verified via `node --check` and a text assertion added to
 test_oob_policy_outstanding_tool_links.js (14 assertions).
+
+MOST RECENT CHANGE: per a request to make the Outstanding text short and clear, shortened three
+strings. `#outstandingIntro` now reads "Please email these items to oleg@smartalock.com by the
+target installation date. We need at least one business day per floor to configure the system."
+(two short sentences instead of one long one). The Number your workspaces and Allocate
+neighbourhoods row descriptions now read "...Save as JSON (to edit later) and PNG, then email the
+PNG to oleg@smartalock.com."; the mapper row no longer repeats "optional" in its description since
+its value already says Optional. Meaning is unchanged (JSON to re-edit, PNG emailed to
+oleg@smartalock.com, one business day per floor). Verified via `node --check` and updated
+assertions in test_oob_policy_outstanding_tool_links.js (14 assertions).
 -->
 
 
@@ -2997,11 +3007,11 @@ test_oob_policy_outstanding_tool_links.js (14 assertions).
     // the PNG is emailed to oleg@smartalock.com.
     items.push({
       label: 'Number your workspaces', value: 'Required', href: 'desk-numbering.html', linkText: 'Open',
-      desc: 'Number each desk on your floor plans. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
+      desc: 'Number each desk on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to oleg@smartalock.com.'
     });
     items.push({
       label: 'Allocate neighbourhoods', value: 'Optional', href: 'mapper.html', linkText: 'Open',
-      desc: 'Mark up your floor plan with coloured neighbourhood areas. Completing this is optional. We suggest saving your work as a JSON project file (so you can come back and edit it again) and as a PNG image. Please email the PNG to oleg@smartalock.com.'
+      desc: 'Mark neighbourhood areas on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to oleg@smartalock.com.'
     });
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
