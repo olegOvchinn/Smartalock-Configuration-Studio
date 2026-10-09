@@ -578,6 +578,7 @@ A site-wide audit checked every Floorsense page for single-column content that w
 - Made the Outstanding section narrow with the Core Policy card (657.8px) once an additional policy exists, instead of staying at 915.2px.
 - Set the Floorsense Configuration Summary's core/Project Details/Outstanding width to 804px so it matches the Smartalock summary page.
 - Renamed the Floorsense Outstanding rows to "Number your workspaces" and "Allocate neighbourhoods".
+- Corrected the Floorsense Outstanding intro to say "at least one business day per floor".
 
 ## Status
 

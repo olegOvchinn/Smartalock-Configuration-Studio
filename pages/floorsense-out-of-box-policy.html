@@ -965,7 +965,7 @@
             <h3>Outstanding</h3>
           </div>
         </div>
-        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date, so we have at least one business day to configure the system accordingly.</p>
+        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date, so we have at least one business day per floor to configure the system accordingly.</p>
         <div id="outstandingList"></div>
       </div>
 
@@ -2859,6 +2859,12 @@ pages: "Desk Numbering" is now "Number your workspaces" and "Neighbourhood Mappe
 neighbourhoods". Only the row labels on this page changed; links, Required/Optional values,
 descriptions, and the tool pages' own titles are untouched. Verified via `node --check` and an
 updated test_oob_policy_outstanding_tool_links.js (13 assertions) checking the new labels.
+
+MOST RECENT CHANGE: per a correction, `#outstandingIntro` now reads "Please email these items to
+oleg@smartalock.com by the target installation date, so we have at least one business day per
+floor to configure the system accordingly." (added "per floor"). Only that sentence changed; no
+other Outstanding text or styling. Verified via `node --check` and a text assertion added to
+test_oob_policy_outstanding_tool_links.js (14 assertions).
 -->
 
 
