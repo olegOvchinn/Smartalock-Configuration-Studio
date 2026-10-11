@@ -8,7 +8,7 @@
   images (one per level), sets each level number, taps desks in order to number them automatically
   (default format L<level>.<3-digit number>, e.g. L23.001; prefix, digits and next number are editable
   and any single label can be typed over) and drops room labels (auto-named Room L<level>.<2-digit number>, e.g. Room L23.01, with editable prefix, digits and next number). Save... offers numbered floor plan
-  images (PNG, or JPG under 2 MB), a desk/room list as CSV, and a project .json, bundled into a .zip
+  images (PNG, or JPG under 2 MB), and a project .json, bundled into a .zip
   when more than one file is chosen. Everything runs in the browser: no backend, no network calls, and
   it does not touch the shared "configurationProject" localStorage key. Work in progress is kept in this
   browser's IndexedDB (database "desk-numbering"). Styled with the same inline Inter + tokens as the
@@ -17,6 +17,28 @@
   MOST RECENT CHANGE: removed the "Before you upload: image requirements" box (requirements grid, "How it
   works" steps and its upload button) from this page. Upload now starts from the canvas prompt below. The
   upload size/sharpness check message (#imgCheck) is kept as a small strip above the editor.
+
+  MOST RECENT CHANGE: removed the Desk list (CSV) option from Save...; it now offers floor plan images and the
+  project file only.
+
+  MOST RECENT CHANGE: the Tag / Text appearance setting now applies to room labels too. In Tag style a room
+  label sits on a dark navy tag with white text (desks keep the chosen colour, so the two stay distinct).
+
+  MOST RECENT CHANGE: Room labels now have a Numbers On/Off switch on the Digits / Next number line. Off gives
+  labels without a number (just the name and prefix); Digits, Next number and Renumber are greyed out.
+  Desk numbering has no switch because it is required.
+
+  MOST RECENT CHANGE: when a room Name is typed, a Prefix On/Off switch appears. Off gives labels such as
+  "Room 01" (name + number only); the prefix is always used when the name is empty.
+
+  MOST RECENT CHANGE: added an optional Name field to Room labels (default "Room"). Room labels are the
+  name, a space, then the prefix and number (e.g. "Room L1.01"); clear the name to use the prefix alone.
+  Older project files that stored "Room L{level}." are converted automatically.
+
+  MOST RECENT CHANGE: merged the separate "Room naming" section into the numbering section. Its header is
+  now a Desk labels / Room labels switch; the same Prefix, Digits, Next number, preview and Renumber
+  controls apply to whichever is selected, and the switch stays in step with the Number desks / Label
+  rooms tools. Desk and room numbering settings are still stored separately.
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -148,6 +170,12 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .studio-frame{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
 .foot{max-width:1320px;margin:-28px auto 0;padding:0 28px 48px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
 .empty-stage{position:absolute;inset:0;display:grid;place-items:center;padding:20px;z-index:2}
+.field[hidden]{display:none}
+.two.has3{grid-template-columns:1fr 1fr auto}
+.two .seg .btn{padding:7px 10px}
+.prefrow{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px}
+.prefrow .btn{padding:3px 12px;font-size:12px}
+.seg[hidden]{display:none}
 .empty-stage[hidden]{display:none}
 .logoprev{width:44px;height:44px;border:1px dashed var(--line);border-radius:8px;display:grid;place-items:center;flex:none;background:var(--chip);overflow:hidden}
 .logoprev img{max-width:100%;max-height:100%;display:block}
@@ -216,6 +244,8 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
 .notice a{color:var(--accent-deep);font-weight:500}
 .notice .req-ico{background:#fff}
 
+.numsw{width:100%;margin-bottom:14px}
+.numsw .btn{flex:1;justify-content:center}
 </style>
 </head>
 <body>
@@ -233,7 +263,7 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
   <div class="intro">
     <span class="eyebrow">Desk numbering</span>
     <h1 class="hero-title">Number your desks</h1>
-    <p class="sub">Upload your floor plans, tap each desk to number it, label the rooms, and save the numbered plans together with a desk list.</p>
+    <p class="sub">Upload your floor plans, tap each desk to number it, label the rooms, and save the numbered plans.</p>
   </div>
 </div>
 
@@ -312,13 +342,26 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
         </div>
       </div>
 
-      <div class="sec" id="secDesk">
-        <h2>Desk numbering</h2>
-        <div class="field">
-          <label for="nPrefix">Prefix</label>
-          <input type="text" id="nPrefix" maxlength="24" placeholder="L{level}.">
+      <div class="sec" id="secNum">
+        <div class="seg numsw" role="group" aria-label="Number desks or label rooms">
+          <button class="btn" id="numDesk" type="button">Desk labels</button>
+          <button class="btn" id="numRoom" type="button">Room labels</button>
         </div>
-        <div class="two">
+        <div class="field" id="nNameWrap" hidden>
+          <label for="nName">Name (optional)</label>
+          <input type="text" id="nName" maxlength="30" placeholder="e.g. Room">
+        </div>
+        <div class="field">
+          <div class="prefrow">
+            <label for="nPrefix" id="nPrefixLbl">Prefix</label>
+            <div class="seg" id="nPrefSw" role="group" aria-label="Use prefix" hidden>
+              <button class="btn" id="nPrefOn" type="button">On</button>
+              <button class="btn" id="nPrefOff" type="button">Off</button>
+            </div>
+          </div>
+          <input type="text" id="nPrefix" maxlength="30" placeholder="L{level}.">
+        </div>
+        <div class="two" id="nRow">
           <div class="field">
             <label for="nDigits">Digits</label>
             <input type="number" id="nDigits" min="1" max="6" step="1">
@@ -327,31 +370,17 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
             <label for="nNext">Next number</label>
             <input type="number" id="nNext" min="0" max="99999" step="1">
           </div>
+          <div class="field" id="nNumWrap" hidden>
+            <label id="nNumLbl">Numbers</label>
+            <div class="seg" id="nNumSw" role="group" aria-label="Add numbers to room labels">
+              <button class="btn" id="nNumOn" type="button">On</button>
+              <button class="btn" id="nNumOff" type="button">Off</button>
+            </div>
+          </div>
         </div>
-        <p class="lbl" style="margin:0 0 8px">Next desk: <span class="pv" id="nPreview"></span></p>
-        <p class="note" style="margin:0 0 10px"><code>{level}</code> is replaced by the level number. Tap desks in order and each gets the next number. Type a different prefix or number to start any custom scheme.</p>
+        <p class="lbl" style="margin:0 0 8px"><span id="nPreviewLbl">Next desk:</span> <span class="pv" id="nPreview"></span></p>
+        <p class="note" id="nNote" style="margin:0 0 10px"></p>
         <button class="btn" id="nRenumber" type="button">Renumber in order</button>
-      </div>
-
-      <div class="sec" id="secRoom">
-        <h2>Room naming</h2>
-        <div class="field">
-          <label for="rPrefix">Prefix</label>
-          <input type="text" id="rPrefix" maxlength="30" placeholder="Room L{level}.">
-        </div>
-        <div class="two">
-          <div class="field">
-            <label for="rDigits">Digits</label>
-            <input type="number" id="rDigits" min="1" max="6" step="1">
-          </div>
-          <div class="field">
-            <label for="rNext">Next number</label>
-            <input type="number" id="rNext" min="0" max="99999" step="1">
-          </div>
-        </div>
-        <p class="lbl" style="margin:0 0 8px">Next room: <span class="pv" id="rPreview"></span></p>
-        <p class="note" style="margin:0 0 10px">With Label rooms selected, each click names the next room automatically. Click a room label to type a real name such as &ldquo;Boardroom&rdquo;.</p>
-        <button class="btn" id="rRenumber" type="button">Renumber rooms in order</button>
       </div>
 
       <div class="sec">
@@ -396,7 +425,7 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
           <button class="btn" id="openProj" type="button">Open project file</button>
           <button class="btn danger" id="clearFloor" type="button">Clear this floor&rsquo;s numbers</button>
         </div>
-        <p class="note">Your work is kept in this browser automatically. Use Save&hellip; for images, a desk list (CSV) and a project file.</p>
+        <p class="note">Your work is kept in this browser automatically. Use Save&hellip; for images and a project file.</p>
         <input type="file" id="fileImg" accept="image/*" multiple hidden>
         <input type="file" id="fileRepl" accept="image/*" hidden>
         <input type="file" id="fileProj" accept=".json,application/json" hidden>
@@ -406,7 +435,7 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
 </div>
   </div>
 </div>
-<p class="foot">Your work stays in this browser and is saved automatically. Use &ldquo;Save&hellip;&rdquo; to get numbered images, a desk list (CSV) and a project file you can reopen later or on another computer. When you are done, send the saved files to your project contact.</p>
+<p class="foot">Your work stays in this browser and is saved automatically. Use &ldquo;Save&hellip;&rdquo; to get numbered images and a project file you can reopen later or on another computer. When you are done, send the saved files to your project contact.</p>
 
 <div class="overlay" id="saveDlg" role="dialog" aria-modal="true" aria-labelledby="sdTitle" hidden>
   <div class="card dlg">
@@ -415,8 +444,6 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
     <label class="opt chk"><input type="checkbox" id="sdImg" checked>
       <div><b>Numbered floor plan images</b><span>One image per floor with the desk numbers and room labels on it.</span>
         <br><select id="sdFmt" aria-label="Image format"><option value="png" selected>PNG (full quality)</option><option value="jpg">JPG (under 2 MB each)</option></select></div></label>
-    <label class="opt chk"><input type="checkbox" id="sdCsv" checked>
-      <div><b>Desk list (CSV)</b><span>Every desk number and room label with its level and position. Opens in Excel or Google Sheets.</span></div></label>
     <label class="opt chk"><input type="checkbox" id="sdJson">
       <div><b>Project file (JSON)</b><span>Everything you have done, so you can carry on later with &ldquo;Open project file&rdquo;.</span></div></label>
     <div class="row end">
@@ -452,17 +479,42 @@ function readFile(f,asText){return new Promise(function(res,rej){var r=new FileR
 function bind(id,ev,fn){$(id).addEventListener(ev,fn);}
 
 /* ---------- state ---------- */
-var S={name:'Desk numbering',floors:[],active:null,numbering:{pattern:'L{level}.',digits:3},roomNumbering:{pattern:'Room L{level}.',digits:2},mark:{scale:1,style:'tag',color:'#0071E3'},
-  tool:'desk',sel:null,cursor:null,shift:false};
+var S={name:'Desk numbering',floors:[],active:null,numbering:{pattern:'L{level}.',digits:3},roomNumbering:{name:'Room',usePrefix:true,numbers:true,pattern:'L{level}.',digits:2},mark:{scale:1,style:'tag',color:'#0071E3'},
+  tool:'desk',numMode:'desk',sel:null,cursor:null,shift:false};
 function F(){for(var i=0;i<S.floors.length;i++)if(S.floors[i].id===S.active)return S.floors[i];return null;}
 function prefixFor(level){return String(S.numbering.pattern).replace(/\{level\}/gi,level);}
 function labelFor(fl,n){return prefixFor(fl.level)+pad(n,S.numbering.digits);}
-function roomPrefixFor(level){return String(S.roomNumbering.pattern).replace(/\{level\}/gi,level);}
-function roomLabelFor(fl,n){return roomPrefixFor(fl.level)+pad(n,S.roomNumbering.digits);}
+function roomUsesPrefix(){return !String(S.roomNumbering.name||'').trim()||S.roomNumbering.usePrefix!==false;}
+function roomPrefixFor(level){var nm=String(S.roomNumbering.name||'').trim();return (nm?nm+' ':'')+(roomUsesPrefix()?String(S.roomNumbering.pattern).replace(/\{level\}/gi,level):'');}
+function roomNumbersOn(){return S.roomNumbering.numbers!==false;}
+function roomLabelFor(fl,n){return (roomPrefixFor(fl.level)+(roomNumbersOn()?pad(n,S.roomNumbering.digits):'')).trim();}
 function fontPx(fl){return Math.max(8,Math.round(fl.imgW/130*S.mark.scale));}
 function roomDefault(fl){return Math.max(12,Math.round(fl.imgW/70));}
 function findItem(fl,sel){if(!fl||!sel)return null;var a=sel.kind==='desk'?fl.desks:fl.rooms;for(var i=0;i<a.length;i++)if(a[i].id===sel.id)return a[i];return null;}
 function getSel(){return findItem(F(),S.sel);}
+/* One numbering panel serves both kinds of label; the switch (or the active tool) decides which. */
+function numCfg(){return S.numMode==='room'?S.roomNumbering:S.numbering;}
+function nextKey(){return S.numMode==='room'?'nextRoom':'next';}
+function numPreviewText(fl){if(S.numMode!=='room')return labelFor(fl,fl.next);var t=roomLabelFor(fl,fl.nextRoom);return t||'(blank, type a name)';}
+function syncNum(){
+  var fl=F(),room=S.numMode==='room';
+  $('#numDesk').classList.toggle('active',!room);$('#numRoom').classList.toggle('active',room);
+  $('#nNameWrap').hidden=!room;
+  if(room&&document.activeElement!==$('#nName'))$('#nName').value=S.roomNumbering.name||'';
+  var hasName=room&&!!String(S.roomNumbering.name||'').trim(),pOn=roomUsesPrefix();
+  $('#nPrefSw').hidden=!hasName;$('#nPrefOn').classList.toggle('active',pOn);$('#nPrefOff').classList.toggle('active',!pOn);
+  $('#nPrefix').hidden=room&&!pOn;
+  var nOn=!room||roomNumbersOn();
+  $('#nNumWrap').hidden=!room;$('#nRow').classList.toggle('has3',room);
+  $('#nNumOn').classList.toggle('active',nOn);$('#nNumOff').classList.toggle('active',!nOn);
+  $('#nDigits').disabled=!nOn;$('#nNext').disabled=!nOn;$('#nRenumber').disabled=!nOn;
+  if(document.activeElement!==$('#nPrefix'))$('#nPrefix').value=numCfg().pattern;
+  if(document.activeElement!==$('#nDigits'))$('#nDigits').value=numCfg().digits;
+  if(fl&&document.activeElement!==$('#nNext'))$('#nNext').value=fl[nextKey()];
+  $('#nPreviewLbl').textContent=room?'Next room:':'Next desk:';
+  $('#nPreview').textContent=fl?numPreviewText(fl):'';
+  $('#nNote').innerHTML=room?'<code>{level}</code> is replaced by the level number. Click each room and it is named automatically. The name is optional; clear it to use the prefix alone. Click a room label to type a real name such as &ldquo;Boardroom&rdquo;.':'<code>{level}</code> is replaced by the level number. Tap desks in order and each gets the next number. Type a different prefix or number to start any custom scheme.';
+}
 
 /* ---------- geometry ---------- */
 function deskBox(fl,d){
@@ -471,7 +523,8 @@ function deskBox(fl,d){
 }
 function roomBox(r){
   meas.font='700 '+r.size+'px '+FONT;var lines=String(r.text||'').split('\n'),w=1;lines.forEach(function(l){w=Math.max(w,meas.measureText(l).width);});
-  return {lines:lines,w:w,h:Math.max(1,lines.length)*r.size*1.2};
+  var th=Math.max(1,lines.length)*r.size*1.2,tag=S.mark.style==='tag';
+  return {lines:lines,tw:w,th:th,w:w+(tag?r.size*.9:0),h:th+(tag?r.size*.25:0)};
 }
 function hitTest(fl,w){
   var i,pad=4/fl.view.zoom;
@@ -487,8 +540,11 @@ function drawFloor(c,fl,edit,k){
   c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
   fl.rooms.forEach(function(r){
     if(!String(r.text||'').trim())return;
-    var q=roomBox(r);c.font='700 '+r.size+'px '+FONT;
-    q.lines.forEach(function(ln,i){var y=r.y-q.h/2+r.size*1.2*(i+.5);c.lineWidth=Math.max(2,r.size*.22);c.strokeStyle='rgba(255,255,255,.95)';c.strokeText(ln,r.x,y);c.fillStyle='#102A43';c.fillText(ln,r.x,y);});
+    var q=roomBox(r),rtag=S.mark.style==='tag';c.font='700 '+r.size+'px '+FONT;
+    if(rtag){c.fillStyle='rgba(16,42,67,.92)';rr(c,r.x-q.w/2,r.y-q.h/2,q.w,q.h,r.size*.35);c.fill();}
+    q.lines.forEach(function(ln,i){var y=r.y-q.th/2+r.size*1.2*(i+.5);
+      if(rtag){c.fillStyle='#ffffff';c.fillText(ln,r.x,y+r.size*.04);}
+      else{c.lineWidth=Math.max(2,r.size*.22);c.strokeStyle='rgba(255,255,255,.95)';c.strokeText(ln,r.x,y);c.fillStyle='#102A43';c.fillText(ln,r.x,y);}});
   });
   var col=S.mark.color,tag=S.mark.style==='tag';
   fl.desks.forEach(function(d){
@@ -557,7 +613,7 @@ function deleteSel(){
   if(S.sel.kind==='desk')fl.desks=fl.desks.filter(function(d){return d.id!==it.id;});else fl.rooms=fl.rooms.filter(function(r){return r.id!==it.id;});
   S.sel=null;commit();syncAll();
 }
-function setTool(t){S.tool=t;syncTools();updateHint();render();}
+function setTool(t){S.tool=t;if(t==='desk'||t==='room'){S.numMode=t;syncNum();}syncTools();updateHint();render();}
 
 /* ---------- pointer input ---------- */
 var ptrs=new Map(),drag=null,down=null,pinch=null,spaceDown=false,ptrDown=false;
@@ -610,7 +666,7 @@ cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 window.addEventListener('keydown',function(e){
   var t=e.target,typing=t&&(t.tagName==='INPUT'&&t.type!=='range'&&t.type!=='checkbox'&&t.type!=='color'&&t.type!=='radio'||t.tagName==='TEXTAREA'||t.tagName==='SELECT');
   if(e.code==='Space'&&!typing)spaceDown=true;
-  if(typing){if(e.key==='Enter'&&(t.id==='sLabel'||t.id==='fLevel'||t.id==='nPrefix'||t.id==='rPrefix')&&!(t.id==='sLabel'&&S.sel&&S.sel.kind==='room'&&e.shiftKey)){e.preventDefault();t.blur();}return;}
+  if(typing){if(e.key==='Enter'&&(t.id==='sLabel'||t.id==='fLevel'||t.id==='nPrefix')&&!(t.id==='sLabel'&&S.sel&&S.sel.kind==='room'&&e.shiftKey)){e.preventDefault();t.blur();}return;}
   var mod=e.ctrlKey||e.metaKey;
   if(mod&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}
   if(mod&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}
@@ -647,17 +703,10 @@ function syncPanel(){
   var fl=F(),has=!!fl;
   if(has){
     if(document.activeElement!==$('#fLevel'))$('#fLevel').value=fl.level;
-    if(document.activeElement!==$('#nNext'))$('#nNext').value=fl.next;
-    $('#nPreview').textContent=labelFor(fl,fl.next);
-    if(document.activeElement!==$('#rNext'))$('#rNext').value=fl.nextRoom;
-    $('#rPreview').textContent=roomLabelFor(fl,fl.nextRoom);
     var tot=0;S.floors.forEach(function(f){tot+=f.desks.length;});
     $('#counts').textContent=fl.desks.length+' desk'+(fl.desks.length===1?'':'s')+' and '+fl.rooms.length+' room label'+(fl.rooms.length===1?'':'s')+' on this floor'+(S.floors.length>1?'. '+tot+' desks in total.':'.');
-  }else{$('#counts').textContent='No floors yet.';$('#nPreview').textContent='';$('#rPreview').textContent='';}
-  if(document.activeElement!==$('#nPrefix'))$('#nPrefix').value=S.numbering.pattern;
-  if(document.activeElement!==$('#nDigits'))$('#nDigits').value=S.numbering.digits;
-  if(document.activeElement!==$('#rPrefix'))$('#rPrefix').value=S.roomNumbering.pattern;
-  if(document.activeElement!==$('#rDigits'))$('#rDigits').value=S.roomNumbering.digits;
+  }else{$('#counts').textContent='No floors yet.';}
+  syncNum();
   var it=getSel();$('#selEmpty').hidden=!!it;$('#selForm').hidden=!it;
   if(it){
     var room=S.sel.kind==='room';
@@ -694,25 +743,32 @@ bind('#fLevel','input',function(e){
   var fl=F();if(!fl)return;var old=prefixFor(fl.level),oldR=roomPrefixFor(fl.level);fl.level=e.target.value.trim();var np=prefixFor(fl.level),npR=roomPrefixFor(fl.level);
   if(old!==np)fl.desks.forEach(function(d){if(d.label.indexOf(old)===0)d.label=np+d.label.slice(old.length);});
   if(oldR!==npR)fl.rooms.forEach(function(q){if(String(q.text).indexOf(oldR)===0)q.text=npR+String(q.text).slice(oldR.length);});
-  renderTabs();$('#nPreview').textContent=labelFor(fl,fl.next);$('#rPreview').textContent=roomLabelFor(fl,fl.nextRoom);updateHint();render();
+  renderTabs();syncNum();updateHint();render();
 });
 bind('#fLevel','change',function(){commit();});
-bind('#nPrefix','input',function(e){S.numbering.pattern=e.target.value;var fl=F();if(fl){$('#nPreview').textContent=labelFor(fl,fl.next);updateHint();}render();scheduleSave();});
-bind('#nDigits','input',function(e){var v=clamp(parseInt(e.target.value,10)||1,1,6);S.numbering.digits=v;var fl=F();if(fl){$('#nPreview').textContent=labelFor(fl,fl.next);updateHint();}render();scheduleSave();});
-bind('#nNext','input',function(e){var fl=F();if(!fl)return;var v=parseInt(e.target.value,10);if(isNaN(v)||v<0)return;fl.next=v;$('#nPreview').textContent=labelFor(fl,fl.next);updateHint();render();});
+bind('#nName','input',function(e){S.roomNumbering.name=e.target.value;syncNum();var fl=F();if(fl){$('#nPreview').textContent=numPreviewText(fl);updateHint();}render();scheduleSave();});
+function setNums(on){S.roomNumbering.numbers=on;syncNum();var fl=F();if(fl){$('#nPreview').textContent=numPreviewText(fl);updateHint();}render();scheduleSave();}
+bind('#nNumOn','click',function(){setNums(true);});
+bind('#nNumOff','click',function(){setNums(false);});
+function setPref(on){S.roomNumbering.usePrefix=on;syncNum();var fl=F();if(fl){$('#nPreview').textContent=numPreviewText(fl);updateHint();}render();scheduleSave();}
+bind('#nPrefOn','click',function(){setPref(true);});
+bind('#nPrefOff','click',function(){setPref(false);});
+bind('#nPrefix','input',function(e){numCfg().pattern=e.target.value;var fl=F();if(fl){$('#nPreview').textContent=numPreviewText(fl);updateHint();}render();scheduleSave();});
+bind('#nDigits','input',function(e){numCfg().digits=clamp(parseInt(e.target.value,10)||1,1,6);var fl=F();if(fl){$('#nPreview').textContent=numPreviewText(fl);updateHint();}render();scheduleSave();});
+bind('#nNext','input',function(e){var fl=F();if(!fl)return;var v=parseInt(e.target.value,10);if(isNaN(v)||v<0)return;fl[nextKey()]=v;$('#nPreview').textContent=numPreviewText(fl);updateHint();render();});
 bind('#nNext','change',function(){commit();});
 bind('#nRenumber','click',function(){
-  var fl=F();if(!fl||!fl.desks.length)return;
-  fl.desks.forEach(function(d,i){d.label=labelFor(fl,i+1);});fl.next=fl.desks.length+1;commit();syncAll();toast('Renumbered '+fl.desks.length+' desks in the order they were placed. Undo brings the old numbers back.',4500);
+  var fl=F();if(!fl)return;
+  if(S.numMode==='room'){
+    if(!fl.rooms.length)return;
+    fl.rooms.forEach(function(q,i){q.text=roomLabelFor(fl,i+1);});fl.nextRoom=fl.rooms.length+1;commit();syncAll();render();toast('Renamed '+fl.rooms.length+' rooms in the order they were placed. Undo brings the old names back.',4500);
+  }else{
+    if(!fl.desks.length)return;
+    fl.desks.forEach(function(d,i){d.label=labelFor(fl,i+1);});fl.next=fl.desks.length+1;commit();syncAll();toast('Renumbered '+fl.desks.length+' desks in the order they were placed. Undo brings the old numbers back.',4500);
+  }
 });
-bind('#rPrefix','input',function(e){S.roomNumbering.pattern=e.target.value;var fl=F();if(fl){$('#rPreview').textContent=roomLabelFor(fl,fl.nextRoom);updateHint();}scheduleSave();});
-bind('#rDigits','input',function(e){S.roomNumbering.digits=clamp(parseInt(e.target.value,10)||1,1,6);var fl=F();if(fl){$('#rPreview').textContent=roomLabelFor(fl,fl.nextRoom);updateHint();}scheduleSave();});
-bind('#rNext','input',function(e){var fl=F();if(!fl)return;var v=parseInt(e.target.value,10);if(isNaN(v)||v<0)return;fl.nextRoom=v;$('#rPreview').textContent=roomLabelFor(fl,fl.nextRoom);updateHint();});
-bind('#rNext','change',function(){commit();});
-bind('#rRenumber','click',function(){
-  var fl=F();if(!fl||!fl.rooms.length)return;
-  fl.rooms.forEach(function(q,i){q.text=roomLabelFor(fl,i+1);});fl.nextRoom=fl.rooms.length+1;commit();syncAll();render();toast('Renamed '+fl.rooms.length+' rooms in the order they were placed. Undo brings the old names back.',4500);
-});
+bind('#numDesk','click',function(){setTool('desk');});
+bind('#numRoom','click',function(){setTool('room');});
 bind('#sLabel','input',function(e){
   var it=getSel();if(!it)return;
   if(S.sel.kind==='desk'){it.label=e.target.value.replace(/\n/g,'');}else it.text=e.target.value;
@@ -727,8 +783,7 @@ bind('#fRemove','click',function(){var fl=F();if(fl)removeFloor(fl.id);});
 
 /* Working in a panel switches to the matching tool, so the next click on the plan does what the panel is about. */
 function autoTool(t){if(F()&&S.tool!==t)setTool(t);}
-$('#secDesk').addEventListener('focusin',function(){autoTool('desk');});
-$('#secRoom').addEventListener('focusin',function(){autoTool('room');});
+$('#secNum').addEventListener('focusin',function(){autoTool(S.numMode);});
 $('#sLabel').addEventListener('focusin',function(){if(S.sel)autoTool(S.sel.kind==='room'?'room':'desk');});
 bind('#toolSelect','click',function(){setTool('select');});
 bind('#toolDesk','click',function(){setTool('desk');});
@@ -806,7 +861,9 @@ async function applyProject(p){
   }
   S.floors=floors;S.active=floors.length?floors[Math.min(Math.max(0,+p.activeIndex||0),floors.length-1)].id:null;
   var nb=p.numbering||{};S.numbering={pattern:typeof nb.pattern==='string'?nb.pattern:'L{level}.',digits:clamp(parseInt(nb.digits,10)||3,1,6)};
-  var rn=p.roomNumbering||{};S.roomNumbering={pattern:typeof rn.pattern==='string'?rn.pattern:'Room L{level}.',digits:clamp(parseInt(rn.digits,10)||2,1,6)};
+  var rn=p.roomNumbering||{};var rnPat=typeof rn.pattern==='string'?rn.pattern:'Room L{level}.',rnName=typeof rn.name==='string'?rn.name:null;
+  if(rnName===null){var m=/^Room\s+(.*)$/.exec(rnPat);if(m){rnName='Room';rnPat=m[1];}else rnName='';}
+  S.roomNumbering={name:rnName,usePrefix:rn.usePrefix!==false,numbers:rn.numbers!==false,pattern:rnPat,digits:clamp(parseInt(rn.digits,10)||2,1,6)};
   var mk=p.mark||{};S.mark={scale:clamp(+mk.scale||1,.4,3.2),style:mk.style==='text'?'text':'tag',color:/^#[0-9a-f]{6}$/i.test(mk.color)?mk.color:'#0071E3'};
   S.name=p.name||'Desk numbering';$('#projName').value=S.name;S.sel=null;
   syncAll();fitView();
@@ -864,15 +921,6 @@ async function floorImageBlob(fl,fmt){
   while(blob.size>limit&&scl>.3){scl*=.85;var c2=document.createElement('canvas');c2.width=Math.round(fl.imgW*scl);c2.height=Math.round(fl.imgH*scl);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(c,0,0,c2.width,c2.height);blob=await blobOf(c2,'image/jpeg',.72);}
   return blob;
 }
-function csvCell(v){v=String(v==null?'':v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
-function buildCsv(){
-  var rows=[['Type','Level','Label','X (px)','Y (px)','X (%)','Y (%)','Image width (px)','Image height (px)']];
-  S.floors.forEach(function(f){
-    f.desks.forEach(function(d){rows.push(['Desk',f.level,d.label,Math.round(d.x),Math.round(d.y),(d.x/f.imgW*100).toFixed(2),(d.y/f.imgH*100).toFixed(2),f.imgW,f.imgH]);});
-    f.rooms.forEach(function(r){rows.push(['Room',f.level,String(r.text).replace(/\s*\n\s*/g,' '),Math.round(r.x),Math.round(r.y),(r.x/f.imgW*100).toFixed(2),(r.y/f.imgH*100).toFixed(2),f.imgW,f.imgH]);});
-  });
-  return '﻿'+rows.map(function(r){return r.map(csvCell).join(',');}).join('\r\n')+'\r\n';
-}
 var CRCT=null;
 function crc32(u8){
   if(!CRCT){CRCT=new Uint32Array(256);for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;CRCT[n]=c>>>0;}}
@@ -895,15 +943,14 @@ function zipBlob(entries){
 }
 async function u8(blob){return new Uint8Array(await blob.arrayBuffer());}
 async function saveSelected(){
-  var wantImg=$('#sdImg').checked,wantCsv=$('#sdCsv').checked,wantJson=$('#sdJson').checked,fmt=$('#sdFmt').value;
-  if(!wantImg&&!wantCsv&&!wantJson){toast('Choose at least one thing to save.');return;}
+  var wantImg=$('#sdImg').checked,wantJson=$('#sdJson').checked,fmt=$('#sdFmt').value;
+  if(!wantImg&&!wantJson){toast('Choose at least one thing to save.');return;}
   var files=[],base=slug(S.name);
   $('#sdSave').disabled=true;$('#sdSave').textContent='Preparing…';
   try{
     if(wantImg){
       for(var i=0;i<S.floors.length;i++){var fl=S.floors[i],b=await floorImageBlob(fl,fmt);files.push({name:'level-'+slug(fl.level)+'-desks.'+(fmt==='png'?'png':'jpg'),blob:b});}
     }
-    if(wantCsv)files.push({name:'desk-list.csv',blob:new Blob([buildCsv()],{type:'text/csv;charset=utf-8'})});
     if(wantJson)files.push({name:base+'-project.json',blob:new Blob([JSON.stringify(projectObj())],{type:'application/json'})});
     if(files.length===1){download(files[0].name===base+'-project.json'?files[0].name:files[0].name,files[0].blob);toast('Saved '+files[0].name+' ('+fmtSize(files[0].blob.size)+')');}
     else{
@@ -924,7 +971,7 @@ window.addEventListener('keydown',function(e){if(!dlg.hidden&&e.key==='Escape'){
 /* ---------- boot ---------- */
 new ResizeObserver(function(){var fl=F();if(fl&&!fl.view)fitView();render();}).observe(stage);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(render);
-window.__DN={S:S,F:F};
+window.__DN={S:S,F:F,applyProject:applyProject};
 (async function(){
   syncAll();
   var saved=await kvGet('project');
