@@ -12,6 +12,18 @@
   saved to / opened from a project .json file. Styled with the same Inter + tokens as the wizard pages
   (inline, like the other pages in this folder). noindex so search engines don't pick it up.
 
+  MOST RECENT CHANGE: added a short looping demo (assets/images/neighbourhood-demo.gif) to the "Before you
+  upload: image requirements" card, under the requirements and above the upload button, showing how to draw a
+  neighbourhood, name it and change its colour.
+
+  MOST RECENT CHANGE: the logo "Remove" button is now hidden until a logo has been uploaded (it was showing
+  with no logo because the button display style overrode the hidden attribute).
+
+  MOST RECENT CHANGE: the side panel label is now "Branding logo (optional)".
+
+  MOST RECENT CHANGE: note box now asks only for the project file (JSON) to be saved and emailed; the PNG
+  image is no longer mentioned.
+
   MOST RECENT CHANGE: this page is now linked from the Floorsense Configuration Summary's
   Outstanding section (floorsense-out-of-box-policy.html, "Neighbourhood Mapper", marked Optional),
   so the "not linked from any wizard page" statement above no longer holds. Also added a line to the
@@ -148,6 +160,10 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .req-ico svg{width:17px;height:17px}
 .req-item h3{margin:2px 0 3px;font-size:14px;font-weight:600;color:var(--ink)}
 .req-item p{margin:0;font-size:13px;line-height:1.55;color:var(--muted)}
+.req-demo{margin:24px 0 0;padding-top:20px;border-top:1px solid var(--line)}
+.req-demo h3{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--navy);letter-spacing:-.005em}
+.req-demo img{display:block;width:100%;max-width:760px;height:auto;margin:0 auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.req-demo figcaption{margin:8px auto 0;max-width:760px;font-size:12.5px;color:var(--muted)}
 .req-up{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
 .btn.lg{min-height:42px;padding:9px 20px;border-radius:100px;font-size:14px}
 .up-note{font-size:12.5px;color:var(--muted)}
@@ -172,6 +188,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .logoprev img{max-width:100%;max-height:100%;display:block}
 .logoprev img[hidden]{display:none}
 .overlay[hidden]{display:none}
+.btn[hidden]{display:none}
 .hint kbd{font:inherit;font-weight:700;padding:1px 7px;border-radius:5px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4)}
 .hint.tip{background:rgba(0,88,176,.95)}
 .dlg{width:min(460px,100%)}
@@ -232,7 +249,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
   <div class="notice" role="note">
     <span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
     <div>
-      <p>Once finished, save a project file (JSON), so you can edit later, plus an image (PNG) for emailing to <a href="mailto:oleg@smartalock.com">oleg@smartalock.com</a>.</p>
+      <p>Once finished, save a project file (JSON), so you can edit later, and email it to <a href="mailto:oleg@smartalock.com">oleg@smartalock.com</a>.</p>
     </div>
   </div>
 </div>
@@ -246,6 +263,11 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
       <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></span><div><h3>No desk numbers, no extra annotations</h3><p>Remove desk numbers, furniture codes, dimensions, markups, title blocks and legends before exporting. The cleaner the plan, the clearer the coloured neighbourhoods will read.</p></div></div>
       <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg></span><div><h3>One whole floor, upright</h3><p>One floor per image, cropped to the floor area, not rotated or skewed. Upload one image per level and repeat this page for each.</p></div></div>
     </div>
+    <figure class="req-demo">
+      <h3>See how it works</h3>
+      <img src="../assets/images/neighbourhood-demo.gif" width="1000" height="532" alt="Short demo: choose Draw, click around an area on the plan, finish the shape, then type a name and pick a colour." loading="eager">
+      <figcaption>Draw an area, then name it and choose its colour.</figcaption>
+    </figure>
     <div class="req-up">
       <button class="btn primary lg" type="button" data-pick="img">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M3 13h10"/></svg>Upload floor plan image</button>
@@ -361,7 +383,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
           <div class="row"><input type="range" id="lgTitleSize" min="8" max="160" step="1"><span class="val" id="vTitleSize"></span></div>
         </div>
         <div class="field" style="margin-bottom:0">
-          <span class="lbl">Branding logo</span>
+          <span class="lbl">Branding logo (optional)</span>
           <div class="row">
             <span class="logoprev" id="logoPrevBox"><img id="logoPrev" alt="" hidden></span>
             <button class="btn" id="logoUp" type="button">Upload logo</button>
