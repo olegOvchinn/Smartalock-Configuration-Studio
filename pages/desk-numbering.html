@@ -14,7 +14,10 @@
   browser's IndexedDB (database "desk-numbering"). Styled with the same inline Inter + tokens as the
   other pages in this folder. noindex so search engines don't pick it up.
 
-  MOST RECENT CHANGE: removed the "Before you upload: image requirements" box (requirements grid, "How it
+  MOST RECENT CHANGE: added a short looping demo (assets/images/desk-numbering-demo.gif) under the "Good to know"
+  notice: zoom in, tap desks, change the number size, remove/apply the tag style, and switch between desk and room labels.
+
+  PREVIOUS CHANGE: removed the "Before you upload: image requirements" box (requirements grid, "How it
   works" steps and its upload button) from this page. Upload now starts from the canvas prompt below. The
   upload size/sharpness check message (#imgCheck) is kept as a small strip above the editor.
 
@@ -237,6 +240,10 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
 .dlg .opt.chk input{margin-top:3px}
 @media (max-width:860px){.tabs{padding-left:8px;padding-right:8px}.top>.group:first-of-type{width:100%}.top>.group:first-of-type>.seg:first-child{width:100%}.top>.group:first-of-type>.seg:first-child .btn{flex:1;justify-content:center;padding-left:8px;padding-right:8px}}
 
+.req-demo{margin:0 0 18px}
+.req-demo h3{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--navy);letter-spacing:-.005em}
+.req-demo img{display:block;width:100%;max-width:760px;height:auto;margin:0 auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.req-demo figcaption{margin:8px auto 0;max-width:760px;font-size:12.5px;color:var(--muted)}
 .notice{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;border-radius:16px;background:var(--accent-wash);color:var(--ink);font-size:13.5px;line-height:1.6}
 .notice p{margin:4px 0 0;color:#2b3a4a}
 .notice p:first-of-type{margin-top:2px}
@@ -275,6 +282,14 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
       <p>This page and the <a href="mapper.html">Neighbourhood Mapper</a> are used one after the other: desk numbering first, then the mapper. Desk numbering needs to be completed. The mapper is optional, unless you have chosen to use desk groups and user groups, in which case it is required too.</p>
     </div>
   </div>
+</div>
+
+<div class="req" style="margin-bottom:0">
+  <figure class="req-demo">
+    <h3>See how it works</h3>
+    <img src="../assets/images/desk-numbering-demo.gif" width="1000" height="639" alt="Short demo: zoom in on the plan, tap desks to number them, change the number size, switch the tag style off and on, then switch between desk labels and room labels." loading="eager">
+    <figcaption>Number desks, label rooms, and adjust the size and tag style.</figcaption>
+  </figure>
 </div>
 
 <div class="req" style="margin:0 auto">
