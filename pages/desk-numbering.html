@@ -14,7 +14,11 @@
   browser's IndexedDB (database "desk-numbering"). Styled with the same inline Inter + tokens as the
   other pages in this folder. noindex so search engines don't pick it up.
 
-  MOST RECENT CHANGE: added a short looping demo (assets/images/desk-numbering-demo.gif) under the "Good to know"
+  MOST RECENT CHANGE: the Appearance section now follows the Desk labels / Room labels switch. In Room labels
+  mode its title, size, Tag / Text only style and colour change the room labels (stored separately in the project
+  file as roomMark; default dark navy tag); in Desk labels mode they change the desk numbers as before.
+
+  PREVIOUS CHANGE: added a short looping demo (assets/images/desk-numbering-demo.gif) under the "Good to know"
   notice: zoom in, tap desks, change the number size, remove/apply the tag style, and switch between desk and room labels.
 
   PREVIOUS CHANGE: removed the "Before you upload: image requirements" box (requirements grid, "How it
@@ -415,14 +419,14 @@ input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);borde
       </div>
 
       <div class="sec">
-        <h2>Appearance</h2>
+        <h2 id="appTitle">Appearance: desk numbers</h2>
         <div class="field">
-          <label for="mScale">Desk number size</label>
+          <label for="mScale" id="mScaleLbl">Desk number size</label>
           <div class="row"><input type="range" id="mScale" min="40" max="320" step="5"><span class="val" id="vMScale"></span></div>
         </div>
         <div class="field">
           <span class="lbl">Style</span>
-          <div class="seg" role="group" aria-label="Number style">
+          <div class="seg" role="group" aria-label="Label style" id="mStyleSeg">
             <button class="btn" id="mTag" type="button" style="flex:1">Tag</button>
             <button class="btn" id="mText" type="button" style="flex:1">Text only</button>
           </div>
@@ -494,7 +498,7 @@ function readFile(f,asText){return new Promise(function(res,rej){var r=new FileR
 function bind(id,ev,fn){$(id).addEventListener(ev,fn);}
 
 /* ---------- state ---------- */
-var S={name:'Desk numbering',floors:[],active:null,numbering:{pattern:'L{level}.',digits:3},roomNumbering:{name:'Room',usePrefix:true,numbers:true,pattern:'L{level}.',digits:2},mark:{scale:1,style:'tag',color:'#0071E3'},
+var S={name:'Desk numbering',floors:[],active:null,numbering:{pattern:'L{level}.',digits:3},roomNumbering:{name:'Room',usePrefix:true,numbers:true,pattern:'L{level}.',digits:2},mark:{scale:1,style:'tag',color:'#0071E3'},roomMark:{scale:1,style:'tag',color:'#102A43'},
   tool:'desk',numMode:'desk',sel:null,cursor:null,shift:false};
 function F(){for(var i=0;i<S.floors.length;i++)if(S.floors[i].id===S.active)return S.floors[i];return null;}
 function prefixFor(level){return String(S.numbering.pattern).replace(/\{level\}/gi,level);}
@@ -508,6 +512,7 @@ function roomDefault(fl){return Math.max(12,Math.round(fl.imgW/70));}
 function findItem(fl,sel){if(!fl||!sel)return null;var a=sel.kind==='desk'?fl.desks:fl.rooms;for(var i=0;i<a.length;i++)if(a[i].id===sel.id)return a[i];return null;}
 function getSel(){return findItem(F(),S.sel);}
 /* One numbering panel serves both kinds of label; the switch (or the active tool) decides which. */
+function curMark(){return S.numMode==='room'?S.roomMark:S.mark;}
 function numCfg(){return S.numMode==='room'?S.roomNumbering:S.numbering;}
 function nextKey(){return S.numMode==='room'?'nextRoom':'next';}
 function numPreviewText(fl){if(S.numMode!=='room')return labelFor(fl,fl.next);var t=roomLabelFor(fl,fl.nextRoom);return t||'(blank, type a name)';}
@@ -537,9 +542,9 @@ function deskBox(fl,d){
   return {fs:fs,tw:tw,w:tw+(tag?fs*.9:fs*.3),h:fs*(tag?1.45:1.2)};
 }
 function roomBox(r){
-  meas.font='700 '+r.size+'px '+FONT;var lines=String(r.text||'').split('\n'),w=1;lines.forEach(function(l){w=Math.max(w,meas.measureText(l).width);});
-  var th=Math.max(1,lines.length)*r.size*1.2,tag=S.mark.style==='tag';
-  return {lines:lines,tw:w,th:th,w:w+(tag?r.size*.9:0),h:th+(tag?r.size*.25:0)};
+  var sz=Math.max(6,r.size*S.roomMark.scale);meas.font='700 '+sz+'px '+FONT;var lines=String(r.text||'').split('\n'),w=1;lines.forEach(function(l){w=Math.max(w,meas.measureText(l).width);});
+  var th=Math.max(1,lines.length)*sz*1.2,tag=S.roomMark.style==='tag';
+  return {sz:sz,lines:lines,tw:w,th:th,w:w+(tag?sz*.9:0),h:th+(tag?sz*.25:0)};
 }
 function hitTest(fl,w){
   var i,pad=4/fl.view.zoom;
@@ -555,11 +560,11 @@ function drawFloor(c,fl,edit,k){
   c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
   fl.rooms.forEach(function(r){
     if(!String(r.text||'').trim())return;
-    var q=roomBox(r),rtag=S.mark.style==='tag';c.font='700 '+r.size+'px '+FONT;
-    if(rtag){c.fillStyle='rgba(16,42,67,.92)';rr(c,r.x-q.w/2,r.y-q.h/2,q.w,q.h,r.size*.35);c.fill();}
-    q.lines.forEach(function(ln,i){var y=r.y-q.th/2+r.size*1.2*(i+.5);
-      if(rtag){c.fillStyle='#ffffff';c.fillText(ln,r.x,y+r.size*.04);}
-      else{c.lineWidth=Math.max(2,r.size*.22);c.strokeStyle='rgba(255,255,255,.95)';c.strokeText(ln,r.x,y);c.fillStyle='#102A43';c.fillText(ln,r.x,y);}});
+    var q=roomBox(r),rm=S.roomMark,rtag=rm.style==='tag',sz=q.sz;c.font='700 '+sz+'px '+FONT;
+    if(rtag){c.fillStyle=rgba(rm.color,.92);rr(c,r.x-q.w/2,r.y-q.h/2,q.w,q.h,sz*.35);c.fill();}
+    q.lines.forEach(function(ln,i){var y=r.y-q.th/2+sz*1.2*(i+.5);
+      if(rtag){c.fillStyle=autoText(rm.color);c.fillText(ln,r.x,y+sz*.04);}
+      else{c.lineWidth=Math.max(2,sz*.22);c.strokeStyle='rgba(255,255,255,.95)';c.strokeText(ln,r.x,y);c.fillStyle=rm.color;c.fillText(ln,r.x,y);}});
   });
   var col=S.mark.color,tag=S.mark.style==='tag';
   fl.desks.forEach(function(d){
@@ -628,7 +633,7 @@ function deleteSel(){
   if(S.sel.kind==='desk')fl.desks=fl.desks.filter(function(d){return d.id!==it.id;});else fl.rooms=fl.rooms.filter(function(r){return r.id!==it.id;});
   S.sel=null;commit();syncAll();
 }
-function setTool(t){S.tool=t;if(t==='desk'||t==='room'){S.numMode=t;syncNum();}syncTools();updateHint();render();}
+function setTool(t){S.tool=t;if(t==='desk'||t==='room'){S.numMode=t;syncNum();syncPanel();}syncTools();updateHint();render();}
 
 /* ---------- pointer input ---------- */
 var ptrs=new Map(),drag=null,down=null,pinch=null,spaceDown=false,ptrDown=false;
@@ -730,9 +735,13 @@ function syncPanel(){
     $('#sSizeWrap').hidden=!room;
     if(room){$('#sSize').max=Math.round(fl.imgW/8);$('#sSize').value=it.size;$('#vSSize').textContent=it.size+' px';}
   }
-  $('#mScale').value=Math.round(S.mark.scale*100);$('#vMScale').textContent=Math.round(S.mark.scale*100)+'%';
-  $('#mTag').classList.toggle('active',S.mark.style==='tag');$('#mText').classList.toggle('active',S.mark.style==='text');
-  $('#mColor').value=S.mark.color;
+  var mk=curMark(),rm=S.numMode==='room';
+  $('#appTitle').textContent=rm?'Appearance: room labels':'Appearance: desk numbers';
+  $('#mScaleLbl').textContent=rm?'Room label size':'Desk number size';
+  $('#mColor').setAttribute('aria-label',rm?'Room label colour':'Desk number colour');
+  $('#mScale').value=Math.round(mk.scale*100);$('#vMScale').textContent=Math.round(mk.scale*100)+'%';
+  $('#mTag').classList.toggle('active',mk.style==='tag');$('#mText').classList.toggle('active',mk.style==='text');
+  $('#mColor').value=mk.color;
 }
 function syncTools(){['Select','Desk','Room'].forEach(function(n){$('#tool'+n).classList.toggle('active',S.tool===n.toLowerCase());});cv.style.cursor=S.tool==='select'?'default':'crosshair';}
 function updateHint(){
@@ -746,13 +755,13 @@ function syncEmpty(){var has=S.floors.length>0;$('#app').classList.toggle('noimg
 function syncAll(){syncEmpty();renderTabs();syncPanel();syncTools();updateHint();updateBtns();render();}
 
 var swWrap=$('#swatches');
-PALETTE.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='swatch';b.style.background=c;b.setAttribute('aria-label','Use colour '+c);b.addEventListener('click',function(){S.mark.color=c;syncPanel();render();scheduleSave();});swWrap.appendChild(b);});
+PALETTE.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='swatch';b.style.background=c;b.setAttribute('aria-label','Use colour '+c);b.addEventListener('click',function(){curMark().color=c;syncPanel();render();scheduleSave();});swWrap.appendChild(b);});
 
-bind('#mColor','input',function(e){S.mark.color=e.target.value;render();scheduleSave();});
-bind('#mScale','input',function(e){S.mark.scale=e.target.value/100;$('#vMScale').textContent=e.target.value+'%';render();});
+bind('#mColor','input',function(e){curMark().color=e.target.value;render();scheduleSave();});
+bind('#mScale','input',function(e){curMark().scale=e.target.value/100;$('#vMScale').textContent=e.target.value+'%';render();});
 bind('#mScale','change',function(){scheduleSave();});
-bind('#mTag','click',function(){S.mark.style='tag';syncPanel();render();scheduleSave();});
-bind('#mText','click',function(){S.mark.style='text';syncPanel();render();scheduleSave();});
+bind('#mTag','click',function(){curMark().style='tag';syncPanel();render();scheduleSave();});
+bind('#mText','click',function(){curMark().style='text';syncPanel();render();scheduleSave();});
 
 bind('#fLevel','input',function(e){
   var fl=F();if(!fl)return;var old=prefixFor(fl.level),oldR=roomPrefixFor(fl.level);fl.level=e.target.value.trim();var np=prefixFor(fl.level),npR=roomPrefixFor(fl.level);
@@ -880,6 +889,7 @@ async function applyProject(p){
   if(rnName===null){var m=/^Room\s+(.*)$/.exec(rnPat);if(m){rnName='Room';rnPat=m[1];}else rnName='';}
   S.roomNumbering={name:rnName,usePrefix:rn.usePrefix!==false,numbers:rn.numbers!==false,pattern:rnPat,digits:clamp(parseInt(rn.digits,10)||2,1,6)};
   var mk=p.mark||{};S.mark={scale:clamp(+mk.scale||1,.4,3.2),style:mk.style==='text'?'text':'tag',color:/^#[0-9a-f]{6}$/i.test(mk.color)?mk.color:'#0071E3'};
+  var rk=p.roomMark||{};S.roomMark={scale:clamp(+rk.scale||1,.4,3.2),style:rk.style==='text'?'text':'tag',color:/^#[0-9a-f]{6}$/i.test(rk.color)?rk.color:'#102A43'};
   S.name=p.name||'Desk numbering';$('#projName').value=S.name;S.sel=null;
   syncAll();fitView();
 }
@@ -914,7 +924,7 @@ var saveT=0;
 function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(function(){kvSet('project',projectObj());},700);}
 function projectObj(){
   var ai=0;S.floors.forEach(function(f,i){if(f.id===S.active)ai=i;});
-  return {app:'desk-numbering',v:1,name:S.name,numbering:S.numbering,roomNumbering:S.roomNumbering,mark:S.mark,activeIndex:ai,
+  return {app:'desk-numbering',v:1,name:S.name,numbering:S.numbering,roomNumbering:S.roomNumbering,mark:S.mark,roomMark:S.roomMark,activeIndex:ai,
     floors:S.floors.map(function(f){return {level:f.level,imgSrc:f.imgSrc,desks:f.desks,rooms:f.rooms,next:f.next,nextRoom:f.nextRoom};})};
 }
 function idb(){return new Promise(function(res,rej){var r=indexedDB.open('desk-numbering',1);r.onupgradeneeded=function(){r.result.createObjectStore('kv');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
