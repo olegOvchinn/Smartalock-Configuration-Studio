@@ -12,6 +12,11 @@
   saved to / opened from a project .json file. Styled with the same Inter + tokens as the wizard pages
   (inline, like the other pages in this folder). noindex so search engines don't pick it up.
 
+  MOST RECENT CHANGE: the right-hand tool pane is 15% narrower (340px to 289px), giving the plan canvas more room.
+
+  MOST RECENT CHANGE: the editor (toolbar, plan canvas and side panel) now spans the full width of the browser
+  window, with a 16px gutter, instead of stopping at 1320px. The intro and requirement cards keep their reading width.
+
   MOST RECENT CHANGE: added a short looping demo (assets/images/neighbourhood-demo.gif) to the "Before you
   upload: image requirements" card, under the requirements and above the upload button, showing how to draw a
   neighbourhood, name it and change its colour.
@@ -90,7 +95,7 @@ button{cursor:pointer}
 .seg .btn:first-child{border-radius:6px 0 0 6px;margin-left:0}
 .seg .btn:last-child{border-radius:0 6px 6px 0}
 select{min-height:34px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
-main{flex:1 1 0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px}
+main{flex:1 1 0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 289px}
 .stage{position:relative;background:var(--stage);min-height:0;overflow:hidden;touch-action:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:calc(100% - 24px);padding:7px 12px;border-radius:8px;background:rgba(20,24,30,.86);color:#fff;font-size:12.5px;text-align:center;pointer-events:none}
@@ -173,7 +178,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .imgcheck.warn{background:var(--warn-wash);color:var(--warn)}
 .imgcheck b{font-weight:600}
 .imgcheck ul{margin:4px 0 0;padding-left:18px}
-.studio{max-width:1320px;margin:0 auto;padding:0 28px 56px}
+.studio{max-width:none;margin:0 auto;padding:0 16px 56px}
 .studio-frame{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
 .foot{max-width:1320px;margin:-28px auto 0;padding:0 28px 48px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
 .empty-stage{position:absolute;inset:0;display:grid;place-items:center;padding:20px;z-index:2}
