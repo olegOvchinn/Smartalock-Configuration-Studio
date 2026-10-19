@@ -12,6 +12,11 @@
   saved to / opened from a project .json file. Styled with the same Inter + tokens as the wizard pages
   (inline, like the other pages in this folder). noindex so search engines don't pick it up.
 
+  MOST RECENT CHANGE: export now matches the desk numbering tool. The toolbar's Export format / size / "Export
+  image" controls and the side panel's "Save project..." button are replaced by one Save... button. Its dialog
+  offers the floor plan image (PNG, or JPG under 2 MB) and the project file (JSON), both ticked by default, and
+  bundles them into one .zip when both are chosen.
+
   MOST RECENT CHANGE: the right-hand tool pane is 15% narrower (340px to 289px), giving the plan canvas more room.
 
   MOST RECENT CHANGE: the editor (toolbar, plan canvas and side panel) now spans the full width of the browser
@@ -205,6 +210,8 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 .opt input{margin-top:3px;accent-color:var(--accent);flex:none}
 .opt b{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
 .opt span{font-size:12.5px;line-height:1.5;color:var(--muted)}
+.dlg .opt select{margin-top:8px;min-height:30px}
+.dlg .opt.chk input{margin-top:3px}
 .dlg .row.end{justify-content:flex-end;margin-top:14px}
 .empty-card{max-width:440px;text-align:center;padding:30px 28px;border:2px dashed var(--line);border-radius:20px;background:rgba(255,255,255,.82)}
 .empty-card .ico{width:46px;height:46px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);display:grid;place-items:center;margin:0 auto 14px}
@@ -246,7 +253,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
   <div class="intro">
     <span class="eyebrow">Floor plan neighbourhoods</span>
     <h1 class="hero-title">Mark up your floor plan</h1>
-    <p class="sub">Upload a clean floor plan, outline only the neighbourhoods users should see (marking every area is unnecessary), then name and colour them. Finally, export your image.</p>
+    <p class="sub">Upload a clean floor plan, outline only the neighbourhoods users should see (marking every area is unnecessary), then name and colour them. Finally, save your work.</p>
   </div>
 </div>
 
@@ -308,13 +315,8 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     </div>
     <div class="spacer"></div>
     <div class="group">
-      <label class="lbl" for="expFmt">Export</label>
-      <select id="expFmt" aria-label="Export format"><option value="jpg" selected>JPG</option><option value="png">PNG</option></select>
-      <select id="expLimit" aria-label="Maximum file size" title="Maximum file size (JPG only)">
-        <option value="0">No size limit</option><option value="1">Under 1 MB</option><option value="2" selected>Under 2 MB</option><option value="5">Under 5 MB</option>
-      </select>
-      <button class="btn primary" id="exportBtn">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 7L8 10.5 11.5 7M3 13h10"/></svg>Export image</button>
+      <button class="btn primary" id="saveBtn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 7L8 10.5 11.5 7M3 13h10"/></svg>Save&hellip;</button>
     </div>
   </header>
 
@@ -404,7 +406,6 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
         <h2>Plan and project</h2>
         <div class="actions">
           <button class="btn" id="replacePlan">Replace plan image</button>
-          <button class="btn" id="saveProj">Save project&hellip;</button>
           <button class="btn" id="openProj">Open project file</button>
           <button class="btn danger" id="clearAll">Remove all neighbourhoods</button>
         </div>
@@ -417,16 +418,17 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 </div>
   </div>
 </div>
-<p class="foot">Your work stays in this browser and is saved automatically. Use &ldquo;Save&hellip;&rdquo; to keep a copy as an image (PNG) or as a project file (JSON) you can reopen later or on another computer. When you are happy with the plan, choose &ldquo;Export image&rdquo; and send the exported image to your project contact.</p>
+<p class="foot">Your work stays in this browser and is saved automatically. Use &ldquo;Save&hellip;&rdquo; to get an image and a project file you can reopen later or on another computer. When you are done, send the saved files to your project contact.</p>
 
 <div class="overlay" id="saveDlg" role="dialog" aria-modal="true" aria-labelledby="sdTitle" hidden>
   <div class="card dlg">
-    <h2 id="sdTitle">Save as</h2>
-    <p class="lead">Choose what to save.</p>
-    <label class="opt"><input type="radio" name="sdFmt" value="png" checked>
-      <div><b>Image (PNG)</b><span>A picture of the floor plan with the neighbourhoods and legend. Best for sending or printing. It cannot be edited again.</span></div></label>
-    <label class="opt"><input type="radio" name="sdFmt" value="json">
-      <div><b>Project file (JSON)</b><span>Everything you have drawn, so you can carry on later with &ldquo;Open project file&rdquo;. Not a picture.</span></div></label>
+    <h2 id="sdTitle">Save</h2>
+    <p class="lead">Choose what to save. More than one file is bundled into a single .zip.</p>
+    <label class="opt chk"><input type="checkbox" id="sdImg" checked>
+      <div><b>Floor plan image</b><span>A picture of the floor plan with the neighbourhoods and legend on it.</span>
+        <br><select id="sdFmt" aria-label="Image format"><option value="png" selected>PNG (full quality)</option><option value="jpg">JPG (under 2 MB)</option></select></div></label>
+    <label class="opt chk"><input type="checkbox" id="sdJson" checked>
+      <div><b>Project file (JSON)</b><span>Everything you have drawn, so you can carry on later with &ldquo;Open project file&rdquo;.</span></div></label>
     <div class="row end">
       <button class="btn" type="button" id="sdCancel">Cancel</button>
       <button class="btn primary" type="button" id="sdSave">Save</button>
@@ -908,48 +910,69 @@ function idb(){return new Promise(function(res,rej){var r=indexedDB.open('neighb
 async function kvSet(k,v){try{var db=await idb();await new Promise(function(res,rej){var t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=function(){rej(t.error);};});}catch(e){}}
 async function kvGet(k){try{var db=await idb();return await new Promise(function(res,rej){var r=db.transaction('kv').objectStore('kv').get(k);r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}catch(e){return null;}}
 
-function offerFile(filename,data){
-  var url=URL.createObjectURL(data),a=document.createElement('a');
-  a.href=url;a.download=filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
-  setTimeout(function(){URL.revokeObjectURL(url);},60000);
-  toast('Saved '+filename+' ('+fmtSize(data.size)+')');
-}
 function fmtSize(n){return n>1048576?(n/1048576).toFixed(2)+' MB':Math.round(n/1024)+' KB';}
+function download(filename,blob){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},60000);
+}
 function blobOf(c,type,q){return new Promise(function(res){c.toBlob(res,type,q);});}
-async function exportImage(forceFmt){
-  if(!S.img)return;
+async function planImageBlob(fmt){
   var wd=world(),c=document.createElement('canvas');c.width=wd.W;c.height=wd.H;
   drawScene(c.getContext('2d'),false,1);
-  var fmt=forceFmt||$('#expFmt').value,limit=fmt==='png'?0:+$('#expLimit').value*1048576,blob;
-  if(fmt==='png'){blob=await blobOf(c,'image/png');}
-  else{
-    var qs=[.92,.85,.78,.7,.62,.55,.48];blob=null;
-    for(var i=0;i<qs.length;i++){blob=await blobOf(c,'image/jpeg',qs[i]);if(!limit||blob.size<=limit)break;}
-    var scl=1,cur=c;
-    while(limit&&blob.size>limit&&scl>.3){scl*=.85;var c2=document.createElement('canvas');c2.width=Math.round(wd.W*scl);c2.height=Math.round(wd.H*scl);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(c,0,0,c2.width,c2.height);cur=c2;blob=await blobOf(cur,'image/jpeg',.72);}
-  }
-  if(!blob){toast('Export failed. Try a smaller plan image.',4500);return;}
-  offerFile(slug(S.name)+(fmt==='png'?'.png':'.jpg'),blob);
-  if(limit&&blob.size>limit)toast('Saved, but it is still above '+(limit/1048576)+' MB. Try a lower-resolution plan image.',5000);
+  if(fmt==='png')return blobOf(c,'image/png');
+  var limit=2*1048576,qs=[.92,.85,.78,.7,.62,.55,.48],blob=null,i;
+  for(i=0;i<qs.length;i++){blob=await blobOf(c,'image/jpeg',qs[i]);if(!blob||blob.size<=limit)break;}
+  var scl=1;
+  while(blob&&blob.size>limit&&scl>.3){scl*=.85;var c2=document.createElement('canvas');c2.width=Math.round(wd.W*scl);c2.height=Math.round(wd.H*scl);var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(c,0,0,c2.width,c2.height);blob=await blobOf(c2,'image/jpeg',.72);}
+  return blob;
 }
-bind('#exportBtn','click',function(){exportImage();});
-bind('#expFmt','change',function(){$('#expLimit').disabled=$('#expFmt').value==='png';});
+var CRCT=null;
+function crc32(u8){
+  if(!CRCT){CRCT=new Uint32Array(256);for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;CRCT[n]=c>>>0;}}
+  var crc=0xFFFFFFFF;for(var i=0;i<u8.length;i++)crc=CRCT[(crc^u8[i])&255]^(crc>>>8);return (crc^0xFFFFFFFF)>>>0;
+}
+function zipBlob(entries){
+  var enc=new TextEncoder(),chunks=[],cd=[],off=0,d=new Date();
+  var dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xffff,dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xffff;
+  entries.forEach(function(e){
+    var nb=enc.encode(e.name),crc=crc32(e.data),sz=e.data.length,lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dt,true);lh.setUint16(12,dd,true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nb.length,true);lh.setUint16(28,0,true);
+    chunks.push(lh.buffer,nb,e.data);
+    var ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dt,true);ch.setUint16(14,dd,true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nb.length,true);ch.setUint32(42,off,true);
+    cd.push(ch.buffer,nb);off+=30+nb.length+sz;
+  });
+  var cds=0;cd.forEach(function(b){cds+=b.byteLength;});
+  var end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,entries.length,true);end.setUint16(10,entries.length,true);end.setUint32(12,cds,true);end.setUint32(16,off,true);
+  return new Blob(chunks.concat(cd,[end.buffer]),{type:'application/zip'});
+}
+async function u8(blob){return new Uint8Array(await blob.arrayBuffer());}
+async function saveSelected(){
+  var wantImg=$('#sdImg').checked,wantJson=$('#sdJson').checked,fmt=$('#sdFmt').value;
+  if(!wantImg&&!wantJson){toast('Choose at least one thing to save.');return;}
+  var files=[],base=slug(S.name);
+  $('#sdSave').disabled=true;$('#sdSave').textContent='Preparing\u2026';
+  try{
+    if(wantImg){var b=await planImageBlob(fmt);if(!b)throw new Error('the image could not be created. Try a smaller plan image.');files.push({name:base+'.'+(fmt==='png'?'png':'jpg'),blob:b});}
+    if(wantJson)files.push({name:base+'-project.json',blob:new Blob([JSON.stringify(projectObj())],{type:'application/json'})});
+    if(files.length===1){download(files[0].name,files[0].blob);toast('Saved '+files[0].name+' ('+fmtSize(files[0].blob.size)+')');}
+    else{
+      var ents=[];for(var j=0;j<files.length;j++)ents.push({name:files[j].name,data:await u8(files[j].blob)});
+      var z=zipBlob(ents);download(base+'.zip',z);toast('Saved '+base+'.zip with '+files.length+' files ('+fmtSize(z.size)+')',4500);
+    }
+    closeSave();
+  }catch(err){toast('Could not save: '+(err&&err.message||'error'),5000);}
+  finally{$('#sdSave').disabled=false;$('#sdSave').textContent='Save';}
+}
 var dlg=$('#saveDlg');
-function openSave(){if(!S.img){toast('Upload a floor plan first.');return;}dlg.hidden=false;var r=dlg.querySelector('input:checked');if(r)r.focus();}
-function closeSave(){dlg.hidden=true;$('#saveProj').focus();}
-bind('#saveProj','click',openSave);
-bind('#sdCancel','click',closeSave);
+function openSave(){if(!S.img){toast('Upload a floor plan first.');return;}dlg.hidden=false;$('#sdImg').focus();}
+function closeSave(){dlg.hidden=true;$('#saveBtn').focus();}
+bind('#saveBtn','click',openSave);bind('#sdCancel','click',closeSave);bind('#sdSave','click',saveSelected);
 dlg.addEventListener('click',function(e){if(e.target===dlg)closeSave();});
 window.addEventListener('keydown',function(e){if(!dlg.hidden&&e.key==='Escape'){e.stopPropagation();closeSave();}},true);
-bind('#sdSave','click',async function(){
-  var f=dlg.querySelector('input[name=sdFmt]:checked').value;closeSave();
-  if(f==='json'){var s=JSON.stringify(projectObj());offerFile(slug(S.name)+'.json',new Blob([s],{type:'application/json'}));}
-  else await exportImage('png');
-});
 
 /* ---------- boot ---------- */
 new ResizeObserver(function(){render();}).observe(stage);
-$('#expLimit').disabled=($('#expFmt').value==='png');
 (async function(){
   syncTools();updateHint();
   var saved=await kvGet('project');
