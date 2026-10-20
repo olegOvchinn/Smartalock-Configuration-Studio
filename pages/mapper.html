@@ -12,6 +12,13 @@
   saved to / opened from a project .json file. Styled with the same Inter + tokens as the wizard pages
   (inline, like the other pages in this folder). noindex so search engines don't pick it up.
 
+  MOST RECENT CHANGE: the view re-fits when the first neighbourhood is finished, so the legend that appears beside the
+  plan is fully in view.
+
+  MOST RECENT CHANGE: no pre-made sample neighbourhood any more. When a floor plan is first uploaded the Draw tool
+  is already active, so the user can click the first corner straight away. The legend stays hidden until the
+  first neighbourhood exists.
+
   MOST RECENT CHANGE: export now matches the desk numbering tool. The toolbar's Export format / size / "Export
   image" controls and the side panel's "Save project..." button are replaced by one Save... button. Its dialog
   offers the floor plan image (PNG, or JPG under 2 MB) and the project file (JSON), both ticked by default, and
@@ -277,7 +284,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     </div>
     <figure class="req-demo">
       <h3>See how it works</h3>
-      <img src="../assets/images/neighbourhood-demo.gif" width="1000" height="532" alt="Short demo: choose Draw, click around an area on the plan, finish the shape, then type a name and pick a colour." loading="eager">
+      <img src="../assets/images/neighbourhood-demo.gif" width="1000" height="522" alt="Short demo: upload a floor plan, click around an area on it, finish the shape, then type a name and pick a colour." loading="eager">
       <figcaption>Draw an area, then name it and choose its colour.</figcaption>
     </figure>
     <div class="req-up">
@@ -472,7 +479,7 @@ function getSel(){for(var i=0;i<S.shapes.length;i++)if(S.shapes[i].id===S.selId)
 
 /* ---------- layout of legend and world ---------- */
 function legendLayout(){
-  var lg=S.legend; if(!lg.show||(!S.shapes.length&&!lg.title&&!S.logoImg))return null;
+  var lg=S.legend; if(!lg.show||!S.shapes.length)return null;
   var items=S.shapes.map(function(sh){
     meas.font='600 '+sh.fontSize+'px '+FONT;
     var lines=String(sh.name||'').split('\n');
@@ -603,10 +610,6 @@ function updateBtns(){$('#undoBtn').disabled=!(hidx>0||S.draft.length);$('#redoB
 /* ---------- shapes ---------- */
 var SAMPLE_NAME='Sample neighbourhood';
 function userCount(){return S.shapes.filter(function(x){return x.name!==SAMPLE_NAME;}).length;}
-function sampleShape(){
-  var W=S.imgW,H=S.imgH,f=[[.08,.12],[.30,.12],[.30,.26],[.22,.26],[.22,.38],[.08,.38]],d=defaults();
-  return {id:nid(),name:SAMPLE_NAME,color:'#5cc96b',opacity:.4,border:d.bd,textColor:autoText('#5cc96b'),textAuto:true,fontSize:d.fs,showOnPlan:true,pts:f.map(function(p){return [Math.round(p[0]*W),Math.round(p[1]*H)];}),labelPos:null};
-}
 function newShape(pts){
   var d=defaults(),i=userCount(),col=PALETTE[i%PALETTE.length];
   return {id:nid(),name:'Neighbourhood '+(i+1),color:col,opacity:.4,border:d.bd,textColor:autoText(col),textAuto:true,fontSize:d.fs,showOnPlan:true,pts:pts,labelPos:null};
@@ -619,7 +622,7 @@ function cleanShape(o,i){
 }
 function finishDraft(){
   var pts=S.draft.slice();S.draft=[];
-  if(pts.length>=3){var sh=newShape(pts);S.shapes.push(sh);S.selId=sh.id;S.selVertex=null;S.tool='select';commit();syncAll();var n=$('#pName');n.focus();n.select();}
+  if(pts.length>=3){var firstShape=!S.shapes.length,sh=newShape(pts);S.shapes.push(sh);S.selId=sh.id;S.selVertex=null;S.tool='select';commit();syncAll();if(firstShape)fitView();var n=$('#pName');n.focus();n.select();}
   else{syncAll();}
 }
 function addDraftPoint(p){
@@ -876,8 +879,8 @@ async function handleFile(f){
       var had=S.shapes.length>0&&S.img,first=!S.img;
       await setPlan(await readFile(f,false),true);
       if(!had){S.shapes=[];S.legend.titleSize=defaults().title;}
-      if(first)S.shapes.push(sampleShape());
-      resetHist();syncAll();fitView();scheduleSave();checkImage(f);toast(had?'Plan replaced. Neighbourhoods kept in place.':first?'Plan loaded. A sample neighbourhood is shown. Edit it or delete it.':'Plan loaded.',first?5000:3200);
+      if(first){S.tool='draw';S.draft=[];S.selId=null;S.selVertex=null;}
+      resetHist();syncAll();fitView();scheduleSave();checkImage(f);toast(had?'Plan replaced. Neighbourhoods kept in place.':first?'Plan loaded. Click on the plan to start outlining your first neighbourhood.':'Plan loaded.',first?5000:3200);
     }else throw new Error('Choose an image or a project (.json) file');
   }catch(err){toast(err.message||'That file could not be opened',4500);}
 }
