@@ -595,3 +595,14 @@ Rest of the app: earlier-stage scaffolding.
 ## Author
 
 Oleg Ovchinnikov
+
+## Project file (save and open a project without a server)
+
+Every wizard page and `pages/tech-summary.html` loads `js/project-file.js`, which adds a **Project file** button to the page header. It lets a client download their project as a `.json` file and open it again in any browser or on any computer, and lets Smartalock open a client's file to view it (for example on the tech summary). The registration page also shows an "Already started? Open project file" banner until a project exists.
+
+- It only reads and writes the same `configurationProject` localStorage key the pages already use, then reloads the page. No page code was changed besides adding the script tag.
+- The file is the plain project object from `backend-developer-brief.md` section 3, so the same files will load into a real backend later.
+- A small orange dot on the button means there are changes since the last file was saved.
+- Opening a file replaces the project in that browser, after a confirmation that names both projects.
+- Not covered by this feature: the summary and IT-contact emails are still the existing `mailto:` links, and the demo has no way to send a file to Smartalock automatically; the client sends the saved file themselves.
+- Skipped on purpose: `mapper.html`, `desk-numbering.html`, `advanced settings.html` and the two end-user guide pages.
