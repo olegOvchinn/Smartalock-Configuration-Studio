@@ -1,0 +1,252 @@
+/* =====================================================================================
+   site-theme.css: the Troubleshooting wizards' "neon" Night look for every other page
+   (tools page, About, Configuration wizard, planning tools, guides). Night is the default;
+   Bright (light) is each page's own original styling. Switched by site-theme.js, saved as
+   localStorage "stw_theme", the same switch as the Troubleshooting Hub.
+   Everything here is scoped to html[data-theme="dark"], so the light look is untouched.
+   ===================================================================================== */
+
+/* ---------- the day / night switch (same as the Troubleshooting Hub) ---------- */
+.st-switch { position: fixed; top: 12px; right: 14px; z-index: 70; width: 64px; height: 32px; padding: 0; border-radius: 999px; cursor: pointer;
+  border: 1px solid #D2D2D7; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.06); transition: border-color .2s, background .2s; }
+.st-switch.st-inline { position: relative; top: auto; right: auto; flex: none; }
+.st-switch:hover, .st-switch:focus-visible { border-color: #0071E3; outline: none; }
+.st-knob { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #FFB020; box-shadow: 0 2px 8px rgba(255,160,0,.45);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), background .3s, box-shadow .3s; }
+.st-switch svg { position: absolute; top: 7px; width: 16px; height: 16px; fill: none; stroke: #8E8E93; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s; }
+.st-switch .st-sun { left: 7px; stroke: #fff; }
+.st-switch .st-moon { right: 7px; }
+html[data-theme="dark"] .st-switch { background: rgba(10,18,32,.6); border-color: rgba(120,220,255,.24); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: none; }
+html[data-theme="dark"] .st-knob { transform: translateX(32px); background: #5ef2ff; box-shadow: 0 0 12px rgba(94,242,255,.7); }
+html[data-theme="dark"] .st-switch .st-sun { stroke: #6b7e95; }
+html[data-theme="dark"] .st-switch .st-moon { stroke: #03131a; }
+@media print { .st-switch, .st-scene { display: none !important; } }
+
+/* ---------- backdrop: glow + moving floor grid ---------- */
+.st-scene { display: none; }
+html[data-theme="dark"] { background: #04070d; color-scheme: dark; }
+html[data-theme="dark"] body { background: transparent !important; }
+html[data-theme="dark"] .st-scene { display: block; position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  background:
+    radial-gradient(1100px 520px at 50% -8%, rgba(60,130,255,.22), transparent 70%),
+    radial-gradient(700px 400px at 85% 90%, rgba(94,242,255,.10), transparent 70%),
+    radial-gradient(600px 380px at 8% 70%, rgba(155,140,255,.10), transparent 70%),
+    #04070d; }
+html[data-theme="dark"] .st-floor { position: absolute; left: -60%; right: -60%; bottom: -8%; height: 62vh;
+  transform: perspective(520px) rotateX(64deg); transform-origin: 50% 100%;
+  background: linear-gradient(rgba(94,242,255,.2) 1px, transparent 1px) 0 0 / 64px 64px, linear-gradient(90deg, rgba(94,242,255,.2) 1px, transparent 1px) 0 0 / 64px 64px;
+  -webkit-mask-image: linear-gradient(to top, #000 8%, transparent 78%); mask-image: linear-gradient(to top, #000 8%, transparent 78%);
+  animation: stFloor 6s linear infinite; }
+html[data-theme="dark"] .st-scene::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px); }
+@keyframes stFloor { to { background-position: 0 64px, 64px 0; } }
+@media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .st-floor { animation: none; } }
+
+/* ---------- colour variables used by the Configuration wizard, planning tools and guides ---------- */
+html[data-theme="dark"] {
+  --n-glass: rgba(12,21,36,.94); --n-card: rgba(10,18,32,.6); --n-well: rgba(8,16,30,.55); --n-input: rgba(4,9,18,.75);
+  --n-edge: rgba(120,220,255,.24); --n-edge-strong: rgba(120,230,255,.7); --n-neon: #5ef2ff; --n-neon-soft: rgba(94,242,255,.14);
+  --n-fg: #e8f1fb; --n-fg-dim: #9db0c6; --n-fg-faint: #6b7e95; --n-violet: #9b8cff; --n-amber: #ffc457; --n-ok: #5dffa8;
+  /* configuration wizard */
+  --paper: var(--n-card); --paper-soft: var(--n-well); --ink: var(--n-fg); --ink-soft: var(--n-fg-dim);
+  --line: var(--n-edge); --accent: var(--n-neon); --accent-deep: var(--n-neon); --accent-wash: var(--n-neon-soft);
+  --header-grey: var(--n-fg); --header-grey-light: var(--n-fg-dim); --danger: #ff6b6b;
+  --shadow: 0 20px 50px rgba(0,0,0,.45);
+  /* desk numbering + mapper */
+  --bg: transparent; --panel: var(--n-glass); --muted: var(--n-fg-dim); --chip: var(--n-well); --navy: var(--n-fg);
+  --accent-ink: #03131a; --ok-wash: rgba(93,255,168,.12); --warn-wash: rgba(255,196,87,.12);
+  /* advanced settings */
+  --fs-dark: var(--n-fg); --fs-text: var(--n-fg); --fs-muted: var(--n-fg-dim); --fs-light: var(--n-well); --fs-border: var(--n-edge); --fs-blue: var(--n-neon); --fs-accent: var(--n-neon);
+  /* tech summary */
+  --warn-bg: rgba(255,196,87,.1); --warn-ink: #ffe2a8;
+}
+
+/* ---------- shared page furniture ---------- */
+html[data-theme="dark"] .top-frame { background: rgba(4,7,13,.82) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--n-edge) !important; }
+html[data-theme="dark"] .brand-logo, html[data-theme="dark"] img[src*="smartalock-logo"], html[data-theme="dark"] img[src*="floorsense-logo"] { filter: invert(1) hue-rotate(180deg) brightness(1.15); }
+html[data-theme="dark"] .brand-tagline { color: var(--n-fg-dim); border-left-color: var(--n-edge); letter-spacing: .12em; }
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, html[data-theme="dark"] h4 { color: var(--n-fg); }
+html[data-theme="dark"] h1.hero-title b, html[data-theme="dark"] h1 b { background-image: linear-gradient(90deg, #5ef2ff, #9b8cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-theme="dark"] p, html[data-theme="dark"] li, html[data-theme="dark"] label, html[data-theme="dark"] td, html[data-theme="dark"] th, html[data-theme="dark"] dd, html[data-theme="dark"] dt { color: inherit; }
+html[data-theme="dark"] body { color: var(--n-fg); }
+html[data-theme="dark"] a:not([class]) { color: var(--n-neon); }
+html[data-theme="dark"] .eyebrow { color: var(--n-neon) !important; background: var(--n-neon-soft) !important; }
+
+/* progress bar */
+html[data-theme="dark"] .progress-seg { background: rgba(120,220,255,.14); }
+html[data-theme="dark"] .progress-seg.saved .progress-seg-fill { background: var(--n-fg-dim); }
+html[data-theme="dark"] .progress-seg.current .progress-seg-fill, html[data-theme="dark"] .progress-seg.current { background: var(--n-neon); box-shadow: 0 0 12px rgba(94,242,255,.6); }
+html[data-theme="dark"] .progress-seg-tip { background: var(--n-glass); color: var(--n-fg); border: 1px solid var(--n-edge); }
+
+/* bottom action bar + buttons */
+html[data-theme="dark"] .action-bar { background: linear-gradient(0deg, rgba(4,7,13,.96), rgba(4,7,13,.8)) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top-color: var(--n-edge) !important; }
+html[data-theme="dark"] .save-note { color: var(--n-fg-faint); }
+html[data-theme="dark"] button.primary, html[data-theme="dark"] .btn.primary, html[data-theme="dark"] .primary-btn { color: #03131a !important; background: linear-gradient(90deg, #2ad1ff, #5ef2ff) !important; border-color: transparent !important; box-shadow: 0 0 26px -6px rgba(94,242,255,.9); }
+html[data-theme="dark"] button.primary:hover, html[data-theme="dark"] .btn.primary:hover { box-shadow: 0 0 34px -4px rgba(94,242,255,1); }
+html[data-theme="dark"] button.ghost, html[data-theme="dark"] .btn.ghost { color: var(--n-neon) !important; background: var(--n-well) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] button.ghost:hover, html[data-theme="dark"] .btn.ghost:hover { background: var(--n-neon-soft) !important; box-shadow: 0 0 22px -4px rgba(94,242,255,.6); }
+html[data-theme="dark"] .page-nav-arrow { background: var(--n-well); border-color: var(--n-edge); }
+html[data-theme="dark"] .page-nav-arrow svg { stroke: var(--n-neon); }
+html[data-theme="dark"] .page-nav-btn:not(.disabled):hover .page-nav-arrow { border-color: var(--n-edge-strong); background: var(--n-neon-soft); box-shadow: 0 0 22px -4px rgba(94,242,255,.6); }
+
+/* project file button + its dialog */
+html[data-theme="dark"] .pf-btn { background: var(--n-card) !important; color: var(--n-neon) !important; border-color: var(--n-edge) !important; backdrop-filter: blur(8px); }
+
+/* form fields */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+html[data-theme="dark"] select, html[data-theme="dark"] textarea {
+  background-color: var(--n-input) !important; color: var(--n-fg) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] input::placeholder, html[data-theme="dark"] textarea::placeholder { color: var(--n-fg-faint) !important; }
+html[data-theme="dark"] input:focus, html[data-theme="dark"] select:focus, html[data-theme="dark"] textarea:focus { border-color: var(--n-edge-strong) !important; box-shadow: 0 0 0 3px var(--n-neon-soft) !important; outline: none; }
+html[data-theme="dark"] select option { background: #0b1424; color: var(--n-fg); }
+
+/* ---------- Configuration wizard cards (flat "text-block" cards and glass cards) ---------- */
+html[data-theme="dark"] :is(.tcard, .dcard, .qcard, .type-check-card, .desk-check-card, .group-check-card, .kiosk-toggle-row, .policy-card, .groups-card,
+  .summary-group, .checkin-card, .path-card, .product-card, .feature-row, .option-card, .choice-card, .card, .section-card, .info-card, .glass-card,
+  .demo-video-card, .selected-type-row, .kiosk-toggle-subfields, .policy-row, .setting-card, .guide-card, .module-card, .form-card, .contact-card) {
+  background: var(--n-card) !important; border: 1px solid var(--n-edge) !important; color: var(--n-fg); box-shadow: none;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+html[data-theme="dark"] :is(.tcard, .dcard, .qcard, .type-check-card, .desk-check-card, .group-check-card, .kiosk-toggle-row, .path-card, .product-card, .option-card, .choice-card, .demo-card):hover {
+  background: var(--n-neon-soft) !important; border-color: var(--n-edge-strong) !important; outline: none !important; }
+html[data-theme="dark"] :is(.tcard.chosen, .dcard.chosen, .qcard.chosen, .type-check-card.checked, .desk-check-card.checked, .group-check-card.checked, .kiosk-toggle-row.on, .tcard.selected, .dcard.selected, .option-card.selected, .choice-card.selected, .path-card.selected, .product-card.selected) {
+  background: rgba(94,242,255,.08) !important; border-color: var(--n-neon) !important; outline: none !important; box-shadow: 0 0 28px -10px rgba(94,242,255,.6) !important; }
+html[data-theme="dark"] :is(.type-tick, .desk-tick, .group-tick, .tcard-radio) { border-color: var(--n-fg-faint) !important; background: transparent !important; }
+html[data-theme="dark"] :is(.type-check-card.checked .type-tick, .desk-check-card.checked .desk-tick, .group-check-card.checked .group-tick, .tcard.chosen .tcard-radio) { border-color: var(--n-neon) !important; background: var(--n-neon) !important; box-shadow: 0 0 12px rgba(94,242,255,.7); }
+html[data-theme="dark"] :is(.type-tick, .desk-tick, .group-tick, .tcard-radio)::after { border-color: #03131a !important; }
+html[data-theme="dark"] [class*="icon-badge"] { background: var(--n-well) !important; box-shadow: none !important; }
+html[data-theme="dark"] .switch, html[data-theme="dark"] .policy-switch { background: rgba(120,220,255,.18); }
+html[data-theme="dark"] .switch.on, html[data-theme="dark"] .policy-switch.on, html[data-theme="dark"] .policy-switch[aria-checked="true"] { background: var(--n-neon) !important; box-shadow: 0 0 14px rgba(94,242,255,.5); }
+html[data-theme="dark"] .switch::after, html[data-theme="dark"] .policy-switch::after { background: #e8f1fb; }
+
+/* pictures with white backgrounds sit on a soft white card so they still read */
+html[data-theme="dark"] :is(.page-visual-frame, .assign-video-frame, .visual-frame, .illustration, .page-visual) { background: rgba(255,255,255,.94) !important; border-color: var(--n-edge) !important; }
+
+/* dialogs */
+html[data-theme="dark"] :is(.demo-intro-dlg, .modal, .dialog, .pf-dlg, .pf-box) { background: var(--n-glass) !important; color: var(--n-fg); border: 1px solid var(--n-edge); }
+
+/* ---------- Configuration wizard: page-specific cards ---------- */
+html[data-theme="dark"] :is(.path-check-card, .access-check-card, .feature-card, .core-policy-card, .complete-card, .end-mode-section, .nsnp-relay-confirm, .safety-warning, .groups-card, .summary-card, .it-card) {
+  background: var(--n-card) !important; border: 1px solid var(--n-edge) !important; color: var(--n-fg) !important; outline: none !important; box-shadow: none !important; }
+html[data-theme="dark"] :is(.path-check-card, .access-check-card):hover { background: var(--n-neon-soft) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] :is(.path-check-card.checked, .access-check-card.checked) { background: rgba(94,242,255,.08) !important; border-color: var(--n-neon) !important; box-shadow: 0 0 28px -10px rgba(94,242,255,.6) !important; }
+html[data-theme="dark"] :is(.path-check-card, .access-check-card, .feature-card, .core-policy-card, .end-mode-section, .nsnp-relay-confirm, .complete-card) :is(p, span, strong, h3, h4, label, li, div) { color: inherit; }
+html[data-theme="dark"] .safety-warning { background: rgba(255,196,87,.08) !important; border-color: rgba(255,196,87,.35) !important; color: #ffe2a8 !important; }
+html[data-theme="dark"] .nsnp-relay-confirm { background: rgba(255,196,87,.06) !important; border-color: rgba(255,196,87,.35) !important; }
+html[data-theme="dark"] .end-mode-section strong, html[data-theme="dark"] .default-reservation strong { color: var(--n-fg) !important; }
+
+/* timeline sliders */
+html[data-theme="dark"] .label-time { background: var(--n-well) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge) !important; }
+html[data-theme="dark"] .label-time.primary { background: var(--n-neon) !important; color: #03131a !important; border-color: transparent !important; box-shadow: 0 0 14px rgba(94,242,255,.5); }
+html[data-theme="dark"] .timeline-rail { background: var(--n-well) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] :is(.timeline-node .anchor-pin, .timeline-node .handle) { background: var(--n-neon) !important; border-color: #03131a !important; }
+
+/* summary pages */
+html[data-theme="dark"] .download-btn { background: var(--n-well) !important; color: var(--n-neon) !important; border: 1px solid var(--n-edge-strong) !important; }
+html[data-theme="dark"] .status-pill.pending { background: rgba(255,196,87,.12) !important; color: var(--n-amber) !important; border-color: rgba(255,196,87,.4) !important; }
+html[data-theme="dark"] .status-pill { background: var(--n-neon-soft); color: var(--n-neon); }
+html[data-theme="dark"] .it-help-notice-btn { background: var(--n-well) !important; color: var(--n-neon) !important; border: 1px solid var(--n-edge-strong) !important; }
+html[data-theme="dark"] .kiosk-tablet-frame .home-button { background: initial; }
+
+/* advanced settings table */
+html[data-theme="dark"] .table-wrap { background: var(--n-card) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .table-wrap th { background: var(--n-glass) !important; color: var(--n-neon) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .table-wrap td { color: var(--n-fg-dim) !important; border-color: var(--n-edge) !important; background: transparent !important; }
+html[data-theme="dark"] .table-wrap tr:nth-child(even) td { background: rgba(94,242,255,.03) !important; }
+html[data-theme="dark"] .note { background: var(--n-neon-soft) !important; color: #c4f8ff !important; border: 1px solid rgba(94,242,255,.35) !important; }
+html[data-theme="dark"] .note * { color: inherit !important; }
+
+/* tech summary */
+html[data-theme="dark"] form, html[data-theme="dark"] .ts-card { color: var(--n-fg); }
+
+/* ---------- planning tools: desk numbering, mapper ---------- */
+html[data-theme="dark"] section.stage, html[data-theme="dark"] .stage { background: rgba(4,9,18,.6) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .empty-card { background: var(--n-glass) !important; border: 1px solid var(--n-edge) !important; color: var(--n-fg) !important; }
+html[data-theme="dark"] .btn { background: var(--n-well); color: var(--n-fg); border-color: var(--n-edge); }
+html[data-theme="dark"] .btn:hover { border-color: var(--n-edge-strong); }
+html[data-theme="dark"] .btn.active { background: var(--n-neon-soft) !important; color: var(--n-neon) !important; border-color: var(--n-edge-strong) !important; }
+
+/* ---------- Project file banner + dialog, password gate ---------- */
+html[data-theme="dark"] .pf-banner { background: var(--n-neon-soft) !important; color: #c4f8ff !important; border: 1px solid rgba(94,242,255,.3); }
+html[data-theme="dark"] .pf-banner button { background: var(--n-well) !important; color: var(--n-neon) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] .pf-dlg { background: var(--n-glass) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge); box-shadow: 0 40px 110px rgba(0,0,0,.6), 0 0 60px rgba(94,242,255,.08) !important; }
+html[data-theme="dark"] :is(.pf-now, .pf-act) { background: var(--n-well) !important; color: var(--n-fg) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .pf-act:hover { background: var(--n-neon-soft) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] .pf-toast { background: var(--n-glass) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge); }
+html[data-theme="dark"] #pageLockGate { background: #04070d !important; }
+html[data-theme="dark"] #pageLockForm { background: var(--n-glass) !important; border-color: var(--n-edge) !important; color: var(--n-fg) !important; box-shadow: 0 40px 110px rgba(0,0,0,.6), 0 0 60px rgba(94,242,255,.1) !important; }
+html[data-theme="dark"] #pageLockForm p:not(#pageLockErr) { color: var(--n-fg-dim) !important; }
+html[data-theme="dark"] #pageLockForm button { color: #03131a !important; background: linear-gradient(90deg, #2ad1ff, #5ef2ff) !important; box-shadow: 0 0 26px -6px rgba(94,242,255,.9); }
+
+/* ---------- Knowledge Base + Mobile app guide ---------- */
+html[data-theme="dark"] {
+  --card: var(--n-card); --blue: var(--n-neon); --cyan: var(--n-neon); --success: var(--n-ok); --warn: rgba(255,196,87,.1);
+}
+html[data-theme="dark"] :is(section, nav.toc, .check, .symptom-btn) { background-color: var(--n-card); border-color: var(--n-edge); color: var(--n-fg); box-shadow: none; }
+html[data-theme="dark"] body > section, html[data-theme="dark"] main section { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+html[data-theme="dark"] .symptom-btn:hover { background: var(--n-neon-soft) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] :is(.check b, .symptom-btn) { color: var(--n-fg) !important; }
+html[data-theme="dark"] .callout { background: var(--n-neon-soft) !important; color: #c4f8ff !important; border-color: rgba(94,242,255,.6) !important; }
+html[data-theme="dark"] .callout.warning { background: rgba(255,196,87,.08) !important; color: #ffe2a8 !important; border-color: rgba(255,196,87,.6) !important; }
+html[data-theme="dark"] .callout * { color: inherit; }
+html[data-theme="dark"] .badge { background: var(--n-well) !important; color: var(--n-fg-dim) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] :is(.cat-chip, .tag, .soon) { background: var(--n-well) !important; color: var(--n-fg-dim) !important; border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .cat-chip.active { background: var(--n-neon) !important; color: #03131a !important; border-color: transparent !important; }
+html[data-theme="dark"] .card-head .icon { background: var(--n-well) !important; border: 1px solid var(--n-edge); }
+html[data-theme="dark"] a.card:hover { border-color: var(--n-edge-strong) !important; background: var(--n-neon-soft) !important; }
+
+/* ---------- Troubleshooting summary ---------- */
+html[data-theme="dark"] .local-note { background: rgba(255,196,87,.1) !important; color: #ffe2a8 !important; border-color: rgba(255,196,87,.35) !important; }
+html[data-theme="dark"] .badge-pill { background: var(--n-neon-soft) !important; color: var(--n-neon) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] .badge-pill.badge-amber { background: rgba(255,196,87,.12) !important; color: var(--n-amber) !important; border-color: rgba(255,196,87,.6) !important; }
+html[data-theme="dark"] .danger-btn { background: rgba(255,107,107,.1) !important; color: #ffb3b3 !important; border-color: rgba(255,107,107,.5) !important; }
+
+/* site footer text */
+html[data-theme="dark"] .awl-foot { color: var(--n-fg-dim) !important; border-top-color: var(--n-edge) !important; }
+html[data-theme="dark"] .hero { color: var(--n-fg) !important; }
+html[data-theme="dark"] .hero p { color: var(--n-fg-dim) !important; }
+
+/* ---------- plain buttons (presentation builder and tools) ---------- */
+html[data-theme="dark"] button:not([class]), html[data-theme="dark"] button.secondary, html[data-theme="dark"] button.btn-secondary {
+  background: var(--n-well) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge) !important; }
+html[data-theme="dark"] button:not([class]):hover:not(:disabled) { border-color: var(--n-edge-strong) !important; background: var(--n-neon-soft) !important; color: var(--n-neon) !important; }
+html[data-theme="dark"] button:not([class]):disabled, html[data-theme="dark"] button:disabled:not(.primary) { opacity: .45; }
+html[data-theme="dark"] #engineLoading .box, html[data-theme="dark"] .box { background: var(--n-glass) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge); }
+html[data-theme="dark"] #engineLoading { background: rgba(4,7,13,.7) !important; }
+html[data-theme="dark"] #projectBar { background: var(--n-neon-soft) !important; color: #c4f8ff !important; border-color: rgba(94,242,255,.3) !important; }
+html[data-theme="dark"] #projectBar.done { background: rgba(93,255,168,.08) !important; color: #b9ffd9 !important; border-color: rgba(93,255,168,.3) !important; }
+html[data-theme="dark"] .thumb { border-color: var(--n-edge) !important; }
+html[data-theme="dark"] .thumb.on, html[data-theme="dark"] .thumb.active, html[data-theme="dark"] .thumb[aria-current="true"] { border-color: var(--n-neon) !important; box-shadow: 0 0 16px rgba(94,242,255,.5); }
+
+/* ---------- presentation builder ---------- */
+html[data-theme="dark"] { --divider: rgba(120,220,255,.14); --check: #5ef2ff; --focus: #5ef2ff; --err-bg: rgba(255,107,107,.1); --err: #ffb3b3; }
+html[data-theme="dark"] .col > summary:hover, html[data-theme="dark"] details[open].col > summary { background: rgba(94,242,255,.05) !important; }
+html[data-theme="dark"] .policy { background: transparent !important; }
+html[data-theme="dark"] .policy .body .check { border-color: var(--n-edge) !important; background: var(--n-well) !important; color: var(--n-fg-dim); }
+html[data-theme="dark"] .policy .body .check:has(input:checked) { border-color: rgba(94,242,255,.6) !important; background: var(--n-neon-soft) !important; color: var(--n-fg); }
+html[data-theme="dark"] :is(.grip:hover, button.icon:hover) { background: var(--n-neon-soft) !important; color: var(--n-neon) !important; }
+html[data-theme="dark"] :is(.menu, .paste) { background: var(--n-glass) !important; border-color: var(--n-edge) !important; color: var(--n-fg); }
+html[data-theme="dark"] .menu button:hover:not(:disabled) { background: var(--n-neon-soft) !important; }
+html[data-theme="dark"] .fmt button.on { background: var(--n-neon-soft) !important; color: var(--n-neon) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] .tip { background: rgba(120,220,255,.18) !important; color: var(--n-fg) !important; }
+html[data-theme="dark"] :is(.stage, .thumb) { background: #0b1424 !important; }
+html[data-theme="dark"] .msg.warn { color: #ffe2a8; }
+html[data-theme="dark"] input[type="checkbox"], html[data-theme="dark"] input[type="radio"] { accent-color: #2ad1ff; }
+
+/* advanced settings: header band */
+html[data-theme="dark"] header.header { background: rgba(4,7,13,.6) !important; border-bottom: 1px solid var(--n-edge); }
+
+/* "Contact support" dialog on pages that use this theme */
+html[data-theme="dark"] .sr-dialog { background: var(--n-glass) !important; color: var(--n-fg) !important; border: 1px solid var(--n-edge); box-shadow: 0 40px 110px rgba(0,0,0,.6), 0 0 60px rgba(94,242,255,.08) !important; }
+html[data-theme="dark"] .sr-actions { background: linear-gradient(0deg, rgba(12,21,36,1), rgba(12,21,36,.9)) !important; }
+html[data-theme="dark"] .sr-btn { background: var(--n-well) !important; color: var(--n-neon) !important; border-color: var(--n-edge-strong) !important; }
+html[data-theme="dark"] .sr-primary { color: #03131a !important; background: linear-gradient(90deg, #2ad1ff, #5ef2ff) !important; border-color: transparent !important; }
+html[data-theme="dark"] .sr-callout { background: rgba(255,196,87,.08) !important; color: #ffe2a8 !important; border-color: rgba(255,196,87,.3) !important; }
+html[data-theme="dark"] .sr-dialog [class*="sr-"]:not(.sr-btn):not(.sr-primary):not(.sr-callout):not(.sr-actions):not(.sr-dialog) { border-color: var(--n-edge); }
+
+/* ---------- page titles: the hub's heading style (thin, last word bold in a gradient) ---------- */
+h1.st-title { font-weight: 200 !important; letter-spacing: -.02em; }
+h1.st-title b.st-hl { font-weight: 600; background-image: linear-gradient(90deg, #0071E3, #6E40C9);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+html[data-theme="dark"] h1.st-title { color: var(--n-fg) !important; }
+html[data-theme="dark"] h1.st-title b.st-hl { background-image: linear-gradient(90deg, #5ef2ff, #9b8cff); }
+/* Advanced settings: its title sits on a dark blue band in Day mode, so the highlight uses the bright gradient there */
+header.header h1.st-title b.st-hl { background-image: linear-gradient(90deg, #7fe7ff, #c3b8ff); }
