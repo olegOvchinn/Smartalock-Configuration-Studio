@@ -252,6 +252,74 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* ---------- tidy-up: compact type cards, one tidy list of example numbers, phone demo kept in view ---------- */
+  .type-check-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 1100px) { .type-check-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .type-check-card { gap: 12px; padding: 10px 14px; border-radius: 14px; min-height: 64px; }
+  .type-check-card .type-label { font-size: 16px; gap: 10px; }
+  .type-icon-badge { width: auto; height: auto; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  .type-check-card .type-icon-img { width: 40px; height: 40px; border-radius: 50%; background: #fff; }
+  .type-tick { width: 20px; height: 20px; }
+
+  .selected-types { margin-top: 26px; gap: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); overflow: hidden; }
+  .selected-types:empty { display: none; }
+  .selected-types-head { display: grid; grid-template-columns: minmax(150px, 1fr) 1.3fr; gap: 14px; padding: 10px 16px;
+    background: var(--paper-soft); border-bottom: 1px solid var(--line);
+    font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); }
+  .selected-type-row { grid-template-columns: minmax(150px, 1fr) 1.3fr; align-items: center; padding: 8px 16px;
+    border: 0; border-radius: 0; background: none; }
+  .selected-type-row + .selected-type-row { border-top: 1px solid var(--line); }
+  .selected-type-row .stt-name { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 15px; }
+  .selected-type-row .stt-name img { width: 30px; height: 30px; }
+  .selected-type-row input { font-size: 14px; padding: 9px 12px; border-radius: 10px; }
+  .selected-type-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+  @media (max-width: 480px) { .selected-types-head { display: none; } .selected-type-row { grid-template-columns: 1fr; gap: 6px; padding: 12px 16px; } }
+  .empty-hint { font-size: 13px; margin-top: 18px; }
+
+  .assign-with-video { align-items: start; }
+  .assign-video { height: auto; }
+  .assign-video-frame { height: auto; border: 0; background: none; border-radius: 28px; }
+  .assign-video-frame img { height: auto; }
+  @media (max-width: 900px) { .assign-video { position: static; } .assign-video-frame { max-width: 280px; } }
+
+  /* ---------- locker types explainer video: plays once on the first visit, then shrinks into the card (same as Advance Booking) ---------- */
+  .demo-video-card {
+    max-width: none; margin: 22px 0 0;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: none; border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 14px 34px -10px rgba(16,42,67,0.16), 0 2px 10px rgba(16,42,67,0.06);
+  }
+  .demo-video { display: block; width: 100%; border-radius: 10px; background: #000; }
+  .demo-video-title { font-family: var(--font-display); font-weight: 500; font-size: 16.94px; color: var(--header-grey); margin: 0 0 4px; }
+  .demo-video-caption { font-size: 12.9px; font-weight: 400; color: var(--ink-soft); line-height: 1.5; margin: 10px 0 0; }
+
+  /* ---------- first-visit intro: the demo video plays once, muted, in a dialog that sits BELOW the sticky
+     hero header (its top edge is set from the header's bottom edge by script, so the page title is never
+     covered). When it ends or is skipped it shrinks into a small "Tap to watch the demo again" box docked
+     bottom-right, which replays it. First play is remembered in localStorage ("prebookingAdvanceDemoSeen");
+     on later visits only the small box is shown. ---------- */
+  .demo-intro { position: fixed; left: 0; right: 0; bottom: 0; top: var(--demo-top, 0px); z-index: 900; background: rgba(20,24,30,0.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
+  .demo-intro[hidden] { display: none; }
+  .demo-intro-dlg { background: #fff; border-radius: 18px; padding: 12px 12px 10px; box-shadow: 0 24px 60px rgba(0,0,0,0.3); transform-origin: center center; will-change: transform, opacity; }
+  .demo-intro-dlg video { display: block; width: 100%; border-radius: 10px; background: #000; }
+  .demo-intro-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+  .demo-intro-note { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+  .demo-intro-btn { font: inherit; font-weight: 600; font-size: 14px; border-radius: 980px; padding: 8px 18px; border: 1px solid var(--line); background: #fff; color: var(--accent); cursor: pointer; flex: none; }
+  .demo-intro-btn:hover, .demo-intro-btn:focus-visible { border-color: var(--accent); background: var(--accent-wash); outline: none; }
+  .demo-card { display: flex; align-items: center; gap: 16px; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; border: 1px solid transparent; transition: border-color .2s, box-shadow .2s, background-color .2s; }
+  .demo-card:hover, .demo-card:focus-visible { border-color: var(--accent); background: var(--accent-wash); outline: none; }
+  .demo-card.demo-card-pulse { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,113,227,0.22), 0 14px 34px -10px rgba(16,42,67,0.16); }
+  .demo-card-thumb { position: relative; flex: none; width: 160px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #000 center/cover no-repeat; }
+  .demo-card-thumb::after { content: ""; position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; background: rgba(0,88,176,0.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6.5v11l9-5.5z' fill='white'/></svg>") center/26px no-repeat; }
+  .demo-card-text { display: flex; flex-direction: column; min-width: 0; }
+  .demo-card-text .demo-video-caption { margin-top: 6px; }
+  .demo-card-cta { font-size: 14px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+  @media (max-width: 560px) { .demo-card-thumb { width: 104px; } .demo-card-text .demo-video-caption { display: none; } }
+  @media print { .demo-intro { display: none !important; } }
 </style>
 </head>
 <body>
@@ -327,6 +395,15 @@
 
           <div class="selected-types" id="selectedTypes"></div>
           <p class="empty-hint" id="emptyHint">No locker types selected yet — check any that apply above.</p>
+
+          <button type="button" class="demo-video-card demo-card" id="demoCard" aria-label="Tap to watch the video again: what are locker types?">
+            <span class="demo-card-thumb" style="background-image:url('../assets/videos/locker-types-demo-poster.jpg')"></span>
+            <span class="demo-card-text">
+              <span class="demo-video-title">What are locker types?</span>
+              <span class="demo-card-cta">Tap to watch the video again</span>
+              <span class="demo-video-caption">One locker bank can mix large, small, side and top / middle / bottom lockers. Tick the types your banks have.</span>
+            </span>
+          </button>
 
         </div>
 
@@ -608,21 +685,21 @@ include this page.
     selectedTypes.innerHTML = '';
     const ordered = TYPE_ORDER.filter(t => state.selected.includes(t));
     emptyHint.style.display = ordered.length ? 'none' : 'block';
+    if (ordered.length) {
+      const head = document.createElement('div');
+      head.className = 'selected-types-head';
+      head.innerHTML = '<span>Locker type</span><span>Example locker number' + (ordered.includes('custom') ? ' / custom name' : '') + '</span>';
+      selectedTypes.appendChild(head);
+    }
     ordered.forEach(type => {
       const isCustom = type === 'custom';
       const fieldLabel = isCustom ? 'Enter your custom locker type name' : 'Example Locker Number';
-      const fieldPlaceholder = isCustom ? 'e.g. "Middle Top"' : 'e.g. 101';
+      const fieldPlaceholder = isCustom ? 'e.g. &quot;Middle Top&quot;' : 'e.g. 101';
       const row = document.createElement('div');
       row.className = 'selected-type-row';
       row.innerHTML = `
-        <div>
-          <span class="stt-label">Locker Type</span>
-          <span class="stt-name">${TYPE_LABELS[type]}</span>
-        </div>
-        <div>
-          <span class="stt-label">${fieldLabel}</span>
-          <input type="text" placeholder="${fieldPlaceholder}" data-type="${type}" value="${state.exampleNumbers[type] || ''}">
-        </div>
+        <span class="stt-name"><img src="../assets/images/icon-locker-type-${type}.png" alt="">${TYPE_LABELS[type]}</span>
+        <input type="text" placeholder="${fieldPlaceholder}" data-type="${type}" value="${state.exampleNumbers[type] || ''}" aria-label="${TYPE_LABELS[type]}: ${fieldLabel}" title="${fieldLabel}">
       `;
       row.querySelector('input').addEventListener('input', (e) => {
         state.exampleNumbers[type] = e.target.value;
@@ -689,6 +766,105 @@ include this page.
   }
 
   renderSelectedRows();
+
+  /* the phone demo stays in view just below the sticky header */
+  const demo = document.querySelector('.assign-video');
+  function stickDemo() {
+    const head = document.querySelector('.top-frame');
+    demo.style.top = ((head ? Math.max(0, head.getBoundingClientRect().bottom) : 0) + 20) + 'px';
+  }
+  window.addEventListener('resize', stickDemo);
+  window.addEventListener('scroll', stickDemo, { passive: true });
+  stickDemo();
+})();
+</script>
+
+<div class="demo-intro" id="demoIntro" hidden role="dialog" aria-modal="true" aria-label="Quick demo">
+  <div class="demo-intro-dlg" id="demoDlg">
+    <video id="demoIntroVideo" muted playsinline preload="auto" poster="../assets/videos/locker-types-demo-poster.jpg">
+      <source src="../assets/videos/locker-types-demo.mp4" type="video/mp4">
+    </video>
+    <div class="demo-intro-row">
+      <span class="demo-intro-note">A quick look at locker types. You can watch it again any time from the card below the list.</span>
+      <button type="button" class="demo-intro-btn" id="demoIntroSkip">Skip</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  /* Demo intro: the video plays big, below the hero header, the first time the page is opened; then it
+     shrinks into the "Tap to watch the demo again" card that sits below the locker type list. Tapping that card
+     grows the video back up. */
+  const SEEN_KEY = "lockerTypesDemoSeen";
+  const ov = document.getElementById("demoIntro"), dlg = document.getElementById("demoDlg"), v = document.getElementById("demoIntroVideo"),
+        skip = document.getElementById("demoIntroSkip"), card = document.getElementById("demoCard");
+  if (!ov || !dlg || !v || !skip || !card) return;
+  const reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let isOpen = false, busy = false;
+
+  function top() { const hdr = document.querySelector(".top-frame"); return hdr ? Math.max(0, Math.round(hdr.getBoundingClientRect().bottom)) : 0; }
+  function layout() {
+    const t = top();
+    ov.style.setProperty("--demo-top", t + "px");
+    const availH = window.innerHeight - t - 24 - 70;
+    dlg.style.width = Math.max(280, Math.min(860, window.innerWidth - 48, Math.floor(availH * 16 / 9))) + "px";
+  }
+  function markSeen() { try { localStorage.setItem(SEEN_KEY, "1"); } catch (e) {} }
+  function onKey(e) { if (e.key === "Escape") shrink(); }
+  function resetDlg() { dlg.style.transition = "none"; dlg.style.transform = ""; dlg.style.opacity = ""; }
+
+  /* Grow from the card (replay) or just appear (first visit), then play. */
+  function open(auto) {
+    if (isOpen || busy) return;
+    isOpen = true;
+    layout(); resetDlg(); ov.hidden = false;
+    if (!auto && !reduce) {
+      const m = card.getBoundingClientRect(), a = dlg.getBoundingClientRect();
+      const dx = (m.left + m.width / 2) - (a.left + a.width / 2), dy = (m.top + m.height / 2) - (a.top + a.height / 2);
+      dlg.style.transform = "translate(" + dx + "px," + dy + "px) scale(" + (m.width / a.width) + "," + (m.height / a.height) + ")"; dlg.style.opacity = "0.2";
+      void dlg.offsetWidth;
+      dlg.style.transition = "transform .38s cubic-bezier(.2,.7,.2,1), opacity .3s"; dlg.style.transform = ""; dlg.style.opacity = "";
+    }
+    try { v.currentTime = 0; } catch (e) {}
+    const pr = v.play(); if (pr && pr.catch) pr.catch(function () { if (auto) { isOpen = false; ov.hidden = true; } });
+    document.addEventListener("keydown", onKey); window.addEventListener("resize", layout);
+    skip.textContent = auto ? "Skip" : "Close";
+    skip.focus();
+  }
+
+  /* Shrink the big player into the card, scrolling the card into view first if it is hidden. */
+  function shrink() {
+    if (!isOpen) return;
+    isOpen = false; busy = true; markSeen();
+    try { v.pause(); } catch (e) {}
+    document.removeEventListener("keydown", onKey); window.removeEventListener("resize", layout);
+    function done() {
+      ov.hidden = true; resetDlg(); ov.style.transition = ""; ov.style.backgroundColor = ""; busy = false;
+      card.classList.add("demo-card-pulse"); setTimeout(function () { card.classList.remove("demo-card-pulse"); }, 1400);
+      try { card.focus({ preventScroll: true }); } catch (e) {}
+    }
+    let m = card.getBoundingClientRect();
+    const lowest = window.innerHeight - 84 /* Save bar */, highest = top() + 8;
+    if (m.bottom > lowest) window.scrollBy(0, Math.ceil(m.bottom - lowest + 12));
+    else if (m.top < highest) window.scrollBy(0, Math.floor(m.top - highest - 12));
+    m = card.getBoundingClientRect();
+    if (reduce) { done(); return; }
+    const a = dlg.getBoundingClientRect();
+    const dx = (m.left + m.width / 2) - (a.left + a.width / 2), dy = (m.top + m.height / 2) - (a.top + a.height / 2);
+    ov.style.transition = "background-color .38s"; ov.style.backgroundColor = "rgba(20,24,30,0)";
+    dlg.style.transition = "transform .4s cubic-bezier(.4,0,.2,1), opacity .4s"; dlg.style.transform = "translate(" + dx + "px," + dy + "px) scale(" + (m.width / a.width) + "," + (m.height / a.height) + ")"; dlg.style.opacity = "0.15";
+    setTimeout(done, 430);
+  }
+
+  skip.addEventListener("click", shrink);
+  v.addEventListener("ended", shrink);
+  ov.addEventListener("mousedown", function (e) { if (e.target === ov) shrink(); });
+  card.addEventListener("click", function () { open(false); });
+  v.addEventListener("error", function () { ov.hidden = true; });
+
+  let seen = false;
+  try { seen = localStorage.getItem(SEEN_KEY) === "1"; } catch (e) {}
+  if (!seen && !reduce) open(true);
 })();
 </script>
 

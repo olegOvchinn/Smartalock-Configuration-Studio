@@ -45,26 +45,53 @@
   Outstanding section (floorsense-out-of-box-policy.html, "Neighbourhood Mapper", marked Optional),
   so the "not linked from any wizard page" statement above no longer holds. Also added a line to the
   "Second in the sequence" notice suggesting the client save as a JSON project file (to edit again
-  later) and a PNG, and email the PNG to oleg@smartalock.com.
+  later) and a PNG, and email the PNG to support@smartalock.com.
 
   MOST RECENT CHANGE: trimmed the note box at the top of the page to just the save-and-email
-  suggestion (project file JSON to edit again later, plus a PNG to email to oleg@smartalock.com). The
+  suggestion (project file JSON to edit again later, plus a PNG to email to support@smartalock.com). The
   "Second in the sequence" heading and the paragraph about following Desk Numbering and the mapper
   being optional unless desk groups / user groups are used were removed from this page.
 
   MOST RECENT CHANGE: reworded the note box into one short sentence with no repeated words (save a
-  project file JSON to edit later, plus a PNG image for emailing to oleg@smartalock.com).
+  project file JSON to edit later, plus a PNG image for emailing to support@smartalock.com).
 
   MOST RECENT CHANGE: reworded the intro subtitle (the .sub line under the page title) the same way,
   without repeated words.
 
   MOST RECENT CHANGE: the intro subtitle now also says it is not necessary to mark every area, only
   the neighbourhoods users should see.
+
+  MOST RECENT CHANGE: several floor plans per project, the same way as the desk numbering page. Each floor
+  plan gets its own tab ("Level N", with its neighbourhood count and a remove button) and a "+ Add floor
+  plans" tab; uploading several images at once adds one floor each (the level number is guessed from the
+  file name and can be edited in the new "Floor plan" box at the top of the side panel). Neighbourhoods, undo history and zoom are per
+  floor; the legend title and logo are shared. Save... writes one image per floor plus one project file
+  (project format v:2 with a floors list; older single-plan project files still open, as one floor).
+
+  MOST RECENT CHANGE: neighbourhood names are suggested across floors. When the Label box of the selected
+  neighbourhood is focused or typed in, a drop-down lists matching neighbourhood names already used on the
+  other floors (default "Neighbourhood N" names are left out). Picking one (click, or arrow keys + Enter)
+  copies its name and styles: colour, fill strength, border width, label colour and label size (size and
+  border are scaled if the floor plan images are different widths).
+
+  MOST RECENT CHANGE: a larger, higher-contrast colour palette (16 swatches instead of 8, ordered so that
+  neighbouring colours differ strongly), and each new neighbourhood is given the first palette colour not yet
+  used by any neighbourhood on any floor, so new labels no longer repeat the colours of other floors.
+
+  MOST RECENT CHANGE: image crop tool. "Crop" in the toolbar (or "Crop image" in the Floor plan box, key C)
+  shows a frame over the active floor plan: drag its corners or edges to resize it, drag inside it to move it,
+  then "Apply crop" (or Enter); Cancel or Esc leaves the image as it was. Neighbourhoods move with the plan, and
+  any part outside the new edges is trimmed off (a neighbourhood entirely outside is removed). "Undo crop" in
+  the Floor plan box restores the previous image and neighbourhoods (until the page is reloaded).
+
+  MOST RECENT CHANGE: the legend colour boxes now use each neighbourhood's fill strength, so they match the
+  plan, and a border as wide as the neighbourhood's Border width (none at 0), drawn inside the box (the box grows so the text keeps its spacing). When the label colour is on "Auto contrast", the legend text
+  colour is worked out against the lighter box, so it stays readable.
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Floor Plan Neighbourhoods — Smartalock Configuration Studio</title>
+<title>Neighbourhoods — Smartalock Configuration Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -111,7 +138,7 @@ main{flex:1 1 0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 28
 .stage{position:relative;background:var(--stage);min-height:0;overflow:hidden;touch-action:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:calc(100% - 24px);padding:7px 12px;border-radius:8px;background:rgba(20,24,30,.86);color:#fff;font-size:12.5px;text-align:center;pointer-events:none}
-.stage.dropping::after{content:"Drop a floor plan image or a project file";position:absolute;inset:10px;display:grid;place-items:center;border:2px dashed var(--accent);border-radius:10px;background:rgba(34,80,216,.12);font-weight:600;color:var(--ink)}
+.stage.dropping::after{content:"Drop floor plan images or a project file";position:absolute;inset:10px;display:grid;place-items:center;border:2px dashed var(--accent);border-radius:10px;background:rgba(34,80,216,.12);font-weight:600;color:var(--ink)}
 .side{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;min-width:0}
 .sec{padding:14px 16px 16px;border-bottom:1px solid var(--line)}
 .sec h2{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -154,6 +181,29 @@ input[type=range]{flex:1 1 0;accent-color:var(--accent);min-width:0}
   .projname{width:100%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.field.ac{position:relative}
+.acbox{position:absolute;left:0;right:0;top:100%;z-index:20;margin-top:4px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.14);max-height:240px;overflow:auto}
+.acbox[hidden]{display:none}
+.achead{padding:4px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.acitem{display:flex;align-items:center;gap:9px;width:100%;padding:7px 8px;border:0;border-radius:6px;background:none;text-align:left;cursor:pointer}
+.acitem:hover,.acitem.on{background:var(--accent-wash)}
+.acitem .zsw{width:18px;height:18px}
+.acitem .acn{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.acitem .acl{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.cropbar{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);padding:6px 6px 6px 14px;border-radius:12px;background:rgba(20,24,30,.9);color:#fff;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.cropbar[hidden]{display:none}
+.cropbar .btn{min-height:30px;padding:4px 12px;background:#fff;color:var(--ink);border-color:#fff}
+.cropbar .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabs{display:flex;align-items:flex-end;gap:4px;padding:8px 12px 0;background:var(--chip);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+.app.noimg .tabs{display:none}
+.tab{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 8px 6px 14px;border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;background:var(--panel);color:var(--muted);font-weight:500;white-space:nowrap;margin-bottom:-1px;opacity:.85}
+.tab:hover{opacity:1;color:var(--ink)}
+.tab.active{color:var(--ink);opacity:1;box-shadow:inset 0 2px 0 var(--accent);border-bottom:1px solid var(--panel)}
+.tab .cnt{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tab .x{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px;color:var(--muted);line-height:0}
+.tab .x:hover{background:var(--line);color:var(--danger)}
+.tab.add{background:transparent;border-style:dashed;color:var(--accent-deep);padding:6px 14px;opacity:1;margin-bottom:6px;border-bottom:1px dashed var(--line);border-radius:8px;min-height:30px}
+@media (max-width:860px){.tabs{padding-left:8px;padding-right:8px}}
 
 /* ---------- wizard page shell ---------- */
 .panel-inner{max-width:1120px;margin:0 auto;width:100%;padding:0 28px}
@@ -251,16 +301,16 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
   <div class="panel-inner">
     <div class="site-brand">
       <img class="brand-logo" src="../assets/images/floorsense-logo.png" alt="Floorsense">
-      <span class="brand-tagline">Configuration Studio · Floor Plan Neighbourhoods</span>
+      <span class="brand-tagline">Configuration Studio · Neighbourhoods</span>
     </div>
   </div>
 </div>
 
 <div class="panel-inner">
   <div class="intro">
-    <span class="eyebrow">Floor plan neighbourhoods</span>
-    <h1 class="hero-title">Mark up your floor plan</h1>
-    <p class="sub">Upload a clean floor plan, outline only the neighbourhoods users should see (marking every area is unnecessary), then name and colour them. Finally, save your work.</p>
+    <span class="eyebrow">Neighbourhoods</span>
+    <h1 class="hero-title">Draw your neighbourhoods</h1>
+    <p class="sub">Upload clean floor plans (one per level), outline only the neighbourhoods users should see (marking every area is unnecessary), then name and colour them. Finally, save your work.</p>
   </div>
 </div>
 
@@ -268,7 +318,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
   <div class="notice" role="note">
     <span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
     <div>
-      <p>Once finished, save a project file (JSON), so you can edit later, and email it to <a href="mailto:oleg@smartalock.com">oleg@smartalock.com</a>.</p>
+      <p>Once finished, save a project file (JSON), so you can edit later, and email it to <a href="mailto:support@smartalock.com">support@smartalock.com</a>.</p>
     </div>
   </div>
 </div>
@@ -280,7 +330,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
       <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div><h3>Around 1&ndash;2 MB</h3><p>A JPG or PNG of roughly 1&ndash;2 MB. Much larger files are slow to work with; much smaller ones are usually too blurry.</p></div></div>
       <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></span><div><h3>Sharp and clear</h3><p>Walls, doors and room outlines should stay crisp when you zoom in. Aim for about 2000&ndash;4000 px on the long side. Use the original export, not a photo or a screenshot of a printout.</p></div></div>
       <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></span><div><h3>No desk numbers, no extra annotations</h3><p>Remove desk numbers, furniture codes, dimensions, markups, title blocks and legends before exporting. The cleaner the plan, the clearer the coloured neighbourhoods will read.</p></div></div>
-      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg></span><div><h3>One whole floor, upright</h3><p>One floor per image, cropped to the floor area, not rotated or skewed. Upload one image per level and repeat this page for each.</p></div></div>
+      <div class="req-item"><span class="req-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg></span><div><h3>One whole floor, upright</h3><p>One floor per image, cropped to the floor area, not rotated or skewed. Upload one image per level: each level gets its own tab.</p></div></div>
     </div>
     <figure class="req-demo">
       <h3>See how it works</h3>
@@ -289,8 +339,8 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     </figure>
     <div class="req-up">
       <button class="btn primary lg" type="button" data-pick="img">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M3 13h10"/></svg>Upload floor plan image</button>
-      <span class="up-note">JPG, PNG or WebP. You can also drag an image onto the canvas below.</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M3 13h10"/></svg>Upload floor plan images</button>
+      <span class="up-note">JPG, PNG or WebP. Choose several at once for several levels, or drag them onto the canvas below.</span>
       <div class="imgcheck" id="imgCheck" role="status" aria-live="polite"></div>
     </div>
   </details>
@@ -309,6 +359,8 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 2l9 5-4 1.2L6.8 12z"/></svg>Edit</button>
         <button class="btn" id="toolDraw" title="Draw a neighbourhood (D). Hold Shift for square corners.">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 12l1-7 5-2 4 5-3 6z"/><circle cx="3" cy="12" r="1.2" fill="currentColor"/><circle cx="4" cy="5" r="1.2" fill="currentColor"/><circle cx="9" cy="3" r="1.2" fill="currentColor"/></svg>Draw</button>
+        <button class="btn" id="toolCrop" title="Crop the floor plan image (C)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 1.5v10h10"/><path d="M1.5 4.5h10v10"/></svg>Crop</button>
       </div>
       <div class="seg" role="group" aria-label="History">
         <button class="btn icon" id="undoBtn" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3L3 6l3 3"/><path d="M3 6h6a4 4 0 010 8H6"/></svg></button>
@@ -327,22 +379,39 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     </div>
   </header>
 
+  <div class="tabs" id="tabs" role="tablist" aria-label="Floors"></div>
+
   <main>
     <section class="stage" id="stage" aria-label="Floor plan canvas">
       <canvas id="cv"></canvas>
       <div class="empty-stage" id="emptyStage">
         <div class="empty-card">
           <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7.5 8.5L12 4l4.5 4.5M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg></div>
-          <h2>Upload your floor plan</h2>
-          <p>Drag an image here, or choose a file. A clean JPG or PNG of about 1&ndash;2 MB works best.</p>
-          <button class="btn primary lg" type="button" data-pick="img">Choose floor plan image</button><br>
+          <h2>Upload your floor plans</h2>
+          <p>Drag images here, or choose files: one per level. A clean JPG or PNG of about 1&ndash;2 MB works best.</p>
+          <button class="btn primary lg" type="button" data-pick="img">Choose floor plan images</button><br>
           <button class="lnk" type="button" data-pick="proj">Open a saved project file instead</button>
         </div>
       </div>
       <div class="hint" id="hint"></div>
+      <div class="cropbar" id="cropBar" hidden><span>Frame the floor plan, then apply.</span><button class="btn" type="button" id="cropCancel">Cancel</button><button class="btn primary" type="button" id="cropApply">Apply crop</button></div>
     </section>
 
     <aside class="side" aria-label="Inspector">
+      <div class="sec">
+        <h2>Floor plan</h2>
+        <div class="field">
+          <label for="fLevel">Level number</label>
+          <input type="text" id="fLevel" maxlength="12" placeholder="e.g. 23">
+        </div>
+        <div class="actions">
+          <button class="btn" id="cropBtn" type="button">Crop image</button>
+          <button class="btn" id="cropUndo" type="button" hidden>Undo crop</button>
+          <button class="btn" id="replacePlan" type="button">Replace image</button>
+          <button class="btn danger" id="fRemove" type="button">Remove floor</button>
+        </div>
+      </div>
+
       <div class="sec">
         <h2>Neighbourhoods <button class="btn" id="newZone" style="text-transform:none;letter-spacing:0;min-height:30px;padding:3px 10px">+ New</button></h2>
         <ul class="zlist" id="zlist"></ul>
@@ -353,9 +422,10 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
         <h2>Selected neighbourhood</h2>
         <p class="empty" id="propsEmpty">Click a neighbourhood on the plan or in the list to edit its label and colours.</p>
         <div id="propsForm" hidden>
-          <div class="field">
+          <div class="field ac">
             <label for="pName">Label</label>
-            <textarea id="pName" rows="2" maxlength="120" placeholder="Neighbourhood name"></textarea>
+            <textarea id="pName" rows="2" maxlength="120" placeholder="Neighbourhood name" autocomplete="off" aria-autocomplete="list" aria-controls="pNameAc"></textarea>
+            <div class="acbox" id="pNameAc" role="listbox" aria-label="Neighbourhoods used on other floors" hidden></div>
           </div>
           <div class="field">
             <span class="lbl">Neighbourhood colour</span>
@@ -410,14 +480,14 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
       </div>
 
       <div class="sec keepsec">
-        <h2>Plan and project</h2>
+        <h2>Project</h2>
         <div class="actions">
-          <button class="btn" id="replacePlan">Replace plan image</button>
           <button class="btn" id="openProj">Open project file</button>
-          <button class="btn danger" id="clearAll">Remove all neighbourhoods</button>
+          <button class="btn danger" id="clearAll">Remove all neighbourhoods on this floor</button>
         </div>
-        <p class="note">Your work is also kept in this browser automatically. Replacing the plan with a higher-resolution copy of the same drawing keeps every neighbourhood in place.</p>
-        <input type="file" id="fileImg" accept="image/*" hidden>
+        <p class="note">Each floor plan has its own tab above the plan; use &ldquo;+ Add floor plans&rdquo; for more levels. Your work is also kept in this browser automatically. Replacing a plan with a higher-resolution copy of the same drawing keeps every neighbourhood in place.</p>
+        <input type="file" id="fileImg" accept="image/*" multiple hidden>
+        <input type="file" id="fileRepl" accept="image/*" hidden>
         <input type="file" id="fileProj" accept=".json,application/json" hidden>
       </div>
     </aside>
@@ -432,7 +502,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
     <h2 id="sdTitle">Save</h2>
     <p class="lead">Choose what to save. More than one file is bundled into a single .zip.</p>
     <label class="opt chk"><input type="checkbox" id="sdImg" checked>
-      <div><b>Floor plan image</b><span>A picture of the floor plan with the neighbourhoods and legend on it.</span>
+      <div><b>Floor plan images</b><span>One picture per floor with its neighbourhoods and the legend on it.</span>
         <br><select id="sdFmt" aria-label="Image format"><option value="png" selected>PNG (full quality)</option><option value="jpg">JPG (under 2 MB)</option></select></div></label>
     <label class="opt chk"><input type="checkbox" id="sdJson" checked>
       <div><b>Project file (JSON)</b><span>Everything you have drawn, so you can carry on later with &ldquo;Open project file&rdquo;.</span></div></label>
@@ -445,7 +515,7 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 
-<input type="file" id="fileImgTop" accept="image/*" hidden>
+<input type="file" id="fileImgTop" accept="image/*" multiple hidden>
 <script>
 (function(){
 'use strict';
@@ -454,12 +524,13 @@ h1.hero-title{font-weight:200;font-size:52px;letter-spacing:-1.5px;line-height:1
 var $=function(s){return document.querySelector(s);};
 var cv=$('#cv'), ctx=cv.getContext('2d'), stage=$('#stage');
 var meas=document.createElement('canvas').getContext('2d');
-var PALETTE=['#f2c14e','#f0a0e8','#5cc96b','#6f72f0','#f28b5b','#4cc9d8','#c78bf2','#9aa5b1'];
+var PALETTE=['#f2c14e','#1d4ed8','#5cc96b','#e63946','#4cc9d8','#8e24aa','#f28b5b','#00897b','#f0a0e8','#3a3f47','#c0ca33','#6f72f0','#d81b60','#795548','#c78bf2','#9aa5b1'];
 var FONT='"Helvetica Neue", Helvetica, Arial, sans-serif';
 var uidN=1; function nid(){return 'z'+(uidN++)+Math.random().toString(36).slice(2,6);}
 function rgbOf(h){h=String(h).replace('#','');if(h.length===3)h=h.split('').map(function(c){return c+c;}).join('');var n=parseInt(h,16);return [(n>>16)&255,(n>>8)&255,n&255];}
 function rgba(h,a){var c=rgbOf(h);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
 function lum(h){var c=rgbOf(h).map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+function mixWhite(h,a){var c=rgbOf(h).map(function(v){return Math.round(255+(v-255)*a);});return '#'+c.map(function(v){return ('0'+v.toString(16)).slice(-2);}).join('');}
 function autoText(h){return lum(h)>.35?'#1b2028':'#ffffff';}
 function dist(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1]);}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
@@ -471,8 +542,19 @@ function toast(msg,ms){var t=$('#toast');t.textContent=msg;t.hidden=false;clearT
 
 /* ---------- state ---------- */
 var S={img:null,imgSrc:'',imgW:0,imgH:0,shapes:[],legend:{show:true,title:'TEAM\nNEIGHBOURHOODS',titleSize:30,mode:'side'},logoSrc:'',logoImg:null,name:'Floor plan neighbourhoods',
-  selId:null,selVertex:null,tool:'select',draft:[],cursor:null,shift:false,view:{zoom:1,px:0,py:0}};
-var hist=[],hidx=-1;
+  selId:null,selVertex:null,tool:'select',draft:[],cursor:null,shift:false,view:{zoom:1,px:0,py:0},floors:[],active:null};
+var hist=[],hidx=-1,exporting=false;
+
+/* ---------- floors: the live fields above (img, imgSrc, imgW, imgH, shapes, view, undo history) belong to the
+   active floor; stash() copies them back into its entry in S.floors, loadFloor() brings another floor in. ---------- */
+function F(){for(var i=0;i<S.floors.length;i++)if(S.floors[i].id===S.active)return S.floors[i];return null;}
+function stash(){var fl=F();if(!fl)return;fl.img=S.img;fl.imgSrc=S.imgSrc;fl.imgW=S.imgW;fl.imgH=S.imgH;fl.shapes=S.shapes;fl.view={zoom:S.view.zoom,px:S.view.px,py:S.view.py};fl.hist=hist;fl.hidx=hidx;}
+function loadFloor(fl){
+  if(!fl){S.active=null;S.img=null;S.imgSrc='';S.imgW=0;S.imgH=0;S.shapes=[];hist=[];hidx=-1;return;}
+  S.active=fl.id;S.img=fl.img;S.imgSrc=fl.imgSrc;S.imgW=fl.imgW;S.imgH=fl.imgH;S.shapes=fl.shapes||[];
+  if(fl.view)S.view={zoom:fl.view.zoom,px:fl.view.px,py:fl.view.py};
+  hist=fl.hist||[];hidx=fl.hist?fl.hidx:-1;
+}
 
 function defaults(){var w=S.imgW||1600;return {fs:Math.max(10,Math.round(w/78)),bd:Math.max(1,Math.round(w/800)),title:Math.round(w/60)};}
 function getSel(){for(var i=0;i<S.shapes.length;i++)if(S.shapes[i].id===S.selId)return S.shapes[i];return null;}
@@ -484,7 +566,7 @@ function legendLayout(){
     meas.font='600 '+sh.fontSize+'px '+FONT;
     var lines=String(sh.name||'').split('\n');
     var tw=1;lines.forEach(function(l){tw=Math.max(tw,meas.measureText(l).width);});
-    var padX=sh.fontSize*.8,padY=sh.fontSize*.4;
+    var bw=Math.max(0,+sh.border||0),padX=sh.fontSize*.8+bw,padY=sh.fontSize*.4+bw;
     return {sh:sh,lines:lines,fs:sh.fontSize,tw:tw,padX:padX,padY:padY,h:lines.length*sh.fontSize*1.2+padY*2,y:0};
   });
   var w=40;items.forEach(function(i){w=Math.max(w,i.tw+i.padX*2);});
@@ -547,13 +629,23 @@ function drawLegend(c,wd){
   c.textBaseline='middle';c.textAlign='center';c.fillStyle='#14181f';c.font='700 '+ts+'px '+FONT;
   L.tl.forEach(function(ln,i){c.fillText(ln,ox+L.w/2,oy+L.yStart+ts*.2+ts*1.2*(i+.5));});
   L.items.forEach(function(it){
-    var sh=it.sh;c.fillStyle=sh.color;rr(c,ox,oy+it.y,L.w,it.h,it.fs*.22);c.fill();
-    c.font='600 '+it.fs+'px '+FONT;c.textAlign='left';c.fillStyle=sh.textColor;
+    var sh=it.sh,op=clamp(+sh.opacity||.4,.05,1);
+    rr(c,ox,oy+it.y,L.w,it.h,it.fs*.22);c.fillStyle='#ffffff';c.fill();c.fillStyle=rgba(sh.color,op);c.fill();
+    if(sh.border>0){var bw=Math.min(sh.border,it.h/2);rr(c,ox+bw/2,oy+it.y+bw/2,L.w-bw,it.h-bw,Math.max(0,it.fs*.22-bw/2));c.lineWidth=bw;c.strokeStyle=rgba(sh.color,Math.min(1,op+.45));c.stroke();}
+    c.font='600 '+it.fs+'px '+FONT;c.textAlign='left';c.fillStyle=sh.textAuto?autoText(mixWhite(sh.color,op)):sh.textColor;
     it.lines.forEach(function(ln,j){c.fillText(ln,ox+it.padX,oy+it.y+it.padY+it.fs*1.2*(j+.5));});
   });
 }
 function drawChrome(c,k){
   var acc=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#2250d8';
+  if(S.tool==='crop'&&S.crop){
+    var q=S.crop,wd=world();
+    c.save();c.beginPath();c.rect(0,0,wd.W,wd.H);c.rect(q.x,q.y,q.w,q.h);c.fillStyle='rgba(12,16,22,.58)';c.fill('evenodd');
+    c.lineWidth=3*k;c.strokeStyle='#fff';c.strokeRect(q.x,q.y,q.w,q.h);c.lineWidth=1.5*k;c.strokeStyle=acc;c.strokeRect(q.x,q.y,q.w,q.h);
+    c.lineWidth=1*k;c.strokeStyle='rgba(255,255,255,.55)';c.beginPath();for(var g=1;g<3;g++){c.moveTo(q.x+q.w*g/3,q.y);c.lineTo(q.x+q.w*g/3,q.y+q.h);c.moveTo(q.x,q.y+q.h*g/3);c.lineTo(q.x+q.w,q.y+q.h*g/3);}c.stroke();
+    var hs=10*k;[[q.x,q.y],[q.x+q.w/2,q.y],[q.x+q.w,q.y],[q.x+q.w,q.y+q.h/2],[q.x+q.w,q.y+q.h],[q.x+q.w/2,q.y+q.h],[q.x,q.y+q.h],[q.x,q.y+q.h/2]].forEach(function(p){c.fillStyle='#fff';c.fillRect(p[0]-hs/2,p[1]-hs/2,hs,hs);c.lineWidth=1.6*k;c.strokeStyle=acc;c.strokeRect(p[0]-hs/2,p[1]-hs/2,hs,hs);});
+    c.restore();return;
+  }
   var sel=getSel();
   if(S.tool==='select'&&sel){
     c.beginPath();sel.pts.forEach(function(p,i){i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);});c.closePath();
@@ -585,7 +677,7 @@ function paint(){
   var dpr=window.devicePixelRatio||1,w=stage.clientWidth,h=stage.clientHeight;
   if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
   ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
-  if(!S.img)return;
+  if(!S.img||exporting)return;
   var v=S.view;ctx.setTransform(dpr*v.zoom,0,0,dpr*v.zoom,dpr*v.px,dpr*v.py);
   var wd=world();
   ctx.save();ctx.shadowColor='rgba(0,0,0,.28)';ctx.shadowBlur=18/v.zoom;ctx.fillStyle='#fff';ctx.fillRect(0,0,wd.W,wd.H);ctx.restore();
@@ -610,8 +702,16 @@ function updateBtns(){$('#undoBtn').disabled=!(hidx>0||S.draft.length);$('#redoB
 /* ---------- shapes ---------- */
 var SAMPLE_NAME='Sample neighbourhood';
 function userCount(){return S.shapes.filter(function(x){return x.name!==SAMPLE_NAME;}).length;}
+/* the first palette colour no neighbourhood on any floor uses yet; after all 16, cycle through again */
+function freeColour(){
+  stash();var used={},n=0;
+  S.floors.forEach(function(fl){(fl.id===S.active?S.shapes:(fl.shapes||[])).forEach(function(sh){used[String(sh.color).toLowerCase()]=1;n++;});});
+  if(!S.floors.length)S.shapes.forEach(function(sh){used[String(sh.color).toLowerCase()]=1;n++;});
+  for(var i=0;i<PALETTE.length;i++)if(!used[PALETTE[i]])return PALETTE[i];
+  return PALETTE[n%PALETTE.length];
+}
 function newShape(pts){
-  var d=defaults(),i=userCount(),col=PALETTE[i%PALETTE.length];
+  var d=defaults(),i=userCount(),col=freeColour();
   return {id:nid(),name:'Neighbourhood '+(i+1),color:col,opacity:.4,border:d.bd,textColor:autoText(col),textAuto:true,fontSize:d.fs,showOnPlan:true,pts:pts,labelPos:null};
 }
 function cleanShape(o,i){
@@ -632,7 +732,69 @@ function addDraftPoint(p){
 }
 function selectShape(id){S.selId=id;S.selVertex=null;syncPanel();renderList();updateHint();render();}
 function deleteShape(id){S.shapes=S.shapes.filter(function(s){return s.id!==id;});if(S.selId===id)S.selId=null;S.selVertex=null;commit();syncAll();}
-function setTool(t){if(!S.img&&t==='draw')return;S.tool=t;if(t==='select'){S.draft=[];}else{S.selVertex=null;}syncTools();updateHint();updateBtns();render();}
+function setTool(t){if(!S.img&&(t==='draw'||t==='crop'))return;if(S.tool==='crop'&&t!=='crop'){S.crop=null;$('#cropBar').hidden=true;}S.tool=t;if(t==='select'){S.draft=[];}else{S.selVertex=null;}syncTools();updateHint();updateBtns();render();}
+
+/* ---------- crop ---------- */
+var CROP_CUR={nw:'nwse-resize',se:'nwse-resize',ne:'nesw-resize',sw:'nesw-resize',n:'ns-resize',s:'ns-resize',e:'ew-resize',w:'ew-resize',move:'move'};
+function startCrop(){
+  if(!S.img)return;if(S.tool==='crop')return;
+  S.draft=[];S.selId=null;S.selVertex=null;S.crop={x:0,y:0,w:S.imgW,h:S.imgH};
+  setTool('crop');syncPanel();renderList();
+}
+function cropHit(w){
+  var q=S.crop;if(!q)return null;var r=12/S.view.zoom,x=w[0],y=w[1];
+  var inX=x>=q.x-r&&x<=q.x+q.w+r,inY=y>=q.y-r&&y<=q.y+q.h+r;
+  var m=(inX&&Math.abs(y-q.y)<=r?'n':inX&&Math.abs(y-q.y-q.h)<=r?'s':'')+(inY&&Math.abs(x-q.x)<=r?'w':inY&&Math.abs(x-q.x-q.w)<=r?'e':'');
+  if(m)return m;
+  return x>q.x&&x<q.x+q.w&&y>q.y&&y<q.y+q.h?'move':null;
+}
+function cropDrag(d,dx,dy){
+  var o=d.o,m=d.m,q=S.crop,MIN=Math.max(40,Math.round(Math.min(S.imgW,S.imgH)*.05));
+  if(m==='move'){q.x=clamp(o.x+dx,0,S.imgW-o.w);q.y=clamp(o.y+dy,0,S.imgH-o.h);q.w=o.w;q.h=o.h;return;}
+  if(m.indexOf('w')>-1){var nx=clamp(o.x+dx,0,o.x+o.w-MIN);q.w=o.x+o.w-nx;q.x=nx;}
+  if(m.indexOf('e')>-1){q.w=clamp(o.w+dx,MIN,S.imgW-o.x);}
+  if(m.indexOf('n')>-1){var ny=clamp(o.y+dy,0,o.y+o.h-MIN);q.h=o.y+o.h-ny;q.y=ny;}
+  if(m.indexOf('s')>-1){q.h=clamp(o.h+dy,MIN,S.imgH-o.y);}
+}
+function polyArea(pts){var a=0;for(var i=0;i<pts.length;i++){var p=pts[i],n=pts[(i+1)%pts.length];a+=p[0]*n[1]-n[0]*p[1];}return Math.abs(a/2);}
+/* keep the part of a polygon inside the rectangle 0..w, 0..h (Sutherland-Hodgman) */
+function clipPoly(pts,w,h){
+  var edges=[function(p){return p[0]>=0;},function(p){return p[0]<=w;},function(p){return p[1]>=0;},function(p){return p[1]<=h;}];
+  var cut=[function(a,b){var t=(0-a[0])/(b[0]-a[0]);return [0,a[1]+t*(b[1]-a[1])];},function(a,b){var t=(w-a[0])/(b[0]-a[0]);return [w,a[1]+t*(b[1]-a[1])];},
+           function(a,b){var t=(0-a[1])/(b[1]-a[1]);return [a[0]+t*(b[0]-a[0]),0];},function(a,b){var t=(h-a[1])/(b[1]-a[1]);return [a[0]+t*(b[0]-a[0]),h];}];
+  var out=pts;
+  for(var e=0;e<4&&out.length;e++){
+    var inp=out;out=[];
+    for(var i=0;i<inp.length;i++){var cur=inp[i],prev=inp[(i+inp.length-1)%inp.length],ci=edges[e](cur),pi=edges[e](prev);
+      if(ci){if(!pi)out.push(cut[e](prev,cur));out.push(cur);}else if(pi)out.push(cut[e](prev,cur));}
+  }
+  return out.map(function(p){return [Math.round(p[0]*10)/10,Math.round(p[1]*10)/10];});
+}
+async function applyCrop(){
+  var q=S.crop,fl=F();if(!q||!fl)return;
+  var x=Math.round(q.x),y=Math.round(q.y),w=Math.round(Math.min(q.w,S.imgW-x)),h=Math.round(Math.min(q.h,S.imgH-y));
+  if(x<=0&&y<=0&&w>=S.imgW&&h>=S.imgH){setTool('select');toast('Nothing to crop: the frame covers the whole image.');return;}
+  var c=document.createElement('canvas');c.width=w;c.height=h;var cx=c.getContext('2d');
+  var png=/^data:image\/png/i.test(S.imgSrc);if(!png){cx.fillStyle='#fff';cx.fillRect(0,0,w,h);}
+  cx.drawImage(S.img,x,y,w,h,0,0,w,h);
+  var src=c.toDataURL(png?'image/png':'image/jpeg',.92),im=await loadImg(src);
+  fl.preCrop={img:S.img,imgSrc:S.imgSrc,imgW:S.imgW,imgH:S.imgH,shapes:JSON.parse(JSON.stringify(S.shapes))};
+  var before=S.shapes.length;
+  S.shapes=S.shapes.map(function(sh){
+    var pts=clipPoly(sh.pts.map(function(p){return [p[0]-x,p[1]-y];}),w,h);if(pts.length<3||polyArea(pts)<4)return null;
+    sh.pts=pts;if(sh.labelPos){var lp=[sh.labelPos[0]-x,sh.labelPos[1]-y];sh.labelPos=(lp[0]<0||lp[1]<0||lp[0]>w||lp[1]>h)?null:lp;}return sh;
+  }).filter(Boolean);
+  S.img=im;S.imgSrc=src;S.imgW=w;S.imgH=h;S.crop=null;S.selId=null;S.selVertex=null;
+  setTool('select');resetHist();stash();syncAll();fitView();scheduleSave();
+  var gone=before-S.shapes.length;
+  toast('Cropped to '+w+' \u00d7 '+h+' px.'+(gone?' '+gone+' neighbourhood'+(gone===1?' was':'s were')+' outside the new edges and removed.':'')+' \u201cUndo crop\u201d puts it back.',5000);
+}
+function undoCrop(){
+  var fl=F();if(!fl||!fl.preCrop)return;if(S.tool==='crop')setTool('select');
+  var p=fl.preCrop;fl.preCrop=null;
+  S.img=p.img;S.imgSrc=p.imgSrc;S.imgW=p.imgW;S.imgH=p.imgH;S.shapes=p.shapes;S.selId=null;S.selVertex=null;
+  resetHist();stash();syncAll();fitView();scheduleSave();toast('Crop undone.');
+}
 
 /* ---------- hit testing ---------- */
 function hitTest(w){
@@ -655,6 +817,7 @@ cv.addEventListener('pointerdown',function(e){
   var w=toWorld(e);down={sx:e.clientX,sy:e.clientY,moved:false,w:w};
   var panDrag={type:'pan',ox:S.view.px,oy:S.view.py};
   if(e.button===1||spaceDown){drag=panDrag;return;}
+  if(S.tool==='crop'){var cm=cropHit(w);drag=cm?{type:'crop',m:cm,o:{x:S.crop.x,y:S.crop.y,w:S.crop.w,h:S.crop.h}}:panDrag;return;}
   if(S.tool==='draw'){drag={type:'maybe',pan:panDrag};return;}
   var hit=hitTest(w);
   if(!hit){drag=panDrag;down.empty=true;return;}
@@ -678,10 +841,13 @@ cv.addEventListener('pointermove',function(e){
     if(drag){
       if(drag.type==='maybe'&&down.moved){drag=drag.pan;}
       if(drag.type==='pan'){S.view.px=drag.ox+dx;S.view.py=drag.oy+dy;}
+      else if(drag.type==='crop'&&down.moved){cropDrag(drag,w[0]-down.w[0],w[1]-down.w[1]);}
       else if(drag.type==='vertex'&&down.moved){var vp=w;if(e.shiftKey&&drag.sh.pts.length>1){var pv=drag.sh.pts[(drag.i+drag.sh.pts.length-1)%drag.sh.pts.length],ddx=w[0]-pv[0],ddy=w[1]-pv[1],rr0=Math.hypot(ddx,ddy),aa=Math.round(Math.atan2(ddy,ddx)/(Math.PI/4))*(Math.PI/4);vp=[pv[0]+Math.cos(aa)*rr0,pv[1]+Math.sin(aa)*rr0];}drag.sh.pts[drag.i]=[clamp(vp[0],0,S.imgW),clamp(vp[1],0,S.imgH)];drag.changed=true;}
       else if(drag.type==='label'&&down.moved){drag.sh.labelPos=[drag.o[0]+(w[0]-down.w[0]),drag.o[1]+(w[1]-down.w[1])];drag.changed=true;}
       else if(drag.type==='move'&&down.moved){var mx=w[0]-down.w[0],my=w[1]-down.w[1];drag.sh.pts=drag.o.map(function(p){return [p[0]+mx,p[1]+my];});if(drag.lo)drag.sh.labelPos=[drag.lo[0]+mx,drag.lo[1]+my];drag.changed=true;}
     }
+  } else if(S.tool==='crop'){
+    cv.style.cursor=CROP_CUR[cropHit(w)]||'default';
   } else if(S.tool==='select'){
     var h=hitTest(w);cv.style.cursor=!h?'default':h.kind==='vertex'?'grab':h.kind==='mid'?'copy':'move';
   }
@@ -723,6 +889,8 @@ window.addEventListener('keydown',function(e){
   if(mod&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}
   if(mod)return;
   var k=e.key;
+  if(S.tool==='crop'){if(k==='Enter'){e.preventDefault();applyCrop();}else if(k==='Escape'){setTool('select');}else if(k==='v'||k==='V')setTool('select');else if(k==='d'||k==='D')setTool('draw');return;}
+  if(k==='c'||k==='C'){startCrop();return;}
   if(k==='v'||k==='V')setTool('select');
   else if(k==='d'||k==='D')setTool('draw');
   else if(k==='Enter'&&S.tool==='draw'){e.preventDefault();finishDraft();}
@@ -772,12 +940,13 @@ function renderList(){
     ul.appendChild(li);
   });
 }
-function syncTools(){$('#toolSelect').classList.toggle('active',S.tool==='select');$('#toolDraw').classList.toggle('active',S.tool==='draw');cv.style.cursor=S.tool==='draw'?'crosshair':'default';}
+function syncTools(){$('#toolSelect').classList.toggle('active',S.tool==='select');$('#toolDraw').classList.toggle('active',S.tool==='draw');$('#toolCrop').classList.toggle('active',S.tool==='crop');$('#cropBar').hidden=S.tool!=='crop';cv.style.cursor=S.tool==='draw'?'crosshair':'default';}
 var COARSE=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
 function updateHint(){
   var h=$('#hint'),t,tip=false;
   if(!S.img){h.hidden=true;return;}h.hidden=false;
   var K='<kbd>Shift</kbd>';
+  if(S.tool==='crop'){h.innerHTML='Drag the corners or edges of the frame to crop, or drag inside it to move it. Press <kbd>Enter</kbd> to apply, <kbd>Esc</kbd> to cancel.';h.classList.add('tip');return;}
   if(S.tool==='draw'){
     if(S.shift&&!COARSE){t='Shift is held: corners snap to square (90\u00b0 / 45\u00b0). Click to place the corner.';tip=true;}
     else if(S.draft.length)t='Click to add corners.'+(COARSE?'':' Hold '+K+' for square corners.')+' Click the first point, double-click or press Enter to finish. Backspace removes the last point.';
@@ -789,11 +958,93 @@ function updateHint(){
   h.innerHTML=t;h.classList.toggle('tip',tip&&S.tool==='draw');
 }
 function syncEmpty(){var has=!!S.img;$('#app').classList.toggle('noimg',!has);stage.classList.toggle('has-img',has);$('#emptyStage').hidden=has;}
-function syncAll(){syncEmpty();syncPanel();renderList();syncTools();updateHint();updateBtns();render();}
+function syncAll(){syncEmpty();renderTabs();syncFloor();syncPanel();renderList();syncTools();updateHint();updateBtns();render();}
+function tabLabel(fl){return 'Level '+(fl.level||'?');}
+function renderTabs(){
+  var box=$('#tabs');box.textContent='';
+  S.floors.forEach(function(fl){
+    var n=fl.id===S.active?S.shapes.length:(fl.shapes||[]).length;
+    var b=document.createElement('button');b.type='button';b.className='tab'+(fl.id===S.active?' active':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',fl.id===S.active);
+    b.title=n+' neighbourhood'+(n===1?'':'s');
+    b.innerHTML='<span>'+esc(tabLabel(fl))+'</span><span class="cnt">'+n+'</span><span class="x" role="button" aria-label="Remove '+esc(tabLabel(fl))+'" title="Remove this floor"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>';
+    b.addEventListener('click',function(ev){if(ev.target.closest('.x')){removeFloor(fl.id);return;}switchFloor(fl.id);});
+    box.appendChild(b);
+  });
+  var add=document.createElement('button');add.type='button';add.className='tab add';add.textContent='+ Add floor plans';add.addEventListener('click',function(){$('#fileImg').click();});box.appendChild(add);
+}
+function syncFloor(){var fl=F();$('#cropBtn').disabled=!fl;$('#cropUndo').hidden=!(fl&&fl.preCrop);$('#fLevel').disabled=!fl;$('#fRemove').disabled=!fl;$('#replacePlan').disabled=!fl;$('#clearAll').disabled=!fl;if(document.activeElement!==$('#fLevel'))$('#fLevel').value=fl?fl.level:'';}
+function switchFloor(id){
+  if(id===S.active)return;if(S.tool==='crop')setTool('select');stash();
+  var fl=null;S.floors.forEach(function(f){if(f.id===id)fl=f;});if(!fl)return;
+  loadFloor(fl);S.selId=null;S.selVertex=null;S.draft=[];if(!S.shapes.length)S.tool='draw';else if(S.tool==='draw')S.tool='select';
+  if(!hist.length)resetHist();
+  syncAll();if(!fl.view)fitView();scheduleSave();
+}
+function removeFloor(id){
+  if(S.tool==='crop')setTool('select');
+  stash();var i,fl=null;for(i=0;i<S.floors.length;i++)if(S.floors[i].id===id){fl=S.floors[i];break;}if(!fl)return;
+  var n=(fl.shapes||[]).length;
+  if(!window.confirm('Remove '+tabLabel(fl)+(n?' and its '+n+' neighbourhood'+(n===1?'':'s'):'')+'? This cannot be undone.'))return;
+  S.floors.splice(i,1);
+  if(S.active===id){loadFloor(S.floors.length?S.floors[Math.min(i,S.floors.length-1)]:null);S.selId=null;S.selVertex=null;S.draft=[];}
+  syncAll();fitView();scheduleSave();
+}
 function bind(id,ev,fn){$(id).addEventListener(ev,fn);}
 function withSel(fn){return function(e){var s=getSel();if(!s)return;fn(s,e);render();};}
 bind('#pName','input',withSel(function(s,e){s.name=e.target.value;renderList();}));
 bind('#pName','change',function(){commit();});
+
+/* ---------- same neighbourhood on other floors: suggest names, copy styles ---------- */
+var DEF_NAME=/^neighbourhood \d+$/i,acItems=[],acOn=-1;
+function knownNames(){
+  stash();var map={},out=[];
+  S.floors.forEach(function(fl){
+    if(fl.id===S.active)return;
+    (fl.shapes||[]).forEach(function(sh){
+      var nm=String(sh.name||'').trim(),k=nm.replace(/\s+/g,' ').toLowerCase();if(!nm||DEF_NAME.test(k))return;
+      if(!map[k]){map[k]={sh:sh,imgW:fl.imgW,levels:[]};out.push(map[k]);}
+      var lv='Level '+(fl.level||'?');if(map[k].levels.indexOf(lv)<0)map[k].levels.push(lv);
+    });
+  });
+  return out;
+}
+function hideAc(){$('#pNameAc').hidden=true;acItems=[];acOn=-1;$('#pName').removeAttribute('aria-activedescendant');}
+function showAc(){
+  var s=getSel(),box=$('#pNameAc');if(!s){hideAc();return;}
+  var q=$('#pName').value.replace(/\s+/g,' ').trim().toLowerCase();if(DEF_NAME.test(q))q='';
+  acItems=knownNames().filter(function(it){var n=String(it.sh.name).replace(/\s+/g,' ').toLowerCase();return !q||n.indexOf(q)>-1;}).slice(0,8);
+  if(!acItems.length){hideAc();return;}
+  box.textContent='';var h=document.createElement('div');h.className='achead';h.textContent='Used on other floors';box.appendChild(h);
+  acItems.forEach(function(it,i){
+    var b=document.createElement('button');b.type='button';b.className='acitem'+(i===acOn?' on':'');b.id='ac'+i;b.setAttribute('role','option');b.tabIndex=-1;
+    var sw=document.createElement('span');sw.className='zsw';sw.style.background=it.sh.color;
+    var n=document.createElement('span');n.className='acn';n.textContent=String(it.sh.name).replace(/\n/g,' / ');
+    var l=document.createElement('span');l.className='acl';l.textContent=it.levels.join(', ');
+    b.append(sw,n,l);
+    b.addEventListener('mousedown',function(e){e.preventDefault();});
+    b.addEventListener('click',function(){applyKnown(it);});
+    box.appendChild(b);
+  });
+  box.hidden=false;
+}
+function applyKnown(it){
+  var s=getSel();if(!s)return;var src=it.sh,k=S.imgW&&it.imgW?S.imgW/it.imgW:1;
+  s.name=src.name;s.color=src.color;s.opacity=src.opacity;s.border=Math.max(0,Math.round(src.border*k));
+  s.textColor=src.textColor;s.textAuto=src.textAuto;s.fontSize=Math.max(8,Math.round(src.fontSize*k));
+  $('#pName').value=s.name;hideAc();commit();syncPanel();renderList();render();
+  toast('Matched \u201c'+String(s.name).replace(/\n/g,' ')+'\u201d from '+it.levels.join(', ')+': same colour and size.');
+}
+function moveAc(d){if(!acItems.length)return;acOn=(acOn+d+acItems.length)%acItems.length;document.querySelectorAll('#pNameAc .acitem').forEach(function(b,i){b.classList.toggle('on',i===acOn);if(i===acOn)b.scrollIntoView({block:'nearest'});});$('#pName').setAttribute('aria-activedescendant','ac'+acOn);}
+bind('#pName','focus',function(){acOn=-1;showAc();});
+bind('#pName','input',function(){acOn=-1;showAc();});
+bind('#pName','blur',function(){setTimeout(hideAc,120);});
+bind('#pName','keydown',function(e){
+  if($('#pNameAc').hidden)return;
+  if(e.key==='ArrowDown'){e.preventDefault();moveAc(1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();moveAc(-1);}
+  else if(e.key==='Enter'&&acOn>-1){e.preventDefault();e.stopPropagation();applyKnown(acItems[acOn]);}
+  else if(e.key==='Escape'){e.stopPropagation();hideAc();}
+});
 bind('#pColor','input',withSel(function(s,e){setColor(s,e.target.value);}));
 bind('#pColor','change',function(){commit();});
 bind('#pOpacity','input',withSel(function(s,e){s.opacity=e.target.value/100;$('#vOpacity').textContent=e.target.value+'%';}));
@@ -815,9 +1066,13 @@ bind('#lgTitleSize','input',function(e){S.legend.titleSize=+e.target.value;$('#v
 bind('#lgTitleSize','change',function(){commit();});
 function fitIfSide(){}
 bind('#projName','input',function(e){S.name=e.target.value;scheduleSave();});
+bind('#fLevel','input',function(e){var fl=F();if(!fl)return;fl.level=e.target.value.trim();renderTabs();scheduleSave();});
+bind('#fRemove','click',function(){if(S.active)removeFloor(S.active);});
 
 bind('#toolSelect','click',function(){setTool('select');});
 bind('#toolDraw','click',function(){setTool('draw');});
+bind('#toolCrop','click',function(){S.tool==='crop'?setTool('select'):startCrop();});
+bind('#cropBtn','click',startCrop);bind('#cropApply','click',applyCrop);bind('#cropCancel','click',function(){setTool('select');});bind('#cropUndo','click',undoCrop);
 bind('#newZone','click',function(){setTool('draw');});
 bind('#undoBtn','click',undo);bind('#redoBtn','click',redo);
 bind('#zoomFit','click',fitView);
@@ -828,12 +1083,22 @@ bind('#clearAll','click',function(){if(!S.shapes.length)return;S.shapes=[];S.sel
 /* ---------- loading images and projects ---------- */
 function loadImg(src){return new Promise(function(res,rej){var im=new Image();im.onload=function(){res(im);};im.onerror=function(){rej(new Error('Image could not be read'));};im.src=src;});}
 function readFile(f,asText){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result);};r.onerror=function(){rej(r.error);};asText?r.readAsText(f):r.readAsDataURL(f);});}
-async function setPlan(src,keepShapes){
-  var im=await loadImg(src),ow=S.imgW,oh=S.imgH;
+async function normalize(src){
+  var im=await loadImg(src);
   if(im.naturalWidth>6000||im.naturalHeight>6000){
     var sc=6000/Math.max(im.naturalWidth,im.naturalHeight),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
     c.getContext('2d').drawImage(im,0,0,c.width,c.height);src=c.toDataURL('image/jpeg',.92);im=await loadImg(src);
   }
+  return {src:src,im:im};
+}
+function guessLevel(name){
+  var b=String(name||'').replace(/\.[^.]+$/,''),m=b.match(/(?:level|lvl|floor|flr|\bl)[\s_\-]*0*(\d{1,3})/i)||b.match(/(\d{1,3})/);
+  return m?String(+m[1]):null;
+}
+function nextLevel(){var mx=0,any=false;S.floors.forEach(function(f){var n=parseInt(f.level,10);if(!isNaN(n)){any=true;mx=Math.max(mx,n);}});return any?String(mx+1):'1';}
+function nfid(){return 'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+async function setPlan(src,keepShapes){
+  var ow=S.imgW,oh=S.imgH,n=await normalize(src),im=n.im;src=n.src;
   S.img=im;S.imgSrc=src;S.imgW=im.naturalWidth;S.imgH=im.naturalHeight;
   if(keepShapes&&ow&&S.shapes.length){
     var sx=S.imgW/ow,sy=S.imgH/oh;
@@ -842,8 +1107,16 @@ async function setPlan(src,keepShapes){
   }
 }
 async function applyProject(p){
-  await setPlan(p.imgSrc,false);
-  S.shapes=(p.shapes||[]).map(cleanShape);
+  if(S.tool==='crop')setTool('select');
+  var list=Array.isArray(p.floors)?p.floors:[{level:p.level||guessLevel(p.name)||'1',imgSrc:p.imgSrc,shapes:p.shapes}],floors=[];
+  for(var i=0;i<list.length;i++){
+    var o=list[i]||{};if(!o.imgSrc)continue;
+    var n=await normalize(o.imgSrc);
+    S.imgW=n.im.naturalWidth;S.imgH=n.im.naturalHeight;
+    floors.push({id:nfid(),level:String(o.level==null||o.level===''?i+1:o.level),img:n.im,imgSrc:n.src,imgW:n.im.naturalWidth,imgH:n.im.naturalHeight,shapes:(o.shapes||[]).map(cleanShape),view:null,hist:null,hidx:-1});
+  }
+  if(!floors.length)throw new Error('This project has no floor plans');
+  S.floors=floors;loadFloor(floors[Math.min(Math.max(0,+p.activeIndex||0),floors.length-1)]);
   var lg=p.legend||{};S.legend={show:lg.show!==false,title:lg.title==null?'':String(lg.title),titleSize:Math.max(8,+lg.titleSize||defaults().title),mode:'side'};
   try{await setLogo(p.logo||'');}catch(e){S.logoSrc='';S.logoImg=null;}
   S.name=p.name||'Floor plan';$('#projName').value=S.name;
@@ -866,28 +1139,69 @@ bind('#fileLogo','change',async function(e){
     await setLogo(await readFile(f,false));S.legend.show=true;syncAll();fitView();scheduleSave();toast('Logo added above the legend.');
   }catch(err){toast(err.message||'That logo could not be read',4500);}
 });
-bind('#replacePlan','click',function(){$('#fileImg').click();});
+bind('#replacePlan','click',function(){$('#fileRepl').click();});
 document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){(b.getAttribute('data-pick')==='proj'?$('#fileProj'):$('#fileImg')).click();});});
 bind('#openProj','click',function(){$('#fileProj').click();});
 async function handleFile(f){
   try{
     if(/\.json$/i.test(f.name)||f.type==='application/json'){
       var o=JSON.parse(await readFile(f,true));
-      if(!o||!o.imgSrc||!Array.isArray(o.shapes))throw new Error('This file is not a Neighbourhood Mapper project');
+      if(!o||!((o.imgSrc&&Array.isArray(o.shapes))||Array.isArray(o.floors)))throw new Error('This file is not a Neighbourhoods project');
+      if(S.floors.length&&!window.confirm('Opening a project replaces the floor plans on this page. Continue?'))return;
       await applyProject(o);toast('Opened '+f.name);
-    }else if(/^image\//.test(f.type)||/\.(png|jpe?g|webp|gif|bmp)$/i.test(f.name)){
-      var had=S.shapes.length>0&&S.img,first=!S.img;
-      await setPlan(await readFile(f,false),true);
-      if(!had){S.shapes=[];S.legend.titleSize=defaults().title;}
-      if(first){S.tool='draw';S.draft=[];S.selId=null;S.selVertex=null;}
-      resetHist();syncAll();fitView();scheduleSave();checkImage(f);toast(had?'Plan replaced. Neighbourhoods kept in place.':first?'Plan loaded. Click on the plan to start outlining your first neighbourhood.':'Plan loaded.',first?5000:3200);
-    }else throw new Error('Choose an image or a project (.json) file');
+    }else if(isImg(f)){await addImages([f]);}
+    else throw new Error('Choose an image or a project (.json) file');
   }catch(err){toast(err.message||'That file could not be opened',4500);}
+}
+function isImg(f){return /^image\//.test(f.type)||/\.(png|jpe?g|webp|gif|bmp)$/i.test(f.name);}
+async function addImages(files){
+  if(S.tool==='crop')setTool('select');
+  var added=[],infos=[],first=!S.floors.length;
+  stash();
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    if(!isImg(f)){toast((f.name||'File')+': not an image',4500);continue;}
+    try{
+      var n=await normalize(await readFile(f,false));
+      var fl={id:nfid(),level:guessLevel(f.name)||nextLevel(),img:n.im,imgSrc:n.src,imgW:n.im.naturalWidth,imgH:n.im.naturalHeight,shapes:[],view:null,hist:null,hidx:-1};
+      S.floors.push(fl);added.push(fl);infos.push({name:f.name,size:f.size,w:fl.imgW,h:fl.imgH});
+    }catch(err){toast((f.name||'File')+': '+(err.message||'could not be added'),4500);}
+  }
+  if(!added.length)return;
+  loadFloor(added[0]);resetHist();
+  if(first)S.legend.titleSize=defaults().title;
+  S.tool='draw';S.draft=[];S.selId=null;S.selVertex=null;
+  syncAll();fitView();scheduleSave();checkImages(infos);
+  toast(added.length===1?(first?'Plan loaded. Check its level number, then click on the plan to start outlining your first neighbourhood.':'Floor plan added as a new tab. Check its level number.'):added.length+' floor plans added, one tab each. Check each level number.',5000);
+}
+async function replaceImage(f){
+  if(S.tool==='crop')setTool('select');
+  try{
+    if(!isImg(f))throw new Error('Choose an image file');
+    var had=S.shapes.length>0;
+    await setPlan(await readFile(f,false),true);
+    resetHist();stash();syncAll();fitView();scheduleSave();checkImages([{name:f.name,size:f.size,w:S.imgW,h:S.imgH}]);
+    toast(had?'Plan replaced. Neighbourhoods kept in place.':'Plan replaced.');
+  }catch(err){toast(err.message||'That image could not be opened',4500);}
 }
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 /* ---------- upload quality check (advice only, never blocks) ---------- */
-function checkImage(f){
+function checkImages(infos){
+  var el=$('#imgCheck'),bad=[];
+  infos.forEach(function(x){
+    var mb=x.size/1048576,long=Math.max(x.w,x.h),is=[];
+    if(mb>2.5)is.push(mb.toFixed(1)+' MB is above the 1\u20132 MB target');
+    else if(mb<0.25)is.push('only '+Math.round(x.size/1024)+' KB, which is often too blurry');
+    if(long<1500)is.push(x.w+' \u00d7 '+x.h+' px is small, so it may look soft when zoomed in');
+    if(is.length)bad.push('<li><b>'+esc(x.name)+'</b>: '+is.join('; ')+'.</li>');
+  });
+  if(infos.length===1&&!bad.length){var x=infos[0];el.className='imgcheck show ok';el.innerHTML='<div><b>Looks good.</b> '+esc(x.name||'Image')+' is '+(x.size/1048576).toFixed(2)+' MB at '+x.w+' \u00d7 '+x.h+' px.</div>';$('#reqCard').open=false;return;}
+  el.className='imgcheck show '+(bad.length?'warn':'ok');
+  el.innerHTML='<div>'+(bad.length?'<b>Uploaded '+infos.length+'. A few things to check:</b><ul>'+bad.join('')+'</ul><div>Also make sure desk numbers and other annotations are removed.</div>':'<b>Looks good.</b> '+infos.length+' images uploaded, all within the recommended size and sharpness.')+'</div>';
+  $('#reqCard').open=false;
+}
+function checkImageOld(f){
   var el=$('#imgCheck'),mb=f.size/1048576,long=Math.max(S.imgW,S.imgH),issues=[];
   if(mb>2.5)issues.push('The file is '+mb.toFixed(1)+' MB, above the 1\u20132 MB target. It still works, and the export can be capped under 2 MB.');
   else if(mb<0.25)issues.push('The file is only '+Math.round(f.size/1024)+' KB. Very small files are often blurry; use a higher-quality export if you can.');
@@ -897,18 +1211,22 @@ function checkImage(f){
   el.innerHTML='<div>'+head+(issues.length?'<ul>'+issues.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul><div>Also make sure desk numbers and other annotations are removed.</div>':'')+'</div>';
   $('#reqCard').open=false;
 }
-bind('#fileImg','change',function(e){var f=e.target.files[0];e.target.value='';if(f)handleFile(f);});
-bind('#fileImgTop','change',function(e){var f=e.target.files[0];e.target.value='';if(f)handleFile(f);});
+bind('#fileImg','change',function(e){var fs=Array.from(e.target.files);e.target.value='';if(fs.length)addImages(fs);});
+bind('#fileImgTop','change',function(e){var fs=Array.from(e.target.files);e.target.value='';if(fs.length)addImages(fs);});
+bind('#fileRepl','change',function(e){var f=e.target.files[0];e.target.value='';if(f)replaceImage(f);});
 bind('#fileProj','change',function(e){var f=e.target.files[0];e.target.value='';if(f)handleFile(f);});
 ['dragenter','dragover'].forEach(function(n){stage.addEventListener(n,function(e){e.preventDefault();stage.classList.add('dropping');});});
 ['dragleave','drop'].forEach(function(n){stage.addEventListener(n,function(e){e.preventDefault();stage.classList.remove('dropping');});});
-stage.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files[0];if(f)handleFile(f);});
+stage.addEventListener('drop',function(e){var fs=e.dataTransfer?Array.from(e.dataTransfer.files):[];if(!fs.length)return;var imgs=fs.filter(isImg);if(imgs.length)addImages(imgs);else handleFile(fs[0]);});
 ['dragover','drop'].forEach(function(n){window.addEventListener(n,function(e){if(!stage.contains(e.target))e.preventDefault();});});
 
 /* ---------- saving and exporting ---------- */
 var saveT=0;
 function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(function(){kvSet('project',projectObj());},700);}
-function projectObj(){return {app:'neighbourhood-mapper',v:1,name:S.name,imgSrc:S.imgSrc,shapes:S.shapes,legend:S.legend,logo:S.logoSrc||''};}
+function projectObj(){
+  stash();var ai=0;S.floors.forEach(function(f,i){if(f.id===S.active)ai=i;});
+  return {app:'neighbourhood-mapper',v:2,name:S.name,activeIndex:ai,floors:S.floors.map(function(f){return {level:f.level,imgSrc:f.imgSrc,shapes:f.shapes||[]};}),legend:S.legend,logo:S.logoSrc||''};
+}
 function idb(){return new Promise(function(res,rej){var r=indexedDB.open('neighbourhood-mapper',1);r.onupgradeneeded=function(){r.result.createObjectStore('kv');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
 async function kvSet(k,v){try{var db=await idb();await new Promise(function(res,rej){var t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=function(){rej(t.error);};});}catch(e){}}
 async function kvGet(k){try{var db=await idb();return await new Promise(function(res,rej){var r=db.transaction('kv').objectStore('kv').get(k);r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}catch(e){return null;}}
@@ -956,7 +1274,16 @@ async function saveSelected(){
   var files=[],base=slug(S.name);
   $('#sdSave').disabled=true;$('#sdSave').textContent='Preparing\u2026';
   try{
-    if(wantImg){var b=await planImageBlob(fmt);if(!b)throw new Error('the image could not be created. Try a smaller plan image.');files.push({name:base+'.'+(fmt==='png'?'png':'jpg'),blob:b});}
+    if(wantImg){
+      stash();var keep=F(),ext=fmt==='png'?'png':'jpg';exporting=true;
+      try{
+        for(var i=0;i<S.floors.length;i++){
+          var fl=S.floors[i];loadFloor(fl);
+          var b=await planImageBlob(fmt);if(!b)throw new Error('the image for '+tabLabel(fl)+' could not be created. Try a smaller plan image.');
+          files.push({name:(S.floors.length===1?base:base+'-level-'+slug(fl.level||String(i+1)))+'.'+ext,blob:b});
+        }
+      }finally{loadFloor(keep);exporting=false;render();}
+    }
     if(wantJson)files.push({name:base+'-project.json',blob:new Blob([JSON.stringify(projectObj())],{type:'application/json'})});
     if(files.length===1){download(files[0].name,files[0].blob);toast('Saved '+files[0].name+' ('+fmtSize(files[0].blob.size)+')');}
     else{
@@ -968,7 +1295,7 @@ async function saveSelected(){
   finally{$('#sdSave').disabled=false;$('#sdSave').textContent='Save';}
 }
 var dlg=$('#saveDlg');
-function openSave(){if(!S.img){toast('Upload a floor plan first.');return;}dlg.hidden=false;$('#sdImg').focus();}
+function openSave(){if(!S.floors.length){toast('Upload a floor plan first.');return;}dlg.hidden=false;$('#sdImg').focus();}
 function closeSave(){dlg.hidden=true;$('#saveBtn').focus();}
 bind('#saveBtn','click',openSave);bind('#sdCancel','click',closeSave);bind('#sdSave','click',saveSelected);
 dlg.addEventListener('click',function(e){if(e.target===dlg)closeSave();});
@@ -979,7 +1306,7 @@ new ResizeObserver(function(){render();}).observe(stage);
 (async function(){
   syncTools();updateHint();
   var saved=await kvGet('project');
-  try{if(saved&&saved.imgSrc&&Array.isArray(saved.shapes)){await applyProject(saved);$('#reqCard').open=false;}else syncAll();}
+  try{if(saved&&((saved.imgSrc&&Array.isArray(saved.shapes))||(Array.isArray(saved.floors)&&saved.floors.length))){await applyProject(saved);$('#reqCard').open=false;}else syncAll();}
   catch(e){syncAll();}
 })();
 })();

@@ -286,6 +286,18 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* "Save & send to Smartalock" result (see ../js/send-project.js) */
+  .submit-guides-panel.failed { background: #FFF6E5; border-color: #E0A100; }
+  .submit-guides-panel.failed .submit-guides-icon { background: #B7791F; }
+  .submit-guides-panel.failed .submit-guides-body h3, .submit-guides-panel.failed .submit-guides-body > p { color: #7A4E00; }
+  .submit-guides-actions[hidden] { display: none; }
+  .submit-guides-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+  .submit-guides-actions button { font: 600 12.5px var(--font-text); padding: 8px 14px; border-radius: 980px; cursor: pointer;
+    border: 1px solid #B7791F; background: #fff; color: #7A4E00; }
+  .submit-guides-actions button.primary-ish { background: #B7791F; color: #fff; }
+  .submit-guides-links { font-size: 12.5px; }
+  .submit-guides-links a { color: var(--accent-deep); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -489,8 +501,13 @@ element remains and the panel's other content is unaffected.
       <div class="submit-guides-panel" id="submitGuidesPanel">
         <div class="submit-guides-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <div class="submit-guides-body">
-          <h3>Saved &amp; emailed</h3>
-          <p id="submitGuidesEmailNote">Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to you.</p>
+          <h3 id="submitGuidesTitle">Saved &amp; sent</h3>
+          <p id="submitGuidesEmailNote">Your configuration is saved in this browser.</p>
+          <div class="submit-guides-actions" id="submitGuidesActions" hidden>
+            <button type="button" class="primary-ish" id="sendRetryBtn">Try again</button>
+            <button type="button" id="sendDownloadBtn">Download project file</button>
+          </div>
+          <p class="submit-guides-links">Guides: <a href="https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link" target="_blank" rel="noopener">End User Guides</a> &middot; <a href="https://floorsense.notion.site/SMARTALOCK-FULL-ADMINISTRATION-GUIDE-f278cf8aa6e547579a1b9a8f231b931f" target="_blank" rel="noopener">Admin Portal Guide</a></p>
         </div>
       </div>
 
@@ -505,7 +522,7 @@ element remains and the panel's other content is unaffected.
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Desks Configuration
         </a>
-        <button class="primary" id="confirmBtn" type="button">Save &amp; Email Me Summary</button>
+        <button class="primary" id="confirmBtn" type="button">Save &amp; send to Smartalock</button>
       </div>
     </div>
   </div>
@@ -1237,6 +1254,40 @@ browser to confirm the header now holds.
      floorsense-out-of-box-policy.html's pattern — opens the client's own email ("Your Email" from
      Project Registration) with a plain-text summary and both guide links, instead of
      auto-redirecting, so there's time to notice the email client opened before moving on. */
+  /* ---------------- save & send to Smartalock ----------------
+     The project is already saved in this browser; this emails a copy (summary + project file) to
+     Smartalock through the shared email service. See ../js/send-project.js. Pressing the button again
+     after changing anything sends the updated project. */
+  function sendProjectNow(btn) {
+    const panel = document.getElementById('submitGuidesPanel');
+    const title = document.getElementById('submitGuidesTitle');
+    const note = document.getElementById('submitGuidesEmailNote');
+    const actions = document.getElementById('submitGuidesActions');
+    btn.disabled = true;
+    panel.classList.remove('failed'); panel.classList.add('show'); actions.hidden = true;
+    title.textContent = 'Saved — sending to Smartalock…';
+    note.textContent = 'Your configuration is saved in this browser. Sending a copy to Smartalock…';
+    if (!window.SendProject) { showFailed('the email service did not load'); return; }
+    SendProject.send({ project: project, product: 'Smartalock', summaryText: buildSummaryText() }).then(res => {
+      if (res.ok) {
+        title.textContent = 'Saved & sent';
+        note.textContent = 'Your configuration is saved in this browser and a copy has been sent to Smartalock. ' +
+          'If you change anything later, come back here and press the button again to send the update.';
+        btn.disabled = false; btn.textContent = 'Save & send again';
+      } else showFailed(res.error);
+    });
+    function showFailed(why) {
+      panel.classList.add('failed');
+      title.textContent = 'Saved, but not sent';
+      note.textContent = 'Your configuration is saved in this browser, but it couldn’t be sent to Smartalock' +
+        (why ? ' (' + why + ')' : '') + '. Try again, or download the project file and email it to ' +
+        ((window.SendProject && SendProject.sentTo) || 'support@smartalock.com') + '.';
+      actions.hidden = false; btn.disabled = false;
+    }
+  }
+  document.getElementById('sendRetryBtn').addEventListener('click', () => sendProjectNow(document.getElementById('confirmBtn')));
+  document.getElementById('sendDownloadBtn').addEventListener('click', () => { if (window.SendProject) SendProject.download(project); });
+
   const confirmBtn = document.getElementById('confirmBtn');
   confirmBtn.addEventListener('click', () => {
     status.summary = true;
@@ -1247,18 +1298,37 @@ browser to confirm the header now holds.
     renderProgressBar();
     document.getElementById('saveText').textContent = 'Saved to project configuration';
 
-    const toEmail = (project.registration && project.registration.email) || '';
-    window.location.href = buildSummaryMailtoHref(toEmail);
-    const emailNote = document.getElementById('submitGuidesEmailNote');
-    emailNote.textContent = toEmail
-      ? 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to ' + toEmail + '.'
-      : 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links. Add "Your Email" on Project Registration to have this addressed automatically next time.';
-    confirmBtn.disabled = true;
-    document.getElementById('submitGuidesPanel').classList.add('show');
+    sendProjectNow(confirmBtn);
   });
 })();
 </script>
 
+<script src="../js/send-project.js?v=20261102"></script>
 <script src="../js/project-file.js"></script>
+<script>
+/* "Back to all tools" button: sits to the left of the "Project file" button in the page header and links to the
+   Smartalock & Floorsense Toolbox index page (site root). Added on the two summary pages only. */
+(function () {
+  function add() {
+    var pf = document.getElementById('pfBtn');
+    if (!pf) { return setTimeout(add, 100); }
+    if (document.getElementById('homeBtn')) return;
+    var a = document.createElement('a');
+    a.id = 'homeBtn'; a.className = 'pf-btn'; a.href = '../../index.html'; a.style.textDecoration = 'none';
+    a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span class="pf-txt">Back to all tools</span>';
+    a.title = 'Back to the Smartalock & Floorsense toolbox page';
+    pf.parentNode.insertBefore(a, pf);
+    function place() {
+      var gap = 8, w = pf.getBoundingClientRect().width;
+      var right = parseFloat(getComputedStyle(pf).right) || 20;
+      a.style.right = (right + w + gap) + 'px';
+      if (getComputedStyle(pf).position === 'fixed') a.style.position = 'fixed';
+    }
+    place(); window.addEventListener('resize', place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
+</script>
 </body>
 </html>

@@ -561,6 +561,18 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* "Save & send to Smartalock" result (see ../js/send-project.js) */
+  .submit-guides-panel.failed { background: #FFF6E5; border-color: #E0A100; }
+  .submit-guides-panel.failed .submit-guides-icon { background: #B7791F; }
+  .submit-guides-panel.failed .submit-guides-body h3, .submit-guides-panel.failed .submit-guides-body > p { color: #7A4E00; }
+  .submit-guides-actions[hidden] { display: none; }
+  .submit-guides-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+  .submit-guides-actions button { font: 600 12.5px var(--font-text); padding: 8px 14px; border-radius: 980px; cursor: pointer;
+    border: 1px solid #B7791F; background: #fff; color: #7A4E00; }
+  .submit-guides-actions button.primary-ish { background: #B7791F; color: #fff; }
+  .submit-guides-links { font-size: 12.5px; }
+  .submit-guides-links a { color: var(--accent-deep); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -965,7 +977,7 @@
             <h3>Outstanding</h3>
           </div>
         </div>
-        <p class="summary-note" id="outstandingIntro">Please email these items to oleg@smartalock.com by the target installation date. We need at least one business day per floor to configure the system.</p>
+        <p class="summary-note" id="outstandingIntro">Please email these items to support@smartalock.com by the target installation date. We need at least one business day per floor to configure the system.</p>
         <div id="outstandingList"></div>
       </div>
 
@@ -978,8 +990,13 @@
       <div class="submit-guides-panel" id="submitGuidesPanel">
         <div class="submit-guides-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
         <div class="submit-guides-body">
-          <h3>Saved &amp; emailed</h3>
-          <p id="submitGuidesEmailNote">Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to you.</p>
+          <h3 id="submitGuidesTitle">Saved &amp; sent</h3>
+          <p id="submitGuidesEmailNote">Your configuration is saved in this browser.</p>
+          <div class="submit-guides-actions" id="submitGuidesActions" hidden>
+            <button type="button" class="primary-ish" id="sendRetryBtn">Try again</button>
+            <button type="button" id="sendDownloadBtn">Download project file</button>
+          </div>
+          <p class="submit-guides-links">Guides: <a href="https://app.notion.com/p/floorsense/Floorsense-App-End-User-Guides-e420c349df71421d96331de8b3cfa54d?source=copy_link" target="_blank" rel="noopener">End User Guides</a> &middot; <a href="https://app.notion.com/p/floorsense/FLOORSENSE-FULL-ADMINISTRATION-GUIDE-f557eaf471ca455a990324b36e5e693b?source=copy_link" target="_blank" rel="noopener">Admin Portal Guide</a></p>
         </div>
       </div>
 
@@ -994,7 +1011,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Configure Lockers
         </a>
-        <button class="primary" id="continueBtn" type="button">Save &amp; Email Me Summary</button>
+        <button class="primary" id="continueBtn" type="button">Save &amp; send to Smartalock</button>
       </div>
     </div>
   </div>
@@ -2755,14 +2772,14 @@ Groups item's own description was not touched. Separately, added a static, alway
 paragraph (`<p class="summary-desc" id="outstandingIntro">`) directly below the "Outstanding" `<h3>`
 and above `#outstandingList`, reusing the same `.summary-desc` class as the per-item description
 paragraphs rather than introducing a new CSS rule: "Please send these items to
-oleg@smartalock.com by the target installation date, so we have at least one business day to make
+support@smartalock.com by the target installation date, so we have at least one business day to make
 any changes." This paragraph is static markup, not JS-populated -- it's always present in the DOM
 regardless of which (if any) items are triggered; visibility is still controlled entirely by the
 `hidden` attribute on `#outstandingGroup` itself, same as before. Verified via an inline HTMLParser
 tag-balance check, `node --check` on the extracted script block, and an extended jsdom test
 (test_oob_policy_outstanding_deskusergroups.js, now 25 assertions) confirming the new example text
 in the User Groups description, and that `#outstandingIntro` exists, mentions
-oleg@smartalock.com/"target installation date"/"one business day", and sits before `#outstandingList`
+support@smartalock.com/"target installation date"/"one business day", and sits before `#outstandingList`
 in DOM order.
 
 MOST RECENT CHANGE: per a follow-up request to rename the section, make the intro note read as
@@ -2801,7 +2818,7 @@ jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 34 assertions) co
 
 MOST RECENT CHANGE: per a follow-up request, reworded `#outstandingIntro`'s closing clause from
 "to make any necessary changes." to "to configure the system accordingly.", so the note now reads
-"Please email these items to oleg@smartalock.com by the target installation date, so we have at
+"Please email these items to support@smartalock.com by the target installation date, so we have at
 least one business day to configure the system accordingly." Nothing else about the note changed.
 Verified via an inline HTMLParser tag-balance check, `node --check` on the extracted script block,
 and an extended jsdom test (test_oob_policy_outstanding_deskusergroups.js, now 35 assertions)
@@ -2827,7 +2844,7 @@ row with an "Open" `.row-edit-link` pill next to its value. They're appended aft
 Groups "provide" items, so `#outstandingGroup` is now always visible (it used to stay hidden unless
 one of those triggers fired). Each row's description suggests saving as a JSON project file (so the
 work can be re-opened and edited) plus a PNG, and asks the client to email the PNG to
-oleg@smartalock.com; the mapper row also says completing it is optional. The renderer gained an
+support@smartalock.com; the mapper row also says completing it is optional. The renderer gained an
 optional `href`/`linkText` per item and wraps value+link in `.value-group` when present. Verified
 via an inline HTMLParser tag-balance check, `node --check` on the extracted script block, and a new
 jsdom test (test_oob_policy_outstanding_tool_links.js) covering the always-visible section, both
@@ -2861,19 +2878,19 @@ descriptions, and the tool pages' own titles are untouched. Verified via `node -
 updated test_oob_policy_outstanding_tool_links.js (13 assertions) checking the new labels.
 
 MOST RECENT CHANGE: per a correction, `#outstandingIntro` now reads "Please email these items to
-oleg@smartalock.com by the target installation date, so we have at least one business day per
+support@smartalock.com by the target installation date, so we have at least one business day per
 floor to configure the system accordingly." (added "per floor"). Only that sentence changed; no
 other Outstanding text or styling. Verified via `node --check` and a text assertion added to
 test_oob_policy_outstanding_tool_links.js (14 assertions).
 
 MOST RECENT CHANGE: per a request to make the Outstanding text short and clear, shortened three
-strings. `#outstandingIntro` now reads "Please email these items to oleg@smartalock.com by the
+strings. `#outstandingIntro` now reads "Please email these items to support@smartalock.com by the
 target installation date. We need at least one business day per floor to configure the system."
 (two short sentences instead of one long one). The Number your workspaces and Allocate
 neighbourhoods row descriptions now read "...Save as JSON (to edit later) and PNG, then email the
-PNG to oleg@smartalock.com."; the mapper row no longer repeats "optional" in its description since
+PNG to support@smartalock.com."; the mapper row no longer repeats "optional" in its description since
 its value already says Optional. Meaning is unchanged (JSON to re-edit, PNG emailed to
-oleg@smartalock.com, one business day per floor). Verified via `node --check` and updated
+support@smartalock.com, one business day per floor). Verified via `node --check` and updated
 assertions in test_oob_policy_outstanding_tool_links.js (14 assertions).
 -->
 
@@ -3004,14 +3021,14 @@ assertions in test_oob_policy_outstanding_tool_links.js (14 assertions).
     // links. Both rows ALWAYS appear, which also means this section is now always visible (it used to
     // stay hidden unless a Desk/User Groups "provide" trigger fired). Desk Numbering is required; the
     // Mapper is optional. Both save a JSON project file (to re-open and edit later) plus a PNG, and
-    // the PNG is emailed to oleg@smartalock.com.
+    // the PNG is emailed to support@smartalock.com.
     items.push({
       label: 'Number your workspaces', value: 'Required', href: 'desk-numbering.html', linkText: 'Open',
-      desc: 'Number each desk on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to oleg@smartalock.com.'
+      desc: 'Number each desk on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to support@smartalock.com.'
     });
     items.push({
       label: 'Allocate neighbourhoods', value: 'Optional', href: 'mapper.html', linkText: 'Open',
-      desc: 'Mark neighbourhood areas on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to oleg@smartalock.com.'
+      desc: 'Mark neighbourhood areas on your floor plans. Save as JSON (to edit later) and PNG, then email the PNG to support@smartalock.com.'
     });
     if (items.length) {
       document.getElementById('outstandingGroup').hidden = false;
@@ -3974,6 +3991,40 @@ assertions in test_oob_policy_outstanding_tool_links.js (14 assertions).
     return 'mailto:' + (toEmail || '') + '?subject=' + subject + '&body=' + body;
   }
 
+  /* ---------------- save & send to Smartalock ----------------
+     The project is already saved in this browser; this emails a copy (summary + project file) to
+     Smartalock through the shared email service. See ../js/send-project.js. Pressing the button again
+     after changing anything sends the updated project. */
+  function sendProjectNow(btn) {
+    const panel = document.getElementById('submitGuidesPanel');
+    const title = document.getElementById('submitGuidesTitle');
+    const note = document.getElementById('submitGuidesEmailNote');
+    const actions = document.getElementById('submitGuidesActions');
+    btn.disabled = true;
+    panel.classList.remove('failed'); panel.classList.add('show'); actions.hidden = true;
+    title.textContent = 'Saved — sending to Smartalock…';
+    note.textContent = 'Your configuration is saved in this browser. Sending a copy to Smartalock…';
+    if (!window.SendProject) { showFailed('the email service did not load'); return; }
+    SendProject.send({ project: project, product: 'Floorsense', summaryText: buildSummaryText() }).then(res => {
+      if (res.ok) {
+        title.textContent = 'Saved & sent';
+        note.textContent = 'Your configuration is saved in this browser and a copy has been sent to Smartalock. ' +
+          'If you change anything later, come back here and press the button again to send the update.';
+        btn.disabled = false; btn.textContent = 'Save & send again';
+      } else showFailed(res.error);
+    });
+    function showFailed(why) {
+      panel.classList.add('failed');
+      title.textContent = 'Saved, but not sent';
+      note.textContent = 'Your configuration is saved in this browser, but it couldn’t be sent to Smartalock' +
+        (why ? ' (' + why + ')' : '') + '. Try again, or download the project file and email it to ' +
+        ((window.SendProject && SendProject.sentTo) || 'support@smartalock.com') + '.';
+      actions.hidden = false; btn.disabled = false;
+    }
+  }
+  document.getElementById('sendRetryBtn').addEventListener('click', () => sendProjectNow(document.getElementById('continueBtn')));
+  document.getElementById('sendDownloadBtn').addEventListener('click', () => { if (window.SendProject) SendProject.download(project); });
+
   const continueBtn = document.getElementById('continueBtn');
   continueBtn.addEventListener('click', () => {
     project.floorsense.wizard.outOfBoxPolicy = {
@@ -3990,22 +4041,37 @@ assertions in test_oob_policy_outstanding_tool_links.js (14 assertions).
     saveDot.classList.add('show');
     saveText.textContent = 'Saved to project configuration';
 
-    // Open the client's own email — "Your Email" from Project Registration — with a plain-text
-    // summary, the two guide links, and a note about attaching the PDF guide manually. Shown as a
-    // confirmation panel instead of auto-redirecting, so there's time to notice the email client
-    // opened before moving on — the client continues to project-home.html manually when ready.
-    const toEmail = (project.registration && project.registration.email) || '';
-    window.location.href = buildSummaryMailtoHref(toEmail);
-    const emailNote = document.getElementById('submitGuidesEmailNote');
-    emailNote.textContent = toEmail
-      ? 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links, to send to ' + toEmail + '.'
-      : 'Your email client should now be composing a summary of this configuration, along with the End User Guides and Admin Portal Guide links. Add "Your Email" on Project Registration to have this addressed automatically next time.';
-    continueBtn.disabled = true;
-    document.getElementById('submitGuidesPanel').classList.add('show');
+    sendProjectNow(continueBtn);
   });
 })();
 </script>
 
+<script src="../js/send-project.js?v=20261102"></script>
 <script src="../js/project-file.js"></script>
+<script>
+/* "Back to all tools" button: sits to the left of the "Project file" button in the page header and links to the
+   Smartalock & Floorsense Toolbox index page (site root). Added on the two summary pages only. */
+(function () {
+  function add() {
+    var pf = document.getElementById('pfBtn');
+    if (!pf) { return setTimeout(add, 100); }
+    if (document.getElementById('homeBtn')) return;
+    var a = document.createElement('a');
+    a.id = 'homeBtn'; a.className = 'pf-btn'; a.href = '../../index.html'; a.style.textDecoration = 'none';
+    a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span class="pf-txt">Back to all tools</span>';
+    a.title = 'Back to the Smartalock & Floorsense toolbox page';
+    pf.parentNode.insertBefore(a, pf);
+    function place() {
+      var gap = 8, w = pf.getBoundingClientRect().width;
+      var right = parseFloat(getComputedStyle(pf).right) || 20;
+      a.style.right = (right + w + gap) + 'px';
+      if (getComputedStyle(pf).position === 'fixed') a.style.position = 'fixed';
+    }
+    place(); window.addEventListener('resize', place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
+</script>
 </body>
 </html>
