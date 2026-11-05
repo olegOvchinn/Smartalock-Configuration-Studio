@@ -1,2 +1,6 @@
 .DS_Store
 _removed-for-handover/
+
+# Scratch outputs (contain personal data and large demo files) - push-tools.sh stays tracked
+Claude outputs/*
+!Claude outputs/push-tools.sh
