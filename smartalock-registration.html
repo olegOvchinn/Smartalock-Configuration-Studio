@@ -195,6 +195,16 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* ---------- qcard icons: the standard icon style of floorsense-optional-features.html — a bare
+     line icon (thin 0.8 stroke) inside its own rounded-square frame, a soft 15% tint behind the
+     glyph, coloured from the shared blue / pink / purple / teal / amber palette. ---------- */
+  .qcard h3 .qcard-icon-svg { width: 84px; height: 84px; flex-shrink: 0; color: var(--accent); }
+  .qcard h3 .qcard-icon-svg.badge-blue { color: #4A8DF0; }
+  .qcard h3 .qcard-icon-svg.badge-pink { color: #EC6BA5; }
+  .qcard h3 .qcard-icon-svg.badge-purple { color: #9B6BEC; }
+  .qcard h3 .qcard-icon-svg.badge-teal { color: #2FBF9F; }
+  .qcard h3 .qcard-icon-svg.badge-amber { color: #F2A154; }
 </style>
 <link rel="stylesheet" href="site-theme.css">
 </head>
@@ -229,7 +239,7 @@
 
       <div class="qcard-grid">
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><div class="qcard-icon-badge badge-blue"><img class="qcard-icon" src="assets/images/icon-company.png" alt=""></div>Company Details</h3>
+        <h3><svg class="qcard-icon-svg badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 17V8.2l4.5-1.6V17z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 17V8.2l4.5-1.6V17"/><path d="M12.5 10h3.5v7"/><path d="M6.8 17h10.4"/><path d="M9.6 9.6h1.3M9.6 11.8h1.3M9.6 14h1.3M14 12h0.8M14 14h0.8"/></svg>Company Details</h3>
         <p class="qdesc">Basic details about the company and site this configuration is for.</p>
         <div class="form-grid">
           <div class="form-field">
@@ -248,7 +258,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><div class="qcard-icon-badge badge-teal"><img class="qcard-icon" src="assets/images/icon-contacts.png" alt=""></div>Contacts <span class="qcard-tag">Optional</span></h3>
+        <h3><svg class="qcard-icon-svg badge-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10.2" r="2.3" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="10" cy="10.2" r="2"/><path d="M6.3 16.6a3.7 3.7 0 0 1 7.4 0"/><circle cx="14.8" cy="10.8" r="1.6"/><path d="M15.2 13.9a3 3 0 0 1 2.6 2.7"/></svg>Contacts <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Add any additional contacts for this project, if they differ from the details above.</p>
         <div class="form-grid">
           <div class="contact-group">
@@ -314,7 +324,7 @@
       </div>
 
       <div class="qcard" style="grid-column: 1 / -1;">
-        <h3><div class="qcard-icon-badge badge-amber"><img class="qcard-icon" src="assets/images/icon-dates.png" alt=""></div>Project Dates <span class="qcard-tag">Optional</span></h3>
+        <h3><svg class="qcard-icon-svg badge-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="8" width="10" height="3" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="8" width="10" height="9" rx="1"/><path d="M7 11h10"/><path d="M9.5 6.8v2.2M14.5 6.8v2.2"/><path d="M9.4 13.4h1.2M12 13.4h1.2M14.6 13.4h0.6M9.4 15.4h1.2M12 15.4h1.2"/></svg>Project Dates <span class="qcard-tag">Optional</span></h3>
         <p class="qdesc">Target month and year for installation and go-live — these can be adjusted later.</p>
         <div class="form-grid">
           <div class="form-field">

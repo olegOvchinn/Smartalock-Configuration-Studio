@@ -220,6 +220,14 @@
     padding: 20px 22px; background: var(--paper); display: none; cursor: default;
   }
   .duration-panel.show { display: block; animation: fadeIn .22s ease; }
+  .bulk-panel > p.hint { margin-bottom: 12px; }
+  .bulk-option { margin-bottom: 12px; }
+  .bulk-sheet { border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; font-size: 12px; max-width: 320px; }
+  .bulk-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .bulk-row span { padding: 7px 12px; border-top: 1px solid var(--line); }
+  .bulk-row span + span { border-left: 1px solid var(--line); }
+  .bulk-head span { border-top: 0; font-weight: 600; background: var(--paper-soft); color: var(--header-grey); }
+  .bulk-row:not(.bulk-head) span { color: var(--ink-soft); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
   .duration-panel h4 { font-family: var(--font-display); font-size: 13.08px; margin: 0 0 4px; color: var(--header-grey); }
   .duration-panel > p.hint { font-size: 11.27px; color: var(--ink-soft); margin: 0 0 16px; }
 
@@ -289,6 +297,17 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* ---------- icons: the standard style of floorsense-optional-features.html (a thin line drawing in its own
+     rounded-square frame, a soft tint behind the glyph, coloured from the shared palette) ---------- */
+  svg.std-icon { width: 84px; height: 84px; flex-shrink: 0; color: #4A8DF0; }
+  svg.std-icon.badge-blue { color: #4A8DF0; }
+  svg.std-icon.badge-pink { color: #EC6BA5; }
+  svg.std-icon.badge-purple { color: #9B6BEC; }
+  svg.std-icon.badge-teal { color: #2FBF9F; }
+  svg.std-icon.badge-amber { color: #F2A154; }
+  svg.std-icon.badge-green { color: #4CAF6D; }
+  svg.std-icon.badge-coral { color: #EC6B6B; }
 </style>
 <link rel="stylesheet" href="../site-theme.css">
 </head>
@@ -353,15 +372,29 @@
         <div class="tcard" id="card-admin" data-type="admin">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><span class="tcard-icon-badge badge-blue"><img class="tcard-icon-img" src="../assets/images/icon-admin-allocated.png" alt=""></span>Allocated by Administrator</h3>
+            <h3><svg class="std-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.2" cy="10" r="2.4" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="10.2" cy="10" r="2.1"/><path d="M6.4 16.8a3.8 3.8 0 0 1 6.6-2.4"/><path d="M15.6 12.2l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z"/></svg>Allocated by Administrator</h3>
             <p class="desc">Permanently assign lockers to individual users. Lockers remain allocated until released by an administrator. Ideal for staff with dedicated lockers.</p>
+
+            <div class="duration-panel bulk-panel" id="bulkPanel">
+              <h4>We can allocate your fixed lockers in bulk</h4>
+              <p class="hint">No need to assign lockers one by one. Send us a spreadsheet with two columns and we'll allocate all your fixed lockers for you.</p>
+              <label class="duration-option bulk-option" id="bulkOption">
+                <input type="checkbox" id="bulkCheck">
+                <div><div class="title">Yes, we'll send a spreadsheet for bulk allocation</div><div class="sub">User name | Locker number, one row per fixed locker.</div></div>
+              </label>
+              <div class="bulk-sheet" aria-hidden="true">
+                <div class="bulk-row bulk-head"><span>User name</span><span>Locker number</span></div>
+                <div class="bulk-row"><span>jane.smith</span><span>101</span></div>
+                <div class="bulk-row"><span>tom.lee</span><span>102</span></div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="tcard" id="card-user" data-type="user">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><span class="tcard-icon-badge badge-green"><img class="tcard-icon-img" src="../assets/images/icon-user-self-allocated.png" alt=""></span>User Self-Allocated</h3>
+            <h3><svg class="std-icon badge-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.2" cy="10" r="2.4" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="10.2" cy="10" r="2.1"/><path d="M6.4 16.8a3.8 3.8 0 0 1 6.6-2.4"/><path d="M14 15l1.4 1.4 2.6-3"/></svg>User Self-Allocated</h3>
             <p class="desc">Users choose their own locker at the kiosk or app. The reservation never expires automatically and stays allocated until the user or an administrator releases it.</p>
 
             <div class="duration-panel" id="durationPanel">
@@ -402,7 +435,7 @@
         <div class="tcard" id="card-parcel" data-type="parcel">
           <span class="tcard-radio"></span>
           <div class="tcard-body">
-            <h3><span class="tcard-icon-badge badge-purple"><img class="tcard-icon-img" src="../assets/images/icon-parcel-delivery.png" alt=""></span>Parcel Delivery</h3>
+            <h3><svg class="std-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7.2l4.6 2.4v5.2L12 17.2 7.4 14.8V9.6z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7.2l4.6 2.4v5.2L12 17.2 7.4 14.8V9.6z"/><path d="M7.4 9.6L12 12l4.6-2.4M12 12v5.2"/><path d="M9.7 8.4l4.6 2.4"/></svg>Parcel Delivery</h3>
             <p class="desc">Lockers act as a drop-off and pickup point for courier deliveries and internal mail. Temporary access is granted to a courier or recipient rather than a standing personal reservation.</p>
           </div>
         </div>
@@ -683,7 +716,8 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
   const state = Object.assign({
     userDuration: "24h",
     userDurationValue: "",
-    userDurationUnit: "days"
+    userDurationUnit: "days",
+    adminBulkSheet: false
   }, savedReservation, { reservationTypes: migratedTypes });
   const MAX_TYPES = 3;
 
@@ -738,6 +772,7 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
       cards[key].classList.toggle('maxed', atMax && !chosen);
     });
     durationPanel.classList.toggle('show', state.reservationTypes.includes('user'));
+    document.getElementById('bulkPanel').classList.toggle('show', state.reservationTypes.includes('admin'));
 
     const activeType = state.reservationTypes[state.reservationTypes.length - 1] || 'user';
     const visual = VISUAL_SRC[activeType];
@@ -761,6 +796,7 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
     }
 
     renderTypeCards();
+    if (typeof syncNextNav === 'function') syncNextNav();
     queueSave();
   }
 
@@ -796,6 +832,16 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
     opt.addEventListener('click', () => selectDuration(opt.getAttribute('data-duration')));
   });
 
+  /* ---------------- bulk allocation option (Allocated by Administrator) ---------------- */
+  const bulkCheck = document.getElementById('bulkCheck');
+  const bulkOption = document.getElementById('bulkOption');
+  function renderBulk() {
+    bulkCheck.checked = !!state.adminBulkSheet;
+    bulkOption.classList.toggle('selected', !!state.adminBulkSheet);
+  }
+  bulkCheck.addEventListener('change', () => { state.adminBulkSheet = bulkCheck.checked; renderBulk(); queueSave(); });
+  renderBulk();
+
   durationValueInput.value = state.userDurationValue;
   durationUnitSelect.value = state.userDurationUnit || 'days';
   durationValueInput.addEventListener('input', () => { state.userDurationValue = durationValueInput.value; queueSave(); });
@@ -809,18 +855,32 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
     durationValueInput.value = '';
     durationUnitSelect.value = 'days';
     state.reservationTypes = [];
+    state.adminBulkSheet = false;
+    renderBulk();
     renderTypeCards();
+    syncNextNav();
     save();
   });
 
   const returnToSummary = new URLSearchParams(window.location.search).get('return') === 'summary';
+
+  // Admin-allocated only: no self-service policies or locker types to set, so skip straight to Kiosk UI.
+  function adminOnly() {
+    return state.reservationTypes.length === 1 && state.reservationTypes[0] === 'admin';
+  }
+  function forwardUrl() {
+    return adminOnly() ? 'smartalock-kiosk-customisation.html' : 'smartalock-locker-policy.html';
+  }
+  const nextNavBtn = document.querySelector('.page-nav-btn.next');
+  function syncNextNav() { if (nextNavBtn) nextNavBtn.setAttribute('href', forwardUrl()); }
+  syncNextNav();
 
   document.getElementById('continueBtn').addEventListener('click', () => {
     save();
     markModuleSaved('reservation');
     saveText.textContent = 'Saved to project configuration';
     saveDot.classList.add('show');
-    const nextUrl = returnToSummary ? 'smartalock-configuration-summary.html' : 'smartalock-locker-policy.html';
+    const nextUrl = returnToSummary ? 'smartalock-configuration-summary.html' : forwardUrl();
     setTimeout(() => { window.location.href = nextUrl; }, 500);
   });
 

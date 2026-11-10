@@ -45,7 +45,6 @@
     var f = document.createElement('footer');
     f.className = 'awl-foot'; f.setAttribute('role', 'contentinfo');
     f.innerHTML = '<div class="awl-in">' +
-      '<p><b>' + d.company + '</b>' + SEP + d.address + '</p>' +
       '<p>' + d.sites.map(function (s) { return a(s[0], s[1]); }).join(SEP) + SEP +
         'Sales: ' + a(d.sales, 'mailto:' + d.sales) + SEP +
         'Support: ' + a(support, 'mailto:' + support) + SEP +

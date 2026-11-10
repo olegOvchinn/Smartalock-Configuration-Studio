@@ -237,6 +237,17 @@
 
   footer.site-foot { text-align: center; padding: 22px 0 40px; font-size: 11.48px; font-weight: 300; color: var(--ink-soft); }
 
+
+  /* ---------- icons: the standard style of floorsense-optional-features.html (a thin line drawing in its own
+     rounded-square frame, a soft tint behind the glyph, coloured from the shared palette) ---------- */
+  svg.std-icon { width: 84px; height: 84px; flex-shrink: 0; color: #4A8DF0; }
+  svg.std-icon.badge-blue { color: #4A8DF0; }
+  svg.std-icon.badge-pink { color: #EC6BA5; }
+  svg.std-icon.badge-purple { color: #9B6BEC; }
+  svg.std-icon.badge-teal { color: #2FBF9F; }
+  svg.std-icon.badge-amber { color: #F2A154; }
+  svg.std-icon.badge-green { color: #4CAF6D; }
+  svg.std-icon.badge-coral { color: #EC6B6B; }
 </style>
 <link rel="stylesheet" href="../site-theme.css">
 </head>
@@ -298,7 +309,7 @@
         <div class="page-text">
 
       <div class="qcard" id="qcard-idle" data-visual="idle">
-        <h3><div class="qcard-icon-badge badge-blue"><img class="qcard-icon" src="../assets/images/icon-release-when-idle.png" alt=""></div>Release when reserved but unused</h3>
+        <h3><svg class="std-icon badge-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12,12 L7,12 A5,5 0 1 1 14.5,16.33 Z" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="12" cy="12" r="5"/><path d="M12 9.2V12h2.6"/></svg>Release when reserved but unused</h3>
         <p class="qdesc">Choose how long a locker can remain unused before it is automatically released.</p>
         <label>Release when idle</label>
         <select id="idleDuration">
@@ -315,7 +326,7 @@
       </div>
 
       <div class="qcard" id="qcard-limits" data-visual="limits">
-        <h3><div class="qcard-icon-badge badge-green"><img class="qcard-icon" src="../assets/images/icon-locker-limits.png" alt=""></div>Lockers per User</h3>
+        <h3><svg class="std-icon badge-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12.2" y="7" width="4.8" height="4.6" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="7" y="7" width="10" height="10" rx="0.8"/><path d="M12 7v10M7 11.8h10"/><path d="M9.2 9.4h.4M14.4 9.4h.4M9.2 14.4h.4M14.4 14.4h.4"/></svg>Lockers per User</h3>
         <p class="qdesc">Define how many lockers a user can reserve.</p>
         <label>Maximum lockers per user</label>
         <select id="lockerLimit">
@@ -331,7 +342,7 @@
       </div>
 
       <div class="qcard" id="qcard-behaviour" data-visual="behaviour">
-        <h3><div class="qcard-icon-badge badge-purple"><img class="qcard-icon" src="../assets/images/icon-release-behaviour.png" alt=""></div>Release Behaviour</h3>
+        <h3><svg class="std-icon badge-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="11.4" width="8" height="5.8" fill="currentColor" fill-opacity="0.15" stroke="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="11.4" width="8" height="5.8" rx="0.8"/><path d="M10 11.4V9.2a2.2 2.2 0 0 1 4.2-.9"/><path d="M12 13.6v1.4"/></svg>Release Behaviour</h3>
         <p class="qdesc">Define when a locker becomes available again.</p>
         <label>When do we release an expired locker?</label>
         <select id="releaseBehaviour">

@@ -882,6 +882,15 @@ and test_smartalock_topframe_display_contents_fix.js to include this page.
   project.smartalock.wizard = project.smartalock.wizard || {};
   project.smartalock.wizard.moduleStatus = project.smartalock.wizard.moduleStatus || {};
 
+  // If only "Allocated by Administrator" was chosen, the wizard skipped here from Reservation Type — back goes there.
+  (function(){
+    const rt = (project.smartalock.wizard.reservationType || {}).reservationTypes || [];
+    if (rt.length === 1 && rt[0] === 'admin') {
+      const back = document.querySelector('.page-nav-btn:not(.next)');
+      if (back) back.setAttribute('href', 'smartalock-reservation-type.html');
+    }
+  })();
+
   const state = Object.assign({
     logoEnabled: true,
     logoCustomEnabled: false,
